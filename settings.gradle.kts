@@ -19,3 +19,10 @@ dependencyResolutionManagement {
 rootProject.name = "Padabajka"
 include(":androidApp")
 include(":shared")
+include(":core:domain")
+include(":core:data")
+include(":core:presentation")
+include(":feature:auth")
+include(":feature:profile")
+include(":feature:swiper")
+include(":feature:match")
