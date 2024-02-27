@@ -31,6 +31,11 @@ kotlin {
     
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":feature:auth"))
+            implementation(project(":feature:profile"))
+            implementation(project(":feature:swiper"))
+            implementation(project(":feature:match"))
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
