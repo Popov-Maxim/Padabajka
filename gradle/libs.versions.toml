@@ -1,6 +1,8 @@
 [versions]
-agp = "8.1.2"
-kotlin = "1.9.20"
+agp = "8.2.2"
+kotlin = "1.9.22"
+kotlinx-datetime = "0.5.0"
+coroutines = "1.8.0"
 compose = "1.6.2"
 compose-compiler = "1.5.4"
 compose-material3 = "1.2.0"
@@ -9,7 +11,9 @@ compose-plugin = "1.5.12"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }

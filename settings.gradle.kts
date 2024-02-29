@@ -20,6 +20,7 @@ rootProject.name = "Padabajka"
 include(":androidApp")
 include(":shared")
 include(":core:domain")
+include(":core:repository-api")
 include(":core:data")
 include(":core:presentation")
 include(":feature:auth")

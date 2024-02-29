@@ -19,14 +19,15 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "data"
+            baseName = "repository-api"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            //put your multiplatform dependencies here
+            api(libs.coroutines.core)
+            api(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -35,7 +36,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.fp.padabajka.core.data"
+    namespace = "com.fp.padabajka.core.repository.api"
     compileSdk = 34
     defaultConfig {
         minSdk = 24
