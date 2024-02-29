@@ -1,3 +1,4 @@
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
@@ -27,6 +28,7 @@ kotlin {
         commonMain.dependencies {
             api(project(":core:presentation"))
             api(project(":core:domain"))
+            api(project(":core:repository-api"))
             api(project(":core:data"))
         }
         commonTest.dependencies {
