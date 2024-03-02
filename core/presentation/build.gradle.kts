@@ -2,6 +2,8 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.jetbrainsCompose)
 }
 
 kotlin {
@@ -26,7 +28,16 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            // put your multiplatform dependencies here
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material)
+            implementation(compose.ui)
+
+            implementation(libs.coroutines.core)
+            implementation(libs.decompose)
+            implementation(libs.decompose.jetbrains)
+            implementation(libs.koin.core)
+            implementation(libs.kotlinx.serialization.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
