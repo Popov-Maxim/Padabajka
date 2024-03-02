@@ -2,7 +2,6 @@ package com.fp.padabajka.core.presentation.event
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun EventEffect(event: StateEvent, onConsumed: () -> Unit, action: suspend () -> Unit) {
