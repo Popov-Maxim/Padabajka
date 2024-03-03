@@ -2,8 +2,10 @@ package com.fp.padabajka.core.presentation.event
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.NonRestartableComposable
 
 @Composable
+@NonRestartableComposable
 fun EventEffect(event: StateEvent, onConsumed: () -> Unit, action: suspend () -> Unit) {
     LaunchedEffect(event) {
         if (event is StateEvent.Raised) {
@@ -14,6 +16,7 @@ fun EventEffect(event: StateEvent, onConsumed: () -> Unit, action: suspend () ->
 }
 
 @Composable
+@NonRestartableComposable
 fun <T> EventEffect(
     eventWithContent: StateEventWithContent<T>,
     onConsumed: () -> Unit,
