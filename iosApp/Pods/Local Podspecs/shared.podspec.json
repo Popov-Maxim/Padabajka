@@ -13,6 +13,11 @@
   "platforms": {
     "ios": "16.0"
   },
+  "dependencies": {
+    "FirebaseAuth": [
+      "10.19.0"
+    ]
+  },
   "pod_target_xcconfig": {
     "KOTLIN_PROJECT_PATH": ":shared",
     "PRODUCT_MODULE_NAME": "shared"

@@ -28,6 +28,11 @@ kotlin {
             baseName = "shared"
             isStatic = true
         }
+
+        pod("FirebaseAuth") {
+            version = "10.19.0"
+            linkOnly = true
+        }
     }
 
     sourceSets {
@@ -41,6 +46,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
+            implementation(libs.gitlive.firebase.auth)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
