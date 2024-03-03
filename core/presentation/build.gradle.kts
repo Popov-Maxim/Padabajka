@@ -28,16 +28,16 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
-            implementation(compose.ui)
+            api(compose.runtime)
+            api(compose.foundation)
+            api(compose.material)
+            api(compose.ui)
 
-            implementation(libs.coroutines.core)
-            implementation(libs.decompose)
-            implementation(libs.decompose.jetbrains)
-            implementation(libs.koin.core)
-            implementation(libs.kotlinx.serialization.json)
+            api(libs.coroutines.core)
+            api(libs.decompose)
+            api(libs.decompose.jetbrains)
+            api(libs.koin.core)
+            api(libs.kotlinx.serialization.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
