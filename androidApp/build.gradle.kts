@@ -1,13 +1,14 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.google.services)
 }
 
 android {
-    namespace = "com.fp.padabajka.android"
+    namespace = "com.fp.padabajka"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.fp.padabajka.android"
+        applicationId = "com.fp.padabajka"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -44,5 +45,9 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.androidx.activity.compose)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+
     debugImplementation(libs.compose.ui.tooling)
 }

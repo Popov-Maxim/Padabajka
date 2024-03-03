@@ -3,6 +3,7 @@ agp = "8.2.2"
 kotlin = "1.9.22"
 kotlinx-datetime = "0.5.0"
 kotlinx-serialization = "1.6.3"
+google-services = "4.4.1"
 coroutines = "1.8.0"
 compose = "1.6.2"
 compose-compiler = "1.5.10"
@@ -14,6 +15,7 @@ decompose-extention = "2.2.2-compose-experimental"
 org-jetbrains-kotlin-jvm = "1.9.22"
 detect-version = "1.23.3"
 koin = "3.5.3"
+firebase = "32.7.3"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -30,8 +32,11 @@ decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decom
 decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose-extention" }
 detect-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detect-version"}
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 
 [plugins]
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
