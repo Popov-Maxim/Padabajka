@@ -13,6 +13,7 @@ decompose = "2.2.2"
 decompose-extention = "2.2.2-compose-experimental"
 org-jetbrains-kotlin-jvm = "1.9.22"
 detect-version = "1.23.3"
+koin = "3.5.3"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -28,6 +29,7 @@ compose-material3 = { module = "androidx.compose.material3:material3", version.r
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose-extention" }
 detect-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detect-version"}
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
