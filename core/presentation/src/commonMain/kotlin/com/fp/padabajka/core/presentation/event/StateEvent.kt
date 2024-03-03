@@ -7,6 +7,7 @@ sealed interface StateEvent {
 
     @Immutable
     data object Consumed : StateEvent
+
     @Immutable
     data object Raised : StateEvent
 }
