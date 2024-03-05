@@ -39,7 +39,7 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
     }
 
     @Suppress("CheckedExceptionsKotlin")
-    protected inline fun <reified S : T> reduce(crossinline update: (S) -> T): Job =
+    protected inline fun <reified S : T> reduceChecked(crossinline update: (S) -> T): Job =
         reduce { state ->
             if (state is S) {
                 update(state)
