@@ -54,10 +54,10 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
         }
 
     @Suppress("TooGenericExceptionCaught")
-    protected inline fun <M> mapAndReduceException(
+    protected inline fun <reified S : T, M> mapAndReduceException(
         crossinline action: suspend () -> Unit,
         crossinline mapper: (Throwable) -> M,
-        crossinline update: (T, M?) -> T
+        crossinline update: (S, M?) -> T
     ): Job = componentScope.launch {
         var mappedException: M? = null
 
@@ -69,6 +69,6 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
             mappedException = mapper(e)
         }
 
-        reduce { update(it, mappedException) }
+        reduceChecked<S> { update(it, mappedException) }
     }
 }
