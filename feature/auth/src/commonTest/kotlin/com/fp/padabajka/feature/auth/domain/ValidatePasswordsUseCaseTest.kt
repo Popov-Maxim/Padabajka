@@ -11,35 +11,35 @@ class ValidatePasswordsUseCaseTest {
 
     @Test
     fun negative_blankPassword() =
-        assertNegativeValidation(password = "  ", exception = PasswordIsBlank)
+        assertNegativeValidation(password = "  ", exception = PasswordIsBlankException)
 
     @Test
     fun negative_passwordWithSpace() =
-        assertNegativeValidation(password = "pass word", exception = PasswordHasWhitespaces)
+        assertNegativeValidation(password = "pass word", exception = PasswordHasWhitespacesException)
 
     @Test
     fun negative_passwordToShort() =
-        assertNegativeValidation(password = "1234567", exception = PasswordIsTooShort)
+        assertNegativeValidation(password = "1234567", exception = PasswordIsTooShortException)
 
     @Test
     fun negative_passwordWithNoLowercaseLetters() =
         assertNegativeValidation(
             password = "12345678",
-            exception = PasswordHasNoLowerCaseCharacters
+            exception = PasswordHasNoLowerCaseCharactersException
         )
 
     @Test
     fun negative_passwordWithNoUppercaseLetters() =
         assertNegativeValidation(
             password = "a2345678",
-            exception = PasswordHasNoUpperCaseCharacters
+            exception = PasswordHasNoUpperCaseCharactersException
         )
 
     @Test
     fun negative_passwordWithNoDigits() =
         assertNegativeValidation(
             password = "aaaaaAAAA",
-            exception = PasswordHasNoDigits
+            exception = PasswordHasNoDigitsException
         )
 
     private fun assertNegativeValidation(

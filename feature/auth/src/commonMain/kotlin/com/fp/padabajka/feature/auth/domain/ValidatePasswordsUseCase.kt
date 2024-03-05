@@ -3,23 +3,23 @@ package com.fp.padabajka.feature.auth.domain
 class ValidatePasswordsUseCase {
 
     @Throws(
-        PasswordIsBlank::class,
-        PasswordHasWhitespaces::class,
-        PasswordIsTooShort::class,
-        PasswordHasNoLowerCaseCharacters::class,
-        PasswordHasNoUpperCaseCharacters::class,
-        PasswordHasNoDigits::class,
-        PasswordsNotMatching::class
+        PasswordIsBlankException::class,
+        PasswordHasWhitespacesException::class,
+        PasswordIsTooShortException::class,
+        PasswordHasNoLowerCaseCharactersException::class,
+        PasswordHasNoUpperCaseCharactersException::class,
+        PasswordHasNoDigitsException::class,
+        PasswordsNotMatchingException::class
     )
     operator fun invoke(password: String, password2: String) {
         when {
-            password.isBlank() -> throw PasswordIsBlank
-            password.any { it.isWhitespace() } -> throw PasswordHasWhitespaces
-            password.length < PASSWORD_MIN_LENGTH -> throw PasswordIsTooShort
-            password.none { it.isLetter() && it.isLowerCase() } -> throw PasswordHasNoLowerCaseCharacters
-            password.none { it.isLetter() && it.isUpperCase() } -> throw PasswordHasNoUpperCaseCharacters
-            password.none { it.isDigit() } -> throw PasswordHasNoDigits
-            password != password2 -> throw PasswordsNotMatching
+            password.isBlank() -> throw PasswordIsBlankException
+            password.any { it.isWhitespace() } -> throw PasswordHasWhitespacesException
+            password.length < PASSWORD_MIN_LENGTH -> throw PasswordIsTooShortException
+            password.none { it.isLetter() && it.isLowerCase() } -> throw PasswordHasNoLowerCaseCharactersException
+            password.none { it.isLetter() && it.isUpperCase() } -> throw PasswordHasNoUpperCaseCharactersException
+            password.none { it.isDigit() } -> throw PasswordHasNoDigitsException
+            password != password2 -> throw PasswordsNotMatchingException
         }
     }
 
@@ -30,15 +30,15 @@ class ValidatePasswordsUseCase {
 
 sealed class PasswordsValidationException(message: String) : Throwable(message)
 
-data object PasswordIsBlank : PasswordsValidationException("Password is blank!")
-data object PasswordHasWhitespaces : PasswordsValidationException("Password has whitespaces!")
+data object PasswordIsBlankException : PasswordsValidationException("Password is blank!")
+data object PasswordHasWhitespacesException : PasswordsValidationException("Password has whitespaces!")
 
-data object PasswordIsTooShort : PasswordsValidationException("Password is too short!")
-data object PasswordHasNoLowerCaseCharacters :
+data object PasswordIsTooShortException : PasswordsValidationException("Password is too short!")
+data object PasswordHasNoLowerCaseCharactersException :
     PasswordsValidationException("Password has no lower case characters!")
 
-data object PasswordHasNoUpperCaseCharacters :
+data object PasswordHasNoUpperCaseCharactersException :
     PasswordsValidationException("Password has no lower case characters!")
 
-data object PasswordHasNoDigits : PasswordsValidationException("Password has no digits!")
-data object PasswordsNotMatching : PasswordsValidationException("Passwords not matching!")
+data object PasswordHasNoDigitsException : PasswordsValidationException("Password has no digits!")
+data object PasswordsNotMatchingException : PasswordsValidationException("Passwords not matching!")

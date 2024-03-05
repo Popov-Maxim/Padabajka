@@ -5,6 +5,7 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.getAndUpdate
 import com.arkivanov.essenty.lifecycle.doOnDestroy
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -34,5 +35,36 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
         reducerMutex.withLock {
             _state.getAndUpdate(update)
         }
+    }
+
+    @Suppress("CheckedExceptionsKotlin")
+    protected inline fun <reified S : T> reduce(crossinline update: (S) -> T) =
+        reduce {
+            if (it is S) {
+                update(it)
+            } else {
+                if (isDebugBuild()) {
+                    throw Exception("Unexpected State type ${it::class.simpleName} where ${S::class.simpleName} is expected!")
+                }
+                it
+            }
+        }
+
+    protected fun <M> mapAndReduceException(
+        action: suspend () -> Unit,
+        mapper: (Throwable) -> M,
+        update: (T, M?) -> T
+    ) = componentScope.launch {
+        var mappedException: M? = null
+
+        try {
+            action()
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (e: Throwable) {
+            mappedException = mapper(e)
+        }
+
+        reduce { update(it, mappedException) }
     }
 }

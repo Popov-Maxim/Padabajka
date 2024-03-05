@@ -32,6 +32,9 @@ kotlin {
             api(project(":core:data"))
 
             implementation(libs.gitlive.firebase.auth)
+            implementation(libs.kmpauth.google)
+            implementation(libs.kmpauth.firebase)
+            implementation(libs.kmpauth.uihelper)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
