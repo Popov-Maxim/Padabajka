@@ -5,8 +5,10 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.getAndUpdate
 import com.arkivanov.essenty.lifecycle.doOnDestroy
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -30,9 +32,43 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
         }
     }
 
-    protected fun reduce(update: (T) -> T) = componentScope.launch {
+    protected fun reduce(update: (T) -> T): Job = componentScope.launch {
         reducerMutex.withLock {
             _state.getAndUpdate(update)
         }
+    }
+
+    @Suppress("CheckedExceptionsKotlin")
+    protected inline fun <reified S : T> reduce(crossinline update: (S) -> T): Job =
+        reduce { state ->
+            if (state is S) {
+                update(state)
+            } else {
+                if (isDebugBuild()) {
+                    throw UnexpectedStateException(
+                        "Unexpected State type ${state::class.simpleName} where ${S::class.simpleName} is expected!"
+                    )
+                }
+                state
+            }
+        }
+
+    @Suppress("TooGenericExceptionCaught")
+    protected inline fun <M> mapAndReduceException(
+        crossinline action: suspend () -> Unit,
+        crossinline mapper: (Throwable) -> M,
+        crossinline update: (T, M?) -> T
+    ): Job = componentScope.launch {
+        var mappedException: M? = null
+
+        try {
+            action()
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (e: Throwable) {
+            mappedException = mapper(e)
+        }
+
+        reduce { update(it, mappedException) }
     }
 }
