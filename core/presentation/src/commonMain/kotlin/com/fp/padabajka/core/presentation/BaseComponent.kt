@@ -7,11 +7,13 @@ import com.arkivanov.decompose.value.getAndUpdate
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlin.coroutines.cancellation.CancellationException
 
 abstract class BaseComponent<T : State>(context: ComponentContext, initialState: T) :
     ComponentContext by context {
@@ -30,9 +32,28 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
         }
     }
 
-    protected fun reduce(update: (T) -> T) = componentScope.launch {
+    protected fun reduce(update: (T) -> T): Job = componentScope.launch {
         reducerMutex.withLock {
             _state.getAndUpdate(update)
         }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    protected inline fun <M> mapAndReduceException(
+        crossinline action: suspend () -> Unit,
+        crossinline mapper: (Throwable) -> M,
+        crossinline update: (T, M?) -> T
+    ): Job = componentScope.launch {
+        var mappedException: M? = null
+
+        try {
+            action()
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (e: Throwable) {
+            mappedException = mapper(e)
+        }
+
+        reduce { update(it, mappedException) }
     }
 }
