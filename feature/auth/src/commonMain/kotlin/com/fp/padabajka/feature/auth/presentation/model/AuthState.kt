@@ -1,9 +1,11 @@
 package com.fp.padabajka.feature.auth.presentation.model
 
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
 import com.fp.padabajka.core.presentation.State
+import com.fp.padabajka.core.presentation.event.StateEventWithContent
+import com.fp.padabajka.core.presentation.event.consumed
 
-@Stable
+@Immutable
 sealed class AuthState : State {
     abstract val email: String
     abstract val password: String
@@ -32,19 +34,22 @@ sealed class AuthState : State {
     }
 }
 
-@Stable
+@Immutable
 data class LoggingInState(
     override val email: String = "",
     override val password: String = "",
     override val emailValidationIssue: EmailValidationIssue? = null,
-    override val passwordValidationIssue: PasswordValidationIssue? = null
+    override val passwordValidationIssue: PasswordValidationIssue? = null,
+    val loggingInProgress: Boolean = false,
+    val loginFailedStateEvent: StateEventWithContent<LoginFailureReason> = consumed()
 ) : AuthState()
 
-@Stable
+@Immutable
 data class RegisteringState(
     override val email: String = "",
     override val password: String = "",
     override val emailValidationIssue: EmailValidationIssue? = null,
     override val passwordValidationIssue: PasswordValidationIssue? = null,
-    val password2: String = "",
+    val repeatedPassword: String = "",
+    val registeringInProgress: Boolean = false
 ) : AuthState()

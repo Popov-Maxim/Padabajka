@@ -11,7 +11,7 @@ class ValidatePasswordsUseCase {
         PasswordHasNoDigitsException::class,
         PasswordsNotMatchingException::class
     )
-    operator fun invoke(password: String, password2: String) {
+    operator fun invoke(password: String, repeatedPassword: String) {
         when {
             password.isBlank() -> throw PasswordIsBlankException
             password.any { it.isWhitespace() } -> throw PasswordHasWhitespacesException
@@ -19,7 +19,7 @@ class ValidatePasswordsUseCase {
             password.none { it.isLetter() && it.isLowerCase() } -> throw PasswordHasNoLowerCaseCharactersException
             password.none { it.isLetter() && it.isUpperCase() } -> throw PasswordHasNoUpperCaseCharactersException
             password.none { it.isDigit() } -> throw PasswordHasNoDigitsException
-            password != password2 -> throw PasswordsNotMatchingException
+            password != repeatedPassword -> throw PasswordsNotMatchingException
         }
     }
 

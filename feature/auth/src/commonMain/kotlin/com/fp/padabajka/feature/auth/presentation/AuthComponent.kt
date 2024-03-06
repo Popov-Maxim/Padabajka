@@ -3,7 +3,9 @@ package com.fp.padabajka.feature.auth.presentation
 import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.domain.Factory
 import com.fp.padabajka.core.presentation.BaseComponent
+import com.fp.padabajka.core.presentation.event.raisedIfNotNull
 import com.fp.padabajka.feature.auth.domain.EmailIsBlankException
+import com.fp.padabajka.feature.auth.domain.InvalidCredentialsException
 import com.fp.padabajka.feature.auth.domain.InvalidEmailException
 import com.fp.padabajka.feature.auth.domain.LogInWithEmailAndPasswordUseCase
 import com.fp.padabajka.feature.auth.domain.PasswordHasNoDigitsException
@@ -14,6 +16,7 @@ import com.fp.padabajka.feature.auth.domain.PasswordIsBlankException
 import com.fp.padabajka.feature.auth.domain.PasswordIsTooShortException
 import com.fp.padabajka.feature.auth.domain.PasswordsNotMatchingException
 import com.fp.padabajka.feature.auth.domain.RegisterWithEmailAndPasswordUseCase
+import com.fp.padabajka.feature.auth.domain.UnexpectedLoginException
 import com.fp.padabajka.feature.auth.domain.ValidateEmailUseCase
 import com.fp.padabajka.feature.auth.domain.ValidatePasswordsUseCase
 import com.fp.padabajka.feature.auth.presentation.model.AuthEvent
@@ -31,10 +34,6 @@ import com.fp.padabajka.feature.auth.presentation.model.PasswordValidationIssue
 import com.fp.padabajka.feature.auth.presentation.model.RegisterClick
 import com.fp.padabajka.feature.auth.presentation.model.RegisteringState
 import com.fp.padabajka.feature.auth.presentation.model.SecondPasswordFieldUpdate
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 class AuthComponent(
     private val logInWithEmailAndPasswordUseCase: Factory<LogInWithEmailAndPasswordUseCase>,
@@ -49,7 +48,7 @@ class AuthComponent(
         when (event) {
             is EmailFieldUpdate -> updateEmail(event.email)
             is PasswordFieldUpdate -> updatePassword(event.password)
-            is SecondPasswordFieldUpdate -> updateSecondPassword(event.password2)
+            is SecondPasswordFieldUpdate -> updateSecondPassword(event.repeatedPassword)
             EmailFieldLoosFocus -> validateEmail(state.value.email)
             PasswordFieldLoosFocus -> validatePassword(state.value.password, state.value)
             LoginClick -> login()
@@ -75,23 +74,66 @@ class AuthComponent(
         state.abstractCopy(newPassword = trimmedPassword)
     }
 
-    private fun updateSecondPassword(password2: String) = reduce<RegisteringState> { state ->
-        val trimmedPassword2 = password2.trim()
-        validatePasswords(password = state.password, password2 = trimmedPassword2)
-        state.copy(password2 = trimmedPassword2)
-    }
+    private fun updateSecondPassword(repeatedPassword: String) =
+        reduceChecked<RegisteringState> { state ->
+            val trimmedRepeatedPassword = repeatedPassword.trim()
+            validatePasswords(password = state.password, repeatedPassword = trimmedRepeatedPassword)
+            state.copy(repeatedPassword = trimmedRepeatedPassword)
+        }
 
-    private fun goToLogin() = reduce<RegisteringState> {
+    private fun goToLogin() = reduceChecked<RegisteringState> {
         LoggingInState()
     }
 
-    private fun goToRegistering() = reduce<LoggingInState> { state ->
+    private fun goToRegistering() = reduceChecked<LoggingInState> { state ->
         RegisteringState(email = state.email)
     }
 
-    private fun login() = TODO()
+    private fun login() = mapAndReduceException(
+        action = {
+            reduceChecked<LoggingInState> {
+                it.copy(loggingInProgress = true)
+            }
 
-    private fun register() = TODO()
+            val currentState = state.value
+
+            validateEmail(currentState.email)
+            validatePassword(currentState.password, currentState)
+
+            logInWithEmailAndPasswordUseCase.get()
+                .invoke(email = currentState.email, password = currentState.password)
+        }, mapper = { exception ->
+            when (exception) {
+                InvalidCredentialsException -> TODO()
+                // TODO Add other exceptions mapping
+                is UnexpectedLoginException -> TODO()
+                else -> TODO()
+            }
+        }, update = { state: LoggingInState, loginFailureReason ->
+            state.copy(
+                loggingInProgress = false,
+                loginFailedStateEvent = raisedIfNotNull(loginFailureReason)
+            )
+        }
+    )
+
+    private fun register() = mapAndReduceException(
+        action = {
+            reduceChecked<RegisteringState> {
+                it.copy(registeringInProgress = true)
+            }
+
+            //TODO cover with debug check
+            val currentState = state.value as RegisteringState
+
+            validateEmail(currentState.email)
+            validatePasswords(currentState.password, currentState.re)
+        }, mapper = {
+            TODO()
+        }, update = { state: RegisteringState, registrationFilureReason ->
+            TODO()
+        }
+    )
 
     private fun validateEmail(email: String) = mapAndReduceException(
         action = {
@@ -102,7 +144,7 @@ class AuthComponent(
                 InvalidEmailException -> EmailValidationIssue.EmailIsInvalid
                 else -> EmailValidationIssue.UnableToValidateEmail
             }
-        }, update = { state, emailValidationIssue ->
+        }, update = { state: AuthState, emailValidationIssue ->
             state.abstractCopy(newEmailValidationIssue = emailValidationIssue)
         })
 
@@ -111,28 +153,29 @@ class AuthComponent(
         state: AuthState
     ) =
         when (state) {
-            is LoggingInState -> validatePasswords(password = password, password2 = password)
+            is LoggingInState -> validatePasswords(password = password, repeatedPassword = password)
             is RegisteringState -> validatePasswords(
                 password = password,
-                password2 = state.password2
+                repeatedPassword = state.repeatedPassword
             )
         }
 
-    private fun validatePasswords(password: String, password2: String) = mapAndReduceException(
-        action = {
-            validatePasswordsUseCase.get().invoke(password, password2)
-        }, mapper = { exception ->
-            when (exception) {
-                PasswordIsBlankException -> PasswordValidationIssue.PasswordIsBlank
-                PasswordHasWhitespacesException -> PasswordValidationIssue.PasswordHasWhitespaces
-                PasswordIsTooShortException -> PasswordValidationIssue.PasswordIsTooShort
-                PasswordHasNoLowerCaseCharactersException -> PasswordValidationIssue.PasswordHasNoLowerCaseCharacters
-                PasswordHasNoUpperCaseCharactersException -> PasswordValidationIssue.PasswordHasNoUpperCaseCharacters
-                PasswordHasNoDigitsException -> PasswordValidationIssue.PasswordHasNoDigits
-                PasswordsNotMatchingException -> PasswordValidationIssue.PasswordsNotMatching
-                else -> PasswordValidationIssue.UnableToValidatePassword
-            }
-        }, update = { state, passwordValidationIssue ->
-            state.abstractCopy(newPasswordValidationIssue = passwordValidationIssue)
-        })
+    private fun validatePasswords(password: String, repeatedPassword: String) =
+        mapAndReduceException(
+            action = {
+                validatePasswordsUseCase.get().invoke(password, repeatedPassword)
+            }, mapper = { exception ->
+                when (exception) {
+                    PasswordIsBlankException -> PasswordValidationIssue.PasswordIsBlank
+                    PasswordHasWhitespacesException -> PasswordValidationIssue.PasswordHasWhitespaces
+                    PasswordIsTooShortException -> PasswordValidationIssue.PasswordIsTooShort
+                    PasswordHasNoLowerCaseCharactersException -> PasswordValidationIssue.PasswordHasNoLowerCaseCharacters
+                    PasswordHasNoUpperCaseCharactersException -> PasswordValidationIssue.PasswordHasNoUpperCaseCharacters
+                    PasswordHasNoDigitsException -> PasswordValidationIssue.PasswordHasNoDigits
+                    PasswordsNotMatchingException -> PasswordValidationIssue.PasswordsNotMatching
+                    else -> PasswordValidationIssue.UnableToValidatePassword
+                }
+            }, update = { state: AuthState, passwordValidationIssue ->
+                state.abstractCopy(newPasswordValidationIssue = passwordValidationIssue)
+            })
 }

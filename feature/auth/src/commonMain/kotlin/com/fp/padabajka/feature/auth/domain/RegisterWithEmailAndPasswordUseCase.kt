@@ -4,7 +4,7 @@ import com.fp.padabajka.core.repository.api.AuthRepository
 
 class RegisterWithEmailAndPasswordUseCase(private val authRepository: AuthRepository) {
 
-    suspend operator fun invoke(email: String, password: String, password2: String) {
+    suspend operator fun invoke(email: String, password: String, repeatedPassword: String) {
 
     }
 }

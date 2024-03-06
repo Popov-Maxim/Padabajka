@@ -4,7 +4,7 @@ sealed interface AuthEvent
 
 data class EmailFieldUpdate(val email: String) : AuthEvent
 data class PasswordFieldUpdate(val password: String) : AuthEvent
-data class SecondPasswordFieldUpdate(val password2: String) : AuthEvent
+data class SecondPasswordFieldUpdate(val repeatedPassword: String) : AuthEvent
 data object EmailFieldLoosFocus : AuthEvent
 data object PasswordFieldLoosFocus : AuthEvent
 

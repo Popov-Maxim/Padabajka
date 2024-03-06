@@ -44,9 +44,9 @@ class ValidatePasswordsUseCaseTest {
 
     private fun assertNegativeValidation(
         password: String,
-        password2: String = "",
+        repeatedPassword: String = "",
         exception: Throwable
     ) = assertThrows(exception) {
-        useCase(password, password2)
+        useCase(password, repeatedPassword)
     }
 }
