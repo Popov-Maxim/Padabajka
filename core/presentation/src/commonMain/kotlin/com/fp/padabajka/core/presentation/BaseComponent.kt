@@ -38,26 +38,11 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
         }
     }
 
-    @Suppress("CheckedExceptionsKotlin")
-    protected inline fun <reified S : T> reduceChecked(crossinline update: (S) -> T): Job =
-        reduce { state ->
-            if (state is S) {
-                update(state)
-            } else {
-                if (isDebugBuild()) {
-                    throw UnexpectedStateException(
-                        "Unexpected State type ${state::class.simpleName} where ${S::class.simpleName} is expected!"
-                    )
-                }
-                state
-            }
-        }
-
     @Suppress("TooGenericExceptionCaught")
-    protected inline fun <reified S : T, M> mapAndReduceException(
+    protected inline fun <M> mapAndReduceException(
         crossinline action: suspend () -> Unit,
         crossinline mapper: (Throwable) -> M,
-        crossinline update: (S, M?) -> T
+        crossinline update: (T, M?) -> T
     ): Job = componentScope.launch {
         var mappedException: M? = null
 
@@ -69,6 +54,6 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
             mappedException = mapper(e)
         }
 
-        reduceChecked<S> { update(it, mappedException) }
+        reduce { update(it, mappedException) }
     }
 }
