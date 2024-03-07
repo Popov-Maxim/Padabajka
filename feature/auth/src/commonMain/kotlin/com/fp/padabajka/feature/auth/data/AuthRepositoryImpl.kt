@@ -6,12 +6,13 @@ import com.fp.padabajka.core.repository.api.model.auth.Credentials
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+@Suppress("UnusedPrivateProperty")
 class AuthRepositoryImpl(
     private val localDataSource: LocalAuthDataSource,
     private val remoteAuthDataSource: RemoteAuthDataSource
 ) : AuthRepository {
 
-    private val _authState = MutableStateFlow<AuthState>()
+    private val _authState = MutableStateFlow<AuthState>(TODO())
     override val authState = _authState.asStateFlow()
 
     override suspend fun login(credentials: Credentials) {

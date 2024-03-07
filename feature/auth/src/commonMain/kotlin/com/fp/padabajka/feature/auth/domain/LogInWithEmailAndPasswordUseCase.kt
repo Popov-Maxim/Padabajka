@@ -4,14 +4,17 @@ import com.fp.padabajka.core.domain.Factory
 import com.fp.padabajka.core.repository.api.AuthRepository
 import kotlin.coroutines.cancellation.CancellationException
 
+// TODO Add tests when I got implemented
+@Suppress("UnusedPrivateProperty")
 class LogInWithEmailAndPasswordUseCase(
     private val authRepository: AuthRepository,
     private val validateEmailUseCase: Factory<ValidateEmailUseCase>,
     private val validatePasswordsUseCase: Factory<ValidatePasswordsUseCase>,
 ) {
 
+    @Suppress("TooGenericExceptionCaught")
     @Throws(
-        InvalidCredentialsException::class,
+        InvalidCredentialsLogInException::class,
         UnexpectedLoginException::class,
         CancellationException::class
     )
@@ -19,15 +22,16 @@ class LogInWithEmailAndPasswordUseCase(
         try {
             validateEmailUseCase.get().invoke(email)
             validatePasswordsUseCase.get().invoke(password, password)
+
             // TODO Implement login logic call
         } catch (ce: CancellationException) {
             throw ce
         } catch (e: Throwable) {
-            when (e) {
+            throw when (e) {
                 is EmailValidationException,
-                is PasswordsValidationException -> throw InvalidCredentialsException
+                is PasswordsValidationException -> InvalidCredentialsLogInException
                 // TODO map other exceptions
-                else -> throw UnexpectedLoginException(e)
+                else -> UnexpectedLoginException(e)
             }
         }
     }
@@ -35,7 +39,7 @@ class LogInWithEmailAndPasswordUseCase(
 
 sealed class LogInWithEmailAndPasswordException(message: String) : Throwable(message)
 
-data object InvalidCredentialsException :
+data object InvalidCredentialsLogInException :
     LogInWithEmailAndPasswordException("Invalid email or password!")
 
 // TODO Add other exceptions
