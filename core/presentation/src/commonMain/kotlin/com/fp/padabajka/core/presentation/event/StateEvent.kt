@@ -27,3 +27,9 @@ sealed interface StateEventWithContent<out T> {
 
 fun consumed() = StateEventWithContent.ConsumedWithContent
 fun <T> raised(content: T) = StateEventWithContent.RaisedWithContent(content)
+
+fun <T> raisedIfNotNull(content: T?): StateEventWithContent<T> = if (content != null) {
+    raised(content)
+} else {
+    consumed()
+}
