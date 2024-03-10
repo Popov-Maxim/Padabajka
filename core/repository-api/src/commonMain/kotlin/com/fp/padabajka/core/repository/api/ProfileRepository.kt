@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
     val profile: Flow<Profile>
-    suspend fun update(action: (Profile) -> Profile)
+    fun replace(profile: Profile)
 }
