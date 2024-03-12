@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
     val profile: Flow<Profile>
-    fun replace(profile: Profile)
+    suspend fun replace(profile: Profile)
 }
