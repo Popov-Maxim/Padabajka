@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ComponentContext
 
+@Suppress("UnusedParameter")
 @Composable
 fun App(rootContext: ComponentContext) {
     MaterialTheme {
