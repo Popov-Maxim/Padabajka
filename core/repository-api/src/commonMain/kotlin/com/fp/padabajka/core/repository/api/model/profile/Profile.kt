@@ -12,7 +12,7 @@ data class Profile(
     val details: List<Detail>,
     val mainAchievement: Achievement?,
     val achievements: List<Achievement>
-)
+) // TODO: add override equals()
 
 @JvmInline
 value class Id(

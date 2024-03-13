@@ -7,9 +7,11 @@ import kotlin.coroutines.cancellation.CancellationException
 
 interface EditProfileRepository {
     val profile: Flow<Profile>
+
+    @Throws(ProfileException::class, CancellationException::class)
     suspend fun update(action: (Profile) -> Profile)
 
     @Throws(ProfileException::class, CancellationException::class)
-    suspend fun saveUpdate()
-    suspend fun discardUpdate()
+    suspend fun saveUpdates()
+    suspend fun discardUpdates()
 }

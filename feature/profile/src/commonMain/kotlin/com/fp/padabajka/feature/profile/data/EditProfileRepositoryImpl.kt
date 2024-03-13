@@ -29,17 +29,18 @@ class EditProfileRepositoryImpl(
             }
         }.distinctUntilChanged()
 
+    @Throws(ProfileException::class, CancellationException::class)
     override suspend fun update(action: (Profile) -> Profile) {
         localEditProfileDataSource.update(action) // TODO: Optimization
     }
 
     @Throws(ProfileException::class, CancellationException::class)
-    override suspend fun saveUpdate() {
+    override suspend fun saveUpdates() {
         val profile = localEditProfileDataSource.profile.first() ?: throw ProfileIsNullException
         profileRepository.replace(profile)
     }
 
-    override suspend fun discardUpdate() {
+    override suspend fun discardUpdates() {
         localEditProfileDataSource.replace(null)
     }
 }
