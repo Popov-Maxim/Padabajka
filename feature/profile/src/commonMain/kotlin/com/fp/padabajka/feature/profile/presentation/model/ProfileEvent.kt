@@ -15,3 +15,5 @@ data class HideAchievementClickEvent(val achievement: Achievement) : ProfileEven
 data class MakeAchievementVisibleClickEvent(val achievement: Achievement) : ProfileEvent
 data class MakeAchievementMainClickEvent(val achievement: Achievement) : ProfileEvent
 data object RemoveMainAchievementClickEvent : ProfileEvent
+
+data object ConsumeInternalErrorEvent : ProfileEvent
