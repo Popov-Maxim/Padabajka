@@ -3,6 +3,8 @@ package com.fp.padabajka.feature.profile.presentation
 import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.domain.Factory
 import com.fp.padabajka.core.presentation.BaseComponent
+import com.fp.padabajka.core.presentation.event.consumed
+import com.fp.padabajka.core.presentation.event.raisedIfNotNull
 import com.fp.padabajka.core.repository.api.model.profile.Achievement
 import com.fp.padabajka.feature.profile.domain.DiscardUpdateUseCase
 import com.fp.padabajka.feature.profile.domain.ProfileProvider
@@ -14,9 +16,11 @@ import com.fp.padabajka.feature.profile.domain.update.LastNameUpdateUseCase
 import com.fp.padabajka.feature.profile.domain.update.MainAchievementUpdateUseCase
 import com.fp.padabajka.feature.profile.domain.update.MakeAchievementVisibleUseCase
 import com.fp.padabajka.feature.profile.presentation.model.AboutMeUpdateEvent
+import com.fp.padabajka.feature.profile.presentation.model.ConsumeInternalErrorEvent
 import com.fp.padabajka.feature.profile.presentation.model.DiscardProfileUpsatesClickEvent
 import com.fp.padabajka.feature.profile.presentation.model.FirstNameUpdateEvent
 import com.fp.padabajka.feature.profile.presentation.model.HideAchievementClickEvent
+import com.fp.padabajka.feature.profile.presentation.model.InternalError
 import com.fp.padabajka.feature.profile.presentation.model.LastNameUpdateEvent
 import com.fp.padabajka.feature.profile.presentation.model.MakeAchievementMainClickEvent
 import com.fp.padabajka.feature.profile.presentation.model.MakeAchievementVisibleClickEvent
@@ -54,13 +58,14 @@ class ProfileScreenComponent(
         when (event) {
             DiscardProfileUpsatesClickEvent -> discardUpdates()
             SaveProfileUpdatesClickEvent -> saveUpdates()
-            is FirstNameUpdateEvent -> firstNameUpdate(event)
-            is LastNameUpdateEvent -> lastNameUpdate(event)
-            is AboutMeUpdateEvent -> aboutMeUpdate(event)
-            is HideAchievementClickEvent -> hideAchievement(event)
-            is MakeAchievementVisibleClickEvent -> makeAchievementVisible(event)
+            is FirstNameUpdateEvent -> firstNameUpdate(event.firstName)
+            is LastNameUpdateEvent -> lastNameUpdate(event.lastName)
+            is AboutMeUpdateEvent -> aboutMeUpdate(event.aboutMe)
+            is HideAchievementClickEvent -> hideAchievement(event.achievement)
+            is MakeAchievementVisibleClickEvent -> makeAchievementVisible(event.achievement)
             is MakeAchievementMainClickEvent -> makeAchievementMain(event.achievement)
             RemoveMainAchievementClickEvent -> makeAchievementMain(null)
+            ConsumeInternalErrorEvent -> consumeInternalError()
             // TODO: add details and images events
         }
     }
@@ -70,37 +75,31 @@ class ProfileScreenComponent(
             action = {
                 mainAchievementUpdateUseCase.get().invoke(achievement)
             },
-            mapper = {
-                it // TODO
-            },
-            update = { profileState, _ ->
-                profileState
+            mapper = { InternalError },
+            update = { profileState, internalError ->
+                profileState.copy(internalErrorStateEvent = raisedIfNotNull(internalError))
             }
         )
 
-    private fun makeAchievementVisible(event: MakeAchievementVisibleClickEvent) =
+    private fun makeAchievementVisible(achievement: Achievement) =
         mapAndReduceException(
             action = {
-                makeAchievementVisibleUseCase.get().invoke(event.achievement)
+                makeAchievementVisibleUseCase.get().invoke(achievement)
             },
-            mapper = {
-                it // TODO
-            },
-            update = { profileState, _ ->
-                profileState
+            mapper = { InternalError },
+            update = { profileState, internalError ->
+                profileState.copy(internalErrorStateEvent = raisedIfNotNull(internalError))
             }
         )
 
-    private fun hideAchievement(event: HideAchievementClickEvent) =
+    private fun hideAchievement(achievement: Achievement) =
         mapAndReduceException(
             action = {
-                hideAchievementUseCase.get().invoke(event.achievement)
+                hideAchievementUseCase.get().invoke(achievement)
             },
-            mapper = {
-                it // TODO
-            },
-            update = { profileState, _ ->
-                profileState
+            mapper = { InternalError },
+            update = { profileState, internalError ->
+                profileState.copy(internalErrorStateEvent = raisedIfNotNull(internalError))
             }
         )
 
@@ -109,11 +108,9 @@ class ProfileScreenComponent(
             action = {
                 discardUpdateUseCase.get().invoke()
             },
-            mapper = {
-                it // TODO
-            },
-            update = { profileState, _ ->
-                profileState
+            mapper = { InternalError },
+            update = { profileState, internalError ->
+                profileState.copy(internalErrorStateEvent = raisedIfNotNull(internalError))
             }
         )
 
@@ -130,11 +127,11 @@ class ProfileScreenComponent(
             }
         )
 
-    private fun firstNameUpdate(event: FirstNameUpdateEvent) =
+    private fun firstNameUpdate(firstName: String) =
         mapAndReduceException(
             action = {
                 firstNameUpdateUseCase.get()
-                    .invoke(event.firstName)
+                    .invoke(firstName)
             },
             mapper = {
                 it // TODO
@@ -144,11 +141,11 @@ class ProfileScreenComponent(
             }
         )
 
-    private fun lastNameUpdate(event: LastNameUpdateEvent) =
+    private fun lastNameUpdate(lastName: String) =
         mapAndReduceException(
             action = {
                 lastNameUpdateUseCase.get()
-                    .invoke(event.lastName)
+                    .invoke(lastName)
             },
             mapper = {
                 it // TODO
@@ -158,11 +155,11 @@ class ProfileScreenComponent(
             }
         )
 
-    private fun aboutMeUpdate(event: AboutMeUpdateEvent) =
+    private fun aboutMeUpdate(aboutMe: String) =
         mapAndReduceException(
             action = {
                 aboutMeUpdateUseCase.get()
-                    .invoke(event.aboutMe)
+                    .invoke(aboutMe)
             },
             mapper = {
                 it // TODO
@@ -171,4 +168,8 @@ class ProfileScreenComponent(
                 profileState
             }
         )
+
+    private fun consumeInternalError() = reduce {
+        it.copy(internalErrorStateEvent = consumed)
+    }
 }
