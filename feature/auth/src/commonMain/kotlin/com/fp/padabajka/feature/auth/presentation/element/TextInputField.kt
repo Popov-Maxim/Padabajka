@@ -13,8 +13,8 @@ fun TextInputField(
     text: String,
     hint: String,
     onChange: (String) -> Unit,
-    onFocusLost: () -> Unit,
-    isError: Boolean,
+    onFocusLost: () -> Unit = {},
+    isError: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val wasFocused = remember { mutableStateOf(false) }

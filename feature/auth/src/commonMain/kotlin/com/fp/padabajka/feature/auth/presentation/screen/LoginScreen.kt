@@ -13,7 +13,6 @@ import com.fp.padabajka.feature.auth.presentation.model.EmailFieldLoosFocus
 import com.fp.padabajka.feature.auth.presentation.model.EmailFieldUpdate
 import com.fp.padabajka.feature.auth.presentation.model.GoToRegistrationClick
 import com.fp.padabajka.feature.auth.presentation.model.LoginClick
-import com.fp.padabajka.feature.auth.presentation.model.PasswordFieldLoosFocus
 import com.fp.padabajka.feature.auth.presentation.model.PasswordFieldUpdate
 
 @Composable
@@ -31,9 +30,7 @@ fun LoginScreen(component: LoginComponent) {
         TextInputField(
             text = state.value.password,
             hint = "Password",
-            isError = state.value.passwordValidationIssue != null,
-            onChange = { component.onEvent(PasswordFieldUpdate(it)) },
-            onFocusLost = { component.onEvent(PasswordFieldLoosFocus) }
+            onChange = { component.onEvent(PasswordFieldUpdate(it)) }
         )
         AuthButton(text = "Login", onClick = { component.onEvent(LoginClick) })
         AuthButton(text = "To registration", onClick = { component.onEvent(GoToRegistrationClick) })

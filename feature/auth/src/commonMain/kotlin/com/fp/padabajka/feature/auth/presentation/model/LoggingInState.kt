@@ -10,7 +10,6 @@ data class LoggingInState(
     val email: String = "",
     val password: String = "",
     val emailValidationIssue: EmailValidationIssue? = null,
-    val passwordValidationIssue: PasswordValidationIssue? = null,
     val loggingInProgress: Boolean = false,
     val loginFailedStateEvent: StateEventWithContent<LoginFailureReason> = consumed()
 ) : State
