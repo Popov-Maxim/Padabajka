@@ -31,7 +31,8 @@ import com.fp.padabajka.feature.auth.presentation.model.RegisterClick
 import com.fp.padabajka.feature.auth.presentation.model.RegisterEvent
 import com.fp.padabajka.feature.auth.presentation.model.RegisteringState
 import com.fp.padabajka.feature.auth.presentation.model.RegistrationFailureReason
-import com.fp.padabajka.feature.auth.presentation.model.SecondPasswordFieldUpdate
+import com.fp.padabajka.feature.auth.presentation.model.RepeatedPasswordFieldLoosFocus
+import com.fp.padabajka.feature.auth.presentation.model.RepeatedPasswordFieldUpdate
 
 // TODO Test me
 @Suppress("UnusedPrivateProperty")
@@ -47,8 +48,9 @@ class RegisterComponent(
         when (event) {
             is EmailFieldUpdate -> updateEmail(event.email)
             is PasswordFieldUpdate -> updatePassword(event.password)
-            is SecondPasswordFieldUpdate -> updateSecondPassword(event.repeatedPassword)
+            is RepeatedPasswordFieldUpdate -> updateSecondPassword(event.repeatedPassword)
             EmailFieldLoosFocus -> validateEmail(state.value.email)
+            RepeatedPasswordFieldLoosFocus, // TODO Implement proper separate passwords validation
             PasswordFieldLoosFocus -> validatePasswords(
                 state.value.password,
                 state.value.repeatedPassword
