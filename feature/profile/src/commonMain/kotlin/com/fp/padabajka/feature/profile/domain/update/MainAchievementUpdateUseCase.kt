@@ -1,5 +1,6 @@
 package com.fp.padabajka.feature.profile.domain.update
 
+import com.fp.padabajka.core.domain.replaced
 import com.fp.padabajka.core.repository.api.EditProfileRepository
 import com.fp.padabajka.core.repository.api.exception.ProfileException
 import com.fp.padabajka.core.repository.api.model.profile.Achievement
@@ -16,9 +17,7 @@ class MainAchievementUpdateUseCase(private val repository: EditProfileRepository
                 val mainAchievement = achievement.copy(hidden = false)
                 profile.copy(
                     mainAchievement = mainAchievement,
-                    achievements = profile.achievements.map {
-                        if (it == achievement) mainAchievement else it
-                    }
+                    achievements = profile.achievements.replaced(achievement, mainAchievement)
                 )
             }
         }
