@@ -9,15 +9,8 @@ import com.fp.padabajka.feature.auth.domain.EmailIsBlankException
 import com.fp.padabajka.feature.auth.domain.InvalidCredentialsLogInException
 import com.fp.padabajka.feature.auth.domain.InvalidEmailException
 import com.fp.padabajka.feature.auth.domain.LogInWithEmailAndPasswordUseCase
-import com.fp.padabajka.feature.auth.domain.PasswordHasNoDigitsException
-import com.fp.padabajka.feature.auth.domain.PasswordHasNoLowerCaseCharactersException
-import com.fp.padabajka.feature.auth.domain.PasswordHasNoUpperCaseCharactersException
-import com.fp.padabajka.feature.auth.domain.PasswordHasWhitespacesException
-import com.fp.padabajka.feature.auth.domain.PasswordIsBlankException
-import com.fp.padabajka.feature.auth.domain.PasswordIsTooShortException
 import com.fp.padabajka.feature.auth.domain.UnexpectedLoginException
 import com.fp.padabajka.feature.auth.domain.ValidateEmailUseCase
-import com.fp.padabajka.feature.auth.domain.ValidatePasswordsUseCase
 import com.fp.padabajka.feature.auth.presentation.model.ConsumeLoginFailedEvent
 import com.fp.padabajka.feature.auth.presentation.model.EmailFieldLoosFocus
 import com.fp.padabajka.feature.auth.presentation.model.EmailFieldUpdate
@@ -26,16 +19,13 @@ import com.fp.padabajka.feature.auth.presentation.model.GoToRegistrationClick
 import com.fp.padabajka.feature.auth.presentation.model.LoggingInState
 import com.fp.padabajka.feature.auth.presentation.model.LoginClick
 import com.fp.padabajka.feature.auth.presentation.model.LoginEvent
-import com.fp.padabajka.feature.auth.presentation.model.PasswordFieldLoosFocus
 import com.fp.padabajka.feature.auth.presentation.model.PasswordFieldUpdate
-import com.fp.padabajka.feature.auth.presentation.model.PasswordValidationIssue
 
 // TODO Test me
 @Suppress("UnusedPrivateProperty")
 class LoginComponent(
     private val logInWithEmailAndPasswordUseCase: Factory<LogInWithEmailAndPasswordUseCase>,
     private val validateEmailUseCase: Factory<ValidateEmailUseCase>,
-    private val validatePasswordsUseCase: Factory<ValidatePasswordsUseCase>,
     private val goToRegister: () -> Unit,
     context: ComponentContext
 ) :
@@ -46,7 +36,6 @@ class LoginComponent(
             is EmailFieldUpdate -> updateEmail(event.email)
             is PasswordFieldUpdate -> updatePassword(event.password)
             EmailFieldLoosFocus -> validateEmail(state.value.email)
-            PasswordFieldLoosFocus -> validatePassword(state.value.password)
             LoginClick -> login()
             ConsumeLoginFailedEvent -> consumeLoginFailedEvent()
             GoToRegistrationClick -> TODO()
@@ -62,11 +51,7 @@ class LoginComponent(
     }
 
     private fun updatePassword(password: String) = reduce { state ->
-        val trimmedPassword = password.trim()
-        if (state.passwordValidationIssue != null) {
-            validatePassword(trimmedPassword)
-        }
-        state.copy(password = trimmedPassword)
+        state.copy(password = password)
     }
 
     private fun login() = mapAndReduceException(
@@ -78,7 +63,6 @@ class LoginComponent(
             val currentState = state.value
 
             validateEmail(currentState.email)
-            validatePassword(currentState.password)
 
             logInWithEmailAndPasswordUseCase.get()
                 .invoke(email = currentState.email, password = currentState.password)
@@ -118,27 +102,4 @@ class LoginComponent(
             state.copy(emailValidationIssue = emailValidationIssue)
         }
     )
-
-    private fun validatePassword(password: String) =
-        mapAndReduceException(
-            action = {
-                validatePasswordsUseCase.get().invoke(password, password)
-            },
-            mapper = { exception ->
-                when (exception) {
-                    PasswordIsBlankException -> PasswordValidationIssue.PasswordIsBlank
-                    PasswordHasWhitespacesException -> PasswordValidationIssue.PasswordHasWhitespaces
-                    PasswordIsTooShortException -> PasswordValidationIssue.PasswordIsTooShort
-                    PasswordHasNoLowerCaseCharactersException ->
-                        PasswordValidationIssue.PasswordHasNoLowerCaseCharacters
-                    PasswordHasNoUpperCaseCharactersException ->
-                        PasswordValidationIssue.PasswordHasNoUpperCaseCharacters
-                    PasswordHasNoDigitsException -> PasswordValidationIssue.PasswordHasNoDigits
-                    else -> PasswordValidationIssue.UnableToValidatePassword
-                }
-            },
-            update = { state, passwordValidationIssue ->
-                state.copy(passwordValidationIssue = passwordValidationIssue)
-            }
-        )
 }
