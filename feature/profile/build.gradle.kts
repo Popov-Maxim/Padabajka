@@ -30,6 +30,8 @@ kotlin {
             api(project(":core:domain"))
             api(project(":core:repository-api"))
             api(project(":core:data"))
+
+            implementation(libs.datastore)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
