@@ -13,9 +13,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.ComponentContext
 
+@Suppress("UnusedParameter")
 @Composable
-fun App() {
+fun App(rootContext: ComponentContext) {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         val greeting = remember { Greeting().greet() }
