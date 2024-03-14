@@ -15,6 +15,12 @@ sealed interface StateEvent {
 val consumed = StateEvent.Consumed
 val raised = StateEvent.Raised
 
+fun raisedIfNotNull(content: Any?): StateEvent = if (content != null) {
+    raised
+} else {
+    consumed
+}
+
 @Immutable
 sealed interface StateEventWithContent<out T> {
 
@@ -28,7 +34,7 @@ sealed interface StateEventWithContent<out T> {
 fun consumed() = StateEventWithContent.ConsumedWithContent
 fun <T> raised(content: T) = StateEventWithContent.RaisedWithContent(content)
 
-fun <T> raisedIfNotNull(content: T?): StateEventWithContent<T> = if (content != null) {
+fun <T> raisedWithContentIfNotNull(content: T?): StateEventWithContent<T> = if (content != null) {
     raised(content)
 } else {
     consumed()

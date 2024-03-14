@@ -2,6 +2,8 @@ package com.fp.padabajka.feature.profile.presentation.model
 
 import androidx.compose.runtime.Immutable
 import com.fp.padabajka.core.presentation.State
+import com.fp.padabajka.core.presentation.event.StateEvent
+import com.fp.padabajka.core.presentation.event.consumed
 import com.fp.padabajka.core.repository.api.model.profile.Achievement
 import com.fp.padabajka.core.repository.api.model.profile.Detail
 import com.fp.padabajka.core.repository.api.model.profile.Image
@@ -17,7 +19,8 @@ data class ProfileState(
     val aboutMe: ProfileItem<String>,
     val details: ProfileItem<List<Detail>>,
     val mainAchievement: ProfileItem<Achievement?>,
-    val achievements: ProfileItem<List<Achievement>>
+    val achievements: ProfileItem<List<Achievement>>,
+    val internalErrorStateEvent: StateEvent = consumed
 ) : State {
 
     fun updated(profile: Profile): ProfileState = copy(

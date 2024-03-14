@@ -4,7 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.domain.Factory
 import com.fp.padabajka.core.presentation.BaseComponent
 import com.fp.padabajka.core.presentation.event.consumed
-import com.fp.padabajka.core.presentation.event.raisedIfNotNull
+import com.fp.padabajka.core.presentation.event.raisedWithContentIfNotNull
 import com.fp.padabajka.feature.auth.domain.EmailIsBlankException
 import com.fp.padabajka.feature.auth.domain.InvalidCredentialsLogInException
 import com.fp.padabajka.feature.auth.domain.InvalidEmailException
@@ -78,7 +78,7 @@ class LoginComponent(
         update = { state, loginFailureReason ->
             state.copy(
                 loggingInProgress = false,
-                loginFailedStateEvent = raisedIfNotNull(loginFailureReason)
+                loginFailedStateEvent = raisedWithContentIfNotNull(loginFailureReason)
             )
         }
     )

@@ -6,6 +6,7 @@ import com.fp.padabajka.feature.profile.data.ProfileIsNullException
 import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.cancellation.CancellationException
 
+// TODO Add in memory update and debounced save
 class DataStoreLocalEditProfileDataSource(
     private val dataStore: DataStore<Profile?>
 ) : LocalEditProfileDataSource {
