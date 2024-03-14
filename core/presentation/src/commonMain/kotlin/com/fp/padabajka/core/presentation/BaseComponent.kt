@@ -3,7 +3,7 @@ package com.fp.padabajka.core.presentation
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.getAndUpdate
+import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,15 +34,16 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
 
     protected fun reduce(update: (T) -> T): Job = componentScope.launch {
         reducerMutex.withLock {
-            _state.getAndUpdate(update)
+            _state.update(update)
         }
     }
 
+    // Should be inlined but doesn't work from other modules. Looks like kotlin bug
     @Suppress("TooGenericExceptionCaught")
-    protected inline fun <M> mapAndReduceException(
-        crossinline action: suspend () -> Unit,
-        crossinline mapper: (Throwable) -> M,
-        crossinline update: (T, M?) -> T
+    protected fun <M> mapAndReduceException(
+        action: suspend () -> Unit,
+        mapper: (Throwable) -> M,
+        update: (T, M?) -> T
     ): Job = componentScope.launch {
         var mappedException: M? = null
 
