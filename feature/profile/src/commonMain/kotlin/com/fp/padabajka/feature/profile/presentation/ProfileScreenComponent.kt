@@ -3,20 +3,27 @@ package com.fp.padabajka.feature.profile.presentation
 import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.domain.Factory
 import com.fp.padabajka.core.presentation.BaseComponent
+import com.fp.padabajka.core.repository.api.model.profile.Achievement
 import com.fp.padabajka.feature.profile.domain.DiscardUpdateUseCase
 import com.fp.padabajka.feature.profile.domain.ProfileProvider
 import com.fp.padabajka.feature.profile.domain.SaveUpdateProfileUseCase
 import com.fp.padabajka.feature.profile.domain.update.AboutMeUpdateUseCase
 import com.fp.padabajka.feature.profile.domain.update.FirstNameUpdateUseCase
+import com.fp.padabajka.feature.profile.domain.update.HideAchievementUseCase
 import com.fp.padabajka.feature.profile.domain.update.LastNameUpdateUseCase
+import com.fp.padabajka.feature.profile.domain.update.MainAchievementUpdateUseCase
+import com.fp.padabajka.feature.profile.domain.update.MakeAchievementVisibleUseCase
 import com.fp.padabajka.feature.profile.presentation.model.AboutMeUpdateEvent
-import com.fp.padabajka.feature.profile.presentation.model.DiscardUpdateProfileEvent
+import com.fp.padabajka.feature.profile.presentation.model.DiscardProfileUpsatesClickEvent
 import com.fp.padabajka.feature.profile.presentation.model.FirstNameUpdateEvent
+import com.fp.padabajka.feature.profile.presentation.model.HideAchievementClickEvent
 import com.fp.padabajka.feature.profile.presentation.model.LastNameUpdateEvent
+import com.fp.padabajka.feature.profile.presentation.model.MakeAchievementMainClickEvent
+import com.fp.padabajka.feature.profile.presentation.model.MakeAchievementVisibleClickEvent
 import com.fp.padabajka.feature.profile.presentation.model.ProfileEvent
 import com.fp.padabajka.feature.profile.presentation.model.ProfileState
-import com.fp.padabajka.feature.profile.presentation.model.SaveUpdateProfileEvent
-import com.fp.padabajka.feature.profile.presentation.model.toUIState
+import com.fp.padabajka.feature.profile.presentation.model.RemoveMainAchievementClickEvent
+import com.fp.padabajka.feature.profile.presentation.model.SaveProfileUpdatesClickEvent
 import kotlinx.coroutines.launch
 
 class ProfileScreenComponent(
@@ -26,7 +33,10 @@ class ProfileScreenComponent(
     private val saveUpdateProfileUseCase: Factory<SaveUpdateProfileUseCase>,
     private val firstNameUpdateUseCase: Factory<FirstNameUpdateUseCase>,
     private val lastNameUpdateUseCase: Factory<LastNameUpdateUseCase>,
-    private val aboutMeUpdateUseCase: Factory<AboutMeUpdateUseCase>
+    private val aboutMeUpdateUseCase: Factory<AboutMeUpdateUseCase>,
+    private val hideAchievementUseCase: Factory<HideAchievementUseCase>,
+    private val makeAchievementVisibleUseCase: Factory<MakeAchievementVisibleUseCase>,
+    private val mainAchievementUpdateUseCase: Factory<MainAchievementUpdateUseCase>
 ) : BaseComponent<ProfileState>(
     context,
     TODO("add init")
@@ -35,22 +45,66 @@ class ProfileScreenComponent(
     init {
         componentScope.launch {
             profileProvider.profile.collect { profile ->
-                reduce { profile.toUIState() }
+                reduce { it.updated(profile) }
             }
         }
     }
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
-            DiscardUpdateProfileEvent -> discardUpdate()
-            SaveUpdateProfileEvent -> saveUpdate()
+            DiscardProfileUpsatesClickEvent -> discardUpdates()
+            SaveProfileUpdatesClickEvent -> saveUpdates()
             is FirstNameUpdateEvent -> firstNameUpdate(event)
             is LastNameUpdateEvent -> lastNameUpdate(event)
             is AboutMeUpdateEvent -> aboutMeUpdate(event)
+            is HideAchievementClickEvent -> hideAchievement(event)
+            is MakeAchievementVisibleClickEvent -> makeAchievementVisible(event)
+            is MakeAchievementMainClickEvent -> makeAchievementMain(event.achievement)
+            RemoveMainAchievementClickEvent -> makeAchievementMain(null)
+            // TODO: add details and images events
         }
     }
 
-    private fun discardUpdate() =
+    private fun makeAchievementMain(achievement: Achievement?) =
+        mapAndReduceException(
+            action = {
+                mainAchievementUpdateUseCase.get().invoke(achievement)
+            },
+            mapper = {
+                it // TODO
+            },
+            update = { profileState, _ ->
+                profileState
+            }
+        )
+
+    private fun makeAchievementVisible(event: MakeAchievementVisibleClickEvent) =
+        mapAndReduceException(
+            action = {
+                makeAchievementVisibleUseCase.get().invoke(event.achievement)
+            },
+            mapper = {
+                it // TODO
+            },
+            update = { profileState, _ ->
+                profileState
+            }
+        )
+
+    private fun hideAchievement(event: HideAchievementClickEvent) =
+        mapAndReduceException(
+            action = {
+                hideAchievementUseCase.get().invoke(event.achievement)
+            },
+            mapper = {
+                it // TODO
+            },
+            update = { profileState, _ ->
+                profileState
+            }
+        )
+
+    private fun discardUpdates() =
         mapAndReduceException(
             action = {
                 discardUpdateUseCase.get().invoke()
@@ -63,7 +117,7 @@ class ProfileScreenComponent(
             }
         )
 
-    private fun saveUpdate() =
+    private fun saveUpdates() =
         mapAndReduceException(
             action = {
                 saveUpdateProfileUseCase.get().invoke()

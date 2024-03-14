@@ -10,25 +10,33 @@ import kotlinx.datetime.LocalDate
 
 @Immutable
 data class ProfileState(
-    val firstName: String,
-    val lastName: String,
-    val birthday: LocalDate,
-    val images: List<Image>,
-    val aboutMe: String,
-    val details: List<Detail>,
-    val mainAchievement: Achievement?,
-    val achievements: List<Achievement>
-) : State
+    val firstName: ProfileItem<String>,
+    val lastName: ProfileItem<String>,
+    val birthday: ProfileItem<LocalDate>,
+    val images: ProfileItem<List<Image>>,
+    val aboutMe: ProfileItem<String>,
+    val details: ProfileItem<List<Detail>>,
+    val mainAchievement: ProfileItem<Achievement?>,
+    val achievements: ProfileItem<List<Achievement>>
+) : State {
 
-fun Profile.toUIState(): ProfileState {
-    return ProfileState(
-        firstName,
-        lastName,
-        birthday,
-        images,
-        aboutMe,
-        details,
-        mainAchievement,
-        achievements
+    fun updated(profile: Profile): ProfileState = copy(
+        firstName = firstName.copy(value = profile.firstName),
+        lastName = lastName.copy(value = profile.lastName),
+        birthday = birthday.copy(value = profile.birthday),
+        images = images.copy(value = profile.images),
+        aboutMe = aboutMe.copy(value = profile.aboutMe),
+        details = details.copy(value = profile.details),
+        mainAchievement = mainAchievement.copy(value = profile.mainAchievement),
+        achievements = achievements.copy(value = profile.achievements)
     )
 }
+
+data class ProfileItem<T>(
+    val value: T,
+    val issues: Map<T, Issue> = emptyMap()
+)
+
+data class Issue(
+    val message: String
+)
