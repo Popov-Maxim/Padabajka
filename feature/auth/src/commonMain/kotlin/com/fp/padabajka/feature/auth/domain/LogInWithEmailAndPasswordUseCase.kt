@@ -8,8 +8,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @Suppress("UnusedPrivateProperty")
 class LogInWithEmailAndPasswordUseCase(
     private val authRepository: AuthRepository,
-    private val validateEmailUseCase: Factory<ValidateEmailUseCase>,
-    private val validatePasswordsUseCase: Factory<ValidatePasswordsUseCase>,
+    private val validateEmailUseCase: Factory<ValidateEmailUseCase>
 ) {
 
     @Suppress("TooGenericExceptionCaught")
@@ -21,15 +20,13 @@ class LogInWithEmailAndPasswordUseCase(
     suspend operator fun invoke(email: String, password: String) {
         try {
             validateEmailUseCase.get().invoke(email)
-            validatePasswordsUseCase.get().invoke(password, password)
 
-            // TODO Implement login logic call
+            authRepository.login(email, password)
         } catch (ce: CancellationException) {
             throw ce
         } catch (e: Throwable) {
             throw when (e) {
-                is EmailValidationException,
-                is PasswordsValidationException -> InvalidCredentialsLogInException
+                is EmailValidationException -> e
                 // TODO map other exceptions
                 else -> UnexpectedLoginException(e)
             }

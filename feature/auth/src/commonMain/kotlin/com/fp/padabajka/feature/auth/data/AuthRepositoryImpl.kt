@@ -19,6 +19,10 @@ class AuthRepositoryImpl(
         TODO("Not yet implemented")
     }
 
+    override suspend fun login(email: String, password: String) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun register(credentials: Credentials) {
         TODO("Not yet implemented")
     }
