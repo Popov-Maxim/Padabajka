@@ -15,13 +15,16 @@ import com.fp.padabajka.feature.profile.domain.update.HideAchievementUseCase
 import com.fp.padabajka.feature.profile.domain.update.LastNameUpdateUseCase
 import com.fp.padabajka.feature.profile.domain.update.MainAchievementUpdateUseCase
 import com.fp.padabajka.feature.profile.domain.update.MakeAchievementVisibleUseCase
-import com.fp.padabajka.feature.profile.presentation.model.AboutMeUpdateEvent
+import com.fp.padabajka.feature.profile.presentation.model.AboutMeFieldLoosFocusEvent
+import com.fp.padabajka.feature.profile.presentation.model.AboutMeFieldUpdateEvent
 import com.fp.padabajka.feature.profile.presentation.model.ConsumeInternalErrorEvent
-import com.fp.padabajka.feature.profile.presentation.model.DiscardProfileUpsatesClickEvent
-import com.fp.padabajka.feature.profile.presentation.model.FirstNameUpdateEvent
+import com.fp.padabajka.feature.profile.presentation.model.DiscardProfileUpdatesClickEvent
+import com.fp.padabajka.feature.profile.presentation.model.FirstNameFieldLoosFocusEvent
+import com.fp.padabajka.feature.profile.presentation.model.FirstNameFieldUpdateEvent
 import com.fp.padabajka.feature.profile.presentation.model.HideAchievementClickEvent
 import com.fp.padabajka.feature.profile.presentation.model.InternalError
-import com.fp.padabajka.feature.profile.presentation.model.LastNameUpdateEvent
+import com.fp.padabajka.feature.profile.presentation.model.LastNameFieldLoosFocusEvent
+import com.fp.padabajka.feature.profile.presentation.model.LastNameFieldUpdateEvent
 import com.fp.padabajka.feature.profile.presentation.model.MakeAchievementMainClickEvent
 import com.fp.padabajka.feature.profile.presentation.model.MakeAchievementVisibleClickEvent
 import com.fp.padabajka.feature.profile.presentation.model.ProfileEvent
@@ -56,11 +59,14 @@ class ProfileScreenComponent(
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
-            DiscardProfileUpsatesClickEvent -> discardUpdates()
+            DiscardProfileUpdatesClickEvent -> discardUpdates()
             SaveProfileUpdatesClickEvent -> saveUpdates()
-            is FirstNameUpdateEvent -> firstNameUpdate(event.firstName)
-            is LastNameUpdateEvent -> lastNameUpdate(event.lastName)
-            is AboutMeUpdateEvent -> aboutMeUpdate(event.aboutMe)
+            is FirstNameFieldUpdateEvent -> firstNameUpdate(event.firstName)
+            FirstNameFieldLoosFocusEvent -> trimFirstName()
+            is LastNameFieldUpdateEvent -> lastNameUpdate(event.lastName)
+            LastNameFieldLoosFocusEvent -> trimLastName()
+            is AboutMeFieldUpdateEvent -> aboutMeUpdate(event.aboutMe)
+            AboutMeFieldLoosFocusEvent -> trimAboutMe()
             is HideAchievementClickEvent -> hideAchievement(event.achievement)
             is MakeAchievementVisibleClickEvent -> makeAchievementVisible(event.achievement)
             is MakeAchievementMainClickEvent -> makeAchievementMain(event.achievement)
@@ -141,6 +147,12 @@ class ProfileScreenComponent(
             }
         )
 
+    private fun trimFirstName() {
+        val firstName = state.value.firstName.value
+        val trimmedFirstName = firstName.trim()
+        firstNameUpdate(trimmedFirstName)
+    }
+
     private fun lastNameUpdate(lastName: String) =
         mapAndReduceException(
             action = {
@@ -155,6 +167,12 @@ class ProfileScreenComponent(
             }
         )
 
+    private fun trimLastName() {
+        val lastName = state.value.lastName.value
+        val trimmedLastName = lastName.trim()
+        lastNameUpdate(trimmedLastName)
+    }
+
     private fun aboutMeUpdate(aboutMe: String) =
         mapAndReduceException(
             action = {
@@ -168,6 +186,12 @@ class ProfileScreenComponent(
                 profileState
             }
         )
+
+    private fun trimAboutMe() {
+        val aboutMe = state.value.aboutMe.value
+        val trimmedAboutMe = aboutMe.trim()
+        aboutMeUpdate(trimmedAboutMe)
+    }
 
     private fun consumeInternalError() = reduce {
         it.copy(internalErrorStateEvent = consumed)
