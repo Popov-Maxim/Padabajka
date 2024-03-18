@@ -41,6 +41,7 @@ kotlin {
             implementation(project(":feature:profile"))
             implementation(project(":feature:swiper"))
             implementation(project(":feature:match"))
+            implementation(project(":feature:messenger"))
 
             implementation(compose.runtime)
             implementation(compose.foundation)
