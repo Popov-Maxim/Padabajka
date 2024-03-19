@@ -2,8 +2,6 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.jetbrainsCompose)
 }
 
 kotlin {
@@ -21,24 +19,17 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "presentation"
+            baseName = "messenger"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            api(compose.runtime)
-            api(compose.foundation)
-            api(compose.material)
-            api(compose.ui)
-
-            api(libs.coroutines.core)
-            api(libs.decompose)
-            api(libs.decompose.jetbrains)
-            api(libs.koin.core)
-            api(libs.kotlinx.serialization.json)
-            api(libs.immutable.collections)
+            api(project(":core:presentation"))
+            api(project(":core:domain"))
+            api(project(":core:repository-api"))
+            api(project(":core:data"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -47,7 +38,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.fp.padabajka.core.presentation"
+    namespace = "com.fp.padabajka.feature.messenger"
     compileSdk = 34
     defaultConfig {
         minSdk = 24
