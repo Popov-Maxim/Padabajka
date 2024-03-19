@@ -5,7 +5,6 @@ import com.fp.padabajka.core.repository.api.AuthRepository
 import kotlin.coroutines.cancellation.CancellationException
 
 // TODO Add tests when I got implemented
-@Suppress("UnusedPrivateProperty")
 class RegisterWithEmailAndPasswordUseCase(
     private val authRepository: AuthRepository,
     private val validateEmailUseCase: Factory<ValidateEmailUseCase>,
@@ -18,7 +17,7 @@ class RegisterWithEmailAndPasswordUseCase(
             validateEmailUseCase.get().invoke(email)
             validatePasswordsUseCase.get().invoke(password, repeatedPassword)
 
-            // TODO Implement register logic call
+            authRepository.register(email, password)
         } catch (ce: CancellationException) {
             throw ce
         } catch (e: Throwable) {
