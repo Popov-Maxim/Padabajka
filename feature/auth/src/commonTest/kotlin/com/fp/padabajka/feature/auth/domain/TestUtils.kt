@@ -1,9 +1,10 @@
 package com.fp.padabajka.feature.auth.domain
 
+import org.kodein.mock.Mocker
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
-fun assertThrows(exception: Throwable, action: () -> Unit) {
+inline fun assertThrows(exception: Throwable, action: () -> Unit) {
     try {
         action()
         fail("Exception was expected!")
@@ -13,3 +14,5 @@ fun assertThrows(exception: Throwable, action: () -> Unit) {
         assertEquals(exception, e)
     }
 }
+
+infix fun Mocker.EverySuspend<*>.throws(e: Throwable) = runs { throw e }

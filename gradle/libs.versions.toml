@@ -13,13 +13,14 @@ compose-plugin = "1.5.12"
 decompose = "2.2.2"
 decompose-extention = "2.2.2-compose-experimental"
 org-jetbrains-kotlin-jvm = "1.9.22"
-detect-version = "1.23.3"
+detekt = "1.23.3"
 koin = "3.5.3"
 firebase = "32.7.3"
 gitlive-firebase = "1.11.1"
 kmpauth = "1.2.0"
 datastore = "1.1.0-beta02"
 mmutable-collections = "0.3.7"
+mockmp = "1.17.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -34,7 +35,7 @@ compose-foundation = { module = "androidx.compose.foundation:foundation", versio
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose-extention" }
-detect-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detect-version"}
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt"}
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
@@ -55,4 +56,5 @@ kotlinCocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = 
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
-detect = { id = "io.gitlab.arturbosch.detekt", version.ref = "detect-version"}
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+mockmp = { id = "org.kodein.mock.mockmp", version.ref = "mockmp" }

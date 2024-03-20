@@ -6,11 +6,11 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.kotlinCocoapods) apply false
     alias(libs.plugins.jetbrainsCompose) apply false
-    alias(libs.plugins.detect)
+    alias(libs.plugins.detekt)
 }
 
 detekt {
-    toolVersion = libs.versions.detect.version.get()
+    toolVersion = libs.versions.detekt.get()
     config.setFrom(file("config/detekt/detekt.yml"))
     buildUponDefaultConfig = true
 
@@ -20,5 +20,5 @@ detekt {
 }
 
 dependencies {
-    detektPlugins(libs.detect.formatting)
+    detektPlugins(libs.detekt.formatting)
 }

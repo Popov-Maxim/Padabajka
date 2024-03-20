@@ -19,7 +19,7 @@ private val authDomainModule = module {
         Factory { ValidatePasswordsUseCase() }
     }
     single {
-        Factory { LogInWithEmailAndPasswordUseCase(get(), get(), get()) }
+        Factory { LogInWithEmailAndPasswordUseCase(get()) }
     }
     single {
         Factory { RegisterWithEmailAndPasswordUseCase(get(), get(), get()) }
