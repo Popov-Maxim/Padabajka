@@ -1,7 +1,7 @@
-package com.fp.padabajka.feature.auth.domain
+package com.fp.padabajka.auth.domain
 
 import com.fp.padabajka.core.repository.api.AuthRepository
-import com.fp.padabajka.feature.auth.data.InvalidCredentialsAuthException
+import com.fp.padabajka.core.repository.api.model.auth.InvalidCredentialsAuthException
 import kotlin.coroutines.cancellation.CancellationException
 
 // TODO Add tests when I got implemented

@@ -1,4 +1,4 @@
-package com.fp.padabajka.feature.auth.data
+package com.fp.padabajka.core.repository.api.model.auth
 
 sealed class AuthException(message: String) : Throwable(message)
 

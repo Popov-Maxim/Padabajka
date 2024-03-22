@@ -2,9 +2,7 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.mockmp)
-    alias(libs.plugins.google.services)
 }
 
 kotlin {
@@ -22,30 +20,19 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "auth"
+            baseName = "auth.domain"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            api(project(":core:presentation"))
             api(project(":core:domain"))
             api(project(":core:repository-api"))
-            api(project(":core:data"))
-            api(project(":feature:auth:domain"))
-
-            implementation(libs.gitlive.firebase.auth)
         }
         commonTest.dependencies {
             implementation(project(":testing"))
             api(libs.kotlin.test)
-        }
-        val androidInstrumentedTest by getting
-        androidInstrumentedTest.dependencies {
-            implementation(libs.androidx.test.ext.junit)
-            implementation(libs.espresso.core)
-            implementation(libs.kotlin.test)
         }
     }
 }
@@ -56,10 +43,9 @@ mockmp {
 }
 
 android {
-    namespace = "com.fp.padabajka.feature.auth"
+    namespace = "com.fp.padabajka.feature.auth.domain"
     compileSdk = 34
     defaultConfig {
         minSdk = 24
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }

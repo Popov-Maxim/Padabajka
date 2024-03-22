@@ -1,4 +1,4 @@
-package com.fp.padabajka.feature.auth.domain
+package com.fp.padabajka.auth.domain
 
 import com.fp.padabajka.core.domain.Factory
 import com.fp.padabajka.core.repository.api.AuthRepository

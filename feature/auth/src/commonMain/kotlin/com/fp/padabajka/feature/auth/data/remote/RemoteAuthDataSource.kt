@@ -3,7 +3,7 @@ package com.fp.padabajka.feature.auth.data.remote
 import com.fp.padabajka.feature.auth.data.model.UserDto
 import kotlinx.coroutines.flow.Flow
 
-interface RemoteAuthDataSource {
+internal interface RemoteAuthDataSource {
 
     val user: Flow<UserDto?>
     suspend fun login(email: String, password: String)

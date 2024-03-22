@@ -1,7 +1,7 @@
 package com.fp.padabajka.feature.auth.data.remote
 
-import com.fp.padabajka.feature.auth.data.InvalidCredentialsAuthException
-import com.fp.padabajka.feature.auth.data.UnexpectedAuthException
+import com.fp.padabajka.core.repository.api.model.auth.InvalidCredentialsAuthException
+import com.fp.padabajka.core.repository.api.model.auth.UnexpectedAuthException
 import com.fp.padabajka.feature.auth.data.model.UserDto
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseAuthException
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.coroutines.cancellation.CancellationException
 
-class FirebaseRemoteAuthDataSource(private val firebaseAuth: FirebaseAuth) : RemoteAuthDataSource {
+internal class FirebaseRemoteAuthDataSource(private val firebaseAuth: FirebaseAuth) : RemoteAuthDataSource {
 
     override val user: Flow<UserDto?>
         get() = firebaseAuth.authStateChanged.map {

@@ -1,9 +1,9 @@
-package com.fp.padabajka.feature.auth.domain
+package com.fp.padabajka.testing
 
-import org.kodein.mock.Mocker
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
+@Suppress("TooGenericExceptionCaught")
 inline fun assertThrows(exception: Throwable, action: () -> Unit) {
     try {
         action()
@@ -14,5 +14,3 @@ inline fun assertThrows(exception: Throwable, action: () -> Unit) {
         assertEquals(exception, e)
     }
 }
-
-infix fun Mocker.EverySuspend<*>.throws(e: Throwable) = runs { throw e }
