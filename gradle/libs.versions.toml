@@ -19,6 +19,7 @@ firebase = "32.7.3"
 gitlive-firebase = "1.11.1"
 kmpauth = "1.2.0"
 datastore = "1.1.0-beta02"
+mmutable-collections = "0.3.7"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -42,6 +43,7 @@ kmpauth-google = { module = "io.github.mirzemehdi:kmpauth-google", version.ref =
 kmpauth-firebase = { module = "io.github.mirzemehdi:kmpauth-firebase", version.ref = "kmpauth" }
 kmpauth-uihelper = { module = "io.github.mirzemehdi:kmpauth-uihelper", version.ref = "kmpauth" }
 datastore = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
+immutable-collections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "mmutable-collections" }
 
 [plugins]
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
