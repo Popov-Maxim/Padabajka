@@ -87,7 +87,7 @@ PODS:
     - FirebaseAuth (= 10.19.0)
 
 DEPENDENCIES:
-  - FirebaseAnalytics
+  - FirebaseAnalytics (= 10.18.0)
   - shared (from `../shared`)
 
 SPEC REPOS:
@@ -124,6 +124,6 @@ SPEC CHECKSUMS:
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   shared: 6fe8113a773f409c4703b64115da9631fbf98288
 
-PODFILE CHECKSUM: 850e7f4d13a0d243af570b7a134f16a7d049909d
+PODFILE CHECKSUM: 82b45bec9deec93b229f3c09c2c5ea4bde69f3e3
 
 COCOAPODS: 1.14.3
