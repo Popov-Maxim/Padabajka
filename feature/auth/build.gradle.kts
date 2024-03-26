@@ -39,7 +39,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(project(":testing"))
-            api(libs.kotlin.test)
+            implementation(libs.kotlin.test)
         }
         val androidInstrumentedTest by getting
         androidInstrumentedTest.dependencies {
