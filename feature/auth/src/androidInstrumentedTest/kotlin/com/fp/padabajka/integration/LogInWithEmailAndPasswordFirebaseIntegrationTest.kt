@@ -2,14 +2,14 @@ package com.fp.padabajka.integration
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.fp.padabajka.auth.domain.AuthStateProvider
-import com.fp.padabajka.auth.domain.LogInWithEmailAndPasswordUseCase
-import com.fp.padabajka.auth.domain.LogOutUseCase
 import com.fp.padabajka.core.repository.api.model.auth.LoggedIn
 import com.fp.padabajka.core.repository.api.model.auth.LoggedOut
 import com.fp.padabajka.core.repository.api.model.auth.UserId
 import com.fp.padabajka.feature.auth.data.AuthRepositoryImpl
 import com.fp.padabajka.feature.auth.data.remote.FirebaseRemoteAuthDataSource
+import com.fp.padabajka.feature.auth.domain.AuthStateProvider
+import com.fp.padabajka.feature.auth.domain.LogInWithEmailAndPasswordUseCase
+import com.fp.padabajka.feature.auth.domain.LogOutUseCase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import dev.gitlive.firebase.Firebase

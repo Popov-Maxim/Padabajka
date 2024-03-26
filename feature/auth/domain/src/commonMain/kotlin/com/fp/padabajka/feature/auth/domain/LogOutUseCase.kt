@@ -1,4 +1,4 @@
-package com.fp.padabajka.auth.domain
+package com.fp.padabajka.feature.auth.domain
 
 import com.fp.padabajka.core.repository.api.AuthRepository
 import kotlin.coroutines.cancellation.CancellationException

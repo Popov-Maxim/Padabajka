@@ -1,4 +1,4 @@
-package com.fp.padabajka.auth.domain
+package com.fp.padabajka.feature.auth.domain
 
 class ValidateEmailUseCase {
 
