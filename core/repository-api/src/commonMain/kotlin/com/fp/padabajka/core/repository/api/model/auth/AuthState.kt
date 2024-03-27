@@ -4,4 +4,6 @@ sealed class AuthState
 
 data object LoggedOut : AuthState()
 
-data class LoggedIn(val user: User) : AuthState()
+data class LoggedIn(val userId: UserId) : AuthState()
+
+data class WaitingForEmailValidation(val userId: UserId) : AuthState()

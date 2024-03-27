@@ -1,9 +1,10 @@
-package com.fp.padabajka.feature.auth.domain
+package com.fp.padabajka.testing
 
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
-fun assertThrows(exception: Throwable, action: () -> Unit) {
+@Suppress("TooGenericExceptionCaught")
+inline fun assertThrows(exception: Throwable, action: () -> Unit) {
     try {
         action()
         fail("Exception was expected!")

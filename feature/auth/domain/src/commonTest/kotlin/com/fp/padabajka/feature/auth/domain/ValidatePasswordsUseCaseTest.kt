@@ -1,5 +1,6 @@
 package com.fp.padabajka.feature.auth.domain
 
+import com.fp.padabajka.testing.assertThrows
 import kotlin.test.Test
 
 class ValidatePasswordsUseCaseTest {
