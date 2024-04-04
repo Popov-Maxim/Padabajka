@@ -1,4 +1,4 @@
-package com.fp.padabajka.feature.ads.data.model
+package com.fp.padabajka.feature.ads.yandex.model
 
 import cocoapods.YandexMobileAds.YMANativeAdProtocol
 import com.fp.padabajka.core.repository.api.model.ads.PlatformNativeAd

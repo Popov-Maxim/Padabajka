@@ -1,35 +1,35 @@
 Pod::Spec.new do |spec|
-    spec.name                     = 'ads'
+    spec.name                     = 'yandex'
     spec.version                  = '1.0'
-    spec.homepage                 = 'Link to the Ads Module homepage'
+    spec.homepage                 = 'Link to the Yandex Ads Module homepage'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
     spec.license                  = ''
-    spec.summary                  = 'Some description for the Ads Module'
-    spec.vendored_frameworks      = 'build/cocoapods/framework/ads.framework'
+    spec.summary                  = 'Some description for the Yandex Ads Module'
+    spec.vendored_frameworks      = 'build/cocoapods/framework/yandex.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target = '16.0'
     spec.dependency 'YandexMobileAds', '6.4.1'
                 
-    if !Dir.exist?('build/cocoapods/framework/ads.framework') || Dir.empty?('build/cocoapods/framework/ads.framework')
+    if !Dir.exist?('build/cocoapods/framework/yandex.framework') || Dir.empty?('build/cocoapods/framework/yandex.framework')
         raise "
 
-        Kotlin framework 'ads' doesn't exist yet, so a proper Xcode project can't be generated.
+        Kotlin framework 'yandex' doesn't exist yet, so a proper Xcode project can't be generated.
         'pod install' should be executed after running ':generateDummyFramework' Gradle task:
 
-            ./gradlew :feature:ads:generateDummyFramework
+            ./gradlew :feature:ads:yandex:generateDummyFramework
 
         Alternatively, proper pod installation is performed during Gradle sync in the IDE (if Podfile location is set)"
     end
                 
     spec.pod_target_xcconfig = {
-        'KOTLIN_PROJECT_PATH' => ':feature:ads',
-        'PRODUCT_MODULE_NAME' => 'ads',
+        'KOTLIN_PROJECT_PATH' => ':feature:ads:yandex',
+        'PRODUCT_MODULE_NAME' => 'yandex',
     }
                 
     spec.script_phases = [
         {
-            :name => 'Build ads',
+            :name => 'Build yandex',
             :execution_position => :before_compile,
             :shell_path => '/bin/sh',
             :script => <<-SCRIPT
@@ -39,7 +39,7 @@ Pod::Spec.new do |spec|
                 fi
                 set -ev
                 REPO_ROOT="$PODS_TARGET_SRCROOT"
-                "$REPO_ROOT/../../gradlew" -p "$REPO_ROOT" $KOTLIN_PROJECT_PATH:syncFramework \
+                "$REPO_ROOT/../../../gradlew" -p "$REPO_ROOT" $KOTLIN_PROJECT_PATH:syncFramework \
                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME \
                     -Pkotlin.native.cocoapods.archs="$ARCHS" \
                     -Pkotlin.native.cocoapods.configuration="$CONFIGURATION"

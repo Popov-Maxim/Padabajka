@@ -1,4 +1,4 @@
-package com.fp.padabajka.feature.ads.data
+package com.fp.padabajka.feature.ads.yandex
 
 import platform.Foundation.NSNumber
 

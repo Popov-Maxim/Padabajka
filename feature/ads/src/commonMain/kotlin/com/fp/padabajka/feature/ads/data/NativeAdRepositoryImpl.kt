@@ -6,7 +6,6 @@ import com.fp.padabajka.core.repository.api.model.ads.PlatformNativeAd
 import com.fp.padabajka.core.repository.api.model.profile.Profile
 import com.fp.padabajka.feature.ads.data.source.NativeAdRemoteDataStore
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class NativeAdRepositoryImpl(
@@ -25,10 +24,7 @@ class NativeAdRepositoryImpl(
         }
     }
 
-    override val ads: Flow<PlatformNativeAd>
-        get() = adRemoteDataStore.ads
-
-    override suspend fun loadNextAd() {
-        adRemoteDataStore.loadAd(profile)
+    override suspend fun loadNextAd(): PlatformNativeAd {
+        return adRemoteDataStore.loadAd(profile)
     }
 }
