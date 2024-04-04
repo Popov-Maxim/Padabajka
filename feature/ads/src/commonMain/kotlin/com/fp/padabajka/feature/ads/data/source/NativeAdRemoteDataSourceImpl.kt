@@ -8,10 +8,10 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class NativeAdRemoteDataStoreImpl(
+class NativeAdRemoteDataSourceImpl(
     private val nativeAdLoader: NativeAdLoader,
     private val compositeListener: CompositeListener
-) : NativeAdRemoteDataStore {
+) : NativeAdRemoteDataSource {
 
     init {
         nativeAdLoader.setListener(compositeListener)

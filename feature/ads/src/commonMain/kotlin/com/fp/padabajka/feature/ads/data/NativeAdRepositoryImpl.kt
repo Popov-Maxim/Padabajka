@@ -4,27 +4,22 @@ import com.fp.padabajka.core.repository.api.NativeAdRepository
 import com.fp.padabajka.core.repository.api.ProfileRepository
 import com.fp.padabajka.core.repository.api.model.ads.PlatformNativeAd
 import com.fp.padabajka.core.repository.api.model.profile.Profile
-import com.fp.padabajka.feature.ads.data.source.NativeAdRemoteDataStore
+import com.fp.padabajka.feature.ads.data.source.NativeAdRemoteDataSource
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 
 class NativeAdRepositoryImpl(
     scope: CoroutineScope,
-    private val repository: ProfileRepository,
-    private val adRemoteDataStore: NativeAdRemoteDataStore
+    repository: ProfileRepository,
+    private val adRemoteDataSource: NativeAdRemoteDataSource
 ) : NativeAdRepository {
 
-    private var profile: Profile? = null
+    private val profile: Profile? by repository.profile
+        .stateIn(scope, SharingStarted.Eagerly, null)::value
 
-    init {
-        scope.launch {
-            repository.profile.collect {
-                profile = it
-            }
-        }
-    }
 
     override suspend fun loadNextAd(): PlatformNativeAd {
-        return adRemoteDataStore.loadAd(profile)
+        return adRemoteDataSource.loadAd(profile)
     }
 }
