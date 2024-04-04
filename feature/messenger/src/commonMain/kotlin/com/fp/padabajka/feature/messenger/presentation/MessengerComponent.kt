@@ -12,6 +12,7 @@ import com.fp.padabajka.feature.messenger.domain.ReactToMessageUseCase
 import com.fp.padabajka.feature.messenger.domain.ReadMessageUseCase
 import com.fp.padabajka.feature.messenger.domain.SendMessageUseCase
 import com.fp.padabajka.feature.messenger.presentation.model.ConsumeInternalErrorEvent
+import com.fp.padabajka.feature.messenger.presentation.model.EndOfMessagesListReachedEvent
 import com.fp.padabajka.feature.messenger.presentation.model.InternalError
 import com.fp.padabajka.feature.messenger.presentation.model.MessageGotReadEvent
 import com.fp.padabajka.feature.messenger.presentation.model.MessengerEvent
@@ -40,6 +41,7 @@ class MessengerComponent(
             is MessageGotReadEvent -> readMessage(event.messageId)
             is ReactToMessageEvent -> reactToMessage(event.messageId, event.reaction)
             SendMessageClickEvent -> sendMessage(state.value)
+            EndOfMessagesListReachedEvent -> TODO()
         }
     }
 

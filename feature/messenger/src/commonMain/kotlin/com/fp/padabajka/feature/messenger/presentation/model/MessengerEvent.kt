@@ -11,4 +11,5 @@ data class MessageGotReadEvent(val messageId: MessageId) : MessengerEvent
 data class ReactToMessageEvent(val messageId: MessageId, val reaction: MessageReaction) : MessengerEvent
 data class SelectParentMessageEvent(val messageId: MessageId) : MessengerEvent
 data object RemoveParentMessageEvent : MessengerEvent
+data object EndOfMessagesListReachedEvent : MessengerEvent
 data object ConsumeInternalErrorEvent : MessengerEvent

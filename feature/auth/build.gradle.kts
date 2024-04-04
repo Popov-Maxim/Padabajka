@@ -35,7 +35,7 @@ kotlin {
             api(project(":core:data"))
             api(project(":feature:auth:domain"))
 
-            implementation(libs.gitlive.firebase.auth)
+            api(libs.gitlive.firebase.auth)
         }
         commonTest.dependencies {
             implementation(project(":testing"))

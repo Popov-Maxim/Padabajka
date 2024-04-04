@@ -1,34 +1,46 @@
 package com.fp.padabajka
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.fp.padabajka.feature.messenger.presentation.TestMessengerComponent
+import com.fp.padabajka.feature.messenger.presentation.element.Chat
 
 @Suppress("UnusedParameter")
 @Composable
 fun App(rootContext: ComponentContext) {
+    val component = remember {
+        TestMessengerComponent(
+            context = rootContext
+        )
+    }
+    val state = component.state.subscribeAsState()
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        val greeting = remember { Greeting().greet() }
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Compose: $greeting")
+        Column(modifier = Modifier.fillMaxSize()) {
+            Box {
+                val recompositions = remember {
+                    mutableStateOf(0)
                 }
+                recompositions.value++
+                Text("${recompositions.value}")
+            }
+            Box {
+                Chat(
+                    modifier = Modifier.fillMaxSize(),
+                    items = { state.value.items },
+                    loadingState = { state.value.chatLoadingState },
+                    onEvent = component::onEvent
+                )
             }
         }
     }

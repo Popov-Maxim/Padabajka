@@ -27,17 +27,25 @@ kotlin {
     }
 
     sourceSets {
+        all {
+            languageSettings {
+                optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
+            }
+        }
         commonMain.dependencies {
             api(compose.runtime)
             api(compose.foundation)
             api(compose.material)
             api(compose.ui)
+            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            api(compose.components.resources)
 
             api(libs.coroutines.core)
             api(libs.decompose)
             api(libs.decompose.jetbrains)
             api(libs.koin.core)
             api(libs.kotlinx.serialization.json)
+            api(libs.kotlinx.datetime)
             api(libs.immutable.collections)
         }
         commonTest.dependencies {
