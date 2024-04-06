@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.mockmp)
 }
 
 kotlin {
@@ -19,24 +20,32 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "data"
+            baseName = "ads"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            // put your multiplatform dependencies here
+            api(project(":core:presentation"))
+            api(project(":core:domain"))
             api(project(":core:repository-api"))
+            api(project(":core:data"))
         }
         commonTest.dependencies {
+            implementation(project(":testing"))
             implementation(libs.kotlin.test)
         }
     }
 }
 
+mockmp {
+    usesHelper = true
+    installWorkaround()
+}
+
 android {
-    namespace = "com.fp.padabajka.core.data"
+    namespace = "com.fp.padabajka.feature.ads"
     compileSdk = 34
     defaultConfig {
         minSdk = 24
