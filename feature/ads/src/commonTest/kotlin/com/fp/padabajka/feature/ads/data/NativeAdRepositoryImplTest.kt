@@ -31,7 +31,7 @@ class NativeAdRepositoryImplTest {
 
     @BeforeTest
     fun setUp() = runBlocking {
-        mocker.apply {
+        with(mocker) {
             every { repository.profile } returns flow
             everySuspending { adRemoteDataSource.loadAd(null) } returns expectedPlatformNativeAd
         }
