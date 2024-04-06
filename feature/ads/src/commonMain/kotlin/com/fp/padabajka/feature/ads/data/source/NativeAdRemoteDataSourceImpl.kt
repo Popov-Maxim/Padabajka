@@ -27,8 +27,8 @@ class NativeAdRemoteDataSourceImpl(
                     it.resume(platformNativeAd)
                 }
 
-                override fun onError() {
-                    it.resumeWithException(Exception("")) // TODO
+                override fun onError(description: String) {
+                    it.resumeWithException(LoadErrorException(description))
                 }
             })
             nativeAdLoader.loadAd(configuration)

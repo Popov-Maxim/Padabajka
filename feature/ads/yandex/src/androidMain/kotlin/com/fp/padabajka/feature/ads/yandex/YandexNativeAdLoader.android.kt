@@ -17,8 +17,8 @@ actual class YandexNativeAdLoader(private val nativeAdLoader: NativeAdLoaderImpl
             listener.onLoaded(PlatformNativeAdImpl(nativeAd))
         }
 
-        override fun onAdFailedToLoad(p0: AdRequestError) {
-            listener.onError()
+        override fun onAdFailedToLoad(error: AdRequestError) {
+            listener.onError(error.description)
         }
     }
 

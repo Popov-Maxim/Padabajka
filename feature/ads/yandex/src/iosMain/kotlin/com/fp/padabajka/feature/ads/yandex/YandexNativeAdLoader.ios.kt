@@ -19,7 +19,7 @@ actual class YandexNativeAdLoader(
         private val listener: NativeAdLoader.Listener
     ) : UIViewController(), YMANativeAdLoaderDelegateProtocol {
         override fun nativeAdLoader(loader: YMANativeAdLoader, didFailLoadingWithError: NSError) {
-            listener.onError()
+            listener.onError(didFailLoadingWithError.description ?: "ios: loading error")
         }
 
         override fun nativeAdLoader(loader: YMANativeAdLoader, didLoadAd: YMANativeAdProtocol) {

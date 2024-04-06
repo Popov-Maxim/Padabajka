@@ -25,7 +25,7 @@ kotlin {
         ios.deploymentTarget = "16.0"
         podfile = project.file("../../../iosApp/Podfile")
         framework {
-            baseName = "yandex"
+            baseName = "ads.yandex"
             isStatic = true
         }
 

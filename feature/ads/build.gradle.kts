@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.mockmp)
 }
 
 kotlin {
@@ -19,7 +20,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "yandex"
+            baseName = "ads"
             isStatic = true
         }
     }
@@ -35,6 +36,11 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
+}
+
+mockmp {
+    usesHelper = true
+    installWorkaround()
 }
 
 android {

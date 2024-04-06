@@ -17,7 +17,7 @@ class CompositeListener : NativeAdLoader.Listener {
         nextListener?.onLoaded(platformNativeAd)
     }
 
-    override fun onError() {
-        nextListener?.onError()
+    override fun onError(description: String) {
+        nextListener?.onError(description)
     }
 }

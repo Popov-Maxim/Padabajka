@@ -6,7 +6,7 @@ interface NativeAdLoader {
 
     interface Listener {
         fun onLoaded(platformNativeAd: PlatformNativeAd)
-        fun onError()
+        fun onError(description: String)
     }
 
     data class Configuration(

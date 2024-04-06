@@ -6,15 +6,15 @@ Pod::Spec.new do |spec|
     spec.authors                  = ''
     spec.license                  = ''
     spec.summary                  = 'Some description for the Yandex Ads Module'
-    spec.vendored_frameworks      = 'build/cocoapods/framework/yandex.framework'
+    spec.vendored_frameworks      = 'build/cocoapods/framework/ads.yandex.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target = '16.0'
     spec.dependency 'YandexMobileAds', '6.4.1'
                 
-    if !Dir.exist?('build/cocoapods/framework/yandex.framework') || Dir.empty?('build/cocoapods/framework/yandex.framework')
+    if !Dir.exist?('build/cocoapods/framework/ads.yandex.framework') || Dir.empty?('build/cocoapods/framework/ads.yandex.framework')
         raise "
 
-        Kotlin framework 'yandex' doesn't exist yet, so a proper Xcode project can't be generated.
+        Kotlin framework 'ads.yandex' doesn't exist yet, so a proper Xcode project can't be generated.
         'pod install' should be executed after running ':generateDummyFramework' Gradle task:
 
             ./gradlew :feature:ads:yandex:generateDummyFramework
@@ -24,7 +24,7 @@ Pod::Spec.new do |spec|
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':feature:ads:yandex',
-        'PRODUCT_MODULE_NAME' => 'yandex',
+        'PRODUCT_MODULE_NAME' => 'ads.yandex',
     }
                 
     spec.script_phases = [
