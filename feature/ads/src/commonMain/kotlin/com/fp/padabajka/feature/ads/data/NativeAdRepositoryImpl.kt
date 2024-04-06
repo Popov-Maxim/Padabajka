@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
-class NativeAdRepositoryImpl(
+internal class NativeAdRepositoryImpl(
     scope: CoroutineScope,
     repository: ProfileRepository,
     private val adRemoteDataSource: NativeAdRemoteDataSource

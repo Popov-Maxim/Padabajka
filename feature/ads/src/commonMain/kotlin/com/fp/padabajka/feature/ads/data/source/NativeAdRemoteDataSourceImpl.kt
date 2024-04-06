@@ -3,12 +3,11 @@ package com.fp.padabajka.feature.ads.data.source
 import com.fp.padabajka.core.data.NativeAdLoader
 import com.fp.padabajka.core.repository.api.model.ads.PlatformNativeAd
 import com.fp.padabajka.core.repository.api.model.profile.Profile
-import com.fp.padabajka.core.repository.api.model.profile.age
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class NativeAdRemoteDataSourceImpl(
+internal class NativeAdRemoteDataSourceImpl(
     private val nativeAdLoader: NativeAdLoader,
     private val compositeListener: CompositeListener
 ) : NativeAdRemoteDataSource {
@@ -19,7 +18,7 @@ class NativeAdRemoteDataSourceImpl(
 
     override suspend fun loadAd(profile: Profile?): PlatformNativeAd {
         val configuration = NativeAdLoader.Configuration(
-            age = profile?.age()
+            age = profile?.age
         )
         return suspendCoroutine {
             compositeListener.addListener(object : NativeAdLoader.Listener {

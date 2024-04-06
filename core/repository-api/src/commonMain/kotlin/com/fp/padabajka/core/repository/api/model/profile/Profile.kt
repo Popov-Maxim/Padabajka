@@ -15,11 +15,12 @@ data class Profile(
     val details: List<Detail>,
     val mainAchievement: Achievement?,
     val achievements: List<Achievement>
-) // TODO: add override equals()
+) {
+    val age: Int
+        get() {
+            val timeZone = TimeZone.currentSystemDefault()
+            val now = Clock.System.todayIn(timeZone)
 
-fun Profile.age(): Int {
-    val timeZone = TimeZone.currentSystemDefault()
-    val now = Clock.System.todayIn(timeZone)
-
-    return now.periodUntil(birthday).years
-}
+            return now.periodUntil(birthday).years
+        }
+} // TODO: add override equals()

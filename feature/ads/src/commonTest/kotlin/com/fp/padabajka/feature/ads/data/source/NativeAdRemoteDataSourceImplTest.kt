@@ -39,10 +39,8 @@ class NativeAdRemoteDataSourceImplTest {
 
     @Test
     fun testLoadAdSuccess() = runBlocking {
-        capture.listener = object : ObservableMutableList.Listener<NativeAdLoader.Listener> {
-            override fun onAdd(element: NativeAdLoader.Listener) {
-                element.onLoaded(expectedPlatformNativeAd)
-            }
+        capture.listener = ObservableMutableList.Listener { element ->
+            element.onLoaded(expectedPlatformNativeAd)
         }
         val platformNativeAd = nativeAdRemoteDataSourceImpl.loadAd(null)
 
@@ -53,10 +51,8 @@ class NativeAdRemoteDataSourceImplTest {
 
     @Test
     fun testLoadAdFailed() = runBlocking {
-        capture.listener = object : ObservableMutableList.Listener<NativeAdLoader.Listener> {
-            override fun onAdd(element: NativeAdLoader.Listener) {
-                element.onError(ERROR_DESCRIPTION)
-            }
+        capture.listener = ObservableMutableList.Listener { element ->
+            element.onError(ERROR_DESCRIPTION)
         }
         assertThrows(LoadErrorException(ERROR_DESCRIPTION)) {
             nativeAdRemoteDataSourceImpl.loadAd(null)
