@@ -33,6 +33,7 @@ kotlin {
             api(project(":core:data"))
         }
         commonTest.dependencies {
+            implementation(project(":testing"))
             implementation(libs.kotlin.test)
         }
     }
