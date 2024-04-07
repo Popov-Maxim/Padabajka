@@ -26,6 +26,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(libs.kotlin.test)
+            implementation(libs.coroutines.core)
         }
     }
 }
