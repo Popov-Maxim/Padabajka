@@ -13,6 +13,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration.Companion.seconds
 
 class CardRepositoryImpl(
     scope: CoroutineScope,
@@ -24,24 +26,30 @@ class CardRepositoryImpl(
         scope.launch {
             personRepository.person.collectIndexed { index, person ->
                 cardChanel.send(PersonCard(person))
-                if (index != 0 && (index % AD_NUMBER - 1) == 0) {
-                    val nativeAd = nativeAdRepository.loadNextAd()
-                    cardChanel.send(AdCard(nativeAd))
+                if (index != 0 && index % (AD_NUMBER - 1) == 0) {
+                    withTimeoutOrNull(LOADING_AD_TIMEOUT.seconds) {
+                        nativeAdRepository.loadNextAd()
+                    }?.let { nativeAd ->
+                        cardChanel.send(AdCard(nativeAd))
+                    }
                 }
             }
         }
     }
 
-    override val cardChanel: Channel<Card> = Channel()
+    override val cardChanel: Channel<Card> = Channel(Channel.UNLIMITED)
 
     override suspend fun react(reaction: Reaction) {
         when (reaction) {
             is PersonReaction -> personRepository.react(reaction)
-            AdReaction -> {}
+            AdReaction -> {
+                // TODO
+            }
         }
     }
 
     companion object {
         private const val AD_NUMBER = 20
+        private const val LOADING_AD_TIMEOUT = 10
     }
 }
