@@ -2,6 +2,7 @@ package com.fp.padabajka.feature.swiper.presentation.model
 
 import androidx.compose.runtime.Immutable
 import com.fp.padabajka.core.presentation.State
+import com.fp.padabajka.core.repository.api.model.ads.PlatformNativeAd
 import com.fp.padabajka.core.repository.api.model.profile.Achievement
 import com.fp.padabajka.core.repository.api.model.profile.Detail
 import com.fp.padabajka.core.repository.api.model.profile.Image
@@ -11,9 +12,20 @@ import kotlinx.datetime.LocalDate
 
 @Immutable
 data class SwiperState(
-    val foregroundPersonItem: PersonItem,
-    val backgroundPersonItem: PersonItem?
+    val foregroundCardItem: CardItem,
+    val backgroundCardItem: CardItem?
 ) : State
+
+@Immutable
+sealed interface CardItem
+
+@Immutable
+data object LoadingItem : CardItem
+
+@Immutable
+data class NativeAdItem(
+    val platformNativeAd: PlatformNativeAd
+) : CardItem
 
 @Immutable
 data class PersonItem(
@@ -26,4 +38,4 @@ data class PersonItem(
     val details: PersistentList<Detail>,
     val mainAchievement: Achievement?,
     val achievements: PersistentList<Achievement>
-)
+) : CardItem

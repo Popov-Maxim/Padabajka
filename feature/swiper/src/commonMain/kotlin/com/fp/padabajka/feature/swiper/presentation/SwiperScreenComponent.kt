@@ -4,8 +4,8 @@ import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.domain.Factory
 import com.fp.padabajka.core.presentation.BaseComponent
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
-import com.fp.padabajka.core.repository.api.model.swiper.Reaction
-import com.fp.padabajka.feature.swiper.domain.ReactToPersonUseCase
+import com.fp.padabajka.core.repository.api.model.swiper.PersonReaction
+import com.fp.padabajka.feature.swiper.domain.ReactToCardUseCase
 import com.fp.padabajka.feature.swiper.presentation.model.DislikeEvent
 import com.fp.padabajka.feature.swiper.presentation.model.LikeEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SuperLikeEvent
@@ -14,7 +14,7 @@ import com.fp.padabajka.feature.swiper.presentation.model.SwiperState
 
 class SwiperScreenComponent(
     context: ComponentContext,
-    private val reactToPersonUseCase: Factory<ReactToPersonUseCase>,
+    private val reactToCardUseCase: Factory<ReactToCardUseCase>,
 ) : BaseComponent<SwiperState>(
     context,
     TODO()
@@ -30,7 +30,7 @@ class SwiperScreenComponent(
     private fun dislikePerson(personId: PersonId) =
         mapAndReduceException(
             action = {
-                reactToPersonUseCase.get().invoke(Reaction.Dislike(personId))
+                reactToCardUseCase.get().invoke(PersonReaction.Dislike(personId))
             },
             mapper = {
                 it // TODO
@@ -43,7 +43,7 @@ class SwiperScreenComponent(
     private fun likePerson(personId: PersonId) =
         mapAndReduceException(
             action = {
-                reactToPersonUseCase.get().invoke(Reaction.Like(personId))
+                reactToCardUseCase.get().invoke(PersonReaction.Like(personId))
             },
             mapper = {
                 it // TODO
@@ -56,7 +56,7 @@ class SwiperScreenComponent(
     private fun superLikePerson(personId: PersonId) =
         mapAndReduceException(
             action = {
-                reactToPersonUseCase.get().invoke(Reaction.SuperLike(personId))
+                reactToCardUseCase.get().invoke(PersonReaction.SuperLike(personId))
             },
             mapper = {
                 it // TODO

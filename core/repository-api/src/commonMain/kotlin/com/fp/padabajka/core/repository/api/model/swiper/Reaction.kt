@@ -1,7 +1,11 @@
 package com.fp.padabajka.core.repository.api.model.swiper
 
-sealed class Reaction(val id: PersonId) {
-    class SuperLike(id: PersonId) : Reaction(id)
-    class Like(id: PersonId) : Reaction(id)
-    class Dislike(id: PersonId) : Reaction(id)
+sealed interface Reaction
+
+data object AdReaction : Reaction
+
+sealed class PersonReaction(val id: PersonId) : Reaction {
+    class SuperLike(id: PersonId) : PersonReaction(id)
+    class Like(id: PersonId) : PersonReaction(id)
+    class Dislike(id: PersonId) : PersonReaction(id)
 }
