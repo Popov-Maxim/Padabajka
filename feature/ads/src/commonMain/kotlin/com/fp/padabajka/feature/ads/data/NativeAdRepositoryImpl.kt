@@ -18,7 +18,7 @@ internal class NativeAdRepositoryImpl(
     private val profile: Profile? by repository.profile
         .stateIn(scope, SharingStarted.Eagerly, null)::value
 
-    override suspend fun loadNextAd(): PlatformNativeAd {
+    override suspend fun loadNextAd(): PlatformNativeAd? {
         return adRemoteDataSource.loadAd(profile)
     }
 }
