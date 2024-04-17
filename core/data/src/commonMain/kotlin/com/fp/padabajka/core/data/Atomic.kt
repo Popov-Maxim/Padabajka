@@ -3,15 +3,19 @@ package com.fp.padabajka.core.data
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class Atomic<T>(
+interface Atomic<T> {
+    suspend operator fun <R> invoke(action: suspend T.() -> R): R
+}
+
+private class AtomicImpl<T>(
     private val value: T,
-    private val mutex: Mutex = Mutex()
-) {
-    suspend operator fun <R> invoke(action: T.() -> R): R {
+    private val mutex: Mutex
+) : Atomic<T> {
+    override suspend operator fun <R> invoke(action: suspend T.() -> R): R {
         mutex.withLock {
             return value.action()
         }
     }
 }
 
-inline fun <T> atomic(value: T): Atomic<T> = Atomic(value)
+fun <T> atomic(value: T, mutex: Mutex = Mutex()): Atomic<T> = AtomicImpl(value, mutex)
