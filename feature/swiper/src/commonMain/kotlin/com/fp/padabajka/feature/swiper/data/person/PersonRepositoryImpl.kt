@@ -53,7 +53,7 @@ class PersonRepositoryImpl(
 
                 if (persons { isEmpty() }) {
                     preloadJob?.await()
-                        ?: throw IllegalStateException("Persons is empty but preloadJob is null!")
+                        ?: error("Persons is empty but preloadJob is null!")
                 }
 
                 return@coroutineScope persons { removeFirstOrNull() }
