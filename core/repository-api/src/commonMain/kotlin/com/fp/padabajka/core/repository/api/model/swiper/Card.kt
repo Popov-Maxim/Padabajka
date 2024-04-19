@@ -7,3 +7,5 @@ sealed interface Card
 data class AdCard(val platformNativeAd: PlatformNativeAd) : Card
 
 data class PersonCard(val person: Person) : Card
+
+data object EmptyCard : Card
