@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.stateIn
 
 internal class NativeAdRepositoryImpl(
     scope: CoroutineScope,
-    repository: ProfileRepository,
+    profileRepository: ProfileRepository,
     private val adRemoteDataSource: NativeAdRemoteDataSource
 ) : NativeAdRepository {
 
-    private val profile: Profile? by repository.profile
+    private val profile: Profile? by profileRepository.profile
         .stateIn(scope, SharingStarted.Eagerly, null)::value
 
     override suspend fun loadNextAd(): PlatformNativeAd? {
