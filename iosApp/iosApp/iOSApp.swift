@@ -1,7 +1,6 @@
 import SwiftUI
 import FirebaseCore
 import shared
-import YandexMobileAds
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,

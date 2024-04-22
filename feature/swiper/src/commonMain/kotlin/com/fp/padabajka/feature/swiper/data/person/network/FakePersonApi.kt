@@ -11,7 +11,7 @@ class FakePersonApi : PersonApi {
         configuration: PersonApi.Configuration
     ): List<PersonDto> {
         return List(count) {
-            createPersonDto(index).apply {
+            createPersonDto(index).also {
                 index++
             }
         }

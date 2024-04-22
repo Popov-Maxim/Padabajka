@@ -7,7 +7,7 @@ import com.fp.padabajka.core.repository.api.ReactionRepository
 import com.fp.padabajka.feature.swiper.data.CardRepositoryImpl
 import com.fp.padabajka.feature.swiper.data.CardSelector
 import com.fp.padabajka.feature.swiper.data.CardSelectorProvider
-import com.fp.padabajka.feature.swiper.data.CardWithoutAdSelector
+import com.fp.padabajka.feature.swiper.data.NoAdCardSelector
 import com.fp.padabajka.feature.swiper.data.person.PersonRepositoryImpl
 import com.fp.padabajka.feature.swiper.data.person.network.FakePersonApi
 import com.fp.padabajka.feature.swiper.data.person.network.PersonApi
@@ -35,7 +35,7 @@ private val dataModule = module {
 
     single<PersonRepository> {
         PersonRepositoryImpl(
-            scope = get(), // TODO(koin)
+            scope = get(),
             remotePersonDataSource = get()
         )
     }
@@ -73,7 +73,7 @@ private val dataModule = module {
     }
 
     factory<Factory<CardSelector>> {
-        Factory { CardWithoutAdSelector() }
+        Factory { NoAdCardSelector() }
     }
 }
 
