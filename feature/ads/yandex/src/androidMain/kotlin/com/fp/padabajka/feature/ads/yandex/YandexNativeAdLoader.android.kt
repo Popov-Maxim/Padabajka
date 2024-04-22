@@ -6,9 +6,9 @@ import com.yandex.mobile.ads.common.AdRequestError
 import com.yandex.mobile.ads.nativeads.NativeAd
 import com.yandex.mobile.ads.nativeads.NativeAdLoadListener
 import com.yandex.mobile.ads.nativeads.NativeAdRequestConfiguration
-import com.yandex.mobile.ads.nativeads.NativeAdLoader as NativeAdLoaderImpl
+import com.yandex.mobile.ads.nativeads.NativeAdLoader as SdkNativeAdLoader
 
-actual class YandexNativeAdLoader(private val nativeAdLoader: NativeAdLoaderImpl) : NativeAdLoader {
+actual class YandexNativeAdLoader(private val nativeAdLoader: SdkNativeAdLoader) : NativeAdLoader {
 
     private class ProxyListener(
         private val listener: NativeAdLoader.Listener

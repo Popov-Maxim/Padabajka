@@ -12,12 +12,12 @@ import platform.UIKit.UIViewController
 
 @OptIn(ExperimentalForeignApi::class)
 actual class YandexNativeAdLoader(
-    private val nativeAdLoader: YMANativeAdLoader
+    private val nativeAdLoader: YMANativeAdLoader = YMANativeAdLoader()
 ) : NativeAdLoader {
 
     private class ProxyListener(
         private val listener: NativeAdLoader.Listener
-    ) : UIViewController(), YMANativeAdLoaderDelegateProtocol {
+    ) : UIViewController(null, null), YMANativeAdLoaderDelegateProtocol {
         override fun nativeAdLoader(loader: YMANativeAdLoader, didFailLoadingWithError: NSError) {
             listener.onError(didFailLoadingWithError.description ?: "ios: loading error")
         }

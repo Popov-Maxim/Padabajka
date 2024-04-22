@@ -17,7 +17,7 @@ class SwiperScreenComponent(
     private val reactToCardUseCase: Factory<ReactToCardUseCase>,
 ) : BaseComponent<SwiperState>(
     context,
-    TODO()
+    SwiperState.Default
 ) {
     fun onEvent(event: SwiperEvent) {
         when (event) {
