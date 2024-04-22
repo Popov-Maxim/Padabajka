@@ -1,4 +1,18 @@
 PODS:
+  - DivKit (28.13.0):
+    - DivKit_LayoutKit (= 28.13.0)
+    - DivKit_Serialization (= 28.13.0)
+    - VGSLCommonCore (~> 2.4)
+    - VGSLNetworking (~> 2.4)
+  - DivKit_LayoutKit (28.13.0):
+    - DivKit_LayoutKitInterface (= 28.13.0)
+    - VGSLCommonCore (~> 2.4)
+  - DivKit_LayoutKitInterface (28.13.0):
+    - VGSLBase (~> 2.4)
+    - VGSLBaseTiny (~> 2.4)
+    - VGSLBaseUI (~> 2.4)
+  - DivKit_Serialization (28.13.0):
+    - VGSLCommonCore (~> 2.4)
   - FirebaseAnalytics (10.18.0):
     - FirebaseAnalytics/AdIdSupport (= 10.18.0)
     - FirebaseCore (~> 10.0)
@@ -85,13 +99,44 @@ PODS:
   - RecaptchaInterop (100.0.0)
   - shared (1.0):
     - FirebaseAuth (= 10.19.0)
+  - VGSL_Fundamentals (2.4.1):
+    - VGSL_Fundamentals_Tiny (= 2.4.1)
+  - VGSL_Fundamentals_Tiny (2.4.1)
+  - VGSLBase (2.4.1):
+    - VGSL_Fundamentals (= 2.4.1)
+    - VGSLBaseTiny (= 2.4.1)
+    - VGSLBaseUI (= 2.4.1)
+  - VGSLBaseTiny (2.4.1):
+    - VGSL_Fundamentals_Tiny (= 2.4.1)
+  - VGSLBaseUI (2.4.1):
+    - VGSLBaseTiny (= 2.4.1)
+  - VGSLCommonCore (2.4.1):
+    - VGSLBase (= 2.4.1)
+  - VGSLNetworking (2.4.1):
+    - VGSLBase (= 2.4.1)
+  - YandexMobileAds (6.4.1):
+    - DivKit (= 28.13.0)
+    - YandexMobileMetrica (< 5.0.0, >= 4.0.0)
+  - YandexMobileMetrica (4.5.2):
+    - YandexMobileMetrica/Static (= 4.5.2)
+  - YandexMobileMetrica/Static (4.5.2):
+    - YandexMobileMetrica/Static/Core (= 4.5.2)
+    - YandexMobileMetrica/Static/Crashes (= 4.5.2)
+  - YandexMobileMetrica/Static/Core (4.5.2)
+  - YandexMobileMetrica/Static/Crashes (4.5.2):
+    - YandexMobileMetrica/Static/Core
 
 DEPENDENCIES:
   - FirebaseAnalytics (= 10.18.0)
   - shared (from `../shared`)
+  - YandexMobileAds (= 6.4.1)
 
 SPEC REPOS:
   trunk:
+    - DivKit
+    - DivKit_LayoutKit
+    - DivKit_LayoutKitInterface
+    - DivKit_Serialization
     - FirebaseAnalytics
     - FirebaseAppCheckInterop
     - FirebaseAuth
@@ -104,12 +149,25 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - RecaptchaInterop
+    - VGSL_Fundamentals
+    - VGSL_Fundamentals_Tiny
+    - VGSLBase
+    - VGSLBaseTiny
+    - VGSLBaseUI
+    - VGSLCommonCore
+    - VGSLNetworking
+    - YandexMobileAds
+    - YandexMobileMetrica
 
 EXTERNAL SOURCES:
   shared:
     :path: "../shared"
 
 SPEC CHECKSUMS:
+  DivKit: 65af423ea03c32b6ecaa63a64d4a2ea26c217f3b
+  DivKit_LayoutKit: 3f88fab9edefb4938b9ccb5359ecbce4e1eeba69
+  DivKit_LayoutKitInterface: 90449756ba956a7fbf3b168c01f7a0b7fc6a9de0
+  DivKit_Serialization: 1b536e30c49163548bb62120320097c8ab41936d
   FirebaseAnalytics: 4d310b35c48eaa4a058ddc04bdca6bdb5dc0fe80
   FirebaseAppCheckInterop: 69fc7d8f6a1cbfa973efb8d1723651de30d12525
   FirebaseAuth: 2492acdcd1245d841fabdf58a050d6aa07dfce3f
@@ -123,7 +181,16 @@ SPEC CHECKSUMS:
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   shared: 6fe8113a773f409c4703b64115da9631fbf98288
+  VGSL_Fundamentals: 4a965a687c76a5a435d7aaeb6b7182e82408bf4c
+  VGSL_Fundamentals_Tiny: feab274b20c5838fbe09b887db0f6cfa28e26a1c
+  VGSLBase: 37b95dd4ea137f73e8f9a8bd8ec474d8b4d75a68
+  VGSLBaseTiny: 0a0a4992a348184e8580cf73efa8eb373d750f6b
+  VGSLBaseUI: 62f147155e7b7049a32a30ac87b5bd8b83e636c5
+  VGSLCommonCore: dd33088af6633d1c09f0c9bb8027920b99e2e0c8
+  VGSLNetworking: e12d616b447522bf524c689d28f55cfbb20473cd
+  YandexMobileAds: ed587c669f2deb078f39a070ee2466cc40eca5a9
+  YandexMobileMetrica: f5368ee93f286c793d73b58da00929babfc897c1
 
-PODFILE CHECKSUM: 82b45bec9deec93b229f3c09c2c5ea4bde69f3e3
+PODFILE CHECKSUM: b3d33c6b5779938ed5d4a805e08da11c5530d887
 
 COCOAPODS: 1.14.3
