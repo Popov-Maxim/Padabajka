@@ -11,9 +11,10 @@ class RemotePersonDataSourceImpl(
 
     override suspend fun getPersons(
         count: Int,
+        loaded: Set<Person>,
         searchPreferences: SearchPreferences
     ): List<Person> {
-        return personApi.getPersons(count, searchPreferences.toConfig())
+        return personApi.getPersons(count, loaded.map(Person::id), searchPreferences.toConfig())
             .map { it.toPerson() }
     }
 
