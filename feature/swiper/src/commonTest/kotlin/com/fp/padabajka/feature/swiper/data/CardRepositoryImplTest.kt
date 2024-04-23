@@ -55,10 +55,12 @@ class CardRepositoryImplTest {
     fun testReactPersonReactionLike() = runBlocking {
         val reaction = PersonReaction.Like(PERSON_ID)
         mocker.everySuspending { reactionRepository.react(reaction) } returns Unit
+        mocker.everySuspending { personRepository.setUsed(PERSON_ID) } returns Unit
 
         cardRepositoryImpl.react(reaction)
 
         mocker.verifyWithSuspend {
+            personRepository.setUsed(PERSON_ID)
             reactionRepository.react(reaction)
         }
     }
@@ -67,10 +69,12 @@ class CardRepositoryImplTest {
     fun testReactPersonReactionDislike() = runBlocking {
         val reaction = PersonReaction.Dislike(PERSON_ID)
         mocker.everySuspending { reactionRepository.react(reaction) } returns Unit
+        mocker.everySuspending { personRepository.setUsed(PERSON_ID) } returns Unit
 
         cardRepositoryImpl.react(reaction)
 
         mocker.verifyWithSuspend {
+            personRepository.setUsed(PERSON_ID)
             reactionRepository.react(reaction)
         }
     }

@@ -4,5 +4,9 @@ import com.fp.padabajka.core.repository.api.model.swiper.Person
 import com.fp.padabajka.core.repository.api.model.swiper.SearchPreferences
 
 interface RemotePersonDataSource {
-    suspend fun getPersons(count: Int, searchPreferences: SearchPreferences): List<Person>
+    suspend fun getPersons(
+        count: Int,
+        loaded: Set<Person>,
+        searchPreferences: SearchPreferences
+    ): List<Person>
 }

@@ -6,6 +6,7 @@ import com.fp.padabajka.core.data.atomic
 import com.fp.padabajka.core.data.mutableAtomic
 import com.fp.padabajka.core.repository.api.PersonRepository
 import com.fp.padabajka.core.repository.api.model.swiper.Person
+import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.core.repository.api.model.swiper.SearchPreferences
 import com.fp.padabajka.feature.swiper.data.person.source.RemotePersonDataSource
 import kotlinx.coroutines.CoroutineScope
@@ -23,67 +24,102 @@ class PersonRepositoryImpl(
 
     private var actualSearchPreferences: MutableAtomic<SearchPreferences?> = mutableAtomic(null)
 
-    private val persons: Atomic<ArrayDeque<Person>> =
-        atomic(ArrayDeque(LOADING_COUNT + MIN_CAPACITY))
+    private val sharedPersons: Atomic<MutableSet<Person>> = atomic(mutableSetOf())
 
-    private var preloadJob: Deferred<Unit>? = null
+    private val preloadedPersons: Atomic<MutableMap<SearchPreferences, ArrayDeque<Person>>> =
+        atomic(mutableMapOf())
+
+    private var preloadJobs: Atomic<MutableMap<SearchPreferences, Deferred<Unit>>> = atomic(
+        mutableMapOf()
+    )
 
     private val personObtainMutex = Mutex()
 
     override suspend fun getPerson(searchPreferences: SearchPreferences): Person? {
         updateSearchPreferences(searchPreferences)
-        loadMorePersonsIfNeeded(searchPreferences)
         return obtainPerson(searchPreferences)
     }
 
+    // TODO: Rename me, please:(
+    override suspend fun setUsed(personId: PersonId) {
+        sharedPersons {
+            removeAll { it.id == personId }
+        }
+    }
+
     private suspend fun loadMorePersonsIfNeeded(searchPreferences: SearchPreferences) {
-        if (persons { size } < MIN_CAPACITY) {
-            if (preloadJob?.isActive != true) {
-                preloadJob = scope.async {
-                    preloadPersons(searchPreferences)
+        if (preloadedPersons { size < MIN_CAPACITY }) {
+            preloadJobs {
+                if (get(searchPreferences)?.isActive != true) {
+                    this[searchPreferences] = scope.async {
+                        preloadPersons(searchPreferences)
+                    }
                 }
             }
         }
     }
 
-    private suspend fun obtainPerson(searchPreferences: SearchPreferences): Person? =
-        coroutineScope {
-            personObtainMutex.withLock {
-                ensureActual(searchPreferences)
+    private suspend fun obtainPerson(searchPreferences: SearchPreferences): Person? {
+        personObtainMutex.withLock {
+            ensureActual(searchPreferences)
 
-                if (persons { isEmpty() }) {
-                    preloadJob?.await()
-                        ?: error("Persons is empty but preloadJob is null!")
-                }
+            loadMorePersonsIfNeeded(searchPreferences)
 
-                return@coroutineScope persons { removeFirstOrNull() }
+            if (preloadedPersons { get(searchPreferences).isNullOrEmpty() }) {
+                preloadJobs { get(searchPreferences) }?.await()
+                    ?: error("Persons is empty but preloadJob is null!")
             }
+
+            val person = preloadedPersons { get(searchPreferences)?.removeFirstOrNull() }
+            if (person != null) {
+                sharedPersons { add(person) }
+            }
+            return person
         }
+    }
 
-    private suspend fun preloadPersons(searchPreferences: SearchPreferences) = coroutineScope {
+    private suspend fun preloadPersons(searchPreferences: SearchPreferences) {
         ensureActual(searchPreferences)
+        val preloaded = preloadedPersons { get(searchPreferences)?.toSet() } ?: emptySet()
+        val shared = sharedPersons { toSet() }
 
-        val newPersons = remotePersonDataSource.getPersons(LOADING_COUNT, searchPreferences)
+        val loaded = shared + preloaded
+
+        val newPersons = remotePersonDataSource.getPersons(LOADING_COUNT, loaded, searchPreferences)
         if (newPersons.isNotEmpty()) {
-            persons { addAll(newPersons) }
+            preloadedPersons {
+                if (containsKey(searchPreferences)) {
+                    getValue(searchPreferences).addAll(newPersons)
+                } else {
+                    put(searchPreferences, ArrayDeque(newPersons))
+                }
+            }
         }
     }
 
     private suspend fun updateSearchPreferences(searchPreferences: SearchPreferences) =
         actualSearchPreferences.update {
             if (this != searchPreferences) {
-                if (preloadJob?.isActive == true) {
-                    preloadJob?.cancel()
+                preloadJobs {
+                    values.forEach { preloadJob ->
+                        if (preloadJob.isActive) {
+                            preloadJob.cancel()
+                        }
+                    }
+                    clear()
                 }
-                persons { clear() }
+                preloadedPersons { clear() }
+                sharedPersons { clear() }
             }
             searchPreferences
         }
 
-    private suspend fun CoroutineScope.ensureActual(searchPreferences: SearchPreferences) =
-        actualSearchPreferences {
-            if (this == searchPreferences) {
-                cancel("Search preferences got updated!")
+    private suspend fun ensureActual(searchPreferences: SearchPreferences) =
+        coroutineScope {
+            this@PersonRepositoryImpl.actualSearchPreferences {
+                if (this == searchPreferences) {
+                    cancel("Search preferences got updated!")
+                }
             }
         }
 

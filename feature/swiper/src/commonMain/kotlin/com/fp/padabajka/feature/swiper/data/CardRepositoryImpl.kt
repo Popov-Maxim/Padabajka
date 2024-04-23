@@ -10,6 +10,7 @@ import com.fp.padabajka.core.repository.api.model.swiper.Card
 import com.fp.padabajka.core.repository.api.model.swiper.EmptyCard
 import com.fp.padabajka.core.repository.api.model.swiper.Person
 import com.fp.padabajka.core.repository.api.model.swiper.PersonCard
+import com.fp.padabajka.core.repository.api.model.swiper.PersonReaction
 import com.fp.padabajka.core.repository.api.model.swiper.Reaction
 import com.fp.padabajka.core.repository.api.model.swiper.SearchPreferences
 
@@ -36,6 +37,9 @@ class CardRepositoryImpl(
     }
 
     override suspend fun react(reaction: Reaction) {
+        if (reaction is PersonReaction) {
+            personRepository.setUsed(reaction.id)
+        }
         reactionRepository.react(reaction)
     }
 
