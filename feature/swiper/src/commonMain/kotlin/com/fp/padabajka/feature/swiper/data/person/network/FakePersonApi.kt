@@ -1,5 +1,6 @@
 package com.fp.padabajka.feature.swiper.data.person.network
 
+import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.feature.swiper.data.person.network.model.PersonDto
 
 class FakePersonApi : PersonApi {
@@ -8,6 +9,7 @@ class FakePersonApi : PersonApi {
 
     override suspend fun getPersons(
         count: Int,
+        loaded: List<PersonId>,
         configuration: PersonApi.Configuration
     ): List<PersonDto> {
         return List(count) {
