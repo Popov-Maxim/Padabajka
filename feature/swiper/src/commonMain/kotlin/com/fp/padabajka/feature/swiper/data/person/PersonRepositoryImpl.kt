@@ -69,8 +69,9 @@ class PersonRepositoryImpl(
                     ?: error("Persons is empty but preloadJob is null!")
             }
 
-            val person = preloadedPersons { get(searchPreferences)?.removeFirstOrNull() }?.also {
-                sharedPersons { add(it) }
+            val person = preloadedPersons { get(searchPreferences)?.removeFirstOrNull() }
+            if (person != null) {
+                sharedPersons { add(person) }
             }
             return person
         }
