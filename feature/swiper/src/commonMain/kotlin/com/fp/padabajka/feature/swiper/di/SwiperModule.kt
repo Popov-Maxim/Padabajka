@@ -58,7 +58,8 @@ private val dataModule = module {
 
     factory<RemoteReactionDataSource> {
         RemoteReactionDataSourceImpl(
-            reactionApi = get()
+            reactionApi = get(),
+            scope = get()
         )
     }
 
