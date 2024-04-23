@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinCocoapods)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -37,6 +38,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":feature:ads"))
+            implementation(project(":feature:ads:yandex"))
             implementation(project(":feature:auth"))
             implementation(project(":feature:profile"))
             implementation(project(":feature:swiper"))

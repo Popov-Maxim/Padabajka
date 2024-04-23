@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.mockmp)
+    alias(libs.plugins.jetbrainsCompose)
 }
 
 kotlin {
