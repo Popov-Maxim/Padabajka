@@ -40,6 +40,7 @@ class PersonRepositoryImpl(
         return obtainPerson(searchPreferences)
     }
 
+    // TODO: Rename me, please:(
     override suspend fun setUsed(personId: PersonId) {
         sharedPersons {
             removeAll { it.id == personId }
