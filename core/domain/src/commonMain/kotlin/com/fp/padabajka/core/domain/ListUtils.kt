@@ -1,5 +1,8 @@
 package com.fp.padabajka.core.domain
 
-fun <T> List<T>.replaced(oldValue: T, newValue: T): List<T> = map {
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
+
+fun <T> PersistentList<T>.replaced(oldValue: T, newValue: T): PersistentList<T> = map {
     if (it == oldValue) newValue else it
-}
+}.toPersistentList()
