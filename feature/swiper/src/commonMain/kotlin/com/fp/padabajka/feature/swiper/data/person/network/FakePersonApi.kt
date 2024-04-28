@@ -2,6 +2,7 @@ package com.fp.padabajka.feature.swiper.data.person.network
 
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.feature.swiper.data.person.network.model.PersonDto
+import kotlinx.datetime.LocalDate
 
 class FakePersonApi : PersonApi {
 
@@ -19,8 +20,17 @@ class FakePersonApi : PersonApi {
         }
     }
 
-    @Suppress("UnusedParameter")
     private fun createPersonDto(index: Int): PersonDto {
-        return object : PersonDto {}
+        return PersonDto(
+            PersonId(index),
+            "firstName $index",
+            "lastName $index",
+            BIRTHDAY,
+            "aboutMe $index"
+        )
+    }
+
+    companion object {
+        private val BIRTHDAY = LocalDate(1990, 1, 1).toString()
     }
 }

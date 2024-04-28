@@ -19,6 +19,6 @@ class RemotePersonDataSourceImpl(
     }
 
     private fun SearchPreferences.toConfig(): PersonApi.Configuration {
-        return TODO()
+        return PersonApi.Configuration()
     }
 }
