@@ -1,6 +1,5 @@
 package com.fp.padabajka.feature.swiper.di
 
-import com.fp.padabajka.core.domain.Factory
 import com.fp.padabajka.core.repository.api.CardRepository
 import com.fp.padabajka.core.repository.api.PersonRepository
 import com.fp.padabajka.core.repository.api.ReactionRepository
@@ -18,6 +17,7 @@ import com.fp.padabajka.feature.swiper.data.reaction.network.FakeReactionApi
 import com.fp.padabajka.feature.swiper.data.reaction.network.ReactionApi
 import com.fp.padabajka.feature.swiper.data.reaction.source.RemoteReactionDataSource
 import com.fp.padabajka.feature.swiper.data.reaction.source.RemoteReactionDataSourceImpl
+import com.fp.padabajka.feature.swiper.domain.NextCardUseCase
 import com.fp.padabajka.feature.swiper.domain.ReactToCardUseCase
 import com.fp.padabajka.feature.swiper.presentation.SwiperScreenComponent
 import org.koin.dsl.module
@@ -69,22 +69,26 @@ private val dataModule = module {
 
     factory<CardSelectorProvider> {
         CardSelectorProvider(
-            cardSelectorFactory = get()
+            cardSelectorFactory = { get() }
         )
     }
 
-    factory<Factory<CardSelector>> {
-        Factory { NoAdCardSelector() }
+    factory<CardSelector> {
+        NoAdCardSelector()
     }
 }
 
 private val domainModule = module {
-    factory<Factory<ReactToCardUseCase>> {
-        Factory {
-            ReactToCardUseCase(
-                cardRepository = get()
-            )
-        }
+    factory<ReactToCardUseCase> {
+        ReactToCardUseCase(
+            cardRepository = get()
+        )
+    }
+
+    factory<NextCardUseCase> {
+        NextCardUseCase(
+            cardRepository = get()
+        )
     }
 }
 
@@ -92,7 +96,8 @@ private val presentationModule = module {
     factory<SwiperScreenComponent> { parameters ->
         SwiperScreenComponent(
             context = parameters.get(),
-            reactToCardUseCase = get()
+            reactToCardUseCase = { get() },
+            nextCardUseCase = { get() }
         )
     }
 }

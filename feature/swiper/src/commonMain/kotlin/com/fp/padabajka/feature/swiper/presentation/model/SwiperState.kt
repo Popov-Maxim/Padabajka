@@ -16,14 +16,10 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.datetime.LocalDate
 
 @Immutable
-sealed interface SwiperState : State {
-    data object Default : SwiperState
-    data object Loading : SwiperState
-    data class Content(
-        val foregroundCardItem: CardItem,
-        val backgroundCardItem: CardItem?
-    ) : SwiperState
-}
+data class SwiperState(
+    val foregroundCardItem: CardItem,
+    val backgroundCardItem: CardItem
+) : State
 
 @Immutable
 sealed interface CardItem
