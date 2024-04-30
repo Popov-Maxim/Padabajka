@@ -116,8 +116,8 @@ class PersonRepositoryImpl(
 
     private suspend fun ensureActual(searchPreferences: SearchPreferences) =
         coroutineScope {
-            this@PersonRepositoryImpl.actualSearchPreferences {
-                if (this == searchPreferences) {
+            actualSearchPreferences {
+                if (this != searchPreferences) {
                     cancel("Search preferences got updated!")
                 }
             }
