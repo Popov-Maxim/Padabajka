@@ -11,14 +11,20 @@ import com.fp.padabajka.feature.swiper.presentation.model.SuperLikeEvent
 
 @Composable
 fun SwiperScreen(swiperScreenComponent: SwiperScreenComponent) {
-    val swiperState by swiperScreenComponent.state.subscribeAsState()
-    val onSwipe: (Swipe) -> Unit = { swipe ->
-        val personId = PersonId(1)
-        when (swipe) {
-            Swipe.Left -> swiperScreenComponent.onEvent(DislikeEvent(personId))
-            Swipe.Right -> swiperScreenComponent.onEvent(LikeEvent(personId))
-            Swipe.Up -> swiperScreenComponent.onEvent(SuperLikeEvent(personId))
+    if (NEW_UI_DECK_OF_CARD) {
+        TestDeckOfCards()
+    } else {
+        val swiperState by swiperScreenComponent.state.subscribeAsState()
+        val onSwipe: (Swipe) -> Unit = { swipe ->
+            val personId = PersonId(1)
+            when (swipe) {
+                Swipe.Left -> swiperScreenComponent.onEvent(DislikeEvent(personId))
+                Swipe.Right -> swiperScreenComponent.onEvent(LikeEvent(personId))
+                Swipe.Up -> swiperScreenComponent.onEvent(SuperLikeEvent(personId))
+            }
         }
+        CardSwiper(swiperState, onSwipe)
     }
-    CardSwiper(swiperState, onSwipe)
 }
+
+private const val NEW_UI_DECK_OF_CARD = false

@@ -70,7 +70,7 @@ private fun AnimationOffset.getOffsetForSwipe(swipe: Swipe?): Offset =
     offset.getOffsetForSwipe(swipe)
 
 // TODO(swiper): improve logic
-private fun Offset.getOffsetForSwipe(swipe: Swipe?): Offset {
+fun Offset.getOffsetForSwipe(swipe: Swipe?): Offset {
     return when (swipe) {
         Swipe.Left,
         Swipe.Right,
@@ -85,7 +85,7 @@ private fun AnimationOffset.getSwipe(
 ): Swipe? =
     offset.getSwipe(swipeHorizontalThreshold, swipeVerticalThreshold)
 
-private fun Offset.getSwipe(swipeHorizontalThreshold: Float, swipeVerticalThreshold: Float): Swipe? {
+fun Offset.getSwipe(swipeHorizontalThreshold: Float, swipeVerticalThreshold: Float): Swipe? {
     return when {
         -y > swipeVerticalThreshold -> Swipe.Up
         x > swipeHorizontalThreshold -> Swipe.Right
