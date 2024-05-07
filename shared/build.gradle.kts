@@ -64,4 +64,10 @@ android {
     defaultConfig {
         minSdk = 24
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    }
 }
