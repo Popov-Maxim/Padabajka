@@ -10,5 +10,5 @@ data class Person(
 
 @JvmInline
 value class PersonId(
-    val raw: Int
+    val raw: String
 )

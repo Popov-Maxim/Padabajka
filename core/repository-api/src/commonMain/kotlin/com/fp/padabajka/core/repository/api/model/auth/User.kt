@@ -8,4 +8,4 @@ data class User(
 )
 
 @JvmInline
-value class UserId(val id: String)
+value class UserId(val raw: String)
