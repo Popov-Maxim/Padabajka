@@ -56,7 +56,7 @@ private fun createAnimationCard(index: Int, onSwipe: (Swipe) -> Unit): Animation
 
 private fun createPersonItem(index: Int): PersonItem {
     return PersonItem(
-        id = PersonId(index),
+        id = PersonId("index"),
         firstName = "firstName $index",
         lastName = "lastName $index",
         birthday = LocalDate(year = 1990, monthNumber = 1, dayOfMonth = 1),

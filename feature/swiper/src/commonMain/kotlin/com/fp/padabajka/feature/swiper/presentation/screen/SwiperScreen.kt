@@ -16,7 +16,7 @@ fun SwiperScreen(swiperScreenComponent: SwiperScreenComponent) {
     } else {
         val swiperState by swiperScreenComponent.state.subscribeAsState()
         val onSwipe: (Swipe) -> Unit = { swipe ->
-            val personId = PersonId(1)
+            val personId = PersonId("1")
             when (swipe) {
                 Swipe.Left -> swiperScreenComponent.onEvent(DislikeEvent(personId))
                 Swipe.Right -> swiperScreenComponent.onEvent(LikeEvent(personId))
