@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 class LocalMessageDataSourceImpl : LocalMessageDataSource {
 
-    override fun messages(matchId: String): Flow<List<MessageDto>> {
+    override fun messages(chatId: String): Flow<List<MessageDto>> {
         TODO("Not yet implemented")
     }
 
@@ -14,14 +14,14 @@ class LocalMessageDataSourceImpl : LocalMessageDataSource {
     }
 
     override suspend fun updateMessage(
-        matchId: String,
+        chatId: String,
         messageId: Long,
         update: (MessageDto) -> MessageDto
     ) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun message(matchId: String, messageId: Long): MessageDto {
+    override suspend fun message(chatId: String, messageId: Long): MessageDto {
         TODO("Not yet implemented")
     }
 }

@@ -5,9 +5,9 @@ import com.fp.padabajka.core.domain.Factory
 import com.fp.padabajka.core.presentation.BaseComponent
 import com.fp.padabajka.core.presentation.event.consumed
 import com.fp.padabajka.core.presentation.event.raisedIfNotNull
+import com.fp.padabajka.core.repository.api.model.messenger.ChatId
 import com.fp.padabajka.core.repository.api.model.messenger.MessageId
 import com.fp.padabajka.core.repository.api.model.messenger.MessageReaction
-import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.feature.messenger.domain.ReactToMessageUseCase
 import com.fp.padabajka.feature.messenger.domain.ReadMessageUseCase
 import com.fp.padabajka.feature.messenger.domain.SendMessageUseCase
@@ -23,7 +23,7 @@ import com.fp.padabajka.feature.messenger.presentation.model.SelectParentMessage
 import com.fp.padabajka.feature.messenger.presentation.model.SendMessageClickEvent
 
 class MessengerComponent(
-    private val personId: PersonId,
+    private val chatId: ChatId,
     private val sendMessageUseCase: Factory<SendMessageUseCase>,
     private val readMessageUseCase: Factory<ReadMessageUseCase>,
     private val reactToMessageUseCase: Factory<ReactToMessageUseCase>,
@@ -57,7 +57,7 @@ class MessengerComponent(
 
     private fun readMessage(messageId: MessageId) = mapAndReduceException(
         action = {
-            readMessageUseCase.get().invoke(messageId)
+            readMessageUseCase.get().invoke(chatId, messageId)
         },
         mapper = { InternalError },
         update = { state, internalError ->
@@ -68,7 +68,7 @@ class MessengerComponent(
     private fun reactToMessage(messageId: MessageId, reaction: MessageReaction) =
         mapAndReduceException(
             action = {
-                reactToMessageUseCase.get().invoke(messageId, reaction)
+                reactToMessageUseCase.get().invoke(chatId, messageId, reaction)
             },
             mapper = { InternalError },
             update = { state, internalError ->
@@ -81,7 +81,7 @@ class MessengerComponent(
             val messageText = state.nextMessageText
             val parentMessageId = state.parentMessageId
 
-            sendMessageUseCase.get().invoke(personId, messageText, parentMessageId)
+            sendMessageUseCase.get().invoke(chatId, messageText, parentMessageId)
         },
         mapper = {
             // TODO: Implement

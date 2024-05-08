@@ -1,6 +1,10 @@
 package com.fp.padabajka.feature.messenger.data
 
+import com.fp.padabajka.core.repository.api.AuthRepository
 import com.fp.padabajka.core.repository.api.MessageRepository
+import com.fp.padabajka.core.repository.api.model.auth.LoggedIn
+import com.fp.padabajka.core.repository.api.model.auth.NoAuthorisedUserException
+import com.fp.padabajka.core.repository.api.model.messenger.ChatId
 import com.fp.padabajka.core.repository.api.model.messenger.Message
 import com.fp.padabajka.core.repository.api.model.messenger.MessageDirection
 import com.fp.padabajka.core.repository.api.model.messenger.MessageId
@@ -11,8 +15,11 @@ import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.feature.messenger.data.model.MessageDto
 import com.fp.padabajka.feature.messenger.data.source.local.LocalMessageDataSource
 import com.fp.padabajka.feature.messenger.data.source.remote.RemoteMessageDataSource
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
@@ -20,17 +27,26 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 class MessageRepositoryImpl(
+    scope: CoroutineScope,
+    authRepository: AuthRepository,
     private val localMessageDataSource: LocalMessageDataSource,
     private val remoteMessageDataSource: RemoteMessageDataSource
 ) : MessageRepository {
 
-    override fun messages(matchId: PersonId): Flow<List<Message>> =
-        localMessageDataSource.messages(matchId.raw).map { messages ->
+    private val myRawPersonId: String? by authRepository.authState.map {
+        (it as? LoggedIn)?.userId?.raw
+    }.stateIn(scope, SharingStarted.Eagerly, null)::value
+
+    private val myPersonId: PersonId
+        get() = PersonId(myRawPersonId ?: throw NoAuthorisedUserException)
+
+    override fun messages(chatId: ChatId): Flow<List<Message>> =
+        localMessageDataSource.messages(chatId.raw).map { messages ->
             messages.map { it.toDomain() }
         }
 
     override suspend fun sendMessage(
-        matchId: PersonId,
+        chatId: ChatId,
         content: String,
         parentMessageId: MessageId?
     ) {
@@ -39,8 +55,8 @@ class MessageRepositoryImpl(
         val messageDto = localMessageDataSource.addMessage(
             MessageDto(
                 id = null,
-                matchId = matchId.raw,
-                isIncoming = false,
+                chatId = chatId.raw,
+                authorId = myPersonId.raw,
                 content = content,
                 creationTime = currentTime,
                 messageStatus = MessageStatus.Sending,
@@ -55,15 +71,15 @@ class MessageRepositoryImpl(
     }
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
-    override suspend fun readMessage(matchId: PersonId, messageId: MessageId) {
-        localMessageDataSource.updateMessage(matchId.raw, messageId.raw) {
+    override suspend fun readMessage(chatId: ChatId, messageId: MessageId) {
+        localMessageDataSource.updateMessage(chatId.raw, messageId.raw) {
             it.copy(messageStatus = MessageStatus.Read, readSynced = false)
         }
 
         try {
-            remoteMessageDataSource.readMessages(matchId.raw, messageId.raw)
+            remoteMessageDataSource.readMessages(chatId.raw, messageId.raw)
 
-            localMessageDataSource.updateMessage(matchId.raw, messageId.raw) {
+            localMessageDataSource.updateMessage(chatId.raw, messageId.raw) {
                 it.copy(readSynced = true)
             }
         } catch (e: Throwable) {
@@ -73,18 +89,18 @@ class MessageRepositoryImpl(
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override suspend fun reactToMessage(
-        matchId: PersonId,
+        chatId: ChatId,
         messageId: MessageId,
         reaction: MessageReaction
     ) {
-        localMessageDataSource.updateMessage(matchId.raw, messageId.raw) {
+        localMessageDataSource.updateMessage(chatId.raw, messageId.raw) {
             it.copy(reaction = reaction, reactionSynced = false)
         }
 
         try {
-            remoteMessageDataSource.sendReaction(matchId.raw, messageId.raw, reaction.toString())
+            remoteMessageDataSource.sendReaction(chatId.raw, messageId.raw, reaction.toString())
 
-            localMessageDataSource.updateMessage(matchId.raw, messageId.raw) {
+            localMessageDataSource.updateMessage(chatId.raw, messageId.raw) {
                 it.copy(reactionSynced = true)
             }
         } catch (e: Throwable) {
@@ -96,15 +112,15 @@ class MessageRepositoryImpl(
     private suspend fun trySendMessageToRemote(messageDto: MessageDto) {
         try {
             val updatedMessageDto =
-                remoteMessageDataSource.sendMessage(messageDto.matchId, messageDto.content)
+                remoteMessageDataSource.sendMessage(messageDto.chatId, messageDto.content)
 
             localMessageDataSource.updateMessage(
-                messageDto.matchId,
+                messageDto.chatId,
                 messageDto.id!!
             ) { updatedMessageDto }
         } catch (e: Throwable) {
             // TODO: retry sending
-            localMessageDataSource.updateMessage(messageDto.matchId, messageDto.id!!) {
+            localMessageDataSource.updateMessage(messageDto.chatId, messageDto.id!!) {
                 it.copy(messageStatus = MessageStatus.FailedToSend)
             }
         }
@@ -112,17 +128,17 @@ class MessageRepositoryImpl(
 
     private suspend fun MessageDto.toDomain(): Message {
         val parentMessage = parentMessageId?.let {
-            val parentMessageDto = localMessageDataSource.message(matchId, it)
+            val parentMessageDto = localMessageDataSource.message(chatId, it)
             ParentMessage(
                 id = MessageId(parentMessageDto.id!!),
-                direction = direction(parentMessageDto.isIncoming),
+                direction = direction(parentMessageDto.authorId),
                 content = parentMessageDto.content
             )
         }
 
         return Message(
             id = MessageId(id!!),
-            direction = direction(isIncoming),
+            direction = direction(authorId),
             content = content,
             creationTime = localDateTime(creationTime),
             status = messageStatus,
@@ -131,11 +147,11 @@ class MessageRepositoryImpl(
         )
     }
 
-    private fun direction(isIncoming: Boolean): MessageDirection {
-        return if (isIncoming) {
-            MessageDirection.INCOMING
-        } else {
+    private fun direction(authorId: String): MessageDirection {
+        return if (authorId == myPersonId.raw) {
             MessageDirection.OUTGOING
+        } else {
+            MessageDirection.INCOMING
         }
     }
 

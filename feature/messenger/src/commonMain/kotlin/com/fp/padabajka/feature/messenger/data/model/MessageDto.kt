@@ -5,8 +5,8 @@ import com.fp.padabajka.core.repository.api.model.messenger.MessageStatus
 
 data class MessageDto(
     val id: Long?,
-    val matchId: String,
-    val isIncoming: Boolean,
+    val chatId: String,
+    val authorId: String,
     val content: String,
     val creationTime: Long,
     val reaction: MessageReaction?,
