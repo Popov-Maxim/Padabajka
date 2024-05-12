@@ -22,7 +22,7 @@ class FakePersonApi : PersonApi {
 
     private fun createPersonDto(index: Int): PersonDto {
         return PersonDto(
-            PersonId(index),
+            PersonId("$index"),
             "firstName $index",
             "lastName $index",
             BIRTHDAY,
