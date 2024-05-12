@@ -80,6 +80,6 @@ class CardRepositoryImplTest {
     }
 
     companion object {
-        private val PERSON_ID = PersonId(123)
+        private val PERSON_ID = PersonId("123")
     }
 }
