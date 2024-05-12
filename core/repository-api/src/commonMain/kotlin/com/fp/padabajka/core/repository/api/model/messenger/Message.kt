@@ -1,6 +1,7 @@
 package com.fp.padabajka.core.repository.api.model.messenger
 
 import kotlinx.datetime.LocalDateTime
+import kotlin.jvm.JvmInline
 
 data class Message(
     val id: MessageId,
