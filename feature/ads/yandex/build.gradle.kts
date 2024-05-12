@@ -38,10 +38,10 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // put your multiplatform dependencies here
-            api(project(":core:presentation"))
-            api(project(":core:domain"))
-            api(project(":core:repository-api"))
-            api(project(":core:data"))
+            api(projects.core.presentation)
+            api(projects.core.domain)
+            api(projects.core.repositoryApi)
+            api(projects.core.data)
         }
         androidMain.dependencies {
             implementation(libs.yandex.ads)
