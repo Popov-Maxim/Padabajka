@@ -38,13 +38,13 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":feature:ads"))
-            implementation(project(":feature:ads:yandex"))
-            implementation(project(":feature:auth"))
-            implementation(project(":feature:profile"))
-            implementation(project(":feature:swiper"))
-            implementation(project(":feature:match"))
-            implementation(project(":feature:messenger"))
+            implementation(projects.feature.ads)
+            implementation(projects.feature.ads.yandex)
+            implementation(projects.feature.auth)
+            implementation(projects.feature.profile)
+            implementation(projects.feature.swiper)
+            implementation(projects.feature.match)
+            implementation(projects.feature.messenger)
 
             implementation(compose.runtime)
             implementation(compose.foundation)

@@ -27,7 +27,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // put your multiplatform dependencies here
-            api(project(":core:repository-api"))
+            api(projects.core.repositoryApi)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -29,16 +29,16 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(project(":core:presentation"))
-            api(project(":core:domain"))
-            api(project(":core:repository-api"))
-            api(project(":core:data"))
-            api(project(":feature:auth:domain"))
+            api(projects.core.presentation)
+            api(projects.core.domain)
+            api(projects.core.repositoryApi)
+            api(projects.core.data)
+            api(projects.feature.auth.domain)
 
             implementation(libs.gitlive.firebase.auth)
         }
         commonTest.dependencies {
-            implementation(project(":testing"))
+            implementation(projects.testing)
             implementation(libs.kotlin.test)
         }
         val androidInstrumentedTest by getting

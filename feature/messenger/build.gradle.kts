@@ -26,10 +26,10 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(project(":core:presentation"))
-            api(project(":core:domain"))
-            api(project(":core:repository-api"))
-            api(project(":core:data"))
+            api(projects.core.presentation)
+            api(projects.core.domain)
+            api(projects.core.repositoryApi)
+            api(projects.core.data)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
