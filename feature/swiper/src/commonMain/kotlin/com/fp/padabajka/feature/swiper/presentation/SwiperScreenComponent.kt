@@ -3,6 +3,7 @@ package com.fp.padabajka.feature.swiper.presentation
 import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.domain.Factory
 import com.fp.padabajka.core.presentation.BaseComponent
+import com.fp.padabajka.core.repository.api.model.swiper.EmptyCard
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.core.repository.api.model.swiper.PersonReaction
 import com.fp.padabajka.core.repository.api.model.swiper.SearchPreferences
@@ -10,13 +11,14 @@ import com.fp.padabajka.feature.swiper.domain.NextCardUseCase
 import com.fp.padabajka.feature.swiper.domain.ReactToCardUseCase
 import com.fp.padabajka.feature.swiper.presentation.model.CardItem
 import com.fp.padabajka.feature.swiper.presentation.model.DislikeEvent
-import com.fp.padabajka.feature.swiper.presentation.model.EmptyCardItem
+import com.fp.padabajka.feature.swiper.presentation.model.EndOfCardAnimationEvent
 import com.fp.padabajka.feature.swiper.presentation.model.LikeEvent
-import com.fp.padabajka.feature.swiper.presentation.model.LoadingItem
 import com.fp.padabajka.feature.swiper.presentation.model.SuperLikeEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SwiperEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SwiperState
 import com.fp.padabajka.feature.swiper.presentation.model.toUICardItem
+import com.fp.padabajka.feature.swiper.presentation.screen.toSafe
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -27,16 +29,13 @@ class SwiperScreenComponent(
 ) : BaseComponent<SwiperState>(
     context,
     SwiperState(
-        LoadingItem,
-        LoadingItem
+        persistentListOf<CardItem>().toSafe()
     )
 ) {
 
     init {
         componentScope.launch {
-            repeat(2) {
-                loadCard()
-            }
+            loadCard(count = 3)
         }
     }
 
@@ -47,33 +46,30 @@ class SwiperScreenComponent(
             is DislikeEvent -> dislikePerson(event.personId)
             is LikeEvent -> likePerson(event.personId)
             is SuperLikeEvent -> superLikePerson(event.personId)
+            is EndOfCardAnimationEvent -> removeCardFromDeck(event.cardItem)
         }
     }
 
-    private fun updateForegroundCard() {
-        reduce {
-            it.copy(
-                foregroundCardItem = it.backgroundCardItem,
-                backgroundCardItem = LoadingItem
-            )
+    private fun removeCardFromDeck(cardItem: CardItem) {
+        reduce { state ->
+            state.run { copy(cardDeck = cardDeck.remove(cardItem)) }
         }
     }
 
-    private suspend fun loadCard(): Job {
+    private suspend fun loadCard(count: Int = 1): Job {
         return componentScope.launch {
-            val card = nextCardUseCase.get().invoke(searchPreferences).toUICardItem()
-            reduce { state ->
-                if (state.foregroundCardItem.isEmpty()) {
-                    SwiperState(card, LoadingItem)
-                } else {
-                    state.copy(backgroundCardItem = card)
+            repeat(count) {
+                val card = nextCardUseCase.get().invoke(searchPreferences)
+                reduce { state ->
+                    val needAddInCardDeck = card !is EmptyCard || state.cardDeck.isEmpty()
+                    return@reduce if (needAddInCardDeck) {
+                        state.run { copy(cardDeck = cardDeck.add(card.toUICardItem())) }
+                    } else {
+                        state
+                    }
                 }
             }
         }
-    }
-
-    private fun CardItem.isEmpty(): Boolean {
-        return this is LoadingItem || this is EmptyCardItem
     }
 
     private fun dislikePerson(personId: PersonId) {
@@ -91,7 +87,6 @@ class SwiperScreenComponent(
     private fun reactPerson(reaction: PersonReaction) =
         mapAndReduceException(
             action = {
-                updateForegroundCard()
                 reactToCardUseCase.get().invoke(reaction)
                 loadCard()
             },
