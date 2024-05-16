@@ -27,4 +27,4 @@ fun SwiperScreen(swiperScreenComponent: SwiperScreenComponent) {
     }
 }
 
-private const val NEW_UI_DECK_OF_CARD = false
+private const val NEW_UI_DECK_OF_CARD = true

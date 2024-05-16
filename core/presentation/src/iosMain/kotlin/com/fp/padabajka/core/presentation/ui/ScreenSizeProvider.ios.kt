@@ -9,15 +9,20 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 
 actual object ScreenSizeProvider {
-    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
-    actual fun getScreenSize(): DpSize {
+    actual fun getDpScreenSize(): DpSize {
         val density = LocalDensity.current.density
 
-        return LocalWindowInfo.current.containerSize.toDp(density)
+        return getPxScreenSize().toDp(density)
     }
 
     private fun IntSize.toDp(density: Float): DpSize {
         return DpSize((width / density).toInt().dp, (height / density).toInt().dp)
+    }
+
+    @OptIn(ExperimentalComposeUiApi::class)
+    @Composable
+    actual fun getPxScreenSize(): IntSize {
+        return LocalWindowInfo.current.containerSize
     }
 }

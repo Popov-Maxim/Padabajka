@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
@@ -66,20 +67,78 @@ fun SwipeCard(
     }
 }
 
-private fun AnimationOffset.getOffsetForSwipe(swipe: Swipe?): Offset =
-    offset.getOffsetForSwipe(swipe)
+fun AnimationOffset.getOffsetForSwipe(swipe: Swipe?, rectForMinOffset: Rect = Rect.Zero): Offset =
+    offset.getOffsetForSwipe(swipe, rectForMinOffset)
 
 // TODO(swiper): improve logic
-fun Offset.getOffsetForSwipe(swipe: Swipe?): Offset {
+private fun Offset.getOffsetForSwipe(swipe: Swipe?, rectForMinOffset: Rect): Offset {
     return when (swipe) {
         Swipe.Left,
         Swipe.Right,
-        Swipe.Up -> copy(x * POSITION_SCALE, y * POSITION_SCALE)
+        Swipe.Up -> rectForMinOffset.getOffsetForSwipe(Offset(x * POSITION_SCALE, y * POSITION_SCALE))
         null -> Offset.Zero
     }
 }
 
-private fun AnimationOffset.getSwipe(
+@Suppress("NestedBlockDepth")
+private fun Rect.getOffsetForSwipe(offsetForSwipe: Offset): Offset {
+    val (x, y) = offsetForSwipe
+
+    val contains = contains(offsetForSwipe)
+    return if (contains.not()) {
+        offsetForSwipe
+    } else {
+        if (x.toInt() == 0) {
+            if (y > 0) {
+                Offset(x, bottom)
+            } else {
+                Offset(x, top)
+            }
+        } else if (x > 0) {
+            if (y.toInt() == 0) {
+                Offset(right, y)
+            } else if (y > 0) {
+                val k = bottom / y
+                val newX = x * k
+                if (newX <= right) {
+                    Offset(newX, bottom)
+                } else {
+                    Offset(right, y * right / x)
+                }
+            } else {
+                val k = top / y
+                val newX = x * k
+                if (newX <= right) {
+                    Offset(newX, top)
+                } else {
+                    Offset(right, y * right / x)
+                }
+            }
+        } else {
+            if (y.toInt() == 0) {
+                Offset(left, y)
+            } else if (y > 0) {
+                val k = bottom / y
+                val newX = x * k
+                if (newX >= left) {
+                    Offset(newX, bottom)
+                } else {
+                    Offset(left, y * left / x)
+                }
+            } else {
+                val k = top / y
+                val newX = x * k
+                if (newX >= left) {
+                    Offset(newX, top)
+                } else {
+                    Offset(left, y * left / x)
+                }
+            }
+        }
+    }
+}
+
+fun AnimationOffset.getSwipe(
     swipeHorizontalThreshold: Float,
     swipeVerticalThreshold: Float
 ): Swipe? =
@@ -94,4 +153,4 @@ fun Offset.getSwipe(swipeHorizontalThreshold: Float, swipeVerticalThreshold: Flo
     }
 }
 
-private const val POSITION_SCALE = 3.5f
+private const val POSITION_SCALE = 2.0f
