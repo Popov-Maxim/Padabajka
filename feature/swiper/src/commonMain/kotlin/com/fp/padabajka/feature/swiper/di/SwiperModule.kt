@@ -96,8 +96,8 @@ private val presentationModule = module {
     factory<SwiperScreenComponent> { parameters ->
         SwiperScreenComponent(
             context = parameters.get(),
-            reactToCardUseCase = { get() },
-            nextCardUseCase = { get() }
+            reactToCardUseCaseFactory = { get() },
+            nextCardUseCaseFactory = { get() }
         )
     }
 }

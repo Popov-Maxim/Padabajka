@@ -3,7 +3,6 @@ package com.fp.padabajka.feature.swiper.presentation
 import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.domain.Factory
 import com.fp.padabajka.core.presentation.BaseComponent
-import com.fp.padabajka.core.repository.api.model.swiper.EmptyCard
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.core.repository.api.model.swiper.PersonReaction
 import com.fp.padabajka.core.repository.api.model.swiper.SearchPreferences
@@ -17,19 +16,18 @@ import com.fp.padabajka.feature.swiper.presentation.model.SuperLikeEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SwiperEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SwiperState
 import com.fp.padabajka.feature.swiper.presentation.model.toUICardItem
-import com.fp.padabajka.feature.swiper.presentation.screen.toSafe
-import kotlinx.collections.immutable.persistentListOf
+import com.fp.padabajka.feature.swiper.presentation.screen.CardDeck
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class SwiperScreenComponent(
     context: ComponentContext,
-    private val reactToCardUseCase: Factory<ReactToCardUseCase>,
-    private val nextCardUseCase: Factory<NextCardUseCase>,
+    private val reactToCardUseCaseFactory: Factory<ReactToCardUseCase>,
+    private val nextCardUseCaseFactory: Factory<NextCardUseCase>,
 ) : BaseComponent<SwiperState>(
     context,
     SwiperState(
-        persistentListOf<CardItem>().toSafe()
+        CardDeck()
     )
 ) {
 
@@ -38,6 +36,11 @@ class SwiperScreenComponent(
             loadCard(count = 3)
         }
     }
+
+    private val reactToCardUseCase: ReactToCardUseCase
+        get() = reactToCardUseCaseFactory.get()
+    private val nextCardUseCase: NextCardUseCase
+        get() = nextCardUseCaseFactory.get()
 
     private val searchPreferences: SearchPreferences = object : SearchPreferences {}
 
@@ -59,14 +62,9 @@ class SwiperScreenComponent(
     private suspend fun loadCard(count: Int = 1): Job {
         return componentScope.launch {
             repeat(count) {
-                val card = nextCardUseCase.get().invoke(searchPreferences)
+                val card = nextCardUseCase.invoke(searchPreferences)
                 reduce { state ->
-                    val needAddInCardDeck = card !is EmptyCard || state.cardDeck.isEmpty()
-                    return@reduce if (needAddInCardDeck) {
-                        state.run { copy(cardDeck = cardDeck.add(card.toUICardItem())) }
-                    } else {
-                        state
-                    }
+                    state.run { copy(cardDeck = cardDeck.add(card.toUICardItem())) }
                 }
             }
         }
@@ -87,7 +85,7 @@ class SwiperScreenComponent(
     private fun reactPerson(reaction: PersonReaction) =
         mapAndReduceException(
             action = {
-                reactToCardUseCase.get().invoke(reaction)
+                reactToCardUseCase.invoke(reaction)
                 loadCard()
             },
             mapper = {

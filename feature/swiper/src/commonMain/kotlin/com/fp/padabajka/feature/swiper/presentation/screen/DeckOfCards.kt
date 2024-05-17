@@ -27,12 +27,13 @@ fun DeckOfCards(swiperScreenComponent: SwiperScreenComponent) {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        cardDeck.getResult().forEachIndexed { i, card ->
+        val cards = cardDeck.getCards()
+        cards.forEachIndexed { i, card ->
             key(card) {
                 AnimationCard(
                     modifier = Modifier.fillMaxSize()
                         .padding(horizontal = 30.dp, vertical = 100.dp)
-                        .zIndex((cardDeck.size - i).toFloat()),
+                        .zIndex((cards.size - i).toFloat()),
                     content = @Composable {
                         Card(card)
                     },

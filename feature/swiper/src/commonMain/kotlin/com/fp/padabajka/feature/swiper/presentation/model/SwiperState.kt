@@ -12,13 +12,13 @@ import com.fp.padabajka.core.repository.api.model.swiper.EmptyCard
 import com.fp.padabajka.core.repository.api.model.swiper.Person
 import com.fp.padabajka.core.repository.api.model.swiper.PersonCard
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
-import com.fp.padabajka.feature.swiper.presentation.screen.SafePersistentList
+import com.fp.padabajka.feature.swiper.presentation.screen.CardDeck
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.datetime.LocalDate
 
 @Immutable
 data class SwiperState(
-    val cardDeck: SafePersistentList<CardItem>,
+    val cardDeck: CardDeck,
 ) : State
 
 @Immutable
