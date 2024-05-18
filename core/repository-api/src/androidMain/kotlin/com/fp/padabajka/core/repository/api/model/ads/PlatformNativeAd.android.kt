@@ -1,7 +1,7 @@
 package com.fp.padabajka.core.repository.api.model.ads
 
-import android.view.View
+import android.view.ViewGroup
 
 actual interface PlatformNativeAd {
-    fun bind(container: View)
+    fun bind(container: ViewGroup)
 }
