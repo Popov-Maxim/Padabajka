@@ -2,6 +2,7 @@ package com.fp.padabajka.feature.swiper.presentation
 
 import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.domain.Factory
+import com.fp.padabajka.core.domain.delegate
 import com.fp.padabajka.core.presentation.BaseComponent
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.core.repository.api.model.swiper.PersonReaction
@@ -22,8 +23,8 @@ import kotlinx.coroutines.launch
 
 class SwiperScreenComponent(
     context: ComponentContext,
-    private val reactToCardUseCaseFactory: Factory<ReactToCardUseCase>,
-    private val nextCardUseCaseFactory: Factory<NextCardUseCase>,
+    reactToCardUseCaseFactory: Factory<ReactToCardUseCase>,
+    nextCardUseCaseFactory: Factory<NextCardUseCase>,
 ) : BaseComponent<SwiperState>(
     context,
     SwiperState(
@@ -37,10 +38,8 @@ class SwiperScreenComponent(
         }
     }
 
-    private val reactToCardUseCase: ReactToCardUseCase
-        get() = reactToCardUseCaseFactory.get()
-    private val nextCardUseCase: NextCardUseCase
-        get() = nextCardUseCaseFactory.get()
+    private val reactToCardUseCase: ReactToCardUseCase by reactToCardUseCaseFactory.delegate()
+    private val nextCardUseCase: NextCardUseCase by nextCardUseCaseFactory.delegate()
 
     private val searchPreferences: SearchPreferences = object : SearchPreferences {}
 
@@ -59,10 +58,10 @@ class SwiperScreenComponent(
         }
     }
 
-    private suspend fun loadCard(count: Int = 1): Job {
+    private fun loadCard(count: Int = 1): Job {
         return componentScope.launch {
             repeat(count) {
-                val card = nextCardUseCase.invoke(searchPreferences)
+                val card = nextCardUseCase(searchPreferences)
                 reduce { state ->
                     state.run { copy(cardDeck = cardDeck.add(card.toUICardItem())) }
                 }
@@ -85,7 +84,7 @@ class SwiperScreenComponent(
     private fun reactPerson(reaction: PersonReaction) =
         mapAndReduceException(
             action = {
-                reactToCardUseCase.invoke(reaction)
+                reactToCardUseCase(reaction)
                 loadCard()
             },
             mapper = {
