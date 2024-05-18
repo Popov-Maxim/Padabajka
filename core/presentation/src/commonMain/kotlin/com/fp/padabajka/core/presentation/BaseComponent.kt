@@ -13,6 +13,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.coroutines.cancellation.CancellationException
 
 abstract class BaseComponent<T : State>(context: ComponentContext, initialState: T) :
@@ -33,6 +36,14 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
     }
 
     protected fun reduce(update: (T) -> T): Job = componentScope.launch {
+        reduceBlocking(update)
+    }
+    
+    @OptIn(ExperimentalContracts::class)
+    protected suspend fun reduceBlocking(update: (T) -> T) {
+        contract {
+            callsInPlace(update, InvocationKind.EXACTLY_ONCE)
+        }
         reducerMutex.withLock {
             _state.update(update)
         }
@@ -55,6 +66,6 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
             mappedException = mapper(e)
         }
 
-        reduce { update(it, mappedException) }
+        reduceBlocking { update(it, mappedException) }
     }
 }
