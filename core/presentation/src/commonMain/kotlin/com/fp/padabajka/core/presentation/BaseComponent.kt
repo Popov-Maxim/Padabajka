@@ -38,7 +38,7 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
     protected fun reduce(update: (T) -> T): Job = componentScope.launch {
         reduceBlocking(update)
     }
-    
+
     @OptIn(ExperimentalContracts::class)
     protected suspend fun reduceBlocking(update: (T) -> T) {
         contract {

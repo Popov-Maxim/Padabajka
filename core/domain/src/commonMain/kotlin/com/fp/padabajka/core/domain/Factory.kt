@@ -2,7 +2,7 @@ package com.fp.padabajka.core.domain
 
 import kotlin.properties.ReadOnlyProperty
 
-interface Factory<T> {
+fun interface Factory<T> {
     fun get(): T
 }
 
