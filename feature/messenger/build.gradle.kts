@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.mockmp)
 }
 
 kotlin {
@@ -32,9 +33,15 @@ kotlin {
             api(projects.core.data)
         }
         commonTest.dependencies {
+            implementation(project(":testing"))
             implementation(libs.kotlin.test)
         }
     }
+}
+
+mockmp {
+    usesHelper = true
+    installWorkaround()
 }
 
 android {
