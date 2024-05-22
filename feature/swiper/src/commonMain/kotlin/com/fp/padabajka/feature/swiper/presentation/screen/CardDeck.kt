@@ -2,34 +2,35 @@ package com.fp.padabajka.feature.swiper.presentation.screen
 
 import com.fp.padabajka.feature.swiper.presentation.model.CardItem
 import kotlinx.collections.immutable.ImmutableCollection
-import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentSet
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toPersistentSet
 
 class CardDeck(
     private val mainCollection: PersistentSet<CardItem> = persistentSetOf(),
-    private val listForRemove: PersistentList<CardItem> = persistentListOf()
+    private val indexForDelete: Int = 0
 ) {
     fun add(cardItem: CardItem): CardDeck {
         val newMainCollection = mainCollection.add(cardItem)
 
-        return CardDeck(newMainCollection, listForRemove)
+        return CardDeck(newMainCollection, indexForDelete)
     }
 
     fun remove(cardItem: CardItem): CardDeck {
         val index = mainCollection.indexOf(cardItem)
 
-        val newListForRemove = listForRemove
-            .takeIf { index == 0 }?.add(cardItem)
-            ?: listForRemove
+        return if (index == 0) {
+            CardDeck(mainCollection, indexForDelete + 1)
+        } else {
+            CardDeck(mainCollection.remove(cardItem), indexForDelete)
+        }
+    }
 
-        val newMainCollection = mainCollection.remove(cardItem)
-
-        return CardDeck(newMainCollection, newListForRemove)
+    fun removeOldCards(): CardDeck {
+        return CardDeck(mainCollection.drop(indexForDelete).toPersistentSet())
     }
 
     fun getCards(): ImmutableCollection<CardItem> {
-        return listForRemove.addAll(mainCollection)
+        return mainCollection
     }
 }
