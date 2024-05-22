@@ -34,7 +34,9 @@ fun Card(cardItem: CardItem) {
                 )
             }
         }
-        is NativeAdItem -> {}
+        is NativeAdItem -> {
+            NativeAdCard(cardItem)
+        }
         is PersonItem -> PersonCard(cardItem)
     }
 }
