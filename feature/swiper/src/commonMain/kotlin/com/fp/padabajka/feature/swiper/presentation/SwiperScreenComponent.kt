@@ -2,6 +2,7 @@ package com.fp.padabajka.feature.swiper.presentation
 
 import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.domain.Factory
+import com.fp.padabajka.core.domain.delegate
 import com.fp.padabajka.core.presentation.BaseComponent
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.core.repository.api.model.swiper.PersonReaction
@@ -10,35 +11,35 @@ import com.fp.padabajka.feature.swiper.domain.NextCardUseCase
 import com.fp.padabajka.feature.swiper.domain.ReactToCardUseCase
 import com.fp.padabajka.feature.swiper.presentation.model.CardItem
 import com.fp.padabajka.feature.swiper.presentation.model.DislikeEvent
-import com.fp.padabajka.feature.swiper.presentation.model.EmptyCardItem
+import com.fp.padabajka.feature.swiper.presentation.model.EndOfCardAnimationEvent
 import com.fp.padabajka.feature.swiper.presentation.model.LikeEvent
-import com.fp.padabajka.feature.swiper.presentation.model.LoadingItem
 import com.fp.padabajka.feature.swiper.presentation.model.SuperLikeEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SwiperEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SwiperState
 import com.fp.padabajka.feature.swiper.presentation.model.toUICardItem
+import com.fp.padabajka.feature.swiper.presentation.screen.CardDeck
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class SwiperScreenComponent(
     context: ComponentContext,
-    private val reactToCardUseCase: Factory<ReactToCardUseCase>,
-    private val nextCardUseCase: Factory<NextCardUseCase>,
+    reactToCardUseCaseFactory: Factory<ReactToCardUseCase>,
+    nextCardUseCaseFactory: Factory<NextCardUseCase>,
 ) : BaseComponent<SwiperState>(
     context,
     SwiperState(
-        LoadingItem,
-        LoadingItem
+        CardDeck()
     )
 ) {
 
     init {
         componentScope.launch {
-            repeat(2) {
-                loadCard()
-            }
+            loadCard(count = 3)
         }
     }
+
+    private val reactToCardUseCase: ReactToCardUseCase by reactToCardUseCaseFactory.delegate()
+    private val nextCardUseCase: NextCardUseCase by nextCardUseCaseFactory.delegate()
 
     private val searchPreferences: SearchPreferences = object : SearchPreferences {}
 
@@ -47,33 +48,25 @@ class SwiperScreenComponent(
             is DislikeEvent -> dislikePerson(event.personId)
             is LikeEvent -> likePerson(event.personId)
             is SuperLikeEvent -> superLikePerson(event.personId)
+            is EndOfCardAnimationEvent -> removeCardFromDeck(event.cardItem)
         }
     }
 
-    private fun updateForegroundCard() {
-        reduce {
-            it.copy(
-                foregroundCardItem = it.backgroundCardItem,
-                backgroundCardItem = LoadingItem
-            )
+    private fun removeCardFromDeck(cardItem: CardItem) {
+        reduce { state ->
+            state.run { copy(cardDeck = cardDeck.remove(cardItem)) }
         }
     }
 
-    private suspend fun loadCard(): Job {
+    private fun loadCard(count: Int = 1): Job {
         return componentScope.launch {
-            val card = nextCardUseCase.get().invoke(searchPreferences).toUICardItem()
-            reduce { state ->
-                if (state.foregroundCardItem.isEmpty()) {
-                    SwiperState(card, LoadingItem)
-                } else {
-                    state.copy(backgroundCardItem = card)
+            repeat(count) {
+                val card = nextCardUseCase(searchPreferences)
+                reduce { state ->
+                    state.run { copy(cardDeck = cardDeck.add(card.toUICardItem())) }
                 }
             }
         }
-    }
-
-    private fun CardItem.isEmpty(): Boolean {
-        return this is LoadingItem || this is EmptyCardItem
     }
 
     private fun dislikePerson(personId: PersonId) {
@@ -91,8 +84,7 @@ class SwiperScreenComponent(
     private fun reactPerson(reaction: PersonReaction) =
         mapAndReduceException(
             action = {
-                updateForegroundCard()
-                reactToCardUseCase.get().invoke(reaction)
+                reactToCardUseCase(reaction)
                 loadCard()
             },
             mapper = {
