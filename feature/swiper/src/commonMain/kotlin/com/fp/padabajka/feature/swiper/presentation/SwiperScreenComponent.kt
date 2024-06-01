@@ -4,7 +4,6 @@ import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.domain.Factory
 import com.fp.padabajka.core.domain.delegate
 import com.fp.padabajka.core.presentation.BaseComponent
-import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.core.repository.api.model.swiper.PersonReaction
 import com.fp.padabajka.core.repository.api.model.swiper.SearchPreferences
 import com.fp.padabajka.feature.swiper.domain.NextCardUseCase
@@ -13,13 +12,12 @@ import com.fp.padabajka.feature.swiper.presentation.model.CardItem
 import com.fp.padabajka.feature.swiper.presentation.model.DislikeEvent
 import com.fp.padabajka.feature.swiper.presentation.model.EndOfCardAnimationEvent
 import com.fp.padabajka.feature.swiper.presentation.model.LikeEvent
+import com.fp.padabajka.feature.swiper.presentation.model.PersonItem
 import com.fp.padabajka.feature.swiper.presentation.model.SuperLikeEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SwiperEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SwiperState
 import com.fp.padabajka.feature.swiper.presentation.model.toUICardItem
 import com.fp.padabajka.feature.swiper.presentation.screen.CardDeck
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 class SwiperScreenComponent(
     context: ComponentContext,
@@ -33,9 +31,7 @@ class SwiperScreenComponent(
 ) {
 
     init {
-        componentScope.launch {
-            loadCard(count = 3)
-        }
+        updateCardDeck(count = 3)
     }
 
     private val reactToCardUseCase: ReactToCardUseCase by reactToCardUseCaseFactory.delegate()
@@ -45,9 +41,9 @@ class SwiperScreenComponent(
 
     fun onEvent(event: SwiperEvent) {
         when (event) {
-            is DislikeEvent -> dislikePerson(event.personId)
-            is LikeEvent -> likePerson(event.personId)
-            is SuperLikeEvent -> superLikePerson(event.personId)
+            is DislikeEvent -> dislikeCard(event.cardItem)
+            is LikeEvent -> likeCard(event.cardItem)
+            is SuperLikeEvent -> superLikeCard(event.cardItem)
             is EndOfCardAnimationEvent -> removeCardFromDeck(event.cardItem)
         }
     }
@@ -58,34 +54,53 @@ class SwiperScreenComponent(
         }
     }
 
-    private fun loadCard(count: Int = 1): Job {
-        return componentScope.launch {
-            repeat(count) {
-                val card = nextCardUseCase(searchPreferences)
-                reduce { state ->
-                    state.run { copy(cardDeck = cardDeck.add(card.toUICardItem())) }
-                }
-            }
+    private fun dislikeCard(cardItem: CardItem) {
+        if (cardItem is PersonItem) {
+            reactPersonAndUpdateCardDeck(PersonReaction.Dislike(cardItem.id))
+        } else {
+            updateCardDeck()
         }
     }
 
-    private fun dislikePerson(personId: PersonId) {
-        reactPerson(PersonReaction.Dislike(personId))
+    private fun likeCard(cardItem: CardItem) {
+        if (cardItem is PersonItem) {
+            reactPersonAndUpdateCardDeck(PersonReaction.Dislike(cardItem.id))
+        } else {
+            updateCardDeck()
+        }
     }
 
-    private fun likePerson(personId: PersonId) {
-        reactPerson(PersonReaction.Like(personId))
+    private fun superLikeCard(cardItem: CardItem) {
+        if (cardItem is PersonItem) {
+            reactPersonAndUpdateCardDeck(PersonReaction.Dislike(cardItem.id))
+        } else {
+            updateCardDeck()
+        }
     }
 
-    private fun superLikePerson(personId: PersonId) {
-        reactPerson(PersonReaction.SuperLike(personId))
-    }
-
-    private fun reactPerson(reaction: PersonReaction) =
+    private fun reactPersonAndUpdateCardDeck(reaction: PersonReaction) =
         mapAndReduceException(
             action = {
                 reactToCardUseCase(reaction)
-                loadCard()
+                updateCardDeck()
+            },
+            mapper = {
+                it // TODO
+            },
+            update = { swiperState, _ ->
+                swiperState
+            }
+        )
+
+    private fun updateCardDeck(count: Int = 1) =
+        mapAndReduceException(
+            action = {
+                repeat(count) {
+                    val card = nextCardUseCase(searchPreferences)
+                    reduce { state ->
+                        state.run { copy(cardDeck = cardDeck.add(card.toUICardItem())) }
+                    }
+                }
             },
             mapper = {
                 it // TODO
