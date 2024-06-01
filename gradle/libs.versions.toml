@@ -24,6 +24,9 @@ mockmp = "1.17.0"
 espresso-core = "3.5.1"
 firebaseAuth = "22.3.1"
 yandex-ads = "6.4.1"
+projectConfig-minSdk = "24"
+projectConfig-compileSdk = "34"
+projectConfig-targetSdk = "34"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
