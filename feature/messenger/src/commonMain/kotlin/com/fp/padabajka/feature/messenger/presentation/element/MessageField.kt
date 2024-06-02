@@ -12,9 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import com.fp.padabajka.feature.messenger.presentation.model.MessengerEvent
+import com.fp.padabajka.feature.messenger.presentation.model.NextMessageFieldLostFocusEvent
 import com.fp.padabajka.feature.messenger.presentation.model.NextMessageTextUpdateEvent
 import com.fp.padabajka.feature.messenger.presentation.model.SendMessageClickEvent
 
@@ -31,7 +33,13 @@ fun MessageField(
         verticalAlignment = Alignment.CenterVertically
     ) {
         TextField(
-            modifier = modifier.weight(1F),
+            modifier = modifier
+                .weight(1F)
+                .onFocusChanged {
+                    if (it.hasFocus.not()) {
+                        onEvent(NextMessageFieldLostFocusEvent)
+                    }
+                },
             value = text(),
             onValueChange = { onEvent(NextMessageTextUpdateEvent(it)) }
         )

@@ -1,6 +1,6 @@
-package com.fp.padabajka.feature.messenger.data.source.local
+package com.fp.padabajka.feature.messenger.data.message.source.local
 
-import com.fp.padabajka.feature.messenger.data.model.MessageDto
+import com.fp.padabajka.feature.messenger.data.message.model.MessageDto
 import kotlinx.coroutines.flow.Flow
 
 class LocalMessageDataSourceImpl : LocalMessageDataSource {

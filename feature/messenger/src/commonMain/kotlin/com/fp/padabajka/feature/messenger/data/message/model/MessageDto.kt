@@ -1,4 +1,4 @@
-package com.fp.padabajka.feature.messenger.data.model
+package com.fp.padabajka.feature.messenger.data.message.model
 
 import com.fp.padabajka.core.repository.api.model.messenger.MessageReaction
 import com.fp.padabajka.core.repository.api.model.messenger.MessageStatus

@@ -18,6 +18,8 @@ import com.fp.padabajka.feature.messenger.domain.ChatMessagesUseCase
 import com.fp.padabajka.feature.messenger.domain.ReactToMessageUseCase
 import com.fp.padabajka.feature.messenger.domain.ReadMessageUseCase
 import com.fp.padabajka.feature.messenger.domain.SendMessageUseCase
+import com.fp.padabajka.feature.messenger.domain.StartTypingUseCase
+import com.fp.padabajka.feature.messenger.domain.StopTypingUseCase
 import com.fp.padabajka.feature.messenger.presentation.model.ChatLoadingState
 import com.fp.padabajka.feature.messenger.presentation.model.ConsumeInternalErrorEvent
 import com.fp.padabajka.feature.messenger.presentation.model.EndOfMessagesListReachedEvent
@@ -25,6 +27,7 @@ import com.fp.padabajka.feature.messenger.presentation.model.InternalError
 import com.fp.padabajka.feature.messenger.presentation.model.MessageGotReadEvent
 import com.fp.padabajka.feature.messenger.presentation.model.MessengerEvent
 import com.fp.padabajka.feature.messenger.presentation.model.MessengerState
+import com.fp.padabajka.feature.messenger.presentation.model.NextMessageFieldLostFocusEvent
 import com.fp.padabajka.feature.messenger.presentation.model.NextMessageTextUpdateEvent
 import com.fp.padabajka.feature.messenger.presentation.model.ReactToMessageEvent
 import com.fp.padabajka.feature.messenger.presentation.model.RemoveParentMessageEvent
@@ -35,6 +38,8 @@ import com.fp.padabajka.feature.messenger.presentation.model.item.MessageItem
 import com.fp.padabajka.feature.messenger.presentation.model.item.OutgoingMessageItem
 import com.fp.padabajka.feature.messenger.presentation.model.item.ParentMessageItem
 import com.fp.padabajka.feature.messenger.presentation.model.item.addDateItems
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -44,13 +49,19 @@ class MessengerComponent(
     chatMessagesUseCaseFactory: Factory<ChatMessagesUseCase>,
     sendMessageUseCaseFactory: Factory<SendMessageUseCase>,
     readMessageUseCaseFactory: Factory<ReadMessageUseCase>,
-    reactToMessageUseCaseFactory: Factory<ReactToMessageUseCase>
+    reactToMessageUseCaseFactory: Factory<ReactToMessageUseCase>,
+    startTypingUseCaseFactory: Factory<StartTypingUseCase>,
+    stopTypingUseCaseFactory: Factory<StopTypingUseCase>
 ) : BaseComponent<MessengerState>(context, MessengerState()) {
 
     private val chatMessagesUseCase by chatMessagesUseCaseFactory.delegate()
     private val sendMessageUseCase by sendMessageUseCaseFactory.delegate()
     private val readMessageUseCase by readMessageUseCaseFactory.delegate()
     private val reactToMessageUseCase by reactToMessageUseCaseFactory.delegate()
+    private val startTypingUseCase by startTypingUseCaseFactory.delegate()
+    private val stopTypingUseCase by stopTypingUseCaseFactory.delegate()
+
+    private var typingJob: Job? = null
 
     init {
         mapAndReduceException(
@@ -88,6 +99,7 @@ class MessengerComponent(
     fun onEvent(event: MessengerEvent) {
         when (event) {
             is NextMessageTextUpdateEvent -> updateNextMessageText(event.nextMessageText)
+            NextMessageFieldLostFocusEvent -> notifyTypingStopped()
             is SelectParentMessageEvent -> updateParentMessageId(event.messageId)
             RemoveParentMessageEvent -> updateParentMessageId(null)
             ConsumeInternalErrorEvent -> consumeInternalErrorEvent()
@@ -98,12 +110,45 @@ class MessengerComponent(
         }
     }
 
+    override fun onStopped() {
+        notifyTypingStopped()
+    }
+
+    private fun notifyTypingStopped() {
+        componentScope.launch {
+            if (typingJob == null) {
+                return@launch
+            }
+            typingJob?.cancel()
+            typingJob = null
+            stopTypingUseCase(chatId)
+        }
+    }
+
+    private fun notifyTyping() {
+        componentScope.launch {
+            if (typingJob == null) {
+                startTypingUseCase(chatId)
+            }
+
+            typingJob?.cancel()
+            typingJob = componentScope.launch {
+                delay(TYPING_STOP_DELAY)
+                stopTypingUseCase(chatId)
+                typingJob = null
+            }
+        }
+    }
+
     private fun loadMoreMessages() {
         // Implement message pagination
     }
 
-    private fun updateNextMessageText(text: String) = reduce {
-        it.copy(nextMessageText = text)
+    private fun updateNextMessageText(text: String) {
+        reduce {
+            it.copy(nextMessageText = text)
+        }
+        notifyTyping()
     }
 
     private fun updateParentMessageId(messageId: MessageId?) = reduce {
@@ -196,5 +241,9 @@ class MessengerComponent(
             content = content,
             direction = direction
         )
+    }
+
+    companion object {
+        private const val TYPING_STOP_DELAY = 2000L
     }
 }

@@ -1,4 +1,4 @@
-package com.fp.padabajka.feature.messenger.data
+package com.fp.padabajka.feature.messenger.data.message
 
 import com.fp.padabajka.core.repository.api.AuthRepository
 import com.fp.padabajka.core.repository.api.MessageRepository
@@ -12,9 +12,9 @@ import com.fp.padabajka.core.repository.api.model.messenger.MessageReaction
 import com.fp.padabajka.core.repository.api.model.messenger.MessageStatus
 import com.fp.padabajka.core.repository.api.model.messenger.ParentMessage
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
-import com.fp.padabajka.feature.messenger.data.model.MessageDto
-import com.fp.padabajka.feature.messenger.data.source.local.LocalMessageDataSource
-import com.fp.padabajka.feature.messenger.data.source.remote.RemoteMessageDataSource
+import com.fp.padabajka.feature.messenger.data.message.model.MessageDto
+import com.fp.padabajka.feature.messenger.data.message.source.local.LocalMessageDataSource
+import com.fp.padabajka.feature.messenger.data.message.source.remote.RemoteMessageDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted

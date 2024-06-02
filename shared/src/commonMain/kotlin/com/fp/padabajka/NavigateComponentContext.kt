@@ -21,7 +21,7 @@ class NavigateComponentContext(
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.SwiperScreen,
+        initialConfiguration = Configuration.MessengerScreen(ChatId("fakeChatId")),
         handleBackButton = true,
         childFactory = ::createChild
     )

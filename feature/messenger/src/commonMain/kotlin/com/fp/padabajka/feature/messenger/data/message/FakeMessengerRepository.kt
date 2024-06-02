@@ -1,4 +1,4 @@
-package com.fp.padabajka.feature.messenger.data
+package com.fp.padabajka.feature.messenger.data.message
 
 import com.fp.padabajka.core.repository.api.MessageRepository
 import com.fp.padabajka.core.repository.api.model.messenger.ChatId

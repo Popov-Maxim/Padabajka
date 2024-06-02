@@ -1,6 +1,6 @@
-package com.fp.padabajka.feature.messenger.data.source.remote
+package com.fp.padabajka.feature.messenger.data.message.source.remote
 
-import com.fp.padabajka.feature.messenger.data.model.MessageDto
+import com.fp.padabajka.feature.messenger.data.message.model.MessageDto
 
 interface RemoteMessageDataSource {
     suspend fun sendMessage(chatId: String, content: String): MessageDto
