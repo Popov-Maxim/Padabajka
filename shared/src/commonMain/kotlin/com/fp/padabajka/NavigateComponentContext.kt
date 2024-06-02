@@ -5,6 +5,8 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pushNew
+import com.fp.padabajka.core.repository.api.model.messenger.ChatId
+import com.fp.padabajka.feature.messenger.presentation.MessengerComponent
 import com.fp.padabajka.feature.swiper.presentation.SwiperScreenComponent
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
@@ -37,16 +39,25 @@ class NavigateComponentContext(
             Configuration.SwiperScreen -> Child.SwiperScreen(
                 component = get { parametersOf(context) }
             )
+
+            is Configuration.MessengerScreen -> Child.MessengerScreen(
+                component = get { parametersOf(context, configuration.chatId) }
+            )
         }
     }
 
     sealed interface Child {
         data class SwiperScreen(val component: SwiperScreenComponent) : Child
+        data class MessengerScreen(val component: MessengerComponent) : Child
     }
 
     @Serializable
     sealed interface Configuration {
+
         @Serializable
         data object SwiperScreen : Configuration
+
+        @Serializable
+        data class MessengerScreen(val chatId: ChatId) : Configuration
     }
 }

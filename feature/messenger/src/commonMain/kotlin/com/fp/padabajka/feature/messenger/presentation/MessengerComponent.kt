@@ -8,13 +8,19 @@ import com.fp.padabajka.core.presentation.event.consumed
 import com.fp.padabajka.core.presentation.event.raised
 import com.fp.padabajka.core.presentation.event.raisedIfNotNull
 import com.fp.padabajka.core.repository.api.model.messenger.ChatId
+import com.fp.padabajka.core.repository.api.model.messenger.Message
+import com.fp.padabajka.core.repository.api.model.messenger.MessageDirection
 import com.fp.padabajka.core.repository.api.model.messenger.MessageId
 import com.fp.padabajka.core.repository.api.model.messenger.MessageReaction
+import com.fp.padabajka.core.repository.api.model.messenger.MessageStatus
+import com.fp.padabajka.core.repository.api.model.messenger.ParentMessage
 import com.fp.padabajka.feature.messenger.domain.ChatMessagesUseCase
 import com.fp.padabajka.feature.messenger.domain.ReactToMessageUseCase
 import com.fp.padabajka.feature.messenger.domain.ReadMessageUseCase
 import com.fp.padabajka.feature.messenger.domain.SendMessageUseCase
+import com.fp.padabajka.feature.messenger.presentation.model.ChatLoadingState
 import com.fp.padabajka.feature.messenger.presentation.model.ConsumeInternalErrorEvent
+import com.fp.padabajka.feature.messenger.presentation.model.EndOfMessagesListReachedEvent
 import com.fp.padabajka.feature.messenger.presentation.model.InternalError
 import com.fp.padabajka.feature.messenger.presentation.model.MessageGotReadEvent
 import com.fp.padabajka.feature.messenger.presentation.model.MessengerEvent
@@ -24,7 +30,12 @@ import com.fp.padabajka.feature.messenger.presentation.model.ReactToMessageEvent
 import com.fp.padabajka.feature.messenger.presentation.model.RemoveParentMessageEvent
 import com.fp.padabajka.feature.messenger.presentation.model.SelectParentMessageEvent
 import com.fp.padabajka.feature.messenger.presentation.model.SendMessageClickEvent
-import kotlinx.collections.immutable.toPersistentList
+import com.fp.padabajka.feature.messenger.presentation.model.item.IncomingMessageItem
+import com.fp.padabajka.feature.messenger.presentation.model.item.MessageItem
+import com.fp.padabajka.feature.messenger.presentation.model.item.OutgoingMessageItem
+import com.fp.padabajka.feature.messenger.presentation.model.item.ParentMessageItem
+import com.fp.padabajka.feature.messenger.presentation.model.item.addDateItems
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class MessengerComponent(
@@ -45,11 +56,20 @@ class MessengerComponent(
         mapAndReduceException(
             action = {
                 val messagesFlow = chatMessagesUseCase(chatId)
-                messagesFlow.collect { messages ->
-                    reduce {
-                        it.copy(messages = messages.toPersistentList())
+                messagesFlow
+                    .map { messages ->
+                        messages.map { message -> message.toMessageItem() }
+                    }.map { messageItems ->
+                        messageItems.addDateItems()
                     }
-                }
+                    .collect { messengerItems ->
+                        reduce {
+                            it.copy(
+                                messengerItems = messengerItems,
+                                chatLoadingState = ChatLoadingState.Loaded
+                            )
+                        }
+                    }
             },
             mapper = {
                 println(it)
@@ -73,8 +93,13 @@ class MessengerComponent(
             ConsumeInternalErrorEvent -> consumeInternalErrorEvent()
             is MessageGotReadEvent -> readMessage(event.messageId)
             is ReactToMessageEvent -> reactToMessage(event.messageId, event.reaction)
+            EndOfMessagesListReachedEvent -> loadMoreMessages()
             SendMessageClickEvent -> sendMessage()
         }
+    }
+
+    private fun loadMoreMessages() {
+        // Implement message pagination
     }
 
     private fun updateNextMessageText(text: String) = reduce {
@@ -135,5 +160,41 @@ class MessengerComponent(
                 }
             }
         }
+    }
+
+    private fun Message.toMessageItem(): MessageItem {
+        return when (direction) {
+            MessageDirection.OUTGOING -> OutgoingMessageItem(
+                id = id,
+                content = content,
+                sentTime = creationTime,
+                hasBeenRead = status.hasBeenRead(),
+                reaction = reaction,
+                parentMessage = parentMessage?.toItem()
+            )
+            MessageDirection.INCOMING -> IncomingMessageItem(
+                id = id,
+                content = content,
+                sentTime = creationTime,
+                hasBeenRead = status.hasBeenRead(),
+                reaction = reaction,
+                parentMessage = parentMessage?.toItem()
+            )
+        }
+    }
+
+    private fun MessageStatus.hasBeenRead(): Boolean {
+        return when (this) {
+            MessageStatus.Read -> true
+            else -> false
+        }
+    }
+
+    private fun ParentMessage.toItem(): ParentMessageItem {
+        return ParentMessageItem(
+            id = id,
+            content = content,
+            direction = direction
+        )
     }
 }

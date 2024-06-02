@@ -12,3 +12,4 @@ data class ReactToMessageEvent(val messageId: MessageId, val reaction: MessageRe
 data class SelectParentMessageEvent(val messageId: MessageId) : MessengerEvent
 data object RemoveParentMessageEvent : MessengerEvent
 data object ConsumeInternalErrorEvent : MessengerEvent
+data object EndOfMessagesListReachedEvent : MessengerEvent
