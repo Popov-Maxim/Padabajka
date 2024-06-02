@@ -1,5 +1,6 @@
 package com.fp.padabajka.di
 
+import com.fp.padabajka.component.room.di.roomModule
 import com.fp.padabajka.feature.ads.di.adModules
 import com.fp.padabajka.feature.ads.yandex.di.yandexAdModule
 import com.fp.padabajka.feature.auth.di.authModules
@@ -28,6 +29,7 @@ fun initKoin(platformModule: Module) {
             yandexAdModule,
             *profileModules,
             *messengerModules,
+            roomModule,
             platformModule,
             applicationScopeModule
         )

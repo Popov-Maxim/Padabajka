@@ -1,5 +1,6 @@
 package com.fp.padabajka.feature.messenger.data.message
 
+import com.fp.padabajka.core.data.uuid
 import com.fp.padabajka.core.repository.api.AuthRepository
 import com.fp.padabajka.core.repository.api.MessageRepository
 import com.fp.padabajka.core.repository.api.model.auth.LoggedIn
@@ -26,7 +27,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-class MessageRepositoryImpl(
+internal class MessageRepositoryImpl(
     scope: CoroutineScope,
     authRepository: AuthRepository,
     private val localMessageDataSource: LocalMessageDataSource,
@@ -52,34 +53,34 @@ class MessageRepositoryImpl(
     ) {
         val currentTime = nowMilliseconds()
 
-        val messageDto = localMessageDataSource.addMessage(
-            MessageDto(
-                id = null,
-                chatId = chatId.raw,
-                authorId = myPersonId.raw,
-                content = content,
-                creationTime = currentTime,
-                messageStatus = MessageStatus.Sending,
-                readSynced = true,
-                reaction = null,
-                reactionSynced = true,
-                parentMessageId = parentMessageId?.raw
-            )
+        val messageDto = MessageDto(
+            id = uuid(),
+            chatId = chatId.raw,
+            authorId = myPersonId.raw,
+            content = content,
+            creationTime = currentTime,
+            messageStatus = MessageStatus.Sending,
+            readSynced = true,
+            reaction = null,
+            reactionSynced = true,
+            parentMessageId = parentMessageId?.raw
         )
+
+        localMessageDataSource.addMessage(messageDto)
 
         trySendMessageToRemote(messageDto)
     }
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
-    override suspend fun readMessage(chatId: ChatId, messageId: MessageId) {
-        localMessageDataSource.updateMessage(chatId.raw, messageId.raw) {
+    override suspend fun readMessage(messageId: MessageId) {
+        localMessageDataSource.updateMessage(messageId.raw) {
             it.copy(messageStatus = MessageStatus.Read, readSynced = false)
         }
 
         try {
-            remoteMessageDataSource.readMessages(chatId.raw, messageId.raw)
+            remoteMessageDataSource.readMessages(messageId.raw)
 
-            localMessageDataSource.updateMessage(chatId.raw, messageId.raw) {
+            localMessageDataSource.updateMessage(messageId.raw) {
                 it.copy(readSynced = true)
             }
         } catch (e: Throwable) {
@@ -89,18 +90,17 @@ class MessageRepositoryImpl(
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override suspend fun reactToMessage(
-        chatId: ChatId,
         messageId: MessageId,
         reaction: MessageReaction
     ) {
-        localMessageDataSource.updateMessage(chatId.raw, messageId.raw) {
+        localMessageDataSource.updateMessage(messageId.raw) {
             it.copy(reaction = reaction, reactionSynced = false)
         }
 
         try {
-            remoteMessageDataSource.sendReaction(chatId.raw, messageId.raw, reaction.toString())
+            remoteMessageDataSource.sendReaction(messageId.raw, reaction.toString())
 
-            localMessageDataSource.updateMessage(chatId.raw, messageId.raw) {
+            localMessageDataSource.updateMessage(messageId.raw) {
                 it.copy(reactionSynced = true)
             }
         } catch (e: Throwable) {
@@ -114,30 +114,27 @@ class MessageRepositoryImpl(
             val updatedMessageDto =
                 remoteMessageDataSource.sendMessage(messageDto.chatId, messageDto.content)
 
-            localMessageDataSource.updateMessage(
-                messageDto.chatId,
-                messageDto.id!!
-            ) { updatedMessageDto }
+            localMessageDataSource.updateMessage(messageDto.id) { updatedMessageDto }
         } catch (e: Throwable) {
             // TODO: retry sending
-            localMessageDataSource.updateMessage(messageDto.chatId, messageDto.id!!) {
+            localMessageDataSource.updateMessage(messageDto.id) {
                 it.copy(messageStatus = MessageStatus.FailedToSend)
             }
         }
     }
 
     private suspend fun MessageDto.toDomain(): Message {
-        val parentMessage = parentMessageId?.let {
-            val parentMessageDto = localMessageDataSource.message(chatId, it)
+        val parentMessage = parentMessageId?.let { parentId ->
+            val parentMessageDto = localMessageDataSource.message(parentId)
             ParentMessage(
-                id = MessageId(parentMessageDto.id!!),
+                id = MessageId(parentMessageDto.id),
                 direction = direction(parentMessageDto.authorId),
                 content = parentMessageDto.content
             )
         }
 
         return Message(
-            id = MessageId(id!!),
+            id = MessageId(id),
             direction = direction(authorId),
             content = content,
             creationTime = localDateTime(creationTime),

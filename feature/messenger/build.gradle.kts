@@ -31,7 +31,7 @@ kotlin {
             api(projects.core.presentation)
             api(projects.core.domain)
             api(projects.core.repositoryApi)
-            api(projects.core.data)
+            implementation(projects.feature.messenger.data)
         }
         commonTest.dependencies {
             implementation(project(":testing"))

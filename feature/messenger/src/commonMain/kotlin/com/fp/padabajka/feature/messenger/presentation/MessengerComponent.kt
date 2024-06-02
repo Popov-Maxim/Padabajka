@@ -161,7 +161,7 @@ class MessengerComponent(
 
     private fun readMessage(messageId: MessageId) = mapAndReduceException(
         action = {
-            readMessageUseCase(chatId, messageId)
+            readMessageUseCase(messageId)
         },
         mapper = { InternalError },
         update = { state, internalError ->
@@ -172,7 +172,7 @@ class MessengerComponent(
     private fun reactToMessage(messageId: MessageId, reaction: MessageReaction) =
         mapAndReduceException(
             action = {
-                reactToMessageUseCase(chatId, messageId, reaction)
+                reactToMessageUseCase(messageId, reaction)
             },
             mapper = { InternalError },
             update = { state, internalError ->

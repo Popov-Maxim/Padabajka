@@ -22,7 +22,7 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
 
     private var messagesList = listOf(
         Message(
-            id = MessageId(1),
+            id = MessageId("1"),
             direction = MessageDirection.INCOMING,
             content = "Hellow!",
             creationTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
@@ -31,7 +31,7 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
             parentMessage = null
         ),
         Message(
-            id = MessageId(2),
+            id = MessageId("2"),
             direction = MessageDirection.OUTGOING,
             content = "Hi!",
             creationTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
@@ -40,7 +40,7 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
             parentMessage = null
         ),
         Message(
-            id = MessageId(3),
+            id = MessageId("3"),
             direction = MessageDirection.INCOMING,
             content = "How are you?",
             creationTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
@@ -49,7 +49,7 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
             parentMessage = null
         ),
         Message(
-            id = MessageId(4),
+            id = MessageId("4"),
             direction = MessageDirection.OUTGOING,
             content = "Fine, thanks!",
             creationTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
@@ -79,7 +79,7 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
 
     private fun createIncomingMessage(): Message {
         val content = "New incoming message"
-        val id = MessageId(nextMessageId++)
+        val id = MessageId("${nextMessageId++}")
         return Message(
             id = id,
             direction = MessageDirection.INCOMING,
@@ -95,7 +95,7 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
 
     override suspend fun sendMessage(chatId: ChatId, content: String, parentMessageId: MessageId?) {
         val message = Message(
-            id = MessageId(nextMessageId++),
+            id = MessageId("${nextMessageId++}"),
             direction = MessageDirection.OUTGOING,
             content = content,
             creationTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
@@ -107,7 +107,7 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
         messagesFlow.emit(messagesList.reversed())
     }
 
-    override suspend fun readMessage(chatId: ChatId, messageId: MessageId) {
+    override suspend fun readMessage(messageId: MessageId) {
         messagesList = messagesList.map {
             if (it.id == messageId) it.copy(status = MessageStatus.Read) else it
         }
@@ -115,7 +115,6 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
     }
 
     override suspend fun reactToMessage(
-        chatId: ChatId,
         messageId: MessageId,
         reaction: MessageReaction
     ) {
