@@ -38,8 +38,8 @@ kotlin {
 
 android {
     namespace = "com.fp.padabajka.core.repository.api"
-    compileSdk = 34
+    compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 24
+        minSdk = libs.versions.projectConfig.minSdk.get().toInt()
     }
 }

@@ -6,11 +6,11 @@ plugins {
 
 android {
     namespace = "com.fp.padabajka"
-    compileSdk = 34
+    compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         applicationId = "com.fp.padabajka"
-        minSdk = 24
-        targetSdk = 34
+        minSdk = libs.versions.projectConfig.minSdk.get().toInt()
+        targetSdk = libs.versions.projectConfig.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
     }
