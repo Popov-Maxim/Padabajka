@@ -15,7 +15,6 @@ import com.fp.padabajka.feature.swiper.presentation.SwiperScreenComponent
 import com.fp.padabajka.feature.swiper.presentation.model.DislikeEvent
 import com.fp.padabajka.feature.swiper.presentation.model.EndOfCardAnimationEvent
 import com.fp.padabajka.feature.swiper.presentation.model.LikeEvent
-import com.fp.padabajka.feature.swiper.presentation.model.PersonItem
 import com.fp.padabajka.feature.swiper.presentation.model.SuperLikeEvent
 
 @Composable
@@ -38,16 +37,13 @@ fun DeckOfCards(swiperScreenComponent: SwiperScreenComponent) {
                         Card(card)
                     },
                     onSwipe = {
-                        if (card is PersonItem) {
-                            val personId = card.id
-                            val reaction = when (it) {
-                                Swipe.Left -> DislikeEvent(personId)
-                                Swipe.Right -> LikeEvent(personId)
-                                Swipe.Up -> SuperLikeEvent(personId)
-                            }
-
-                            swiperScreenComponent.onEvent(reaction)
+                        val reaction = when (it) {
+                            Swipe.Left -> DislikeEvent(card)
+                            Swipe.Right -> LikeEvent(card)
+                            Swipe.Up -> SuperLikeEvent(card)
                         }
+
+                        swiperScreenComponent.onEvent(reaction)
                     },
                     onEndSwipeAnimation = {
                         swiperScreenComponent.onEvent(EndOfCardAnimationEvent(card))
