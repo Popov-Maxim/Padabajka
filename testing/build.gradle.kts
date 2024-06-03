@@ -33,9 +33,9 @@ kotlin {
 
 android {
     namespace = "com.fp.padabajka.testing"
-    compileSdk = 34
+    compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 27
+        minSdk = libs.versions.projectConfig.minSdk.get().toInt()
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
