@@ -27,7 +27,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.messenger.data)
+            api(project(":core:repository-api"))
+
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
             implementation(libs.koin.core)
@@ -47,10 +48,7 @@ android {
 }
 
 dependencies {
-    add("kspAndroid", libs.room.compiler)
-    add("kspIosSimulatorArm64", libs.room.compiler)
-    add("kspIosX64", libs.room.compiler)
-    add("kspIosArm64", libs.room.compiler)
+    ksp(libs.room.compiler)
 }
 
 room {

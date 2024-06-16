@@ -4,4 +4,7 @@ import kotlinx.datetime.LocalDateTime
 
 @Suppress("ImplicitDefaultLocale")
 val LocalDateTime.hourMinutes: String
-    get() = String.format("%d:%02d", hour, minute)
+    get() = "$hour:${minute.twoDigits}"
+
+private val Int.twoDigits: String
+    get() = toString().padStart(2, '0')

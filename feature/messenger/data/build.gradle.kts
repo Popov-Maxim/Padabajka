@@ -28,6 +28,7 @@ kotlin {
         commonMain.dependencies {
             api(projects.core.data)
             api(projects.core.repositoryApi)
+            implementation(projects.component.room)
 
             implementation(libs.room.runtime)
             implementation(libs.koin.core)
