@@ -2,6 +2,7 @@ package com.fp.padabajka.feature.auth.presentation
 
 import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.domain.Factory
+import com.fp.padabajka.core.domain.delegate
 import com.fp.padabajka.core.presentation.BaseComponent
 import com.fp.padabajka.core.presentation.event.consumed
 import com.fp.padabajka.core.presentation.event.raisedWithContentIfNotNull
@@ -37,12 +38,16 @@ import com.fp.padabajka.feature.auth.presentation.model.RepeatedPasswordFieldUpd
 // TODO Test me
 @Suppress("UnusedPrivateProperty")
 class RegisterComponent(
-    private val registerWithEmailAndPasswordUseCase: Factory<RegisterWithEmailAndPasswordUseCase>,
-    private val validateEmailUseCase: Factory<ValidateEmailUseCase>,
-    private val validatePasswordsUseCase: Factory<ValidatePasswordsUseCase>,
+    context: ComponentContext,
     private val goToLogin: () -> Unit,
-    context: ComponentContext
+    registerWithEmailAndPasswordUseCaseFactory: Factory<RegisterWithEmailAndPasswordUseCase>,
+    validateEmailUseCaseFactory: Factory<ValidateEmailUseCase>,
+    validatePasswordsUseCaseFactory: Factory<ValidatePasswordsUseCase>,
 ) : BaseComponent<RegisteringState>(context, RegisteringState()) {
+
+    private val registerWithEmailAndPasswordUseCase by registerWithEmailAndPasswordUseCaseFactory.delegate()
+    private val validateEmailUseCase by validateEmailUseCaseFactory.delegate()
+    private val validatePasswordsUseCase by validatePasswordsUseCaseFactory.delegate()
 
     fun onEvent(event: RegisterEvent) {
         when (event) {
@@ -96,8 +101,11 @@ class RegisterComponent(
             validateEmail(currentState.email)
             validatePasswords(currentState.password, currentState.repeatedPassword)
 
-            registerWithEmailAndPasswordUseCase.get()
-                .invoke(currentState.email, currentState.password, currentState.repeatedPassword)
+            registerWithEmailAndPasswordUseCase(
+                currentState.email,
+                currentState.password,
+                currentState.repeatedPassword
+            )
         },
         mapper = { exception ->
             when (exception) {
@@ -121,7 +129,7 @@ class RegisterComponent(
 
     private fun validateEmail(email: String) = mapAndReduceException(
         action = {
-            validateEmailUseCase.get().invoke(email)
+            validateEmailUseCase(email)
         },
         mapper = { exception ->
             when (exception) {
@@ -138,7 +146,7 @@ class RegisterComponent(
     private fun validatePasswords(password: String, repeatedPassword: String) =
         mapAndReduceException(
             action = {
-                validatePasswordsUseCase.get().invoke(password, repeatedPassword)
+                validatePasswordsUseCase(password, repeatedPassword)
             },
             mapper = { exception ->
                 when (exception) {
