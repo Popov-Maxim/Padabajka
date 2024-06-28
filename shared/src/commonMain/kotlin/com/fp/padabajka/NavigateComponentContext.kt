@@ -1,10 +1,11 @@
 package com.fp.padabajka
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.pushNew
+import com.arkivanov.decompose.router.stack.navigate
+import com.fp.padabajka.feature.auth.presentation.LoginComponent
+import com.fp.padabajka.feature.auth.presentation.RegisterComponent
 import com.fp.padabajka.feature.swiper.presentation.SwiperScreenComponent
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
@@ -19,14 +20,15 @@ class NavigateComponentContext(
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.SwiperScreen,
+        initialConfiguration = Configuration.RegisterScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )
 
-    @OptIn(ExperimentalDecomposeApi::class)
     fun navigate(configuration: Configuration) {
-        navigation.pushNew(configuration)
+        navigation.navigate {
+            it - configuration + configuration
+        }
     }
 
     private fun createChild(
@@ -37,16 +39,28 @@ class NavigateComponentContext(
             Configuration.SwiperScreen -> Child.SwiperScreen(
                 component = get { parametersOf(context) }
             )
+
+            Configuration.LoginScreen -> Child.LoginScreen(
+                component = get { parametersOf(context, { navigate(Configuration.RegisterScreen) }) }
+            )
+
+            Configuration.RegisterScreen -> Child.RegisterScreen(
+                component = get { parametersOf(context, { navigate(Configuration.LoginScreen) }) }
+            )
         }
     }
 
     sealed interface Child {
         data class SwiperScreen(val component: SwiperScreenComponent) : Child
+        data class LoginScreen(val component: LoginComponent) : Child
+        data class RegisterScreen(val component: RegisterComponent) : Child
     }
 
     @Serializable
     sealed interface Configuration {
         @Serializable
         data object SwiperScreen : Configuration
+        data object LoginScreen : Configuration
+        data object RegisterScreen : Configuration
     }
 }
