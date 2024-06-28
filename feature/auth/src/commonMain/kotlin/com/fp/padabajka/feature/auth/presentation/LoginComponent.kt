@@ -41,7 +41,7 @@ class LoginComponent(
             EmailFieldLoosFocus -> validateEmail(state.value.email)
             LoginClick -> login()
             ConsumeLoginFailedEvent -> consumeLoginFailedEvent()
-            GoToRegistrationClick -> TODO()
+            GoToRegistrationClick -> goToRegister()
         }
     }
 

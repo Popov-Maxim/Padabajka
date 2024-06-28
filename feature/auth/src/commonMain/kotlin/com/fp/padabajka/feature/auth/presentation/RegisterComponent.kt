@@ -62,7 +62,7 @@ class RegisterComponent(
             )
             RegisterClick -> register()
             ConsumeRegistrationFailEvent -> consumeRegisterFailedEvent()
-            GoToLoginClick -> TODO()
+            GoToLoginClick -> goToLogin()
         }
     }
 

@@ -1,6 +1,5 @@
 package com.fp.padabajka.feature.auth.di
 
-import com.fp.padabajka.core.domain.Factory
 import com.fp.padabajka.core.repository.api.AuthRepository
 import com.fp.padabajka.feature.auth.data.AuthRepositoryImpl
 import com.fp.padabajka.feature.auth.data.remote.FirebaseRemoteAuthDataSource
@@ -9,6 +8,8 @@ import com.fp.padabajka.feature.auth.domain.LogInWithEmailAndPasswordUseCase
 import com.fp.padabajka.feature.auth.domain.RegisterWithEmailAndPasswordUseCase
 import com.fp.padabajka.feature.auth.domain.ValidateEmailUseCase
 import com.fp.padabajka.feature.auth.domain.ValidatePasswordsUseCase
+import com.fp.padabajka.feature.auth.presentation.LoginComponent
+import com.fp.padabajka.feature.auth.presentation.RegisterComponent
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import org.koin.dsl.module
@@ -27,21 +28,43 @@ private val authDataModule = module {
 
 private val authDomainModule = module {
     factory {
-        Factory { ValidateEmailUseCase() }
+        ValidateEmailUseCase()
     }
     factory {
-        Factory { ValidatePasswordsUseCase() }
+        ValidatePasswordsUseCase()
     }
     factory {
-        Factory { LogInWithEmailAndPasswordUseCase(get()) }
+        LogInWithEmailAndPasswordUseCase(
+            authRepository = get()
+        )
     }
     factory {
-        Factory { RegisterWithEmailAndPasswordUseCase(get(), get(), get()) }
+        RegisterWithEmailAndPasswordUseCase(
+            authRepository = get(),
+            validateEmailUseCase = get(),
+            validatePasswordsUseCase = get()
+        )
     }
 }
 
 private val authPresentationModule = module {
-    // TODO: Add component scoped dependency
+    factory<LoginComponent> { parameters ->
+        LoginComponent(
+            context = parameters.get(),
+            goToRegister = parameters.get(),
+            logInWithEmailAndPasswordUseCaseFactory = { get() },
+            validateEmailUseCaseFactory = { get() }
+        )
+    }
+    factory<RegisterComponent> { parameters ->
+        RegisterComponent(
+            context = parameters.get(),
+            goToLogin = parameters.get(),
+            registerWithEmailAndPasswordUseCaseFactory = { get() },
+            validateEmailUseCaseFactory = { get() },
+            validatePasswordsUseCaseFactory = { get() },
+        )
+    }
 }
 
 val authModules = arrayOf(authDataModule, authDomainModule, authPresentationModule)
