@@ -5,9 +5,9 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.navigate
 import com.fp.padabajka.core.repository.api.model.messenger.ChatId
-import com.fp.padabajka.feature.messenger.presentation.MessengerComponent
 import com.fp.padabajka.feature.auth.presentation.LoginComponent
 import com.fp.padabajka.feature.auth.presentation.RegisterComponent
+import com.fp.padabajka.feature.messenger.presentation.MessengerComponent
 import com.fp.padabajka.feature.swiper.presentation.SwiperScreenComponent
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent

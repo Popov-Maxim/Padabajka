@@ -8,9 +8,9 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.fp.padabajka.feature.messenger.presentation.MessengerScreen
 import com.fp.padabajka.feature.auth.presentation.screen.LoginScreen
 import com.fp.padabajka.feature.auth.presentation.screen.RegisterScreen
+import com.fp.padabajka.feature.messenger.presentation.MessengerScreen
 import com.fp.padabajka.feature.swiper.presentation.screen.SwiperScreen
 
 @Composable
