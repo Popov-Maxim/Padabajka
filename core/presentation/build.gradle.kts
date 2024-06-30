@@ -39,6 +39,7 @@ kotlin {
             api(libs.koin.core)
             api(libs.kotlinx.serialization.json)
             api(libs.immutable.collections)
+            api(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

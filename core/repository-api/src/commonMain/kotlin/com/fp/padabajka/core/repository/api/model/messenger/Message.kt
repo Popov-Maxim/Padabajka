@@ -14,4 +14,4 @@ data class Message(
 )
 
 @JvmInline
-value class MessageId(val raw: Long)
+value class MessageId(val raw: String)

@@ -9,6 +9,6 @@ import kotlinx.coroutines.flow.Flow
 interface MessageRepository {
     fun messages(chatId: ChatId): Flow<List<Message>>
     suspend fun sendMessage(chatId: ChatId, content: String, parentMessageId: MessageId? = null)
-    suspend fun readMessage(chatId: ChatId, messageId: MessageId)
-    suspend fun reactToMessage(chatId: ChatId, messageId: MessageId, reaction: MessageReaction)
+    suspend fun readMessage(messageId: MessageId)
+    suspend fun reactToMessage(messageId: MessageId, reaction: MessageReaction)
 }

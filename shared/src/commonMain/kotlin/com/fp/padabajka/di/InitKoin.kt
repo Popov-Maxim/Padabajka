@@ -1,8 +1,10 @@
 package com.fp.padabajka.di
 
+import com.fp.padabajka.component.room.di.roomModule
 import com.fp.padabajka.feature.ads.di.adModules
 import com.fp.padabajka.feature.ads.yandex.di.yandexAdModule
 import com.fp.padabajka.feature.auth.di.authModules
+import com.fp.padabajka.feature.messenger.di.messengerModules
 import com.fp.padabajka.feature.profile.di.profileModules
 import com.fp.padabajka.feature.swiper.di.swiperModules
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +28,8 @@ fun initKoin(platformModule: Module) {
             *adModules,
             yandexAdModule,
             *profileModules,
+            *messengerModules,
+            roomModule,
             platformModule,
             applicationScopeModule
         )
