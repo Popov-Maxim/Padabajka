@@ -2,6 +2,7 @@ package com.fp.padabajka.feature.auth.presentation
 
 import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.domain.Factory
+import com.fp.padabajka.core.domain.delegate
 import com.fp.padabajka.core.presentation.BaseComponent
 import com.fp.padabajka.core.presentation.event.consumed
 import com.fp.padabajka.core.presentation.event.raisedWithContentIfNotNull
@@ -24,12 +25,14 @@ import com.fp.padabajka.feature.auth.presentation.model.PasswordFieldUpdate
 // TODO Test me
 @Suppress("UnusedPrivateProperty")
 class LoginComponent(
-    private val logInWithEmailAndPasswordUseCase: Factory<LogInWithEmailAndPasswordUseCase>,
-    private val validateEmailUseCase: Factory<ValidateEmailUseCase>,
+    context: ComponentContext,
     private val goToRegister: () -> Unit,
-    context: ComponentContext
-) :
-    BaseComponent<LoggingInState>(context, LoggingInState()) {
+    logInWithEmailAndPasswordUseCaseFactory: Factory<LogInWithEmailAndPasswordUseCase>,
+    validateEmailUseCaseFactory: Factory<ValidateEmailUseCase>,
+) : BaseComponent<LoggingInState>(context, LoggingInState()) {
+
+    private val logInWithEmailAndPasswordUseCase by logInWithEmailAndPasswordUseCaseFactory.delegate()
+    private val validateEmailUseCase by validateEmailUseCaseFactory.delegate()
 
     fun onEvent(event: LoginEvent) {
         when (event) {
@@ -38,7 +41,7 @@ class LoginComponent(
             EmailFieldLoosFocus -> validateEmail(state.value.email)
             LoginClick -> login()
             ConsumeLoginFailedEvent -> consumeLoginFailedEvent()
-            GoToRegistrationClick -> TODO()
+            GoToRegistrationClick -> goToRegister()
         }
     }
 
@@ -64,8 +67,10 @@ class LoginComponent(
 
             validateEmail(currentState.email)
 
-            logInWithEmailAndPasswordUseCase.get()
-                .invoke(email = currentState.email, password = currentState.password)
+            logInWithEmailAndPasswordUseCase(
+                email = currentState.email,
+                password = currentState.password
+            )
         },
         mapper = { exception ->
             when (exception) {
@@ -89,7 +94,7 @@ class LoginComponent(
 
     private fun validateEmail(email: String) = mapAndReduceException(
         action = {
-            validateEmailUseCase.get().invoke(email)
+            validateEmailUseCase(email)
         },
         mapper = { exception ->
             when (exception) {

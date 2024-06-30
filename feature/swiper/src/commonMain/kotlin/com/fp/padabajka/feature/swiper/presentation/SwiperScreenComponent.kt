@@ -2,98 +2,105 @@ package com.fp.padabajka.feature.swiper.presentation
 
 import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.domain.Factory
+import com.fp.padabajka.core.domain.delegate
 import com.fp.padabajka.core.presentation.BaseComponent
-import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.core.repository.api.model.swiper.PersonReaction
 import com.fp.padabajka.core.repository.api.model.swiper.SearchPreferences
 import com.fp.padabajka.feature.swiper.domain.NextCardUseCase
 import com.fp.padabajka.feature.swiper.domain.ReactToCardUseCase
 import com.fp.padabajka.feature.swiper.presentation.model.CardItem
 import com.fp.padabajka.feature.swiper.presentation.model.DislikeEvent
-import com.fp.padabajka.feature.swiper.presentation.model.EmptyCardItem
+import com.fp.padabajka.feature.swiper.presentation.model.EndOfCardAnimationEvent
 import com.fp.padabajka.feature.swiper.presentation.model.LikeEvent
-import com.fp.padabajka.feature.swiper.presentation.model.LoadingItem
+import com.fp.padabajka.feature.swiper.presentation.model.PersonItem
 import com.fp.padabajka.feature.swiper.presentation.model.SuperLikeEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SwiperEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SwiperState
 import com.fp.padabajka.feature.swiper.presentation.model.toUICardItem
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import com.fp.padabajka.feature.swiper.presentation.screen.CardDeck
 
 class SwiperScreenComponent(
     context: ComponentContext,
-    private val reactToCardUseCase: Factory<ReactToCardUseCase>,
-    private val nextCardUseCase: Factory<NextCardUseCase>,
+    reactToCardUseCaseFactory: Factory<ReactToCardUseCase>,
+    nextCardUseCaseFactory: Factory<NextCardUseCase>,
 ) : BaseComponent<SwiperState>(
     context,
     SwiperState(
-        LoadingItem,
-        LoadingItem
+        CardDeck()
     )
 ) {
 
     init {
-        componentScope.launch {
-            repeat(2) {
-                loadCard()
-            }
-        }
+        updateCardDeck(count = 3)
     }
+
+    private val reactToCardUseCase: ReactToCardUseCase by reactToCardUseCaseFactory.delegate()
+    private val nextCardUseCase: NextCardUseCase by nextCardUseCaseFactory.delegate()
 
     private val searchPreferences: SearchPreferences = object : SearchPreferences {}
 
     fun onEvent(event: SwiperEvent) {
         when (event) {
-            is DislikeEvent -> dislikePerson(event.personId)
-            is LikeEvent -> likePerson(event.personId)
-            is SuperLikeEvent -> superLikePerson(event.personId)
+            is DislikeEvent -> dislikeCard(event.cardItem)
+            is LikeEvent -> likeCard(event.cardItem)
+            is SuperLikeEvent -> superLikeCard(event.cardItem)
+            is EndOfCardAnimationEvent -> removeCardFromDeck(event.cardItem)
         }
     }
 
-    private fun updateForegroundCard() {
-        reduce {
-            it.copy(
-                foregroundCardItem = it.backgroundCardItem,
-                backgroundCardItem = LoadingItem
-            )
+    private fun removeCardFromDeck(cardItem: CardItem) {
+        reduce { state ->
+            state.run { copy(cardDeck = cardDeck.remove(cardItem)) }
         }
     }
 
-    private suspend fun loadCard(): Job {
-        return componentScope.launch {
-            val card = nextCardUseCase.get().invoke(searchPreferences).toUICardItem()
-            reduce { state ->
-                if (state.foregroundCardItem.isEmpty()) {
-                    SwiperState(card, LoadingItem)
-                } else {
-                    state.copy(backgroundCardItem = card)
-                }
-            }
+    private fun dislikeCard(cardItem: CardItem) {
+        if (cardItem is PersonItem) {
+            reactPersonAndUpdateCardDeck(PersonReaction.Dislike(cardItem.id))
+        } else {
+            updateCardDeck()
         }
     }
 
-    private fun CardItem.isEmpty(): Boolean {
-        return this is LoadingItem || this is EmptyCardItem
+    private fun likeCard(cardItem: CardItem) {
+        if (cardItem is PersonItem) {
+            reactPersonAndUpdateCardDeck(PersonReaction.Dislike(cardItem.id))
+        } else {
+            updateCardDeck()
+        }
     }
 
-    private fun dislikePerson(personId: PersonId) {
-        reactPerson(PersonReaction.Dislike(personId))
+    private fun superLikeCard(cardItem: CardItem) {
+        if (cardItem is PersonItem) {
+            reactPersonAndUpdateCardDeck(PersonReaction.Dislike(cardItem.id))
+        } else {
+            updateCardDeck()
+        }
     }
 
-    private fun likePerson(personId: PersonId) {
-        reactPerson(PersonReaction.Like(personId))
-    }
-
-    private fun superLikePerson(personId: PersonId) {
-        reactPerson(PersonReaction.SuperLike(personId))
-    }
-
-    private fun reactPerson(reaction: PersonReaction) =
+    private fun reactPersonAndUpdateCardDeck(reaction: PersonReaction) =
         mapAndReduceException(
             action = {
-                updateForegroundCard()
-                reactToCardUseCase.get().invoke(reaction)
-                loadCard()
+                reactToCardUseCase(reaction)
+                updateCardDeck()
+            },
+            mapper = {
+                it // TODO
+            },
+            update = { swiperState, _ ->
+                swiperState
+            }
+        )
+
+    private fun updateCardDeck(count: Int = 1) =
+        mapAndReduceException(
+            action = {
+                repeat(count) {
+                    val card = nextCardUseCase(searchPreferences)
+                    reduce { state ->
+                        state.run { copy(cardDeck = cardDeck.add(card.toUICardItem())) }
+                    }
+                }
             },
             mapper = {
                 it // TODO

@@ -1,7 +1,7 @@
 package com.fp.padabajka.core.repository.api.model.ads
 
-import platform.UIKit.UIView
+import platform.UIKit.UIStackView
 
 actual interface PlatformNativeAd {
-    fun bind(container: UIView)
+    fun bind(container: UIStackView)
 }

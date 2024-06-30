@@ -39,8 +39,8 @@ kotlin {
 
 android {
     namespace = "com.fp.padabajka.feature.match"
-    compileSdk = 34
+    compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 24
+        minSdk = libs.versions.projectConfig.minSdk.get().toInt()
     }
 }

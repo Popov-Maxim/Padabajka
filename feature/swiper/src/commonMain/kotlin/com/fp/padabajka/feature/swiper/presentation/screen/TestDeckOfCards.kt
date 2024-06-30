@@ -21,26 +21,26 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
-import com.fp.padabajka.feature.swiper.presentation.model.CardItem
 import com.fp.padabajka.feature.swiper.presentation.model.PersonItem
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 
+@Suppress("LongMethod")
 @Composable
 fun TestDeckOfCards() {
     var index by remember { mutableStateOf(0) }
-    var arrayDeque: SafePersistentList<CardItem> by remember {
-        mutableStateOf(persistentListOf<CardItem>().toSafe())
+    var cardDeck: CardDeck by remember {
+        mutableStateOf(CardDeck())
     }
     LaunchedEffect(Unit) {
         for (i in 0..START_CARD_COUNT) {
             index++
-            arrayDeque = arrayDeque.add(createPersonItem(i))
+            cardDeck = cardDeck.add(createPersonItem(i))
         }
         while (false) {
-            arrayDeque = arrayDeque.add(createPersonItem(index++))
+            cardDeck = cardDeck.add(createPersonItem(index++))
             delay(timeMillis = 5000)
         }
     }
@@ -50,11 +50,12 @@ fun TestDeckOfCards() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        arrayDeque.getResult().forEachIndexed { i, card ->
+        val cards = cardDeck.getCards()
+        cards.forEachIndexed { i, card ->
             key(card) {
                 AnimationCard(
                     modifier = Modifier.height(300.dp).width(200.dp)
-                        .zIndex((arrayDeque.size - i).toFloat()),
+                        .zIndex((cards.size - i).toFloat()),
                     content = @Composable {
                         Card(card)
                         Box(
@@ -68,10 +69,10 @@ fun TestDeckOfCards() {
                         }
                     },
                     onSwipe = {
-                        arrayDeque = arrayDeque.add(createPersonItem(index++))
+                        cardDeck = cardDeck.add(createPersonItem(index++))
                     },
                     onEndSwipeAnimation = {
-                        arrayDeque = arrayDeque.remove(card)
+                        cardDeck = cardDeck.remove(card)
                     }
                 )
             }

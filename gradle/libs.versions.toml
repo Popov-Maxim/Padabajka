@@ -26,6 +26,9 @@ yandex-ads = "6.4.1"
 room = "2.7.0-alpha01"
 ksp = "1.9.23-1.0.20"
 sqlite = "2.5.0-SNAPSHOT"
+projectConfig-minSdk = "24"
+projectConfig-compileSdk = "34"
+projectConfig-targetSdk = "34"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -53,7 +56,6 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version
 google-services = { group = "com.google.gms", name = "google-services", version.ref = "google-services" }
 yandex-ads = { module = "com.yandex.android:mobileads", version.ref = "yandex-ads" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-room-runtime-android = { module = "androidx.room:room-runtime-android", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 

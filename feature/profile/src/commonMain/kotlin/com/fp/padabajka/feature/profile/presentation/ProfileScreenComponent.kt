@@ -2,6 +2,7 @@ package com.fp.padabajka.feature.profile.presentation
 
 import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.domain.Factory
+import com.fp.padabajka.core.domain.delegate
 import com.fp.padabajka.core.presentation.BaseComponent
 import com.fp.padabajka.core.presentation.event.consumed
 import com.fp.padabajka.core.presentation.event.raisedIfNotNull
@@ -36,18 +37,27 @@ import kotlinx.coroutines.launch
 class ProfileScreenComponent(
     context: ComponentContext,
     private val profileProvider: ProfileProvider,
-    private val discardUpdateUseCase: Factory<DiscardUpdateUseCase>,
-    private val saveUpdateProfileUseCase: Factory<SaveUpdateProfileUseCase>,
-    private val firstNameUpdateUseCase: Factory<FirstNameUpdateUseCase>,
-    private val lastNameUpdateUseCase: Factory<LastNameUpdateUseCase>,
-    private val aboutMeUpdateUseCase: Factory<AboutMeUpdateUseCase>,
-    private val hideAchievementUseCase: Factory<HideAchievementUseCase>,
-    private val makeAchievementVisibleUseCase: Factory<MakeAchievementVisibleUseCase>,
-    private val mainAchievementUpdateUseCase: Factory<MainAchievementUpdateUseCase>
+    discardUpdateUseCaseFactory: Factory<DiscardUpdateUseCase>,
+    saveUpdateProfileUseCaseFactory: Factory<SaveUpdateProfileUseCase>,
+    firstNameUpdateUseCaseFactory: Factory<FirstNameUpdateUseCase>,
+    lastNameUpdateUseCaseFactory: Factory<LastNameUpdateUseCase>,
+    aboutMeUpdateUseCaseFactory: Factory<AboutMeUpdateUseCase>,
+    hideAchievementUseCaseFactory: Factory<HideAchievementUseCase>,
+    makeAchievementVisibleUseCaseFactory: Factory<MakeAchievementVisibleUseCase>,
+    mainAchievementUpdateUseCaseFactory: Factory<MainAchievementUpdateUseCase>
 ) : BaseComponent<ProfileState>(
     context,
     TODO("add init")
 ) {
+
+    private val discardUpdateUseCase by discardUpdateUseCaseFactory.delegate()
+    private val saveUpdateProfileUseCase by saveUpdateProfileUseCaseFactory.delegate()
+    private val firstNameUpdateUseCase by firstNameUpdateUseCaseFactory.delegate()
+    private val lastNameUpdateUseCase by lastNameUpdateUseCaseFactory.delegate()
+    private val aboutMeUpdateUseCase by aboutMeUpdateUseCaseFactory.delegate()
+    private val hideAchievementUseCase by hideAchievementUseCaseFactory.delegate()
+    private val makeAchievementVisibleUseCase by makeAchievementVisibleUseCaseFactory.delegate()
+    private val mainAchievementUpdateUseCase by mainAchievementUpdateUseCaseFactory.delegate()
 
     init {
         componentScope.launch {
@@ -79,7 +89,7 @@ class ProfileScreenComponent(
     private fun makeAchievementMain(achievement: Achievement?) =
         mapAndReduceException(
             action = {
-                mainAchievementUpdateUseCase.get().invoke(achievement)
+                mainAchievementUpdateUseCase(achievement)
             },
             mapper = { InternalError },
             update = { profileState, internalError ->
@@ -90,7 +100,7 @@ class ProfileScreenComponent(
     private fun makeAchievementVisible(achievement: Achievement) =
         mapAndReduceException(
             action = {
-                makeAchievementVisibleUseCase.get().invoke(achievement)
+                makeAchievementVisibleUseCase(achievement)
             },
             mapper = { InternalError },
             update = { profileState, internalError ->
@@ -101,7 +111,7 @@ class ProfileScreenComponent(
     private fun hideAchievement(achievement: Achievement) =
         mapAndReduceException(
             action = {
-                hideAchievementUseCase.get().invoke(achievement)
+                hideAchievementUseCase(achievement)
             },
             mapper = { InternalError },
             update = { profileState, internalError ->
@@ -112,7 +122,7 @@ class ProfileScreenComponent(
     private fun discardUpdates() =
         mapAndReduceException(
             action = {
-                discardUpdateUseCase.get().invoke()
+                discardUpdateUseCase()
             },
             mapper = { InternalError },
             update = { profileState, internalError ->
@@ -123,7 +133,7 @@ class ProfileScreenComponent(
     private fun saveUpdates() =
         mapAndReduceException(
             action = {
-                saveUpdateProfileUseCase.get().invoke()
+                saveUpdateProfileUseCase()
             },
             mapper = {
                 it // TODO
@@ -136,8 +146,7 @@ class ProfileScreenComponent(
     private fun firstNameUpdate(firstName: String) =
         mapAndReduceException(
             action = {
-                firstNameUpdateUseCase.get()
-                    .invoke(firstName)
+                firstNameUpdateUseCase(firstName)
             },
             mapper = {
                 it // TODO
@@ -156,8 +165,7 @@ class ProfileScreenComponent(
     private fun lastNameUpdate(lastName: String) =
         mapAndReduceException(
             action = {
-                lastNameUpdateUseCase.get()
-                    .invoke(lastName)
+                lastNameUpdateUseCase(lastName)
             },
             mapper = {
                 it // TODO
@@ -176,8 +184,7 @@ class ProfileScreenComponent(
     private fun aboutMeUpdate(aboutMe: String) =
         mapAndReduceException(
             action = {
-                aboutMeUpdateUseCase.get()
-                    .invoke(aboutMe)
+                aboutMeUpdateUseCase(aboutMe)
             },
             mapper = {
                 it // TODO

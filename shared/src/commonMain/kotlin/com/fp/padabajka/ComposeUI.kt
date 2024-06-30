@@ -9,6 +9,8 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slid
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.fp.padabajka.feature.messenger.presentation.MessengerScreen
+import com.fp.padabajka.feature.auth.presentation.screen.LoginScreen
+import com.fp.padabajka.feature.auth.presentation.screen.RegisterScreen
 import com.fp.padabajka.feature.swiper.presentation.screen.SwiperScreen
 
 @Composable
@@ -29,6 +31,8 @@ fun NavigateApp(rootContext: NavigateComponentContext) {
             when (val instance = child.instance) {
                 is NavigateComponentContext.Child.SwiperScreen -> SwiperScreen(instance.component)
                 is NavigateComponentContext.Child.MessengerScreen -> MessengerScreen(instance.component)
+                is NavigateComponentContext.Child.LoginScreen -> LoginScreen(instance.component)
+                is NavigateComponentContext.Child.RegisterScreen -> RegisterScreen(instance.component)
             }
         }
     }

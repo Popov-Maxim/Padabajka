@@ -1,10 +1,10 @@
 package com.fp.padabajka.feature.swiper.presentation.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
@@ -19,27 +19,6 @@ import com.fp.padabajka.feature.swiper.presentation.model.EmptyCardItem
 import com.fp.padabajka.feature.swiper.presentation.model.LoadingItem
 import com.fp.padabajka.feature.swiper.presentation.model.NativeAdItem
 import com.fp.padabajka.feature.swiper.presentation.model.PersonItem
-import com.fp.padabajka.feature.swiper.presentation.model.SwiperState
-
-@Composable
-fun CardSwiper(content: SwiperState, onSwipe: (Swipe) -> Unit) {
-    val foregroundCard = @Composable { Card(content.foregroundCardItem) }
-    val backgroundCard = @Composable { Card(content.backgroundCardItem) }
-
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        SwipeCard(
-            modifier = Modifier.height(300.dp).width(200.dp),
-            onSwipe = onSwipe,
-            swipeHorizontalThreshold = 200f,
-            foregroundContent = foregroundCard,
-            betweenContent = {},
-            backgroundContent = backgroundCard
-        )
-    }
-}
 
 @Composable
 fun Card(cardItem: CardItem) {
@@ -55,15 +34,18 @@ fun Card(cardItem: CardItem) {
                 )
             }
         }
-        is NativeAdItem -> {}
+        is NativeAdItem -> {
+            NativeAdCard(cardItem)
+        }
         is PersonItem -> PersonCard(cardItem)
     }
 }
 
 @Composable
-fun PersonCard(personItem: PersonItem) {
+private fun PersonCard(personItem: PersonItem) {
     Column(
         modifier = Modifier.fillMaxSize().background(Color.Gray)
+            .border(1.dp, Color.Black)
     ) {
         Text(
             text = "firstName: ${personItem.firstName}",
