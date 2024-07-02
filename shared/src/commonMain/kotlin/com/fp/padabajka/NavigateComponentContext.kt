@@ -20,14 +20,20 @@ class NavigateComponentContext(
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.RegisterScreen,
+        initialConfiguration = Configuration.SplashScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )
 
     fun navigate(configuration: Configuration) {
         navigation.navigate {
-            it - configuration + configuration
+            it - Configuration.SplashScreen - configuration + configuration
+        }
+    }
+
+    fun navigateNewStack(configuration: Configuration) {
+        navigation.navigate {
+            listOf(configuration)
         }
     }
 
@@ -47,10 +53,13 @@ class NavigateComponentContext(
             Configuration.RegisterScreen -> Child.RegisterScreen(
                 component = get { parametersOf(context, { navigate(Configuration.LoginScreen) }) }
             )
+
+            Configuration.SplashScreen -> Child.SplashScreen
         }
     }
 
     sealed interface Child {
+        data object SplashScreen : Child
         data class SwiperScreen(val component: SwiperScreenComponent) : Child
         data class LoginScreen(val component: LoginComponent) : Child
         data class RegisterScreen(val component: RegisterComponent) : Child
@@ -59,8 +68,15 @@ class NavigateComponentContext(
     @Serializable
     sealed interface Configuration {
         @Serializable
+        data object SplashScreen : Configuration
+
+        @Serializable
         data object SwiperScreen : Configuration
+
+        @Serializable
         data object LoginScreen : Configuration
+
+        @Serializable
         data object RegisterScreen : Configuration
     }
 }

@@ -4,7 +4,9 @@ import com.fp.padabajka.core.repository.api.AuthRepository
 import com.fp.padabajka.feature.auth.data.AuthRepositoryImpl
 import com.fp.padabajka.feature.auth.data.remote.FirebaseRemoteAuthDataSource
 import com.fp.padabajka.feature.auth.data.remote.RemoteAuthDataSource
+import com.fp.padabajka.feature.auth.domain.AuthStateProvider
 import com.fp.padabajka.feature.auth.domain.LogInWithEmailAndPasswordUseCase
+import com.fp.padabajka.feature.auth.domain.LogOutUseCase
 import com.fp.padabajka.feature.auth.domain.RegisterWithEmailAndPasswordUseCase
 import com.fp.padabajka.feature.auth.domain.ValidateEmailUseCase
 import com.fp.padabajka.feature.auth.domain.ValidatePasswordsUseCase
@@ -43,6 +45,18 @@ private val authDomainModule = module {
             authRepository = get(),
             validateEmailUseCase = get(),
             validatePasswordsUseCase = get()
+        )
+    }
+
+    factory {
+        AuthStateProvider(
+            authRepository = get()
+        )
+    }
+
+    factory {
+        LogOutUseCase(
+            authRepository = get()
         )
     }
 }
