@@ -29,10 +29,10 @@ kotlin {
             isStatic = true
         }
 
-        pod("YandexMobileAds") {
-            version = "6.4.1"
-            extraOpts += listOf("-compiler-option", "-fmodules")
-        }
+//        pod("YandexMobileAds") {
+//            version = "6.4.1"
+//            extraOpts += listOf("-compiler-option", "-fmodules")
+//        }
     }
 
     sourceSets {
@@ -44,7 +44,7 @@ kotlin {
             api(projects.core.data)
         }
         androidMain.dependencies {
-            implementation(libs.yandex.ads)
+//            implementation(libs.yandex.ads)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

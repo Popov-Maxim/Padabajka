@@ -39,7 +39,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.ads)
-            implementation(projects.feature.ads.yandex)
+//            implementation(projects.feature.ads.yandex)
             implementation(projects.feature.auth)
             implementation(projects.feature.profile)
             implementation(projects.feature.swiper)
