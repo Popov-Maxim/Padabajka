@@ -15,11 +15,8 @@ import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.feature.messenger.data.model.MessageDto
 import com.fp.padabajka.feature.messenger.data.source.local.LocalMessageDataSource
 import com.fp.padabajka.feature.messenger.data.source.remote.RemoteMessageDataSource
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
@@ -27,15 +24,13 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 class MessageRepositoryImpl(
-    scope: CoroutineScope,
     authRepository: AuthRepository,
     private val localMessageDataSource: LocalMessageDataSource,
     private val remoteMessageDataSource: RemoteMessageDataSource
 ) : MessageRepository {
 
-    private val myRawPersonId: String? by authRepository.authState.map {
-        (it as? LoggedIn)?.userId?.raw
-    }.stateIn(scope, SharingStarted.Eagerly, null)::value
+    private val myRawPersonId: String? = authRepository.currentAuthState
+        .let { (it as? LoggedIn)?.userId?.raw }
 
     private val myPersonId: PersonId
         get() = PersonId(myRawPersonId ?: throw NoAuthorisedUserException)

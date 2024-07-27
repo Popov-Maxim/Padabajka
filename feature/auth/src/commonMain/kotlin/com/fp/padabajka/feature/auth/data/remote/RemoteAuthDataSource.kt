@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 internal interface RemoteAuthDataSource {
 
     val user: Flow<UserDto?>
+    val currentUser: UserDto?
     suspend fun login(email: String, password: String)
     suspend fun login(token: String)
     suspend fun register(email: String, password: String)

@@ -6,6 +6,7 @@ import com.fp.padabajka.feature.auth.data.model.UserDto
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseAuthException
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
+import dev.gitlive.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.coroutines.cancellation.CancellationException
@@ -14,14 +15,11 @@ internal class FirebaseRemoteAuthDataSource(private val firebaseAuth: FirebaseAu
 
     override val user: Flow<UserDto?>
         get() = firebaseAuth.authStateChanged.map {
-            it?.let { user ->
-                UserDto(
-                    id = user.uid,
-                    email = user.email,
-                    isEmailVerified = user.isEmailVerified
-                )
-            }
+            it?.toUserDto()
         }
+
+    override val currentUser: UserDto?
+        get() = firebaseAuth.currentUser?.toUserDto()
 
     override suspend fun login(email: String, password: String) = mapFirebaseAuthExceptions {
         firebaseAuth.signInWithEmailAndPassword(email = email, password = password)
@@ -50,5 +48,13 @@ internal class FirebaseRemoteAuthDataSource(private val firebaseAuth: FirebaseAu
                 else -> UnexpectedAuthException(fae)
             }
         }
+    }
+
+    private fun FirebaseUser.toUserDto(): UserDto {
+        return UserDto(
+            id = uid,
+            email = email,
+            isEmailVerified = isEmailVerified
+        )
     }
 }
