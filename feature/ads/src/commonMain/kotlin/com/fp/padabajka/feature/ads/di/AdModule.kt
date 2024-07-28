@@ -2,6 +2,7 @@ package com.fp.padabajka.feature.ads.di
 
 import com.fp.padabajka.core.repository.api.NativeAdRepository
 import com.fp.padabajka.feature.ads.data.NativeAdRepositoryImpl
+import com.fp.padabajka.feature.ads.data.fake.FakeNativeAdLoader
 import com.fp.padabajka.feature.ads.data.source.CompositeListener
 import com.fp.padabajka.feature.ads.data.source.NativeAdRemoteDataSource
 import com.fp.padabajka.feature.ads.data.source.NativeAdRemoteDataSourceImpl
@@ -18,7 +19,7 @@ private val dataModule = module {
 
     factory<NativeAdRemoteDataSource> {
         NativeAdRemoteDataSourceImpl(
-            nativeAdLoader = get(),
+            nativeAdLoader = FakeNativeAdLoader(), // get(),
             compositeListener = get()
         )
     }
