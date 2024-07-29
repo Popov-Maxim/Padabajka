@@ -21,6 +21,10 @@ internal class AuthRepositoryImpl(
     override val currentAuthState: AuthState
         get() = remoteAuthDataSource.currentUser.toAuthState()
 
+    override suspend fun authToken(): String? {
+        return remoteAuthDataSource.authToken()
+    }
+
     override suspend fun login(token: String) {
         remoteAuthDataSource.login(token)
     }

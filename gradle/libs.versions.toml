@@ -27,6 +27,7 @@ yandex-ads = "6.4.1"
 projectConfig-minSdk = "24"
 projectConfig-compileSdk = "34"
 projectConfig-targetSdk = "34"
+ktor = "2.3.12"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -53,6 +54,11 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 google-services = { group = "com.google.gms", name = "google-services", version.ref = "google-services" }
 yandex-ads = { module = "com.yandex.android:mobileads", version.ref = "yandex-ads" }
+ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor"}
+ktor-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 [plugins]
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }

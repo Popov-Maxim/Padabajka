@@ -45,6 +45,7 @@ kotlin {
             implementation(projects.feature.swiper)
             implementation(projects.feature.match)
             implementation(projects.feature.messenger)
+            implementation(projects.core.networking)
 
             implementation(compose.runtime)
             implementation(compose.foundation)

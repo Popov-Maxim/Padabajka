@@ -106,7 +106,7 @@ private fun createPersonItem(index: Int): PersonItem {
     )
 }
 
-private object System {
+object System {
     fun now(): Long {
         return Clock.System.now().toEpochMilliseconds()
     }
