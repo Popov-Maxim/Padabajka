@@ -21,6 +21,10 @@ internal class FirebaseRemoteAuthDataSource(private val firebaseAuth: FirebaseAu
     override val currentUser: UserDto?
         get() = firebaseAuth.currentUser?.toUserDto()
 
+    override suspend fun authToken(): String? {
+        return firebaseAuth.currentUser?.getIdToken(false)
+    }
+
     override suspend fun login(email: String, password: String) = mapFirebaseAuthExceptions {
         firebaseAuth.signInWithEmailAndPassword(email = email, password = password)
     }
