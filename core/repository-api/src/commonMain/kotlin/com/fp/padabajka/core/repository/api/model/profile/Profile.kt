@@ -17,11 +17,11 @@ data class Profile(
     val mainAchievement: Achievement?,
     val achievements: PersistentList<Achievement>
 ) {
-    val age: Int
+    val age: Age
         get() {
             val timeZone = TimeZone.currentSystemDefault()
             val now = Clock.System.todayIn(timeZone)
 
-            return now.periodUntil(birthday).years
+            return now.periodUntil(birthday).years.toAge()
         }
 } // TODO: add override equals()

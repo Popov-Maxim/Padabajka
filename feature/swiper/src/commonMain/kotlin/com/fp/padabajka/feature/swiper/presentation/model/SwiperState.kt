@@ -4,7 +4,9 @@ import androidx.compose.runtime.Immutable
 import com.fp.padabajka.core.presentation.State
 import com.fp.padabajka.core.repository.api.model.ads.PlatformNativeAd
 import com.fp.padabajka.core.repository.api.model.profile.Achievement
+import com.fp.padabajka.core.repository.api.model.profile.AgeRange
 import com.fp.padabajka.core.repository.api.model.profile.Detail
+import com.fp.padabajka.core.repository.api.model.profile.Gender
 import com.fp.padabajka.core.repository.api.model.profile.Image
 import com.fp.padabajka.core.repository.api.model.swiper.AdCard
 import com.fp.padabajka.core.repository.api.model.swiper.Card
@@ -12,6 +14,7 @@ import com.fp.padabajka.core.repository.api.model.swiper.EmptyCard
 import com.fp.padabajka.core.repository.api.model.swiper.Person
 import com.fp.padabajka.core.repository.api.model.swiper.PersonCard
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
+import com.fp.padabajka.core.repository.api.model.swiper.SearchPreferences
 import com.fp.padabajka.feature.swiper.presentation.screen.CardDeck
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.datetime.LocalDate
@@ -19,7 +22,18 @@ import kotlinx.datetime.LocalDate
 @Immutable
 data class SwiperState(
     val cardDeck: CardDeck,
+    val searchPreferences: SearchPreferencesItem
 ) : State
+
+sealed interface SearchPreferencesItem {
+    data class Success(
+        val ageRange: AgeRange,
+        val lookingGenders: PersistentList<Gender>,
+        val distanceInKm: Int,
+        val showReset: Boolean = false
+    ) : SearchPreferencesItem
+    data object Loading : SearchPreferencesItem
+}
 
 @Immutable
 sealed interface CardItem
@@ -68,6 +82,27 @@ fun Person.toUIPerson(): PersonItem {
             profile.details,
             profile.mainAchievement,
             profile.achievements
+        )
+    }
+}
+
+fun SearchPreferences.toUISearchPreferences(showReset: Boolean = false): SearchPreferencesItem {
+    return this.run {
+        SearchPreferencesItem.Success(
+            ageRange,
+            lookingGenders,
+            distanceInKm,
+            showReset
+        )
+    }
+}
+
+fun SearchPreferencesItem.Success.toSearchPreferences(): SearchPreferences {
+    return this.run {
+        SearchPreferences(
+            ageRange,
+            lookingGenders,
+            distanceInKm
         )
     }
 }

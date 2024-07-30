@@ -35,7 +35,7 @@ actual class YandexNativeAdLoader(private val nativeAdLoader: SdkNativeAdLoader)
         return NativeAdRequestConfiguration
             .Builder("demo-native-content-yandex")
             .apply {
-                configuration.age?.let { setAge(it.toString()) }
+                configuration.age?.let { setAge(it.raw.toString()) }
             }.build()
     }
 }
