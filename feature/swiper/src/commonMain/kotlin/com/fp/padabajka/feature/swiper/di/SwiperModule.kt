@@ -21,6 +21,8 @@ import com.fp.padabajka.feature.swiper.data.reaction.network.ReactionApi
 import com.fp.padabajka.feature.swiper.data.reaction.source.RemoteReactionDataSource
 import com.fp.padabajka.feature.swiper.data.reaction.source.RemoteReactionDataSourceImpl
 import com.fp.padabajka.feature.swiper.data.search.SearchPreferencesRepositoryImpl
+import com.fp.padabajka.feature.swiper.data.search.model.SearchPrefDto
+import com.fp.padabajka.feature.swiper.data.search.model.toDto
 import com.fp.padabajka.feature.swiper.data.search.source.LocalSearchPreferencesDataSource
 import com.fp.padabajka.feature.swiper.data.search.source.LocalSearchPreferencesDataSourceImpl
 import com.fp.padabajka.feature.swiper.domain.NextCardUseCase
@@ -96,13 +98,13 @@ private val dataModule = module {
 
     factory<LocalSearchPreferencesDataSource> {
         LocalSearchPreferencesDataSourceImpl(
-            dataStore = object : DataStore<SearchPreferences> {
-                private val _data = MutableStateFlow(SearchPreferences.DEFAULT)
-                override val data: Flow<SearchPreferences> = _data
+            dataStore = object : DataStore<SearchPrefDto> {
+                private val _data = MutableStateFlow(SearchPreferences.DEFAULT.toDto())
+                override val data: Flow<SearchPrefDto> = _data
 
                 override suspend fun updateData(
-                    transform: suspend (t: SearchPreferences) -> SearchPreferences
-                ): SearchPreferences {
+                    transform: suspend (t: SearchPrefDto) -> SearchPrefDto
+                ): SearchPrefDto {
                     return _data.updateAndGet { transform(it) }
                 }
             } // TODO(datastore): add init

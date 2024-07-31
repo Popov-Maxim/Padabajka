@@ -5,10 +5,20 @@ import kotlin.jvm.JvmInline
 data class AgeRange(val start: Age, val endInclusive: Age)
 
 @JvmInline
-value class Age(val raw: Int)
+value class Age(val raw: Int) {
+    init {
+        require(raw in MIN_AGE_VALUE..MAX_AGE_VALUE) {
+            "$raw years old is not included [$MIN_AGE_VALUE, $MAX_AGE_VALUE]"
+        }
+    }
 
-val minAge = Age(raw = 18)
-val maxAge = Age(raw = 80)
+    companion object {
+        private const val MIN_AGE_VALUE = 18
+        private const val MAX_AGE_VALUE = 80
+        val minAge = Age(raw = MIN_AGE_VALUE)
+        val maxAge = Age(raw = MAX_AGE_VALUE)
+    }
+}
 
 fun ageOf(value: Int): Age = Age(value)
 

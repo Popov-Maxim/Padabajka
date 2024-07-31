@@ -13,9 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.fp.padabajka.core.repository.api.model.profile.Age
 import com.fp.padabajka.core.repository.api.model.profile.AgeRange
-import com.fp.padabajka.core.repository.api.model.profile.maxAge
-import com.fp.padabajka.core.repository.api.model.profile.minAge
 import com.fp.padabajka.core.repository.api.model.profile.rangeTo
 import com.fp.padabajka.core.repository.api.model.profile.toAge
 import kotlin.math.roundToInt
@@ -58,4 +57,4 @@ fun IntRange.toFloatRange(): ClosedFloatingPointRange<Float> =
 private fun ClosedFloatingPointRange<Float>.toAgeRange(): AgeRange =
     start.roundToInt().toAge()..endInclusive.roundToInt().toAge()
 
-private val maxAgeRange: IntRange = minAge.raw..maxAge.raw
+private val maxAgeRange: IntRange = Age.minAge.raw..Age.maxAge.raw
