@@ -16,6 +16,12 @@ class CardDeck(
         return CardDeck(newMainCollection, indexForDelete)
     }
 
+    fun addAll(cardItems: List<CardItem>): CardDeck {
+        val newMainCollection = mainCollection.addAll(cardItems)
+
+        return CardDeck(newMainCollection, indexForDelete)
+    }
+
     fun remove(cardItem: CardItem): CardDeck {
         val index = mainCollection.indexOf(cardItem)
 

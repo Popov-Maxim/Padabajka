@@ -18,6 +18,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,15 +34,16 @@ import kotlinx.coroutines.flow.collectIndexed
 fun ShearedPrefEditorDialog(
     sheetState: ModalBottomSheetState,
     searchPreferences: SearchPreferencesItem,
-    applyDiff: (SearchPreferencesItem) -> Unit,
-    resetDiff: () -> Unit,
-    update: (SearchPreferencesItem.Success) -> Unit
+    applyDiff: (SearchPreferencesItem) -> Unit
 ) {
+    var searchPreferencesItem by remember { mutableStateOf(searchPreferences) }
+    val showReset = searchPreferencesItem != searchPreferences
+
     // Track sheet state changes
-    LaunchedEffect(sheetState, searchPreferences) {
+    LaunchedEffect(sheetState, searchPreferencesItem) {
         snapshotFlow { sheetState.currentValue }.collectIndexed { index, value ->
             if (index != 0 && value == ModalBottomSheetValue.Hidden) {
-                applyDiff(searchPreferences)
+                applyDiff(searchPreferencesItem)
             }
         }
     }
@@ -47,12 +52,17 @@ fun ShearedPrefEditorDialog(
         sheetState = sheetState,
         sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         sheetContent = {
-            when (searchPreferences) {
+            when (val searchPref = searchPreferencesItem) {
                 SearchPreferencesItem.Loading -> {}
                 is SearchPreferencesItem.Success -> SearchPrefEditor(
-                    searchPreferences = searchPreferences,
-                    resetDiff = resetDiff
-                ) { update.invoke(it) }
+                    searchPreferences = searchPref,
+                    showReset = showReset,
+                    resetDiff = {
+                        searchPreferencesItem = searchPreferences
+                    }
+                ) {
+                    searchPreferencesItem = it
+                }
             }
         }
     ) {}
@@ -61,12 +71,13 @@ fun ShearedPrefEditorDialog(
 @Composable
 private fun SearchPrefEditor(
     searchPreferences: SearchPreferencesItem.Success,
+    showReset: Boolean,
     resetDiff: () -> Unit,
     update: (SearchPreferencesItem.Success) -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Box(modifier = Modifier.align(Alignment.CenterEnd).size(50.dp).padding(10.dp)) {
-            if (searchPreferences.showReset) {
+            if (showReset) {
                 Icon(
                     modifier = Modifier.fillMaxSize().clickable(onClick = resetDiff),
                     imageVector = Icons.Rounded.Refresh,

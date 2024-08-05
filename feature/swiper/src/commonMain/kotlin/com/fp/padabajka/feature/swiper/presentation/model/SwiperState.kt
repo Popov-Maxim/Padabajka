@@ -30,7 +30,6 @@ sealed interface SearchPreferencesItem {
         val ageRange: AgeRange,
         val lookingGenders: PersistentList<Gender>,
         val distanceInKm: Int,
-        val showReset: Boolean = false
     ) : SearchPreferencesItem
     data object Loading : SearchPreferencesItem
 }
@@ -86,13 +85,12 @@ fun Person.toUIPerson(): PersonItem {
     }
 }
 
-fun SearchPreferences.toUISearchPreferences(showReset: Boolean = false): SearchPreferencesItem {
+fun SearchPreferences.toUISearchPreferences(): SearchPreferencesItem {
     return this.run {
         SearchPreferencesItem.Success(
             ageRange,
             lookingGenders,
             distanceInKm,
-            showReset
         )
     }
 }

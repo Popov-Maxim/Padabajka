@@ -16,12 +16,10 @@ import com.fp.padabajka.feature.swiper.presentation.model.DislikeEvent
 import com.fp.padabajka.feature.swiper.presentation.model.EndOfCardAnimationEvent
 import com.fp.padabajka.feature.swiper.presentation.model.LikeEvent
 import com.fp.padabajka.feature.swiper.presentation.model.PersonItem
-import com.fp.padabajka.feature.swiper.presentation.model.ResetSearchPrefEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SearchPreferencesItem
 import com.fp.padabajka.feature.swiper.presentation.model.SuperLikeEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SwiperEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SwiperState
-import com.fp.padabajka.feature.swiper.presentation.model.UpdateEditSearchPrefEvent
 import com.fp.padabajka.feature.swiper.presentation.model.toSearchPreferences
 import com.fp.padabajka.feature.swiper.presentation.model.toUICardItem
 import com.fp.padabajka.feature.swiper.presentation.model.toUISearchPreferences
@@ -42,24 +40,16 @@ class SwiperScreenComponent(
     )
 ) {
 
-    private var searchPreferences: SearchPreferences? = null
-        set(value) {
-            if (field != value) {
-                field = value
+    init {
+        componentScope.launch {
+            searchPreferencesProvider.get().collect { searchPreferences ->
                 reduce {
                     it.copy(
                         cardDeck = CardDeck(),
-                        searchPreferences = value?.toUISearchPreferences() ?: SearchPreferencesItem.Loading
+                        searchPreferences = searchPreferences.toUISearchPreferences()
                     )
                 }
                 updateCardDeck(count = 3)
-            }
-        }
-
-    init {
-        componentScope.launch {
-            searchPreferencesProvider.get().collect {
-                searchPreferences = it
             }
         }
     }
@@ -75,18 +65,14 @@ class SwiperScreenComponent(
             is LikeEvent -> likeCard(event.cardItem)
             is SuperLikeEvent -> superLikeCard(event.cardItem)
             is EndOfCardAnimationEvent -> removeCardFromDeck(event.cardItem)
-            is UpdateEditSearchPrefEvent -> updateEditSearchPref(event.update)
             is ApplySearchPrefEvent -> applySearchPref(event.searchPreferencesItem)
-            ResetSearchPrefEvent -> resetEditSearchPref()
         }
     }
 
     private fun applySearchPref(searchPreferencesItem: SearchPreferencesItem) {
         val searchPreferences = (searchPreferencesItem as? SearchPreferencesItem.Success)
             ?.toSearchPreferences() ?: return
-        if (this.searchPreferences != searchPreferences) {
-            updateSearchPref(searchPreferences)
-        }
+        updateSearchPref(searchPreferences)
     }
 
     private fun updateSearchPref(searchPreferences: SearchPreferences) = mapAndReduceException(
@@ -100,20 +86,6 @@ class SwiperScreenComponent(
             swiperState
         }
     )
-
-    private fun updateEditSearchPref(update: (SearchPreferencesItem) -> SearchPreferencesItem.Success) {
-        reduce {
-            val searchPreferences = update(it.searchPreferences)
-            val showReset: Boolean = searchPreferences.toSearchPreferences() != this.searchPreferences
-            it.copy(searchPreferences = searchPreferences.copy(showReset = showReset))
-        }
-    }
-
-    private fun resetEditSearchPref() {
-        reduce {
-            it.copy(searchPreferences = searchPreferences?.toUISearchPreferences() ?: SearchPreferencesItem.Loading)
-        }
-    }
 
     private fun removeCardFromDeck(cardItem: CardItem) {
         reduce { state ->
@@ -159,14 +131,13 @@ class SwiperScreenComponent(
             }
         )
 
-    private fun updateCardDeck(count: Int = 1) = searchPreferences?.let { searchPref ->
+    private fun updateCardDeck(count: Int = 1) {
         mapAndReduceException(
             action = {
-                repeat(count) {
-                    val card = nextCardUseCase(searchPref)
-                    reduce { state ->
-                        state.run { copy(cardDeck = cardDeck.add(card.toUICardItem())) }
-                    }
+                val cards = nextCardUseCase(count)
+                val uiCards = cards.map { it.toUICardItem() }
+                reduce { state ->
+                    state.run { copy(cardDeck = cardDeck.addAll(uiCards)) }
                 }
             },
             mapper = {

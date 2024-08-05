@@ -28,9 +28,7 @@ import com.fp.padabajka.feature.swiper.presentation.model.ApplySearchPrefEvent
 import com.fp.padabajka.feature.swiper.presentation.model.DislikeEvent
 import com.fp.padabajka.feature.swiper.presentation.model.EndOfCardAnimationEvent
 import com.fp.padabajka.feature.swiper.presentation.model.LikeEvent
-import com.fp.padabajka.feature.swiper.presentation.model.ResetSearchPrefEvent
 import com.fp.padabajka.feature.swiper.presentation.model.SuperLikeEvent
-import com.fp.padabajka.feature.swiper.presentation.model.UpdateEditSearchPrefEvent
 import com.fp.padabajka.feature.swiper.presentation.screen.search.ShearedPrefEditorDialog
 import kotlinx.coroutines.launch
 
@@ -90,8 +88,6 @@ fun DeckOfCards(swiperScreenComponent: SwiperScreenComponent) {
     ShearedPrefEditorDialog(
         sheetState = sheetState,
         searchPreferences = state.searchPreferences,
-        applyDiff = { newSearchPref -> swiperScreenComponent.onEvent(ApplySearchPrefEvent(newSearchPref)) },
-        resetDiff = { swiperScreenComponent.onEvent(ResetSearchPrefEvent) },
-        update = { searchPref -> swiperScreenComponent.onEvent(UpdateEditSearchPrefEvent { searchPref }) }
+        applyDiff = { newSearchPref -> swiperScreenComponent.onEvent(ApplySearchPrefEvent(newSearchPref)) }
     )
 }

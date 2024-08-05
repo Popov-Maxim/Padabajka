@@ -121,7 +121,8 @@ private val domainModule = module {
 
     factory<NextCardUseCase> {
         NextCardUseCase(
-            cardRepository = get()
+            cardRepository = get(),
+            searchPreferencesRepository = get()
         )
     }
 
