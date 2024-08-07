@@ -1,6 +1,7 @@
 package com.fp.padabajka.core.data
 
 import com.fp.padabajka.core.repository.api.model.ads.PlatformNativeAd
+import com.fp.padabajka.core.repository.api.model.profile.Age
 
 interface NativeAdLoader {
 
@@ -10,7 +11,7 @@ interface NativeAdLoader {
     }
 
     data class Configuration(
-        val age: Int? = null
+        val age: Age? = null
     )
 
     fun setListener(listener: Listener?)

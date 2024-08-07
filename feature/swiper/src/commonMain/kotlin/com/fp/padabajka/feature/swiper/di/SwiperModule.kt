@@ -1,8 +1,11 @@
 package com.fp.padabajka.feature.swiper.di
 
+import androidx.datastore.core.DataStore
 import com.fp.padabajka.core.repository.api.CardRepository
 import com.fp.padabajka.core.repository.api.PersonRepository
 import com.fp.padabajka.core.repository.api.ReactionRepository
+import com.fp.padabajka.core.repository.api.SearchPreferencesRepository
+import com.fp.padabajka.core.repository.api.model.swiper.SearchPreferences
 import com.fp.padabajka.feature.swiper.data.CardRepositoryImpl
 import com.fp.padabajka.feature.swiper.data.CardSelector
 import com.fp.padabajka.feature.swiper.data.CardSelectorProvider
@@ -17,9 +20,19 @@ import com.fp.padabajka.feature.swiper.data.reaction.network.FakeReactionApi
 import com.fp.padabajka.feature.swiper.data.reaction.network.ReactionApi
 import com.fp.padabajka.feature.swiper.data.reaction.source.RemoteReactionDataSource
 import com.fp.padabajka.feature.swiper.data.reaction.source.RemoteReactionDataSourceImpl
+import com.fp.padabajka.feature.swiper.data.search.SearchPreferencesRepositoryImpl
+import com.fp.padabajka.feature.swiper.data.search.model.SearchPrefDto
+import com.fp.padabajka.feature.swiper.data.search.model.toDto
+import com.fp.padabajka.feature.swiper.data.search.source.LocalSearchPreferencesDataSource
+import com.fp.padabajka.feature.swiper.data.search.source.LocalSearchPreferencesDataSourceImpl
 import com.fp.padabajka.feature.swiper.domain.NextCardUseCase
 import com.fp.padabajka.feature.swiper.domain.ReactToCardUseCase
+import com.fp.padabajka.feature.swiper.domain.search.SearchPreferencesProvider
+import com.fp.padabajka.feature.swiper.domain.search.UpdateSearchPrefUseCase
 import com.fp.padabajka.feature.swiper.presentation.SwiperScreenComponent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.updateAndGet
 import org.koin.dsl.module
 
 private val dataModule = module {
@@ -76,6 +89,27 @@ private val dataModule = module {
     factory<CardSelector> {
         NoAdCardSelector()
     }
+
+    single<SearchPreferencesRepository> {
+        SearchPreferencesRepositoryImpl(
+            localDataSource = get()
+        )
+    }
+
+    factory<LocalSearchPreferencesDataSource> {
+        LocalSearchPreferencesDataSourceImpl(
+            dataStore = object : DataStore<SearchPrefDto> {
+                private val _data = MutableStateFlow(SearchPreferences.DEFAULT.toDto())
+                override val data: Flow<SearchPrefDto> = _data
+
+                override suspend fun updateData(
+                    transform: suspend (t: SearchPrefDto) -> SearchPrefDto
+                ): SearchPrefDto {
+                    return _data.updateAndGet { transform(it) }
+                }
+            } // TODO(datastore): add init
+        )
+    }
 }
 
 private val domainModule = module {
@@ -87,7 +121,20 @@ private val domainModule = module {
 
     factory<NextCardUseCase> {
         NextCardUseCase(
-            cardRepository = get()
+            cardRepository = get(),
+            searchPreferencesRepository = get()
+        )
+    }
+
+    factory<UpdateSearchPrefUseCase> {
+        UpdateSearchPrefUseCase(
+            searchPreferencesRepository = get()
+        )
+    }
+
+    factory<SearchPreferencesProvider> {
+        SearchPreferencesProvider(
+            searchPreferencesRepository = get()
         )
     }
 }
@@ -97,7 +144,9 @@ private val presentationModule = module {
         SwiperScreenComponent(
             context = parameters.get(),
             reactToCardUseCaseFactory = { get() },
-            nextCardUseCaseFactory = { get() }
+            nextCardUseCaseFactory = { get() },
+            updateSearchPrefUseCaseFactory = { get() },
+            searchPreferencesProvider = get()
         )
     }
 }
