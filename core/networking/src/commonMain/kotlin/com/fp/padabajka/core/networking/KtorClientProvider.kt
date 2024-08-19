@@ -30,7 +30,7 @@ class KtorClientProvider internal constructor(
                     plusAssign(config)
                 }.apply { client = this }
             } else {
-                client ?: throw Exception("HttpClient create exception")
+                client ?: TODO("HttpClient create exception")
             }
         }
     }
