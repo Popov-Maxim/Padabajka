@@ -11,7 +11,7 @@ import com.fp.padabajka.feature.swiper.data.CardSelector
 import com.fp.padabajka.feature.swiper.data.CardSelectorProvider
 import com.fp.padabajka.feature.swiper.data.NoAdCardSelector
 import com.fp.padabajka.feature.swiper.data.person.PersonRepositoryImpl
-import com.fp.padabajka.feature.swiper.data.person.network.FakePersonApi
+import com.fp.padabajka.feature.swiper.data.person.network.KtorPersonApi
 import com.fp.padabajka.feature.swiper.data.person.network.PersonApi
 import com.fp.padabajka.feature.swiper.data.person.source.RemotePersonDataSource
 import com.fp.padabajka.feature.swiper.data.person.source.RemotePersonDataSourceImpl
@@ -60,7 +60,9 @@ private val dataModule = module {
     }
 
     factory<PersonApi> {
-        FakePersonApi()
+        KtorPersonApi(
+            ktorClientProvider = get()
+        )
     }
 
     single<ReactionRepository> {

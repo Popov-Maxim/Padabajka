@@ -17,7 +17,7 @@ class KtorClientProvider internal constructor(
     @Throws(Exception::class)
     suspend fun client(): HttpClient {
         mutex.withLock {
-            val resultConfigProviders = configProviders.takeIf { client == null }
+            val resultConfigProviders = configProviders.takeIf { client != null }
                 ?.filter { it.needUpdate() }
                 ?: configProviders
 

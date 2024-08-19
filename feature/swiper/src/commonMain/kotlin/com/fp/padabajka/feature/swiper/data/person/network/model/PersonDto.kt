@@ -5,7 +5,9 @@ import com.fp.padabajka.core.repository.api.model.swiper.Person
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.datetime.LocalDate
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class PersonDto(
     val personId: PersonId,
     val firstName: String,
