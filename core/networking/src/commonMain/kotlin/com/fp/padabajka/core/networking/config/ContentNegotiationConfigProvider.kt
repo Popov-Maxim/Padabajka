@@ -5,21 +5,16 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-internal class ContentNegotiationConfigProvider : KtorConfigProvider {
+internal class ContentNegotiationConfigProvider : KtorConfigProvider.Static {
 
-    override suspend fun needUpdate(): Boolean = false
-
-    private val config = HttpClientConfig<Nothing>().apply {
-        install(ContentNegotiation) {
-            json(
-                json = Json {
-                    ignoreUnknownKeys = true
-                }
-            )
+    override val config: HttpClientConfig<Nothing>
+        get() = HttpClientConfig<Nothing>().apply {
+            install(ContentNegotiation) {
+                json(
+                    json = Json {
+                        ignoreUnknownKeys = true
+                    }
+                )
+            }
         }
-    }
-
-    override suspend fun config(): HttpClientConfig<Nothing> {
-        return config
-    }
 }

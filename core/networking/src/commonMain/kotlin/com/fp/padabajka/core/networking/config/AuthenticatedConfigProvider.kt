@@ -8,22 +8,15 @@ import io.ktor.client.plugins.auth.providers.bearer
 
 internal class AuthenticatedConfigProvider(
     private val authRepository: AuthRepository
-) : KtorConfigProvider {
-
-    private var currentAuthToken: String? = null
-
-    override suspend fun needUpdate(): Boolean {
-        return authRepository.authToken() != currentAuthToken
-    }
+) : KtorConfigProvider.Dynamic {
 
     override suspend fun config(): HttpClientConfig<Nothing> {
         return HttpClientConfig<Nothing>().apply {
             install(Auth) {
                 bearer {
                     loadTokens {
-                        val newAuthToken = authRepository.authToken()
-                        currentAuthToken = newAuthToken
-                        BearerTokens(newAuthToken ?: "", "")
+                        val authToken = authRepository.authToken()
+                        BearerTokens(authToken ?: "", "")
                     }
                 }
             }

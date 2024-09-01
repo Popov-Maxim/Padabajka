@@ -2,7 +2,12 @@ package com.fp.padabajka.core.networking.config
 
 import io.ktor.client.HttpClientConfig
 
-internal interface KtorConfigProvider {
-    suspend fun needUpdate(): Boolean
-    suspend fun config(): HttpClientConfig<Nothing>
+internal sealed interface KtorConfigProvider {
+
+    interface Static : KtorConfigProvider {
+        val config: HttpClientConfig<Nothing>
+    }
+    interface Dynamic : KtorConfigProvider {
+        suspend fun config(): HttpClientConfig<Nothing>
+    }
 }

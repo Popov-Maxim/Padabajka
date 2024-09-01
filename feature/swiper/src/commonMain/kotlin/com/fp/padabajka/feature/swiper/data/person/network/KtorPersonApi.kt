@@ -11,6 +11,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ParametersBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.http.path
+import kotlin.time.measureTimedValue
 
 class KtorPersonApi(
     private val ktorClientProvider: KtorClientProvider
@@ -20,7 +21,11 @@ class KtorPersonApi(
         loaded: List<PersonId>,
         searchPreferences: SearchPreferences
     ): List<PersonDto> {
-        val client = ktorClientProvider.client()
+        val (client, duration) = measureTimedValue {
+            ktorClientProvider.client()
+        }
+        println("Client creation duration: ${duration.inWholeMilliseconds}")
+
         val response = client.get {
             url {
                 protocol = URLProtocol.HTTP

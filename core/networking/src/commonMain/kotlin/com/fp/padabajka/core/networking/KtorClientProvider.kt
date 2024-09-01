@@ -3,47 +3,47 @@ package com.fp.padabajka.core.networking
 import com.fp.padabajka.core.networking.config.KtorConfigProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
+import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.cio.CIO
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
-class KtorClientProvider internal constructor(
+interface KtorClientProvider {
+    suspend fun client(): HttpClient
+}
+
+internal class KtorClientProviderImpl(
     private val configProviders: List<KtorConfigProvider>,
-) {
-    private var client: HttpClient? = null
+    private val engineFactory: HttpClientEngineFactory<*> = CIO,
+) : KtorClientProvider {
 
-    private val mutex: Mutex = Mutex()
+    private val dynamicConfigProviders: List<KtorConfigProvider.Dynamic> by lazy {
+        configProviders.filterIsInstance<KtorConfigProvider.Dynamic>()
+    }
 
-    @Throws(Exception::class)
-    suspend fun client(): HttpClient {
-        mutex.withLock {
-            val resultConfigProviders = configProviders.takeIf { client != null }
-                ?.filter { it.needUpdate() }
-                ?: configProviders
+    private val staticConfig: HttpClientConfig<*> by lazy {
+        configProviders.filterIsInstance<KtorConfigProvider.Static>().resultConfig()
+    }
 
-            val config = resultConfigProviders.resultConfig()
+    override suspend fun client(): HttpClient {
+        val dynamicConfig = dynamicConfigProviders.resultConfig()
 
-            return if (config != null) {
-                val newClient = (client ?: createDefaultClient())
-
-                newClient.config {
-                    plusAssign(config)
-                }.apply { client = this }
-            } else {
-                client ?: TODO("HttpClient create exception")
-            }
+        return HttpClient(engineFactory) {
+            plusAssign(dynamicConfig)
+            plusAssign(staticConfig)
         }
     }
 
-    private suspend fun List<KtorConfigProvider>.resultConfig(): HttpClientConfig<Nothing>? {
-        return map { it.config() }
-            .reduceOrNull { acc, ktorConfigProvider ->
-                acc.plusAssign(ktorConfigProvider)
-                acc
-            }
+    private suspend fun List<KtorConfigProvider.Dynamic>.resultConfig(): HttpClientConfig<Nothing> {
+        return map { it.config() }.sum()
     }
 
-    private fun createDefaultClient(): HttpClient {
-        return HttpClient(CIO)
+    private fun List<KtorConfigProvider.Static>.resultConfig(): HttpClientConfig<Nothing> {
+        return map { it.config }.sum()
+    }
+
+    private fun List<HttpClientConfig<Nothing>>.sum(): HttpClientConfig<Nothing> {
+        return reduceOrNull { acc, ktorConfigProvider ->
+            acc.plusAssign(ktorConfigProvider)
+            acc
+        } ?: HttpClientConfig()
     }
 }
