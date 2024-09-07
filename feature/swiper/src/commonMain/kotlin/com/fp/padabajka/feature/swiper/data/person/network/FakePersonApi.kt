@@ -1,6 +1,7 @@
 package com.fp.padabajka.feature.swiper.data.person.network
 
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
+import com.fp.padabajka.core.repository.api.model.swiper.SearchPreferences
 import com.fp.padabajka.feature.swiper.data.person.network.model.PersonDto
 import kotlinx.datetime.LocalDate
 
@@ -11,7 +12,7 @@ class FakePersonApi : PersonApi {
     override suspend fun getPersons(
         count: Int,
         loaded: List<PersonId>,
-        configuration: PersonApi.Configuration
+        searchPreferences: SearchPreferences
     ): List<PersonDto> {
         return List(count) {
             createPersonDto(index).also {

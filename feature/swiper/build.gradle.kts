@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.mockmp)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -32,6 +33,7 @@ kotlin {
             api(projects.core.domain)
             api(projects.core.repositoryApi)
             api(projects.core.data)
+            api(projects.core.networking)
 
             implementation(libs.datastore)
         }

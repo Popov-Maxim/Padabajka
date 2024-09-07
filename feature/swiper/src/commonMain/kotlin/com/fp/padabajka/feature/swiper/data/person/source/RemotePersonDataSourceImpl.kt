@@ -14,11 +14,7 @@ class RemotePersonDataSourceImpl(
         loaded: Set<Person>,
         searchPreferences: SearchPreferences
     ): List<Person> {
-        return personApi.getPersons(count, loaded.map(Person::id), searchPreferences.toConfig())
+        return personApi.getPersons(count, loaded.map(Person::id), searchPreferences)
             .map { it.toPerson() }
-    }
-
-    private fun SearchPreferences.toConfig(): PersonApi.Configuration {
-        return PersonApi.Configuration()
     }
 }

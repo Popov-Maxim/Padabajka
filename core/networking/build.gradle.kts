@@ -1,8 +1,6 @@
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -20,17 +18,21 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "repository-api"
+            baseName = "networking"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            api(libs.coroutines.core)
-            api(libs.kotlinx.datetime)
-            api(libs.immutable.collections)
-            api(libs.kotlinx.serialization.json)
+            implementation(projects.core.repositoryApi)
+            implementation(libs.koin.core)
+
+            api(libs.ktor.core)
+            implementation(libs.ktor.cio)
+            implementation(libs.ktor.auth)
+            implementation(libs.ktor.content.negotiation)
+            implementation(libs.ktor.serialization.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -39,7 +41,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.fp.padabajka.core.repository.api"
+    namespace = "com.fp.padabajka.core.networking"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()
