@@ -34,6 +34,8 @@ class KtorPersonApi(
                 path(PersonApi.PATH)
 
                 parameters.append(searchPreferences)
+                parameters.append(COUNT, count.toString())
+                parameters.appendAll(EXCLUDED, loaded.map { it.raw })
             }
         }
 
@@ -54,5 +56,8 @@ class KtorPersonApi(
         private const val TO_AGE = "to_age"
         private const val LOOKING_GENDERS = "looking_genders"
         private const val DISTANCE_IN_KM = "distanceInKm"
+
+        private const val COUNT = "count"
+        private const val EXCLUDED = "excluded"
     }
 }

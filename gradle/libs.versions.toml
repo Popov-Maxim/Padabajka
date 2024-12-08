@@ -19,7 +19,7 @@ koin = "3.5.3"
 firebase = "32.7.3"
 gitlive-firebase = "1.11.1"
 datastore = "1.1.0-beta02"
-mmutable-collections = "0.3.7"
+immutable-collections = "0.3.7"
 mockmp = "1.17.0"
 espresso-core = "3.5.1"
 firebaseAuth = "22.3.1"
@@ -49,7 +49,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 gitlive-firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "gitlive-firebase"}
 datastore = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
-immutable-collections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "mmutable-collections" }
+immutable-collections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "immutable-collections" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 google-services = { group = "com.google.gms", name = "google-services", version.ref = "google-services" }
