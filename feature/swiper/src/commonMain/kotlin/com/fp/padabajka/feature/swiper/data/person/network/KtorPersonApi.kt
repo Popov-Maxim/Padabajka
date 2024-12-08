@@ -16,6 +16,8 @@ import kotlin.time.measureTimedValue
 class KtorPersonApi(
     private val ktorClientProvider: KtorClientProvider
 ) : PersonApi {
+
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun getPersons(
         count: Int,
         loaded: List<PersonId>,
@@ -26,17 +28,23 @@ class KtorPersonApi(
         }
         println("Client creation duration: ${duration.inWholeMilliseconds}")
 
-        val response = client.get {
-            url {
-                protocol = URLProtocol.HTTP
-                host = NetworkConstants.DOMAIN_NAME
-                port = NetworkConstants.PORT
-                path(PersonApi.PATH)
+        val response = try {
+            client.get {
+                url {
+                    protocol = URLProtocol.HTTP
+                    host = NetworkConstants.DOMAIN_NAME
+                    port = NetworkConstants.PORT
+                    path(PersonApi.PATH)
 
-                parameters.append(searchPreferences)
-                parameters.append(COUNT, count.toString())
-                parameters.appendAll(EXCLUDED, loaded.map { it.raw })
+                    parameters.append(searchPreferences)
+                    parameters.append(COUNT, count.toString())
+                    parameters.appendAll(EXCLUDED, loaded.map { it.raw })
+                }
+                println("Request: ${this.url}")
             }
+        } catch (e: Exception) {
+            println("Response exception: $e")
+            throw e
         }
 
         println("Response: ${response.bodyAsText()}")
