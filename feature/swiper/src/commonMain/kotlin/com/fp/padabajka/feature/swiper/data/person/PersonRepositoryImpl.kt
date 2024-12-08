@@ -48,7 +48,7 @@ class PersonRepositoryImpl(
     }
 
     private suspend fun loadMorePersonsIfNeeded(searchPreferences: SearchPreferences) {
-        if (preloadedPersons { size < MIN_CAPACITY }) {
+        if (preloadedPersons { (get(searchPreferences)?.size ?: 0) < MIN_CAPACITY }) {
             preloadJobs {
                 if (get(searchPreferences)?.isActive != true) {
                     this[searchPreferences] = scope.async {

@@ -8,7 +8,6 @@ captures
 .cxx
 local.properties
 xcuserdata
-androidApp/google-services.json
-iosApp/iosApp/GoogleService-Info.plist
 iosApp/Pods
-/feature/auth/src/androidInstrumentedTest/assets/google-services.json
+GoogleService-Info.plist
+google-services.json
