@@ -15,10 +15,10 @@ decompose = "2.2.2"
 decompose-extention = "2.2.2-compose-experimental"
 org-jetbrains-kotlin-jvm = "1.9.22"
 detekt = "1.23.3"
-koin = "3.5.3"
+koin = "4.0.1"
 firebase = "32.7.3"
 gitlive-firebase = "1.11.1"
-datastore = "1.1.0-beta02"
+datastore = "1.1.2"
 immutable-collections = "0.3.7"
 mockmp = "1.17.0"
 espresso-core = "3.5.1"
@@ -45,6 +45,7 @@ decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decom
 decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose-extention" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt"}
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 gitlive-firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "gitlive-firebase"}
