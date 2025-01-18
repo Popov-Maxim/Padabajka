@@ -37,6 +37,7 @@ kotlin {
             api(libs.decompose)
             api(libs.decompose.jetbrains)
             api(libs.koin.core)
+            api(libs.koin.compose)
             api(libs.kotlinx.serialization.json)
             api(libs.immutable.collections)
         }

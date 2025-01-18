@@ -2,12 +2,12 @@ package com.fp.padabajka.feature.swiper.presentation.screen
 
 import com.fp.padabajka.feature.swiper.presentation.model.CardItem
 import kotlinx.collections.immutable.ImmutableCollection
-import kotlinx.collections.immutable.PersistentSet
-import kotlinx.collections.immutable.persistentSetOf
-import kotlinx.collections.immutable.toPersistentSet
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 
 class CardDeck(
-    private val mainCollection: PersistentSet<CardItem> = persistentSetOf(),
+    private val mainCollection: PersistentList<CardItem> = persistentListOf(),
     private val indexForDelete: Int = 0
 ) {
     fun add(cardItem: CardItem): CardDeck {
@@ -33,7 +33,7 @@ class CardDeck(
     }
 
     fun removeOldCards(): CardDeck {
-        return CardDeck(mainCollection.drop(indexForDelete).toPersistentSet())
+        return CardDeck(mainCollection.drop(indexForDelete).toPersistentList())
     }
 
     fun getCards(): ImmutableCollection<CardItem> {

@@ -1,5 +1,6 @@
 package com.fp.padabajka.feature.swiper.data.person.network
 
+import com.fp.padabajka.core.domain.AppSettings
 import com.fp.padabajka.core.networking.KtorClientProvider
 import com.fp.padabajka.core.networking.NetworkConstants
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
@@ -14,7 +15,8 @@ import io.ktor.http.path
 import kotlin.time.measureTimedValue
 
 class KtorPersonApi(
-    private val ktorClientProvider: KtorClientProvider
+    private val ktorClientProvider: KtorClientProvider,
+    private val appSettings: AppSettings
 ) : PersonApi {
 
     @Suppress("TooGenericExceptionCaught")
@@ -32,7 +34,7 @@ class KtorPersonApi(
             client.get {
                 url {
                     protocol = URLProtocol.HTTP
-                    host = NetworkConstants.DOMAIN_NAME
+                    host = appSettings.host ?: NetworkConstants.DOMAIN_NAME
                     port = NetworkConstants.PORT
                     path(PersonApi.PATH)
 
