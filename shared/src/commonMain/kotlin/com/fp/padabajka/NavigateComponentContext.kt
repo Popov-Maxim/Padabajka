@@ -6,6 +6,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.navigate
 import com.fp.padabajka.feature.auth.presentation.LoginComponent
 import com.fp.padabajka.feature.auth.presentation.RegisterComponent
+import com.fp.padabajka.feature.profile.presentation.ProfileScreenComponent
 import com.fp.padabajka.feature.swiper.presentation.SwiperScreenComponent
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
@@ -47,7 +48,12 @@ class NavigateComponentContext(
             )
 
             Configuration.LoginScreen -> Child.LoginScreen(
-                component = get { parametersOf(context, { navigate(Configuration.RegisterScreen) }) }
+                component = get {
+                    parametersOf(
+                        context,
+                        { navigate(Configuration.RegisterScreen) }
+                    )
+                }
             )
 
             Configuration.RegisterScreen -> Child.RegisterScreen(
@@ -55,14 +61,29 @@ class NavigateComponentContext(
             )
 
             Configuration.SplashScreen -> Child.SplashScreen
+            Configuration.ProfileScreen -> Child.ProfileScreen(
+                component = get {
+                    parametersOf(
+                        context,
+                        { navigate(Configuration.ProfileEditorScreen) }
+                    )
+                }
+            )
+
+            Configuration.ProfileEditorScreen -> Child.ProfileEditorScreen
         }
     }
 
     sealed interface Child {
         data object SplashScreen : Child
-        data class SwiperScreen(val component: SwiperScreenComponent) : Child
         data class LoginScreen(val component: LoginComponent) : Child
         data class RegisterScreen(val component: RegisterComponent) : Child
+
+        data object ProfileEditorScreen : Child
+
+        sealed interface MainScreen : Child
+        data class SwiperScreen(val component: SwiperScreenComponent) : MainScreen
+        class ProfileScreen(val component: ProfileScreenComponent) : MainScreen
     }
 
     @Serializable
@@ -78,5 +99,11 @@ class NavigateComponentContext(
 
         @Serializable
         data object RegisterScreen : Configuration
+
+        @Serializable
+        data object ProfileScreen : Configuration
+
+        @Serializable
+        data object ProfileEditorScreen : Configuration
     }
 }

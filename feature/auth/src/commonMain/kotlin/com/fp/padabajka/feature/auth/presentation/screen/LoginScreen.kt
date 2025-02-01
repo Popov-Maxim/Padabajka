@@ -6,9 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.fp.padabajka.core.presentation.ui.TextInputField
 import com.fp.padabajka.feature.auth.presentation.LoginComponent
 import com.fp.padabajka.feature.auth.presentation.element.AuthButton
-import com.fp.padabajka.feature.auth.presentation.element.TextInputField
 import com.fp.padabajka.feature.auth.presentation.model.EmailFieldLoosFocus
 import com.fp.padabajka.feature.auth.presentation.model.EmailFieldUpdate
 import com.fp.padabajka.feature.auth.presentation.model.GoToRegistrationClick

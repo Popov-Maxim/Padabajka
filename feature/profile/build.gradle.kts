@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.jetbrainsCompose)
 }
 
 kotlin {
@@ -30,6 +31,7 @@ kotlin {
             api(projects.core.domain)
             api(projects.core.repositoryApi)
             api(projects.core.data)
+            api(projects.core.networking)
 
             implementation(libs.datastore)
         }
