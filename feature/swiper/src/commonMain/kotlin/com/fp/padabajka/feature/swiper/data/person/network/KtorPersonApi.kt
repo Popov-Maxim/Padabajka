@@ -1,11 +1,11 @@
 package com.fp.padabajka.feature.swiper.data.person.network
 
+import com.fp.padabajka.core.data.network.model.PersonResponse
 import com.fp.padabajka.core.domain.AppSettings
 import com.fp.padabajka.core.networking.KtorClientProvider
 import com.fp.padabajka.core.networking.NetworkConstants
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.core.repository.api.model.swiper.SearchPreferences
-import com.fp.padabajka.feature.swiper.data.person.network.model.PersonDto
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
@@ -24,7 +24,7 @@ class KtorPersonApi(
         count: Int,
         loaded: List<PersonId>,
         searchPreferences: SearchPreferences
-    ): List<PersonDto> {
+    ): List<PersonResponse> {
         val (client, duration) = measureTimedValue {
             ktorClientProvider.client()
         }

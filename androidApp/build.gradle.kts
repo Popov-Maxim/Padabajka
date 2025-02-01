@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.jetbrainsCompose)
 }
 
 android {
@@ -41,14 +42,11 @@ android {
 
 dependencies {
     implementation(projects.shared)
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.material3)
+    implementation(compose.ui)
+    implementation(compose.material)
     implementation(libs.androidx.activity.compose)
     implementation(libs.decompose)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
-
-    debugImplementation(libs.compose.ui.tooling)
 }
