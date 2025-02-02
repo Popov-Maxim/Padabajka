@@ -1,5 +1,6 @@
 package com.fp.padabajka.feature.swiper.presentation.screen
 
+import com.fp.padabajka.core.domain.indexOf
 import com.fp.padabajka.feature.swiper.presentation.model.CardItem
 import kotlinx.collections.immutable.ImmutableCollection
 import kotlinx.collections.immutable.PersistentList
@@ -23,9 +24,9 @@ class CardDeck(
     }
 
     fun remove(cardItem: CardItem): CardDeck {
-        val index = mainCollection.indexOf(cardItem)
+        val index = mainCollection.indexOf(cardItem, indexForDelete)
 
-        return if (index == 0) {
+        return if (index == indexForDelete) {
             CardDeck(mainCollection, indexForDelete + 1)
         } else {
             CardDeck(mainCollection.remove(cardItem), indexForDelete)

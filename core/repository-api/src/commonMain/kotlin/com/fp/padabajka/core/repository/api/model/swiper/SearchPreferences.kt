@@ -14,7 +14,7 @@ data class SearchPreferences(
     companion object {
         val DEFAULT: SearchPreferences = SearchPreferences(
             AgeRange(18.toAge(), 80.toAge()),
-            persistentListOf(Gender.OTHER),
+            persistentListOf(*Gender.entries.toTypedArray()),
             32
         )
     }
