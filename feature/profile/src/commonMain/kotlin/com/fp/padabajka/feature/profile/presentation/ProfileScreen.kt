@@ -24,9 +24,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.fp.padabajka.feature.profile.presentation.model.NeedOpenEditorEvent
-import com.fp.padabajka.feature.profile.presentation.model.NeedUpdateProfileEvent
+import com.fp.padabajka.feature.profile.presentation.model.OpenEditorEvent
 import com.fp.padabajka.feature.profile.presentation.model.ProfileValue
+import com.fp.padabajka.feature.profile.presentation.model.UpdateProfileEvent
 
 @Composable
 fun ProfileScreen(component: ProfileScreenComponent) {
@@ -52,7 +52,7 @@ private fun ErrorScreen(component: ProfileScreenComponent) {
             Button(
                 modifier = Modifier,
                 onClick = {
-                    component.onEvent(NeedUpdateProfileEvent)
+                    component.onEvent(UpdateProfileEvent)
                 }
             ) {
                 Text(
@@ -100,7 +100,7 @@ private fun ProfileScreen(
             }
         }
         Button(
-            onClick = { component.onEvent(NeedOpenEditorEvent) },
+            onClick = { component.onEvent(OpenEditorEvent) },
             modifier = Modifier.fillMaxWidth().padding(
                 start = 20.dp,
                 end = 20.dp,

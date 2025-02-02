@@ -12,14 +12,14 @@ import kotlinx.datetime.LocalDate
 
 @Immutable
 data class ProfileEditorState(
-    val firstName: ProfileItem<String>,
-    val lastName: ProfileItem<String>,
-    val birthday: ProfileItem<LocalDate>,
-    val images: ProfileItem<List<Image>>,
-    val aboutMe: ProfileItem<String>,
-    val details: ProfileItem<List<Detail>>,
-    val mainAchievement: ProfileItem<Achievement?>,
-    val achievements: ProfileItem<List<Achievement>>,
+    val firstName: ProfileField<String>,
+    val lastName: ProfileField<String>,
+    val birthday: ProfileField<LocalDate>,
+    val images: ProfileField<List<Image>>,
+    val aboutMe: ProfileField<String>,
+    val details: ProfileField<List<Detail>>,
+    val mainAchievement: ProfileField<Achievement?>,
+    val achievements: ProfileField<List<Achievement>>,
     val internalErrorStateEvent: StateEvent = consumed
 ) : State {
 
@@ -35,7 +35,7 @@ data class ProfileEditorState(
     )
 }
 
-data class ProfileItem<T>(
+data class ProfileField<T>(
     val value: T,
     val issues: Map<T, Issue> = emptyMap()
 )
@@ -43,3 +43,20 @@ data class ProfileItem<T>(
 data class Issue(
     val message: String
 )
+
+fun Profile.toEditorState(): ProfileEditorState {
+    return ProfileEditorState(
+        firstName = firstName.toField(),
+        lastName = lastName.toField(),
+        birthday = birthday.toField(),
+        images = images.toField(),
+        aboutMe = aboutMe.toField(),
+        details = details.toField(),
+        mainAchievement = mainAchievement.toField(),
+        achievements = achievements.toField()
+    )
+}
+
+private fun <T> T.toField(): ProfileField<T> {
+    return ProfileField(this)
+}

@@ -1,6 +1,6 @@
 package com.fp.padabajka.feature.swiper.di
 
-import androidx.datastore.core.DataStore
+import com.fp.padabajka.core.data.utils.DataStoreUtils
 import com.fp.padabajka.core.repository.api.CardRepository
 import com.fp.padabajka.core.repository.api.PersonRepository
 import com.fp.padabajka.core.repository.api.ReactionRepository
@@ -21,7 +21,6 @@ import com.fp.padabajka.feature.swiper.data.reaction.network.ReactionApi
 import com.fp.padabajka.feature.swiper.data.reaction.source.RemoteReactionDataSource
 import com.fp.padabajka.feature.swiper.data.reaction.source.RemoteReactionDataSourceImpl
 import com.fp.padabajka.feature.swiper.data.search.SearchPreferencesRepositoryImpl
-import com.fp.padabajka.feature.swiper.data.search.model.SearchPrefDto
 import com.fp.padabajka.feature.swiper.data.search.model.toDto
 import com.fp.padabajka.feature.swiper.data.search.source.LocalSearchPreferencesDataSource
 import com.fp.padabajka.feature.swiper.data.search.source.LocalSearchPreferencesDataSourceImpl
@@ -30,9 +29,6 @@ import com.fp.padabajka.feature.swiper.domain.ReactToCardUseCase
 import com.fp.padabajka.feature.swiper.domain.search.SearchPreferencesProvider
 import com.fp.padabajka.feature.swiper.domain.search.UpdateSearchPrefUseCase
 import com.fp.padabajka.feature.swiper.presentation.SwiperScreenComponent
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.updateAndGet
 import org.koin.dsl.module
 
 private val dataModule = module {
@@ -101,16 +97,7 @@ private val dataModule = module {
 
     factory<LocalSearchPreferencesDataSource> {
         LocalSearchPreferencesDataSourceImpl(
-            dataStore = object : DataStore<SearchPrefDto> {
-                private val _data = MutableStateFlow(SearchPreferences.DEFAULT.toDto())
-                override val data: Flow<SearchPrefDto> = _data
-
-                override suspend fun updateData(
-                    transform: suspend (t: SearchPrefDto) -> SearchPrefDto
-                ): SearchPrefDto {
-                    return _data.updateAndGet { transform(it) }
-                }
-            } // TODO(datastore): add init
+            dataStore = DataStoreUtils.createFake(SearchPreferences.DEFAULT.toDto())
         )
     }
 }

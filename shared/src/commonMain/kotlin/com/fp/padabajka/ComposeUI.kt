@@ -59,7 +59,7 @@ fun NavigateApp(rootContext: NavigateComponentContext) {
                         is NavigateComponentContext.Child.LoginScreen -> LoginScreen(instance.component)
                         is NavigateComponentContext.Child.RegisterScreen -> RegisterScreen(instance.component)
                         is NavigateComponentContext.Child.ProfileScreen -> ProfileScreen(instance.component)
-                        is NavigateComponentContext.Child.ProfileEditorScreen -> ProfileEditorScreen()
+                        is NavigateComponentContext.Child.ProfileEditorScreen -> ProfileEditorScreen(instance.component)
                     }
                 }
 

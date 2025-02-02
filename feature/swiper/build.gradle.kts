@@ -34,8 +34,6 @@ kotlin {
             api(projects.core.repositoryApi)
             api(projects.core.data)
             api(projects.core.networking)
-
-            implementation(libs.datastore)
         }
         commonTest.dependencies {
             implementation(projects.testing)

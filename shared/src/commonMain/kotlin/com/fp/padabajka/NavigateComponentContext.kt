@@ -7,6 +7,7 @@ import com.arkivanov.decompose.router.stack.navigate
 import com.fp.padabajka.feature.auth.presentation.LoginComponent
 import com.fp.padabajka.feature.auth.presentation.RegisterComponent
 import com.fp.padabajka.feature.profile.presentation.ProfileScreenComponent
+import com.fp.padabajka.feature.profile.presentation.editor.ProfileEditorScreenComponent
 import com.fp.padabajka.feature.swiper.presentation.SwiperScreenComponent
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
@@ -70,7 +71,11 @@ class NavigateComponentContext(
                 }
             )
 
-            Configuration.ProfileEditorScreen -> Child.ProfileEditorScreen
+            Configuration.ProfileEditorScreen -> Child.ProfileEditorScreen(
+                component = get {
+                    parametersOf(context)
+                }
+            )
         }
     }
 
@@ -79,7 +84,7 @@ class NavigateComponentContext(
         data class LoginScreen(val component: LoginComponent) : Child
         data class RegisterScreen(val component: RegisterComponent) : Child
 
-        data object ProfileEditorScreen : Child
+        data class ProfileEditorScreen(val component: ProfileEditorScreenComponent) : Child
 
         sealed interface MainScreen : Child
         data class SwiperScreen(val component: SwiperScreenComponent) : MainScreen

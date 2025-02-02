@@ -9,6 +9,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.patch
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLProtocol
 import io.ktor.http.path
 
@@ -70,8 +71,8 @@ class KtorProfileApi(
             throw e
         }
 
-        println("Response my profile: ${response.bodyAsText()}")
-        return response.body()
+        println("Response my profile: patch ${response.status}")
+        if (response.status != HttpStatusCode.OK) TODO()
     }
 
     companion object {

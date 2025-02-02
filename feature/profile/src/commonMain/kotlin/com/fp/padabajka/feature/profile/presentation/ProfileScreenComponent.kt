@@ -3,11 +3,11 @@ package com.fp.padabajka.feature.profile.presentation
 import com.arkivanov.decompose.ComponentContext
 import com.fp.padabajka.core.presentation.BaseComponent
 import com.fp.padabajka.core.repository.api.ProfileRepository
-import com.fp.padabajka.feature.profile.presentation.model.NeedOpenEditorEvent
-import com.fp.padabajka.feature.profile.presentation.model.NeedUpdateProfileEvent
+import com.fp.padabajka.feature.profile.presentation.model.OpenEditorEvent
 import com.fp.padabajka.feature.profile.presentation.model.ProfileEvent
 import com.fp.padabajka.feature.profile.presentation.model.ProfileState
 import com.fp.padabajka.feature.profile.presentation.model.ProfileValue
+import com.fp.padabajka.feature.profile.presentation.model.UpdateProfileEvent
 import com.fp.padabajka.feature.profile.presentation.model.toUIProfileValue
 import kotlinx.coroutines.launch
 
@@ -34,8 +34,8 @@ class ProfileScreenComponent(
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
-            NeedOpenEditorEvent -> openEditor()
-            NeedUpdateProfileEvent -> updateProfile()
+            OpenEditorEvent -> openEditor()
+            UpdateProfileEvent -> updateProfile()
         }
     }
 
@@ -49,8 +49,8 @@ class ProfileScreenComponent(
         mapper = {
             it
         },
-        update = { state, _ ->
-            state.copy(value = ProfileValue.Error)
+        update = { state, exception ->
+            if (exception != null) state.copy(value = ProfileValue.Error) else state
         }
     )
 
