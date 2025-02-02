@@ -47,10 +47,6 @@ kotlin {
             implementation(projects.feature.messenger)
             implementation(projects.core.networking)
 
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
-            implementation(compose.ui)
             implementation(libs.gitlive.firebase.auth)
         }
         commonTest.dependencies {

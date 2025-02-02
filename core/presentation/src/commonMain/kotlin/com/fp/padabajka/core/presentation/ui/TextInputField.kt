@@ -1,4 +1,4 @@
-package com.fp.padabajka.feature.auth.presentation.element
+package com.fp.padabajka.core.presentation.ui
 
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
