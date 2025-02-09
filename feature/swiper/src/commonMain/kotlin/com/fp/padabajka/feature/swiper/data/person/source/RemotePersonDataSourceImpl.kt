@@ -1,9 +1,9 @@
 package com.fp.padabajka.feature.swiper.data.person.source
 
+import com.fp.padabajka.core.data.network.model.toPerson
 import com.fp.padabajka.core.repository.api.model.swiper.Person
 import com.fp.padabajka.core.repository.api.model.swiper.SearchPreferences
 import com.fp.padabajka.feature.swiper.data.person.network.PersonApi
-import com.fp.padabajka.feature.swiper.data.person.network.model.toPerson
 
 class RemotePersonDataSourceImpl(
     private val personApi: PersonApi
