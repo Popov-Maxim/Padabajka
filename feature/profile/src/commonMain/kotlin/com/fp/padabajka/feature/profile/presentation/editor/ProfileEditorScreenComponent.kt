@@ -6,9 +6,10 @@ import com.fp.padabajka.core.domain.delegate
 import com.fp.padabajka.core.presentation.BaseComponent
 import com.fp.padabajka.core.presentation.event.consumed
 import com.fp.padabajka.core.presentation.event.raisedIfNotNull
+import com.fp.padabajka.core.repository.api.ProfileRepository
 import com.fp.padabajka.core.repository.api.model.profile.Achievement
 import com.fp.padabajka.feature.profile.domain.DiscardUpdateUseCase
-import com.fp.padabajka.feature.profile.domain.ProfileProvider
+import com.fp.padabajka.feature.profile.domain.ProfileEditorProvider
 import com.fp.padabajka.feature.profile.domain.SaveUpdateProfileUseCase
 import com.fp.padabajka.feature.profile.domain.update.AboutMeUpdateUseCase
 import com.fp.padabajka.feature.profile.domain.update.FirstNameUpdateUseCase
@@ -31,12 +32,13 @@ import com.fp.padabajka.feature.profile.presentation.editor.model.ProfileEditorE
 import com.fp.padabajka.feature.profile.presentation.editor.model.ProfileEditorState
 import com.fp.padabajka.feature.profile.presentation.editor.model.RemoveMainAchievementClickEvent
 import com.fp.padabajka.feature.profile.presentation.editor.model.SaveProfileUpdatesClickEvent
+import com.fp.padabajka.feature.profile.presentation.editor.model.toEditorState
 import com.fp.padabajka.feature.profile.presentation.model.InternalError
 import kotlinx.coroutines.launch
 
 class ProfileEditorScreenComponent(
     context: ComponentContext,
-    private val profileProvider: ProfileProvider,
+    profileRepository: ProfileRepository,
     discardUpdateUseCaseFactory: Factory<DiscardUpdateUseCase>,
     saveUpdateProfileUseCaseFactory: Factory<SaveUpdateProfileUseCase>,
     firstNameUpdateUseCaseFactory: Factory<FirstNameUpdateUseCase>,
@@ -44,10 +46,11 @@ class ProfileEditorScreenComponent(
     aboutMeUpdateUseCaseFactory: Factory<AboutMeUpdateUseCase>,
     hideAchievementUseCaseFactory: Factory<HideAchievementUseCase>,
     makeAchievementVisibleUseCaseFactory: Factory<MakeAchievementVisibleUseCase>,
-    mainAchievementUpdateUseCaseFactory: Factory<MainAchievementUpdateUseCase>
+    mainAchievementUpdateUseCaseFactory: Factory<MainAchievementUpdateUseCase>,
+    private val profileEditorProvider: ProfileEditorProvider
 ) : BaseComponent<ProfileEditorState>(
     context,
-    TODO("add init")
+    initProfileState(profileRepository)
 ) {
 
     private val discardUpdateUseCase by discardUpdateUseCaseFactory.delegate()
@@ -61,7 +64,7 @@ class ProfileEditorScreenComponent(
 
     init {
         componentScope.launch {
-            profileProvider.profile.collect { profile ->
+            profileEditorProvider.profile.collect { profile ->
                 reduce { it.updated(profile) }
             }
         }
@@ -202,5 +205,11 @@ class ProfileEditorScreenComponent(
 
     private fun consumeInternalError() = reduce {
         it.copy(internalErrorStateEvent = consumed)
+    }
+
+    companion object {
+        private fun initProfileState(profileRepository: ProfileRepository): ProfileEditorState {
+            return profileRepository.profileValue?.toEditorState() ?: TODO()
+        }
     }
 }

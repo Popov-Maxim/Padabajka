@@ -29,6 +29,7 @@ kotlin {
         commonMain.dependencies {
             // put your multiplatform dependencies here
             api(projects.core.repositoryApi)
+            api(libs.datastore)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
