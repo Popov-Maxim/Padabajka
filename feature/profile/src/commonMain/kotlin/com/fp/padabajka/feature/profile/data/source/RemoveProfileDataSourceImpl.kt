@@ -1,6 +1,7 @@
 package com.fp.padabajka.feature.profile.data.source
 
 import com.fp.padabajka.core.data.network.model.toProfile
+import com.fp.padabajka.core.domain.mapOfNotNull
 import com.fp.padabajka.core.repository.api.model.profile.Profile
 import com.fp.padabajka.feature.profile.data.network.ProfileApi
 
@@ -16,7 +17,13 @@ class RemoveProfileDataSourceImpl(
         val lastName = fieldForUpdate(current, newProfile, Profile::lastName)
         val birthday = fieldForUpdate(current, newProfile, Profile::birthday)?.toString()
         val aboutMe = fieldForUpdate(current, newProfile, Profile::aboutMe)
-        profileApi.patch(firstName, lastName, birthday, aboutMe)
+        val parameters = mapOfNotNull(
+            ProfileApi.PatchParams.Key.FirstName to firstName,
+            ProfileApi.PatchParams.Key.LastName to lastName,
+            ProfileApi.PatchParams.Key.Birthday to birthday,
+            ProfileApi.PatchParams.Key.AboutMe to aboutMe,
+        )
+        profileApi.patch(ProfileApi.PatchParams(parameters))
     }
 
     private fun <T> fieldForUpdate(current: Profile?, newProfile: Profile, field: Profile.() -> T): T? {

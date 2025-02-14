@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.fp.padabajka.core.domain.IpAddressProvider
 import com.fp.padabajka.core.domain.MutableAppSettings
+import com.fp.padabajka.core.networking.localHost
 import org.koin.compose.koinInject
 
 @Composable
@@ -123,7 +124,7 @@ private fun updateIpAddress(
 ) {
     settings.host = when (selectedHost) {
         SelectedHost.Default -> null
-        SelectedHost.Localhost -> "10.0.2.2"
+        SelectedHost.Localhost -> localHost
         SelectedHost.Custom -> ipAddress
     }
 }
