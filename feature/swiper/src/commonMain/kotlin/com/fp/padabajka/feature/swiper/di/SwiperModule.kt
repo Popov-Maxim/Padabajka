@@ -57,8 +57,7 @@ private val dataModule = module {
 
     factory<PersonApi> {
         KtorPersonApi(
-            ktorClientProvider = get(),
-            appSettings = get()
+            ktorClientProvider = get()
         )
     }
 

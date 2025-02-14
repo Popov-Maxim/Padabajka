@@ -3,6 +3,7 @@ package com.fp.padabajka.core.networking
 import com.fp.padabajka.core.networking.config.KtorConfigProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
+import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.cio.CIO
 
@@ -32,15 +33,15 @@ internal class KtorClientProviderImpl(
         }
     }
 
-    private suspend fun List<KtorConfigProvider.Dynamic>.resultConfig(): HttpClientConfig<Nothing> {
+    private suspend fun List<KtorConfigProvider.Dynamic>.resultConfig(): HttpClientConfig<HttpClientEngineConfig> {
         return map { it.config() }.sum()
     }
 
-    private fun List<KtorConfigProvider.Static>.resultConfig(): HttpClientConfig<Nothing> {
+    private fun List<KtorConfigProvider.Static>.resultConfig(): HttpClientConfig<HttpClientEngineConfig> {
         return map { it.config }.sum()
     }
 
-    private fun List<HttpClientConfig<Nothing>>.sum(): HttpClientConfig<Nothing> {
+    private fun List<HttpClientConfig<HttpClientEngineConfig>>.sum(): HttpClientConfig<HttpClientEngineConfig> {
         return reduceOrNull { acc, ktorConfigProvider ->
             acc.plusAssign(ktorConfigProvider)
             acc
