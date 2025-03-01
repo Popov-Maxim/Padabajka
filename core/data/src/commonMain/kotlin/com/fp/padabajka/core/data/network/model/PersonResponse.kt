@@ -4,6 +4,7 @@ import com.fp.padabajka.core.repository.api.model.profile.Profile
 import com.fp.padabajka.core.repository.api.model.swiper.Person
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
@@ -13,7 +14,8 @@ data class PersonResponse(
     val firstName: String,
     val lastName: String,
     val birthday: String,
-    val aboutMe: String
+    val aboutMe: String,
+    val images: List<ImageDto>
 )
 
 fun PersonResponse.toPerson(): Person {
@@ -28,7 +30,7 @@ fun PersonResponse.toProfile(): Profile {
         firstName = firstName,
         lastName = lastName,
         birthday = LocalDate.parse(birthday),
-        images = persistentListOf(),
+        images = images.map { it.toImage() }.toPersistentList(),
         aboutMe = aboutMe,
         details = persistentListOf(),
         mainAchievement = null,

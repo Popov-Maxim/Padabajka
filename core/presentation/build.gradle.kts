@@ -40,6 +40,8 @@ kotlin {
             api(libs.koin.compose)
             api(libs.kotlinx.serialization.json)
             api(libs.immutable.collections)
+            api(libs.coil.compose)
+            api(libs.coil.network.ktor)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

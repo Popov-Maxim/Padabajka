@@ -2,6 +2,7 @@ package com.fp.padabajka.di
 
 import com.fp.padabajka.core.domain.di.domainDiModules
 import com.fp.padabajka.core.networking.di.networkingModule
+import com.fp.padabajka.core.presentation.di.presentationDiModules
 import com.fp.padabajka.feature.ads.di.adModules
 import com.fp.padabajka.feature.auth.di.authModules
 import com.fp.padabajka.feature.profile.di.profileModules
@@ -29,6 +30,7 @@ fun initKoin(platformModule: Module) {
             *profileModules,
             networkingModule,
             *domainDiModules,
+            *presentationDiModules,
             platformModule,
             applicationScopeModule
         )
