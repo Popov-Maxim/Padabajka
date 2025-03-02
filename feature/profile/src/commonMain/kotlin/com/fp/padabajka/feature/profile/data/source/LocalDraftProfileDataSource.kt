@@ -5,7 +5,7 @@ import com.fp.padabajka.feature.profile.data.ProfileIsNullException
 import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.cancellation.CancellationException
 
-interface LocalEditProfileDataSource {
+interface LocalDraftProfileDataSource {
     val profile: Flow<Profile?>
     suspend fun replace(profile: Profile?)
 

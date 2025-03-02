@@ -11,11 +11,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 import kotlin.coroutines.cancellation.CancellationException
 
 abstract class BaseComponent<T : State>(context: ComponentContext, initialState: T) :
@@ -24,7 +19,8 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
     protected val componentScope: CoroutineScope =
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    private val reducerMutex = Mutex(false)
+    private val reducerScope: CoroutineScope =
+        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     private val _state = MutableValue(initialState)
     val state: Value<T> = _state
@@ -35,18 +31,8 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
         }
     }
 
-    protected fun reduce(update: (T) -> T): Job = componentScope.launch {
-        reduceBlocking(update)
-    }
-
-    @OptIn(ExperimentalContracts::class)
-    protected suspend fun reduceBlocking(update: (T) -> T) {
-        contract {
-            callsInPlace(update, InvocationKind.EXACTLY_ONCE)
-        }
-        reducerMutex.withLock {
-            _state.update(update)
-        }
+    protected fun reduce(update: (state: T) -> T): Job = reducerScope.launch {
+        _state.update(update)
     }
 
     // Should be inlined but doesn't work from other modules. Looks like kotlin bug
@@ -66,6 +52,6 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
             mappedException = mapper(e)
         }
 
-        reduceBlocking { update(it, mappedException) }
+        reduce { update(it, mappedException) }
     }
 }

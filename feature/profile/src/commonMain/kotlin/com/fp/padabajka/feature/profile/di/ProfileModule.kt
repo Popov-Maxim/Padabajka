@@ -1,19 +1,19 @@
 package com.fp.padabajka.feature.profile.di
 
 import com.fp.padabajka.core.data.utils.DataStoreUtils
-import com.fp.padabajka.core.repository.api.EditProfileRepository
+import com.fp.padabajka.core.repository.api.DraftProfileRepository
 import com.fp.padabajka.core.repository.api.ProfileRepository
-import com.fp.padabajka.feature.profile.data.EditProfileRepositoryImpl
+import com.fp.padabajka.feature.profile.data.DraftProfileRepositoryImpl
 import com.fp.padabajka.feature.profile.data.ProfileRepositoryImpl
 import com.fp.padabajka.feature.profile.data.network.KtorProfileApi
 import com.fp.padabajka.feature.profile.data.network.ProfileApi
-import com.fp.padabajka.feature.profile.data.source.DataStoreLocalEditProfileDataSource
-import com.fp.padabajka.feature.profile.data.source.LocalEditProfileDataSource
+import com.fp.padabajka.feature.profile.data.source.DataStoreLocalDraftProfileDataSource
+import com.fp.padabajka.feature.profile.data.source.LocalDraftProfileDataSource
 import com.fp.padabajka.feature.profile.data.source.RemoveProfileDataSource
 import com.fp.padabajka.feature.profile.data.source.RemoveProfileDataSourceImpl
 import com.fp.padabajka.feature.profile.domain.DiscardUpdateUseCase
-import com.fp.padabajka.feature.profile.domain.ProfileEditorProvider
-import com.fp.padabajka.feature.profile.domain.SaveUpdateProfileUseCase
+import com.fp.padabajka.feature.profile.domain.DraftProfileProvider
+import com.fp.padabajka.feature.profile.domain.SaveProfileUseCase
 import com.fp.padabajka.feature.profile.domain.update.AboutMeUpdateUseCase
 import com.fp.padabajka.feature.profile.domain.update.FirstNameUpdateUseCase
 import com.fp.padabajka.feature.profile.domain.update.HideAchievementUseCase
@@ -31,10 +31,10 @@ private val dataModule = module {
         )
     }
 
-    single<EditProfileRepository> {
-        EditProfileRepositoryImpl(
+    single<DraftProfileRepository> {
+        DraftProfileRepositoryImpl(
             profileRepository = get(),
-            localEditProfileDataSource = get()
+            localDraftProfileDataSource = get()
         )
     }
 
@@ -50,8 +50,8 @@ private val dataModule = module {
         )
     }
 
-    factory<LocalEditProfileDataSource> {
-        DataStoreLocalEditProfileDataSource(
+    factory<LocalDraftProfileDataSource> {
+        DataStoreLocalDraftProfileDataSource(
             dataStore = DataStoreUtils.createFake(null)
         )
     }
@@ -59,9 +59,9 @@ private val dataModule = module {
 
 private val domainModule = module {
 
-    factory<ProfileEditorProvider> {
-        ProfileEditorProvider(
-            editProfileRepository = get()
+    factory<DraftProfileProvider> {
+        DraftProfileProvider(
+            draftProfileRepository = get()
         )
     }
 
@@ -71,9 +71,9 @@ private val domainModule = module {
         )
     }
 
-    factory<SaveUpdateProfileUseCase> {
-        SaveUpdateProfileUseCase(
-            repository = get()
+    factory<SaveProfileUseCase> {
+        SaveProfileUseCase(
+            profileRepository = get()
         )
     }
 
@@ -127,15 +127,7 @@ private val presentationModule = module {
         ProfileEditorScreenComponent(
             context = parameters.get(),
             profileRepository = get(),
-            profileEditorProvider = get(),
-            discardUpdateUseCaseFactory = { get() },
-            saveUpdateProfileUseCaseFactory = { get() },
-            firstNameUpdateUseCaseFactory = { get() },
-            lastNameUpdateUseCaseFactory = { get() },
-            aboutMeUpdateUseCaseFactory = { get() },
-            hideAchievementUseCaseFactory = { get() },
-            makeAchievementVisibleUseCaseFactory = { get() },
-            mainAchievementUpdateUseCaseFactory = { get() }
+            saveProfileUseCaseFactory = { get() },
         )
     }
 }
