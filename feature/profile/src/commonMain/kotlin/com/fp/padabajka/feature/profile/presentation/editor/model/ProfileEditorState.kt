@@ -8,6 +8,7 @@ import com.fp.padabajka.core.repository.api.model.profile.Achievement
 import com.fp.padabajka.core.repository.api.model.profile.Detail
 import com.fp.padabajka.core.repository.api.model.profile.Image
 import com.fp.padabajka.core.repository.api.model.profile.Profile
+import kotlinx.collections.immutable.PersistentList
 import kotlinx.datetime.LocalDate
 
 @Immutable
@@ -15,11 +16,11 @@ data class ProfileEditorState(
     val firstName: ProfileField<String>,
     val lastName: ProfileField<String>,
     val birthday: ProfileField<LocalDate>,
-    val images: ProfileField<List<Image>>,
+    val images: ProfileField<PersistentList<Image>>,
     val aboutMe: ProfileField<String>,
-    val details: ProfileField<List<Detail>>,
+    val details: ProfileField<PersistentList<Detail>>,
     val mainAchievement: ProfileField<Achievement?>,
-    val achievements: ProfileField<List<Achievement>>,
+    val achievements: ProfileField<PersistentList<Achievement>>,
     val internalErrorStateEvent: StateEvent = consumed
 ) : State {
 
@@ -38,7 +39,10 @@ data class ProfileEditorState(
 data class ProfileField<T>(
     val value: T,
     val issues: Map<T, Issue> = emptyMap()
-)
+) {
+    fun updatedValue(value: T) = copy(value = value)
+    fun updatedValue(action: (T) -> T) = copy(value = action(value))
+}
 
 data class Issue(
     val message: String
@@ -56,6 +60,17 @@ fun Profile.toEditorState(): ProfileEditorState {
         achievements = achievements.toField()
     )
 }
+
+fun Profile.updated(state: ProfileEditorState) = copy(
+    firstName = state.firstName.value,
+    lastName = state.lastName.value,
+    birthday = state.birthday.value,
+    images = state.images.value,
+    aboutMe = state.aboutMe.value,
+    details = state.details.value,
+    mainAchievement = state.mainAchievement.value,
+    achievements = state.achievements.value
+)
 
 private fun <T> T.toField(): ProfileField<T> {
     return ProfileField(this)

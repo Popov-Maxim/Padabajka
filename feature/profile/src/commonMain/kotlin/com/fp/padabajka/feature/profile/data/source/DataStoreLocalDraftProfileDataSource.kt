@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.cancellation.CancellationException
 
 // TODO Add in memory update and debounced save
-class DataStoreLocalEditProfileDataSource(
+class DataStoreLocalDraftProfileDataSource(
     private val dataStore: DataStore<Profile?>
-) : LocalEditProfileDataSource {
+) : LocalDraftProfileDataSource {
     override val profile: Flow<Profile?>
         get() = dataStore.data
 

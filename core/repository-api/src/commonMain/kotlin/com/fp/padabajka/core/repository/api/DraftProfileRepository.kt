@@ -5,7 +5,7 @@ import com.fp.padabajka.core.repository.api.model.profile.Profile
 import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.cancellation.CancellationException
 
-interface EditProfileRepository {
+interface DraftProfileRepository {
     val profile: Flow<Profile>
 
     @Throws(ProfileException::class, CancellationException::class)
