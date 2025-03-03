@@ -8,8 +8,8 @@ data class ImageDto(
     val url: String
 )
 
-fun ImageDto.toImage(): Image {
-    return Image(
-        url = url
+fun ImageDto.toImage(): Image.Url {
+    return Image.Url(
+        value = url
     )
 }
