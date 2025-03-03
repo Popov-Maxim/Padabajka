@@ -20,28 +20,27 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "profile"
+            baseName = "image"
             isStatic = true
         }
     }
 
     sourceSets {
-        commonMain.dependencies {
-            api(projects.core.presentation)
-            api(projects.core.domain)
-            api(projects.core.repositoryApi)
-            api(projects.core.data)
-            api(projects.core.networking)
-            api(projects.feature.image)
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
         }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
+        commonMain.dependencies {
+            implementation(projects.core.presentation)
+            implementation(projects.core.repositoryApi)
+//            api(projects.core.domain)
+//            api(projects.core.repositoryApi)
+//            api(projects.core.data)
         }
     }
 }
 
 android {
-    namespace = "com.fp.padabajka.feature.profile"
+    namespace = "com.fp.padabajka.feature.image"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()

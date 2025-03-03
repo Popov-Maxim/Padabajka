@@ -2,6 +2,7 @@ package com.fp.padabajka.feature.profile.presentation.editor
 
 import com.fp.padabajka.core.domain.replaced
 import com.fp.padabajka.core.repository.api.model.profile.Achievement
+import com.fp.padabajka.core.repository.api.model.profile.Image
 import com.fp.padabajka.feature.profile.presentation.editor.model.ProfileEditorState
 
 fun ProfileEditorState.changeAchievementMain(achievement: Achievement?): ProfileEditorState {
@@ -43,4 +44,8 @@ fun ProfileEditorState.updateLastName(lastName: String): ProfileEditorState {
 
 fun ProfileEditorState.updateFirstName(firstName: String): ProfileEditorState {
     return this.copy(firstName = this.firstName.updatedValue(firstName))
+}
+
+fun ProfileEditorState.addImage(image: Image): ProfileEditorState {
+    return this.copy(images = this.images.updatedValue { it.add(image) })
 }

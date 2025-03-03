@@ -24,6 +24,7 @@ import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import com.fp.padabajka.core.repository.api.model.profile.Image
+import com.fp.padabajka.core.repository.api.model.profile.raw
 import com.fp.padabajka.feature.swiper.presentation.model.CardItem
 import com.fp.padabajka.feature.swiper.presentation.model.EmptyCardItem
 import com.fp.padabajka.feature.swiper.presentation.model.LoadingItem
@@ -101,7 +102,7 @@ private fun ImagePager(
         AsyncImage(
             modifier = Modifier.fillMaxSize().background(Color.DarkGray),
             imageLoader = imageLoader,
-            model = image.url,
+            model = image.raw(),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
