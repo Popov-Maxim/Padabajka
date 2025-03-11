@@ -119,7 +119,8 @@ private val presentationModule = module {
         ProfileScreenComponent(
             context = parameters.get(),
             openEditor = parameters.get(),
-            profileRepository = get()
+            profileRepository = get(),
+            logoutUseCaseFactory = { get() }
         )
     }
 

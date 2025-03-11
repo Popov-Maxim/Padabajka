@@ -12,12 +12,20 @@ import org.koin.core.component.get
 @Composable
 fun rememberAuthStateObserver(
     onLogin: () -> Unit,
-    onLogout: () -> Unit
-) = remember { AuthStateObserver(onLogin = onLogin, onLogout = onLogout) }
+    onLogout: () -> Unit,
+    onLoginWithoutVerification: () -> Unit
+) = remember {
+    AuthStateObserver(
+        onLogin = onLogin,
+        onLogout = onLogout,
+        onLoginWithoutVerification = onLoginWithoutVerification
+    )
+}
 
 class AuthStateObserver(
     private val onLogin: () -> Unit,
-    private val onLogout: () -> Unit
+    private val onLogout: () -> Unit,
+    private val onLoginWithoutVerification: () -> Unit
 ) : KoinComponent {
 
     private val authProvider: AuthStateProvider = get()
@@ -27,7 +35,7 @@ class AuthStateObserver(
             when (it) {
                 is LoggedIn -> onLogin()
                 LoggedOut -> onLogout()
-                is WaitingForEmailValidation -> {}
+                is WaitingForEmailValidation -> onLoginWithoutVerification()
             }
         }
     }

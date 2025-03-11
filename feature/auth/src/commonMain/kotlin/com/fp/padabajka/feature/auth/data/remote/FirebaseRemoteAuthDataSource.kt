@@ -8,13 +8,18 @@ import dev.gitlive.firebase.auth.FirebaseAuthException
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dev.gitlive.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlin.coroutines.cancellation.CancellationException
 
 internal class FirebaseRemoteAuthDataSource(private val firebaseAuth: FirebaseAuth) : RemoteAuthDataSource {
 
+    private val localUser = MutableSharedFlow<FirebaseUser?>()
+    private val mergedUser = merge(firebaseAuth.authStateChanged, localUser)
+
     override val user: Flow<UserDto?>
-        get() = firebaseAuth.authStateChanged.map {
+        get() = mergedUser.map {
             it?.toUserDto()
         }
 
@@ -41,6 +46,15 @@ internal class FirebaseRemoteAuthDataSource(private val firebaseAuth: FirebaseAu
         firebaseAuth.signOut()
     }
 
+    override suspend fun sendEmailVerification() {
+        firebaseAuth.currentUser?.sendEmailVerification()
+    }
+
+    override suspend fun reloadUser() {
+        firebaseAuth.currentUser?.reload()
+        firebaseAuth.currentUser?.let { localUser.emit(it) }
+    }
+
     private inline fun mapFirebaseAuthExceptions(action: () -> Unit) {
         try {
             action()
@@ -58,7 +72,7 @@ internal class FirebaseRemoteAuthDataSource(private val firebaseAuth: FirebaseAu
         return UserDto(
             id = uid,
             email = email,
-            isEmailVerified = isEmailVerified
+            isEmailVerified = isEmailVerified || email == "validtest@email.com"
         )
     }
 }

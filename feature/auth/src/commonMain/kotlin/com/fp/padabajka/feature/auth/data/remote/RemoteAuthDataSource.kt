@@ -12,4 +12,7 @@ internal interface RemoteAuthDataSource {
     suspend fun login(token: String)
     suspend fun register(email: String, password: String)
     suspend fun logout()
+
+    suspend fun sendEmailVerification()
+    suspend fun reloadUser()
 }

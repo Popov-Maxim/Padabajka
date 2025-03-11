@@ -23,6 +23,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stac
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.fp.padabajka.feature.auth.presentation.screen.LoginScreen
 import com.fp.padabajka.feature.auth.presentation.screen.RegisterScreen
+import com.fp.padabajka.feature.auth.presentation.screen.VerificationScreen
 import com.fp.padabajka.feature.profile.presentation.ProfileScreen
 import com.fp.padabajka.feature.profile.presentation.editor.ProfileEditorScreen
 import com.fp.padabajka.feature.swiper.presentation.screen.SwiperScreen
@@ -40,7 +41,8 @@ fun NavigateApp(rootContext: NavigateComponentContext) {
 
         val authStateObserver = rememberAuthStateObserver(
             onLogin = { logIn(rootContext) },
-            onLogout = { logOut(rootContext) }
+            onLogout = { logOut(rootContext) },
+            onLoginWithoutVerification = { loginWithoutVerification(rootContext) }
         )
         LaunchedEffect(authStateObserver) {
             authStateObserver.subscribeToAuth()
@@ -60,6 +62,7 @@ fun NavigateApp(rootContext: NavigateComponentContext) {
                         is NavigateComponentContext.Child.RegisterScreen -> RegisterScreen(instance.component)
                         is NavigateComponentContext.Child.ProfileScreen -> ProfileScreen(instance.component)
                         is NavigateComponentContext.Child.ProfileEditorScreen -> ProfileEditorScreen(instance.component)
+                        is NavigateComponentContext.Child.VerificationScreen -> VerificationScreen(instance.component)
                     }
                 }
 
@@ -111,6 +114,10 @@ private fun PadabajkaTheme(content: @Composable () -> Unit) {
 
 private fun logIn(navigateComponent: NavigateComponentContext) {
     navigateComponent.navigateNewStack(NavigateComponentContext.Configuration.SwiperScreen)
+}
+
+private fun loginWithoutVerification(navigateComponent: NavigateComponentContext) {
+    navigateComponent.navigateNewStack(NavigateComponentContext.Configuration.VerificationScreen)
 }
 
 private fun logOut(navigateComponent: NavigateComponentContext) {

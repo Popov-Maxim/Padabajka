@@ -1,8 +1,12 @@
 package com.fp.padabajka.feature.profile.presentation
 
 import com.arkivanov.decompose.ComponentContext
+import com.fp.padabajka.core.domain.Factory
+import com.fp.padabajka.core.domain.delegate
 import com.fp.padabajka.core.presentation.BaseComponent
 import com.fp.padabajka.core.repository.api.ProfileRepository
+import com.fp.padabajka.feature.auth.domain.LogOutUseCase
+import com.fp.padabajka.feature.profile.presentation.model.LogoutEvent
 import com.fp.padabajka.feature.profile.presentation.model.OpenEditorEvent
 import com.fp.padabajka.feature.profile.presentation.model.ProfileEvent
 import com.fp.padabajka.feature.profile.presentation.model.ProfileState
@@ -14,11 +18,14 @@ import kotlinx.coroutines.launch
 class ProfileScreenComponent(
     context: ComponentContext,
     private val openEditor: () -> Unit,
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    logoutUseCaseFactory: Factory<LogOutUseCase>
 ) : BaseComponent<ProfileState>(
     context,
     ProfileState(value = initProfileState(profileRepository))
 ) {
+
+    private val logoutUseCase by logoutUseCaseFactory.delegate()
 
     init {
         componentScope.launch {
@@ -36,8 +43,19 @@ class ProfileScreenComponent(
         when (event) {
             OpenEditorEvent -> openEditor()
             UpdateProfileEvent -> updateProfile()
+            LogoutEvent -> logout()
         }
     }
+
+    private fun logout() = mapAndReduceException(
+        action = {
+            logoutUseCase()
+        },
+        mapper = { it },
+        update = { state, m ->
+            state
+        }
+    )
 
     private fun updateProfile() = mapAndReduceException(
         action = {

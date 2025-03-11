@@ -8,12 +8,16 @@ import com.fp.padabajka.feature.auth.domain.AuthStateProvider
 import com.fp.padabajka.feature.auth.domain.LogInWithEmailAndPasswordUseCase
 import com.fp.padabajka.feature.auth.domain.LogOutUseCase
 import com.fp.padabajka.feature.auth.domain.RegisterWithEmailAndPasswordUseCase
+import com.fp.padabajka.feature.auth.domain.ReloadUserUseCase
+import com.fp.padabajka.feature.auth.domain.SendEmailVerificationUseCase
 import com.fp.padabajka.feature.auth.domain.ValidateEmailUseCase
 import com.fp.padabajka.feature.auth.domain.ValidatePasswordsUseCase
 import com.fp.padabajka.feature.auth.presentation.LoginComponent
 import com.fp.padabajka.feature.auth.presentation.RegisterComponent
+import com.fp.padabajka.feature.auth.presentation.VerificationComponent
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 private val authDataModule = module {
@@ -43,8 +47,8 @@ private val authDomainModule = module {
     factory {
         RegisterWithEmailAndPasswordUseCase(
             authRepository = get(),
-            validateEmailUseCase = get(),
-            validatePasswordsUseCase = get()
+            validateEmailUseCase = { get() },
+            validatePasswordsUseCase = { get() }
         )
     }
 
@@ -59,6 +63,8 @@ private val authDomainModule = module {
             authRepository = get()
         )
     }
+    factoryOf(::SendEmailVerificationUseCase)
+    factoryOf(::ReloadUserUseCase)
 }
 
 private val authPresentationModule = module {
@@ -77,6 +83,13 @@ private val authPresentationModule = module {
             registerWithEmailAndPasswordUseCaseFactory = { get() },
             validateEmailUseCaseFactory = { get() },
             validatePasswordsUseCaseFactory = { get() },
+        )
+    }
+    factory<VerificationComponent> { parameters ->
+        VerificationComponent(
+            context = parameters.get(),
+            sendEmailVerificationUseCaseFactory = { get() },
+            reloadUserUseCaseFactory = { get() }
         )
     }
 }

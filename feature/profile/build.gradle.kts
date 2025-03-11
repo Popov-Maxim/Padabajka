@@ -33,6 +33,7 @@ kotlin {
             api(projects.core.data)
             api(projects.core.networking)
             api(projects.feature.image)
+            api(projects.feature.auth.domain)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

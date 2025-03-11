@@ -5,6 +5,7 @@ import com.fp.padabajka.core.repository.api.model.auth.AuthState
 import com.fp.padabajka.core.repository.api.model.auth.LoggedIn
 import com.fp.padabajka.core.repository.api.model.auth.LoggedOut
 import com.fp.padabajka.core.repository.api.model.auth.UserId
+import com.fp.padabajka.core.repository.api.model.auth.WaitingForEmailValidation
 import com.fp.padabajka.feature.auth.data.model.UserDto
 import com.fp.padabajka.feature.auth.data.remote.RemoteAuthDataSource
 import kotlinx.coroutines.flow.Flow
@@ -42,12 +43,22 @@ internal class AuthRepositoryImpl(
         remoteAuthDataSource.logout()
     }
 
+    override suspend fun sendEmailVerification() {
+        remoteAuthDataSource.sendEmailVerification()
+    }
+
+    override suspend fun reloadUser() {
+        remoteAuthDataSource.reloadUser()
+    }
+
     private fun UserDto?.toAuthState(): AuthState {
         return when {
             this == null -> LoggedOut
-//            userDto.email != null && userDto.isEmailVerified.not() ->
-//                WaitingForEmailValidation(userDto.id.let(::UserId)) TODO: Implement email verification
-            else -> LoggedIn(this.id.let(::UserId))
+            email != null && isEmailVerified.not() ->
+                WaitingForEmailValidation(getUserId()) // TODO: Implement email verification
+            else -> LoggedIn(getUserId())
         }
     }
+
+    private fun UserDto.getUserId() = this.id.let(::UserId)
 }

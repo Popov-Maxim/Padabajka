@@ -77,7 +77,7 @@ class LoginComponent(
                 InvalidCredentialsLogInException -> TODO()
                 // TODO Add other exceptions mapping
                 is UnexpectedLoginException -> TODO()
-                else -> TODO()
+                else -> TODO(exception.toString())
             }
         },
         update = { state, loginFailureReason ->
