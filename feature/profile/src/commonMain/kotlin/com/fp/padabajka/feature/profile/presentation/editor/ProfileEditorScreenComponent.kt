@@ -8,6 +8,7 @@ import com.fp.padabajka.core.presentation.event.consumed
 import com.fp.padabajka.core.presentation.event.raisedIfNotNull
 import com.fp.padabajka.core.repository.api.ProfileRepository
 import com.fp.padabajka.core.repository.api.model.profile.Achievement
+import com.fp.padabajka.core.repository.api.model.profile.Image
 import com.fp.padabajka.feature.profile.domain.SaveProfileUseCase
 import com.fp.padabajka.feature.profile.presentation.editor.model.AboutMeFieldLoosFocusEvent
 import com.fp.padabajka.feature.profile.presentation.editor.model.AboutMeFieldUpdateEvent
@@ -16,6 +17,7 @@ import com.fp.padabajka.feature.profile.presentation.editor.model.DiscardProfile
 import com.fp.padabajka.feature.profile.presentation.editor.model.FirstNameFieldLoosFocusEvent
 import com.fp.padabajka.feature.profile.presentation.editor.model.FirstNameFieldUpdateEvent
 import com.fp.padabajka.feature.profile.presentation.editor.model.HideAchievementClickEvent
+import com.fp.padabajka.feature.profile.presentation.editor.model.ImageAddEvent
 import com.fp.padabajka.feature.profile.presentation.editor.model.LastNameFieldLoosFocusEvent
 import com.fp.padabajka.feature.profile.presentation.editor.model.LastNameFieldUpdateEvent
 import com.fp.padabajka.feature.profile.presentation.editor.model.MakeAchievementMainClickEvent
@@ -39,6 +41,7 @@ class ProfileEditorScreenComponent(
 
     private val saveProfileUseCase by saveProfileUseCaseFactory.delegate()
 
+    @Suppress("CyclomaticComplexMethod")
     fun onEvent(event: ProfileEditorEvent) {
         when (event) {
             DiscardProfileUpdatesClickEvent -> discardUpdates()
@@ -53,6 +56,7 @@ class ProfileEditorScreenComponent(
             is MakeAchievementVisibleClickEvent -> makeAchievementVisible(event.achievement)
             is MakeAchievementMainClickEvent -> makeAchievementMain(event.achievement)
             RemoveMainAchievementClickEvent -> makeAchievementMain(null)
+            is ImageAddEvent -> addImage(event.image)
             ConsumeInternalErrorEvent -> consumeInternalError()
             // TODO: add details and images events
         }
@@ -133,6 +137,12 @@ class ProfileEditorScreenComponent(
     private fun updateAboutMe(aboutMe: String) {
         reduce {
             it.updateAboutMe(aboutMe)
+        }
+    }
+
+    private fun addImage(image: Image) {
+        reduce {
+            it.addImage(image)
         }
     }
 
