@@ -6,6 +6,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.navigate
 import com.fp.padabajka.feature.auth.presentation.LoginComponent
 import com.fp.padabajka.feature.auth.presentation.RegisterComponent
+import com.fp.padabajka.feature.auth.presentation.VerificationComponent
 import com.fp.padabajka.feature.profile.presentation.ProfileScreenComponent
 import com.fp.padabajka.feature.profile.presentation.editor.ProfileEditorScreenComponent
 import com.fp.padabajka.feature.swiper.presentation.SwiperScreenComponent
@@ -76,6 +77,12 @@ class NavigateComponentContext(
                     parametersOf(context)
                 }
             )
+
+            Configuration.VerificationScreen -> Child.VerificationScreen(
+                component = get {
+                    parametersOf(context)
+                }
+            )
         }
     }
 
@@ -83,6 +90,7 @@ class NavigateComponentContext(
         data object SplashScreen : Child
         data class LoginScreen(val component: LoginComponent) : Child
         data class RegisterScreen(val component: RegisterComponent) : Child
+        data class VerificationScreen(val component: VerificationComponent) : Child
 
         data class ProfileEditorScreen(val component: ProfileEditorScreenComponent) : Child
 
@@ -110,5 +118,8 @@ class NavigateComponentContext(
 
         @Serializable
         data object ProfileEditorScreen : Configuration
+
+        @Serializable
+        data object VerificationScreen : Configuration
     }
 }

@@ -112,7 +112,7 @@ class RegisterComponent(
                 InvalidCredentialsRegisteringException -> RegistrationFailureReason.InvalidCredentials
                 // TODO Add other exceptions mapping
                 is UnexpectedRegisterException -> RegistrationFailureReason.UnknownReason
-                else -> TODO()
+                else -> TODO(exception.toString())
             }
         },
         update = { state, registrationFailureReason ->
