@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.fp.padabajka.core.repository.api.model.profile.Image
+import com.fp.padabajka.core.repository.api.model.profile.ImageData
 
 actual class ImagePickerImpl(
     private val launcher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>
@@ -20,7 +21,10 @@ actual class ImagePickerImpl(
 @Composable
 actual fun rememberImagePicker(onResult: (Image?) -> Unit): ImagePicker {
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        onResult(uri?.toString()?.let { Image.LocalUri(it) })
+        val image = uri
+            ?.run { ImageData(this) }
+            ?.run { Image.Local(this) }
+        onResult(image)
     }
     return remember { ImagePickerImpl(launcher) }
 }

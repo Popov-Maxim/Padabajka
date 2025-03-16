@@ -9,6 +9,7 @@ import com.fp.padabajka.core.presentation.event.raisedIfNotNull
 import com.fp.padabajka.core.repository.api.ProfileRepository
 import com.fp.padabajka.core.repository.api.model.profile.Achievement
 import com.fp.padabajka.core.repository.api.model.profile.Image
+import com.fp.padabajka.feature.image.domain.GetLocalImageUseCase
 import com.fp.padabajka.feature.profile.domain.SaveProfileUseCase
 import com.fp.padabajka.feature.profile.presentation.editor.model.AboutMeFieldLoosFocusEvent
 import com.fp.padabajka.feature.profile.presentation.editor.model.AboutMeFieldUpdateEvent
@@ -34,12 +35,14 @@ class ProfileEditorScreenComponent(
     context: ComponentContext,
     private val profileRepository: ProfileRepository,
     saveProfileUseCaseFactory: Factory<SaveProfileUseCase>,
+    getLocalImageUseCaseFactory: Factory<GetLocalImageUseCase>
 ) : BaseComponent<ProfileEditorState>(
     context,
     initProfileState(profileRepository)
 ) {
 
     private val saveProfileUseCase by saveProfileUseCaseFactory.delegate()
+    private val getLocalImageUseCase by getLocalImageUseCaseFactory.delegate()
 
     @Suppress("CyclomaticComplexMethod")
     fun onEvent(event: ProfileEditorEvent) {
@@ -140,11 +143,20 @@ class ProfileEditorScreenComponent(
         }
     }
 
-    private fun addImage(image: Image) {
-        reduce {
-            it.addImage(image)
-        }
-    }
+    private fun addImage(image: Image) = mapAndReduceException(
+        action = {
+            val uiImage = if (image is Image.Local) {
+                getLocalImageUseCase(image)
+            } else {
+                image
+            }
+            reduce {
+                it.addImage(uiImage)
+            }
+        },
+        mapper = { TODO(it.toString()) },
+        update = { state, _ -> state }
+    )
 
     private fun trimAboutMe() {
         val aboutMe = state.value.aboutMe.value
