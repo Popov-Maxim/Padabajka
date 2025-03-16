@@ -32,9 +32,8 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.presentation)
             implementation(projects.core.repositoryApi)
-//            api(projects.core.domain)
-//            api(projects.core.repositoryApi)
-//            api(projects.core.data)
+            implementation(projects.core.data)
+            implementation(projects.core.networking)
         }
     }
 }
