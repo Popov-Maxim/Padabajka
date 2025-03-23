@@ -8,11 +8,18 @@ fun AnimationOffset.getOffsetForSwipe(swipe: Swipe?, rectForMinOffset: Rect = Re
 
 // TODO(swiper): improve logic
 private fun Offset.getOffsetForSwipe(swipe: Swipe?, rectForMinOffset: Rect): Offset {
-    return when (swipe) {
-        Swipe.Left,
-        Swipe.Right,
-        Swipe.Up -> rectForMinOffset.getOffsetForSwipe(Offset(x * POSITION_SCALE, y * POSITION_SCALE))
-        null -> Offset.Zero
+    return if (swipe == null) {
+        Offset.Zero
+    } else {
+        if (this != Offset.Zero) {
+            rectForMinOffset.getOffsetForSwipe(Offset(x * POSITION_SCALE, y * POSITION_SCALE))
+        } else {
+            when (swipe) {
+                Swipe.Left -> Offset(rectForMinOffset.left, 0f)
+                Swipe.Right -> Offset(rectForMinOffset.right, 0f)
+                Swipe.Up -> Offset(0f, rectForMinOffset.top)
+            }
+        }
     }
 }
 

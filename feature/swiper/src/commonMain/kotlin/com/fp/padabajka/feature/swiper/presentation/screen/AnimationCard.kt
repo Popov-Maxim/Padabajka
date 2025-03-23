@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.fp.padabajka.core.presentation.isDebugBuild
 import com.fp.padabajka.core.presentation.ui.ScreenSizeProvider
 import com.fp.padabajka.core.presentation.ui.toIntOffset
+import com.fp.padabajka.feature.swiper.presentation.screen.card.CardController
+import com.fp.padabajka.feature.swiper.presentation.screen.card.rememberCardController
 import kotlin.math.sqrt
 
 @Composable
@@ -33,15 +35,25 @@ fun AnimationCard(
     swipeVerticalThreshold: Float = 400f,
     onSwipe: (Swipe) -> Unit,
     onEndSwipeAnimation: () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable (CardController) -> Unit
 ) {
     val screenSize = ScreenSizeProvider.getPxScreenSize()
     var offset by remember { mutableStateOf(AnimationOffset.Zero) }
-    val animationOffset by animateOffsetAsState(targetValue = offset.offset) {
+    val animationOffset by animateOffsetAsState(
+        targetValue = offset.offset,
+    ) {
         offset.finishedListener?.invoke(it)
         offset = offset.copy(finishedListener = null)
     }
     var rectForMinOffset: Rect by remember { mutableStateOf(Rect.Zero) }
+    val controller = rememberCardController { swipe ->
+        val offsetForSwipe =
+            offset.getOffsetForSwipe(swipe, rectForMinOffset)
+        offset = AnimationOffset(offsetForSwipe, true) {
+            onEndSwipeAnimation()
+        }
+        onSwipe(swipe)
+    }
 
     if (isDebugBuild()) {
         BorderForTest(rectForMinOffset)
@@ -81,7 +93,7 @@ fun AnimationCard(
                 }
             }
         ) {
-            content()
+            content(controller)
         }
     }
 }

@@ -28,10 +28,12 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.networking)
             api(compose.runtime)
             api(compose.foundation)
             api(compose.material)
             api(compose.ui)
+            api(compose.components.resources)
 
             api(libs.coroutines.core)
             api(libs.decompose)
@@ -54,5 +56,11 @@ android {
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()
+    }
+}
+
+compose {
+    resources {
+        generateResClass = always
     }
 }

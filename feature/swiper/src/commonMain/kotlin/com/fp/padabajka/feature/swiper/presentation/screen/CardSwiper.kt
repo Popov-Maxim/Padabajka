@@ -1,41 +1,55 @@
 package com.fp.padabajka.feature.swiper.presentation.screen
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil3.ImageLoader
-import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
-import com.fp.padabajka.core.repository.api.model.profile.Image
-import com.fp.padabajka.core.repository.api.model.profile.raw
+import androidx.compose.ui.unit.sp
+import com.fp.padabajka.core.presentation.ui.CoreColors
+import com.fp.padabajka.core.presentation.ui.mainColor
 import com.fp.padabajka.feature.swiper.presentation.model.CardItem
 import com.fp.padabajka.feature.swiper.presentation.model.EmptyCardItem
 import com.fp.padabajka.feature.swiper.presentation.model.LoadingItem
 import com.fp.padabajka.feature.swiper.presentation.model.NativeAdItem
 import com.fp.padabajka.feature.swiper.presentation.model.PersonItem
-import kotlinx.collections.immutable.PersistentList
-import org.koin.compose.koinInject
-import org.koin.core.parameter.parametersOf
+import com.fp.padabajka.feature.swiper.presentation.screen.card.CardReaction
+import com.fp.padabajka.feature.swiper.presentation.screen.pager.ImagePager
+import com.fp.padabajka.feature.swiper.presentation.screen.pager.PagerData
+import com.fp.padabajka.feature.swiper.presentation.screen.pager.PagerIndicators
 
 @Composable
-fun Card(cardItem: CardItem) {
+fun Card(
+    modifier: Modifier = Modifier,
+    cardItem: CardItem,
+    onReaction: (CardReaction) -> Unit
+) {
     when (cardItem) {
         EmptyCardItem -> {}
         LoadingItem -> {
@@ -53,58 +67,132 @@ fun Card(cardItem: CardItem) {
             NativeAdCard(cardItem)
         }
 
-        is PersonItem -> PersonCard(cardItem)
+        is PersonItem -> PersonCard(modifier, cardItem, onReaction)
     }
 }
 
 @Composable
-private fun PersonCard(personItem: PersonItem) {
-    Column(
-        modifier = Modifier.fillMaxSize().background(Color.Gray)
-            .border(1.dp, Color.Black)
-    ) {
-        ImagePager(
-            modifier = Modifier.height(400.dp).fillMaxWidth(),
-            images = personItem.images
-        )
-
-        Text(
-            text = "firstName: ${personItem.firstName}",
-            textAlign = TextAlign.Center,
-        )
-        Text(
-            text = "lastName: ${personItem.lastName}",
-            textAlign = TextAlign.Center,
-        )
-        Text(
-            text = "lastName: ${personItem.birthday}",
-            textAlign = TextAlign.Center,
-        )
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun ImagePager(
+private fun PersonCard(
     modifier: Modifier,
-    images: PersistentList<Image>,
+    personItem: PersonItem,
+    onReaction: (CardReaction) -> Unit
 ) {
-    val context = LocalPlatformContext.current
-    val imageLoader: ImageLoader = koinInject { parametersOf(context) }
-    val pagerState = rememberPagerState(pageCount = {
-        images.size
-    })
-    HorizontalPager(
-        modifier = modifier,
-        state = pagerState
-    ) { page ->
-        val image = images[page]
-        AsyncImage(
-            modifier = Modifier.fillMaxSize().background(Color.DarkGray),
-            imageLoader = imageLoader,
-            model = image.raw(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop
+    Box(
+        modifier
+    ) {
+        var pagerData by remember { mutableStateOf(PagerData(0, personItem.images.size)) }
+        ImagePager(
+            modifier = Modifier.fillMaxSize(),
+            images = personItem.images
+        ) {
+            pagerData = it
+        }
+        val gradientTop = Brush.verticalGradient(
+            colors = gradientTopAlfa.map { Color.Black.copy(alpha = it) },
         )
+        Box(
+            modifier = Modifier.align(Alignment.TopCenter).fillMaxWidth().height(60.dp)
+                .background(gradientTop)
+        ) {
+            PagerIndicators(
+                modifier = Modifier.align(Alignment.TopCenter).padding(10.dp),
+                pagerData = pagerData
+            )
+        }
+
+        val gradientBottom = Brush.verticalGradient(
+            colors = gradientBottomAlfa.map { Color.Black.copy(alpha = it) }
+        )
+        Box(
+            modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()
+                .background(gradientBottom)
+        ) {
+            Column(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
+                val textColor = Color.White
+                Text(
+                    text = "${personItem.firstName}, ${personItem.age.raw}",
+                    fontSize = 26.sp,
+                    color = textColor
+                )
+                Text(
+                    text = personItem.aboutMe,
+                    fontSize = 16.sp,
+                    color = textColor
+                )
+                Spacer(Modifier.height(15.dp))
+
+                Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                    val buttonModifier = Modifier.align(Alignment.CenterVertically)
+                        .background(CoreColors.background.mainColor, CircleShape)
+
+                    IconButton(
+                        modifier = buttonModifier
+                            .size(48.dp),
+                        onClick = {
+//                            onReaction(CardReaction.Return)
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(34.dp),
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "Return",
+                        )
+                    }
+                    Spacer(Modifier.width(15.dp))
+
+                    IconButton(
+                        modifier = buttonModifier
+                            .size(64.dp),
+                        onClick = { onReaction(CardReaction.Dislike) }
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(34.dp),
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Dislike",
+                        )
+                    }
+
+                    Spacer(Modifier.width(15.dp))
+
+                    IconButton(
+                        modifier = buttonModifier
+                            .size(64.dp),
+                        onClick = { onReaction(CardReaction.Like) }
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(34.dp),
+                            imageVector = Icons.Default.Favorite,
+                            tint = Color(color = 0xFF47C04C),
+                            contentDescription = "Like",
+                        )
+                    }
+
+                    Spacer(Modifier.width(15.dp))
+
+                    IconButton(
+                        modifier = buttonModifier
+                            .size(48.dp),
+                        onClick = {
+                            onReaction(CardReaction.SupperLike)
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(34.dp),
+                            imageVector = Icons.Default.Star,
+                            tint = Color(color = 0xFF6C2D85),
+                            contentDescription = "SuperLike",
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(20.dp))
+            }
+        }
     }
 }
+
+@Suppress("MagicNumber")
+private val gradientTopAlfa = listOf(0f, 0.3f, 0.8f).reversed()
+
+@Suppress("MagicNumber")
+private val gradientBottomAlfa = listOf(0f, 0.6f, 1f)

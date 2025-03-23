@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.fp.padabajka.core.presentation.State
 import com.fp.padabajka.core.repository.api.model.ads.PlatformNativeAd
 import com.fp.padabajka.core.repository.api.model.profile.Achievement
+import com.fp.padabajka.core.repository.api.model.profile.Age
 import com.fp.padabajka.core.repository.api.model.profile.AgeRange
 import com.fp.padabajka.core.repository.api.model.profile.Detail
 import com.fp.padabajka.core.repository.api.model.profile.Gender
@@ -17,7 +18,6 @@ import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.core.repository.api.model.swiper.SearchPreferences
 import com.fp.padabajka.feature.swiper.presentation.screen.CardDeck
 import kotlinx.collections.immutable.PersistentList
-import kotlinx.datetime.LocalDate
 
 @Immutable
 data class SwiperState(
@@ -53,7 +53,7 @@ data class PersonItem(
     val id: PersonId,
     val firstName: String,
     val lastName: String,
-    val birthday: LocalDate,
+    val age: Age,
     val images: PersistentList<Image>,
     val aboutMe: String,
     val details: PersistentList<Detail>,
@@ -75,7 +75,7 @@ fun Person.toUIPerson(): PersonItem {
             id,
             profile.firstName,
             profile.lastName,
-            profile.birthday,
+            profile.age,
             profile.images,
             profile.aboutMe,
             profile.details,

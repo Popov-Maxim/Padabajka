@@ -22,6 +22,6 @@ data class Profile(
             val timeZone = TimeZone.currentSystemDefault()
             val now = Clock.System.todayIn(timeZone)
 
-            return now.periodUntil(birthday).years.toAge()
+            return birthday.periodUntil(now).years.toAge()
         }
 } // TODO: add override equals()

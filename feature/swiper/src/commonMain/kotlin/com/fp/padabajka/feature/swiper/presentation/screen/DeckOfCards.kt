@@ -1,18 +1,14 @@
 package com.fp.padabajka.feature.swiper.presentation.screen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.Button
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetValue
@@ -23,27 +19,27 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.fp.padabajka.core.presentation.ui.font.PlayfairDisplay
 import com.fp.padabajka.feature.swiper.presentation.SwiperScreenComponent
 import com.fp.padabajka.feature.swiper.presentation.model.ApplySearchPrefEvent
 import com.fp.padabajka.feature.swiper.presentation.model.DislikeEvent
 import com.fp.padabajka.feature.swiper.presentation.model.EndOfCardAnimationEvent
 import com.fp.padabajka.feature.swiper.presentation.model.LikeEvent
+import com.fp.padabajka.feature.swiper.presentation.model.PersonItem
 import com.fp.padabajka.feature.swiper.presentation.model.SuperLikeEvent
+import com.fp.padabajka.feature.swiper.presentation.screen.card.CardReaction
 import com.fp.padabajka.feature.swiper.presentation.screen.search.ShearedPrefEditorDialog
-import com.fp.padabajka.feature.swiper.presentation.screen.setting.AppSettingsDialog
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DeckOfCards(swiperScreenComponent: SwiperScreenComponent) {
     val state by swiperScreenComponent.state.subscribeAsState()
@@ -51,27 +47,27 @@ fun DeckOfCards(swiperScreenComponent: SwiperScreenComponent) {
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
-    var showDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     Column {
-        Row(
-            modifier = Modifier.fillMaxWidth().height(50.dp).background(Color.Gray),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(onClick = {
-                scope.launch {
-                    sheetState.show()
-                }
-            }) {
-                Text(text = "Settings")
-            }
-
+        Box(modifier = Modifier.height(70.dp).fillMaxWidth()) {
+            Text(
+                modifier = Modifier.align(Alignment.Center),
+                text = "PADABAJKA",
+                letterSpacing = 36.sp / 10,
+                fontSize = 36.sp,
+                fontFamily = PlayfairDisplay,
+                fontWeight = FontWeight.Bold
+            )
             IconButton(
-                onClick = { showDialog = true },
+                onClick = {
+                    scope.launch {
+                        sheetState.show()
+                    }
+                },
                 modifier = Modifier
                     .fillMaxHeight().wrapContentWidth()
-                    .padding(8.dp)
+                    .padding(8.dp).align(Alignment.CenterEnd)
             ) {
                 Icon(
                     imageVector = Icons.Default.Settings,
@@ -88,10 +84,20 @@ fun DeckOfCards(swiperScreenComponent: SwiperScreenComponent) {
                 key(card) {
                     AnimationCard(
                         modifier = Modifier.fillMaxSize()
-                            .padding(horizontal = 30.dp, vertical = 100.dp)
+                            .padding(horizontal = 10.dp)
                             .zIndex((cards.size - i).toFloat()),
-                        content = @Composable {
-                            Card(card)
+                        content = @Composable { controller ->
+                            Card(
+                                modifier = Modifier.clip(RoundedCornerShape(50.dp)).fillMaxSize(),
+                                cardItem = card
+                            ) {
+                                when (it) {
+                                    CardReaction.Dislike -> controller.swipeLeft()
+                                    CardReaction.Like -> controller.swipeRight()
+                                    CardReaction.Return -> TODO()
+                                    CardReaction.SupperLike -> controller.swipeUp()
+                                }
+                            }
                         },
                         onSwipe = {
                             val reaction = when (it) {
@@ -99,6 +105,8 @@ fun DeckOfCards(swiperScreenComponent: SwiperScreenComponent) {
                                 Swipe.Right -> LikeEvent(card)
                                 Swipe.Up -> SuperLikeEvent(card)
                             }
+
+                            println("LOG: ${reaction::class.simpleName} ${(card as PersonItem).id}")
 
                             swiperScreenComponent.onEvent(reaction)
                         },
@@ -115,8 +123,4 @@ fun DeckOfCards(swiperScreenComponent: SwiperScreenComponent) {
         searchPreferences = state.searchPreferences,
         applyDiff = { newSearchPref -> swiperScreenComponent.onEvent(ApplySearchPrefEvent(newSearchPref)) }
     )
-
-    if (showDialog) {
-        AppSettingsDialog { showDialog = false }
-    }
 }

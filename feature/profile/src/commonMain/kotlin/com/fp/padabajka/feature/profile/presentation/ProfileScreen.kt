@@ -18,6 +18,9 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,10 +28,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.fp.padabajka.core.presentation.ui.CoreColors
+import com.fp.padabajka.core.presentation.ui.mainColor
+import com.fp.padabajka.core.presentation.ui.textColor
 import com.fp.padabajka.feature.profile.presentation.model.LogoutEvent
 import com.fp.padabajka.feature.profile.presentation.model.OpenEditorEvent
 import com.fp.padabajka.feature.profile.presentation.model.ProfileValue
 import com.fp.padabajka.feature.profile.presentation.model.UpdateProfileEvent
+import com.fp.padabajka.feature.profile.presentation.setting.AppSettingsDialog
 
 @Composable
 fun ProfileScreen(component: ProfileScreenComponent) {
@@ -65,6 +72,8 @@ private fun ErrorScreen(component: ProfileScreenComponent) {
             LogoutButton {
                 component.onEvent(LogoutEvent)
             }
+
+            AppSettingButton()
         }
     }
 }
@@ -123,16 +132,42 @@ private fun ProfileScreen(
         ) {
             component.onEvent(LogoutEvent)
         }
+
+        AppSettingButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
     }
 }
 
 @Composable
-fun LogoutButton(modifier: Modifier = Modifier, onLogout: () -> Unit) {
+private fun LogoutButton(modifier: Modifier = Modifier, onLogout: () -> Unit) {
     Button(
         onClick = onLogout,
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red),
         modifier = modifier
     ) {
         Text("Logout", color = Color.White)
+    }
+}
+
+@Composable
+private fun AppSettingButton(modifier: Modifier = Modifier) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    Button(
+        onClick = { showDialog = true },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = CoreColors.secondary.mainColor,
+            contentColor = CoreColors.secondary.textColor,
+        ),
+        modifier = modifier
+    ) {
+        Text("AppSettings")
+    }
+
+    if (showDialog) {
+        AppSettingsDialog { showDialog = false }
     }
 }

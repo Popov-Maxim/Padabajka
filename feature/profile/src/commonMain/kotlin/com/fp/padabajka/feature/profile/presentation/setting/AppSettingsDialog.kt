@@ -1,4 +1,4 @@
-package com.fp.padabajka.feature.swiper.presentation.screen.setting
+package com.fp.padabajka.feature.profile.presentation.setting
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
