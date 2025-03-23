@@ -5,6 +5,7 @@ import com.fp.padabajka.core.networking.di.networkingModule
 import com.fp.padabajka.core.presentation.di.presentationDiModules
 import com.fp.padabajka.feature.ads.di.adModules
 import com.fp.padabajka.feature.auth.di.authModules
+import com.fp.padabajka.feature.image.di.imageModules
 import com.fp.padabajka.feature.profile.di.profileModules
 import com.fp.padabajka.feature.swiper.di.swiperModules
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +32,7 @@ fun initKoin(platformModule: Module) {
             networkingModule,
             *domainDiModules,
             *presentationDiModules,
+            *imageModules,
             platformModule,
             applicationScopeModule
         )

@@ -22,6 +22,7 @@ import com.fp.padabajka.feature.profile.domain.update.MainAchievementUpdateUseCa
 import com.fp.padabajka.feature.profile.domain.update.MakeAchievementVisibleUseCase
 import com.fp.padabajka.feature.profile.presentation.ProfileScreenComponent
 import com.fp.padabajka.feature.profile.presentation.editor.ProfileEditorScreenComponent
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 private val dataModule = module {
@@ -71,11 +72,7 @@ private val domainModule = module {
         )
     }
 
-    factory<SaveProfileUseCase> {
-        SaveProfileUseCase(
-            profileRepository = get()
-        )
-    }
+    factoryOf(::SaveProfileUseCase)
 
     factory<FirstNameUpdateUseCase> {
         FirstNameUpdateUseCase(
@@ -129,6 +126,7 @@ private val presentationModule = module {
             context = parameters.get(),
             profileRepository = get(),
             saveProfileUseCaseFactory = { get() },
+            getLocalImageUseCaseFactory = { get() }
         )
     }
 }

@@ -13,3 +13,9 @@ fun ImageDto.toImage(): Image.Url {
         value = url
     )
 }
+
+fun Image.Url.toImageDto(): ImageDto {
+    return ImageDto(
+        url = value
+    )
+}
