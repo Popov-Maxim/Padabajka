@@ -20,12 +20,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.fp.padabajka.core.repository.api.model.profile.Age
 import com.fp.padabajka.core.repository.api.model.swiper.PersonId
 import com.fp.padabajka.feature.swiper.presentation.model.PersonItem
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDate
 
 @Suppress("LongMethod")
 @Composable
@@ -57,7 +57,7 @@ fun TestDeckOfCards() {
                     modifier = Modifier.height(300.dp).width(200.dp)
                         .zIndex((cards.size - i).toFloat()),
                     content = @Composable {
-                        Card(card)
+                        Card(cardItem = card) {}
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
@@ -97,7 +97,7 @@ private fun createPersonItem(index: Int): PersonItem {
         id = PersonId("index"),
         firstName = "firstName $index",
         lastName = "lastName $index",
-        birthday = LocalDate(year = 1990, monthNumber = 1, dayOfMonth = 1),
+        age = Age.minAge,
         images = persistentListOf(),
         aboutMe = "aboutMe $index",
         details = persistentListOf(),

@@ -180,7 +180,7 @@ SPEC CHECKSUMS:
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
-  shared: 6fe8113a773f409c4703b64115da9631fbf98288
+  shared: ea1b48c8c8e11c36a56dc66ca6ce1de7f3ab3f37
   VGSL_Fundamentals: 4a965a687c76a5a435d7aaeb6b7182e82408bf4c
   VGSL_Fundamentals_Tiny: feab274b20c5838fbe09b887db0f6cfa28e26a1c
   VGSLBase: 37b95dd4ea137f73e8f9a8bd8ec474d8b4d75a68
