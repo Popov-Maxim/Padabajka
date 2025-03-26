@@ -42,7 +42,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.fp.padabajka.feature.profile"
+    namespace = "com.padabajka.dating.feature.profile"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()
