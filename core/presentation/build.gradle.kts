@@ -52,7 +52,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.fp.padabajka.core.presentation"
+    namespace = "com.padabajka.dating.core.presentation"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()

@@ -56,7 +56,7 @@ mockmp {
 }
 
 android {
-    namespace = "com.fp.padabajka.feature.auth"
+    namespace = "com.padabajka.dating.feature.auth"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()

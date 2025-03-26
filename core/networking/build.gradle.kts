@@ -45,7 +45,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.fp.padabajka.core.networking"
+    namespace = "com.padabajka.dating.core.networking"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()

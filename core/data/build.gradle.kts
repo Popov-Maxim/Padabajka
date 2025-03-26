@@ -38,7 +38,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.fp.padabajka.core.data"
+    namespace = "com.padabajka.dating.core.data"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()

@@ -6,10 +6,10 @@ plugins {
 }
 
 android {
-    namespace = "com.fp.padabajka"
+    namespace = "com.padabajka.dating"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
-        applicationId = "com.fp.padabajka"
+        applicationId = "com.padabajka.dating"
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()
         targetSdk = libs.versions.projectConfig.targetSdk.get().toInt()
         versionCode = 1

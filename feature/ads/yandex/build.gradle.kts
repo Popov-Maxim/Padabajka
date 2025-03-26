@@ -53,7 +53,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.fp.padabajka.feature.ads.yandex"
+    namespace = "com.padabajka.dating.feature.ads.yandex"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()
