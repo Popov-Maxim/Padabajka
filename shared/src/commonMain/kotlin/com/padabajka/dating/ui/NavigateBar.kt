@@ -2,18 +2,15 @@ package com.padabajka.dating.ui
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
+import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
@@ -27,10 +24,10 @@ fun NavigateBar(
 //        .background(CoreColors.primary.mainColor).border(1.dp, Color.Black)
     ) {
         val iconData = persistentListOf(
-            Icons.Default.Menu.toIconData("Messenger") {},
-            Icons.Default.Favorite.toIconData("Likes") {},
-            Icons.Default.Search.toIconData("Swiper", openSwiper),
-            Icons.Default.Person.toIconData("Profile", openProfile)
+            CoreIcons.NavigationBar.Messenger.toIconData("Messenger") {},
+            CoreIcons.NavigationBar.Likes.toIconData("Likes") {},
+            CoreIcons.NavigationBar.Swiper.toIconData("Swiper", openSwiper),
+            CoreIcons.NavigationBar.Profile.toIconData("Profile", openProfile)
         ).toImmutableList()
         iconData.onEach {
             NavigationIcon(
@@ -38,8 +35,9 @@ fun NavigateBar(
                 onClick = it.onClick
             ) {
                 Icon(
-                    imageVector = it.imageVector,
-                    contentDescription = it.contentDescription,
+                    modifier = Modifier.size(30.dp),
+                    painter = it.painter,
+                    contentDescription = it.contentDescription
                 )
             }
         }
@@ -47,13 +45,13 @@ fun NavigateBar(
 }
 
 private data class IconData(
-    val imageVector: ImageVector,
+    val painter: Painter,
     val contentDescription: String?,
     val onClick: () -> Unit
 )
 
-private fun ImageVector.toIconData(contentDescription: String?, onClick: () -> Unit) = IconData(
-    imageVector = this,
+private fun Painter.toIconData(contentDescription: String?, onClick: () -> Unit) = IconData(
+    painter = this,
     contentDescription = contentDescription,
     onClick = onClick
 )

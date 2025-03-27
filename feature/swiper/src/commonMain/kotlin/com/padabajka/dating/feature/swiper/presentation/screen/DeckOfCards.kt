@@ -2,19 +2,16 @@ package com.padabajka.dating.feature.swiper.presentation.screen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
 import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
 import com.padabajka.dating.feature.swiper.presentation.model.ApplySearchPrefEvent
@@ -52,7 +50,9 @@ fun DeckOfCards(swiperScreenComponent: SwiperScreenComponent) {
     Column {
         Box(modifier = Modifier.height(70.dp).fillMaxWidth()) {
             Text(
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier
+                    .padding(bottom = 7.dp)
+                    .align(Alignment.Center),
                 text = "PADABAJKA",
                 letterSpacing = 36.sp / 10,
                 fontSize = 36.sp,
@@ -66,11 +66,12 @@ fun DeckOfCards(swiperScreenComponent: SwiperScreenComponent) {
                     }
                 },
                 modifier = Modifier
-                    .fillMaxHeight().wrapContentWidth()
-                    .padding(8.dp).align(Alignment.CenterEnd)
+                    .size(70.dp)
+                    .align(Alignment.CenterEnd)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Settings,
+                    modifier = Modifier.align(Alignment.Center).size(30.dp),
+                    painter = CoreIcons.SearchPref,
                     contentDescription = "Settings",
                 )
             }

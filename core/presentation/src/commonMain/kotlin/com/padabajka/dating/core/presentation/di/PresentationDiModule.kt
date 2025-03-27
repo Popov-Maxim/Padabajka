@@ -2,6 +2,7 @@ package com.padabajka.dating.core.presentation.di
 
 import coil3.ImageLoader
 import coil3.network.ktor2.KtorNetworkFetcherFactory
+import coil3.svg.SvgDecoder
 import coil3.util.DebugLogger
 import com.padabajka.dating.core.networking.imageEngine
 import io.ktor.client.HttpClient
@@ -18,6 +19,7 @@ private val presentationDiModule = module {
                         httpClient = HttpClient(engine = imageEngine)
                     )
                 )
+                add(SvgDecoder.Factory(scaleToDensity = true))
             }
             .build()
     }

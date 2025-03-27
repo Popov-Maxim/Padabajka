@@ -44,6 +44,7 @@ kotlin {
             api(libs.immutable.collections)
             api(libs.coil.compose)
             api(libs.coil.network.ktor)
+            api(libs.coil.svg)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -58,6 +58,7 @@ ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", 
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor2", version.ref = "coil-network" }
+coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil-network" }
 
 [plugins]
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
