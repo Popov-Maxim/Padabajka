@@ -55,9 +55,8 @@ class AuthScopeNavigateComponent(
     sealed interface Child {
         data class ProfileEditorScreen(val component: ProfileEditorScreenComponent) : Child
 
-        sealed interface MainScreen : Child
-        data class SwiperScreen(val component: SwiperScreenComponent) : MainScreen
-        class ProfileScreen(val component: ProfileScreenComponent) : MainScreen
+        data class SwiperScreen(val component: SwiperScreenComponent) : Child
+        data class ProfileScreen(val component: ProfileScreenComponent) : Child
     }
 
     @Serializable

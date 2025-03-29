@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.feature.profile.presentation.model.LogoutEvent
@@ -38,13 +39,17 @@ import com.padabajka.dating.feature.profile.presentation.model.UpdateProfileEven
 import com.padabajka.dating.feature.profile.presentation.setting.AppSettingsDialog
 
 @Composable
-fun ProfileScreen(component: ProfileScreenComponent) {
+fun ProfileScreen(component: ProfileScreenComponent, navigateBar: @Composable () -> Unit) {
     val state by component.state.subscribeAsState()
 
-    when (val profile = state.value) {
-        ProfileValue.Loading -> LoadingScreen()
-        is ProfileValue.Loaded -> ProfileScreen(component, profile)
-        ProfileValue.Error -> ErrorScreen(component)
+    CustomScaffold(
+        bottomBar = navigateBar,
+    ) {
+        when (val profile = state.value) {
+            ProfileValue.Loading -> LoadingScreen()
+            is ProfileValue.Loaded -> ProfileScreen(component, profile)
+            ProfileValue.Error -> ErrorScreen(component)
+        }
     }
 }
 
@@ -95,7 +100,7 @@ private fun ProfileScreen(
     Column {
         Column(
             modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(10.dp)
-                .clip(RoundedCornerShape(20.dp)).background(Color.White),
+                .clip(RoundedCornerShape(20.dp))
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth().height(140.dp)
