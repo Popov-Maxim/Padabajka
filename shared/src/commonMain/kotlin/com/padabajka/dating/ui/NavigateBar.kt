@@ -1,5 +1,6 @@
 package com.padabajka.dating.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -10,7 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
+import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
+import com.padabajka.dating.core.presentation.ui.mainColor
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
@@ -21,7 +24,7 @@ fun NavigateBar(
 ) {
     Row(
         modifier = Modifier.height(65.dp)
-//        .background(CoreColors.primary.mainColor).border(1.dp, Color.Black)
+            .background(CoreColors.background.mainColor)
     ) {
         val iconData = persistentListOf(
             CoreIcons.NavigationBar.Messenger.toIconData("Messenger") {},

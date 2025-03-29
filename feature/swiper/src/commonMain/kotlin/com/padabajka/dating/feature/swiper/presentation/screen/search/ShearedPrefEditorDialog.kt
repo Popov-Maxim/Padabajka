@@ -34,12 +34,16 @@ import kotlinx.coroutines.flow.collectIndexed
 fun ShearedPrefEditorDialog(
     sheetState: ModalBottomSheetState,
     searchPreferences: SearchPreferencesItem,
-    applyDiff: (SearchPreferencesItem) -> Unit
+    applyDiff: (SearchPreferencesItem) -> Unit,
+    context: @Composable () -> Unit = {}
 ) {
     var searchPreferencesItem by remember { mutableStateOf(searchPreferences) }
     val showReset = searchPreferencesItem != searchPreferences
 
     // Track sheet state changes
+    LaunchedEffect(searchPreferences) {
+        searchPreferencesItem = searchPreferences
+    }
     LaunchedEffect(sheetState, searchPreferencesItem) {
         snapshotFlow { sheetState.currentValue }.collectIndexed { index, value ->
             if (index != 0 && value == ModalBottomSheetValue.Hidden) {
@@ -49,7 +53,9 @@ fun ShearedPrefEditorDialog(
     }
 
     ModalBottomSheetLayout(
+        modifier = Modifier.fillMaxSize(),
         sheetState = sheetState,
+        sheetElevation = 0.dp,
         sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         sheetContent = {
             when (val searchPref = searchPreferencesItem) {
@@ -64,8 +70,9 @@ fun ShearedPrefEditorDialog(
                     searchPreferencesItem = it
                 }
             }
-        }
-    ) {}
+        },
+        content = context
+    )
 }
 
 @Composable
