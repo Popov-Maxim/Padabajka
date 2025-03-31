@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.RangeSlider
+import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -13,6 +14,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.repository.api.model.profile.Age
 import com.padabajka.dating.core.repository.api.model.profile.AgeRange
 import com.padabajka.dating.core.repository.api.model.profile.rangeTo
@@ -28,24 +31,33 @@ fun AgeRange(ageRange: AgeRange, update: (AgeRange) -> Unit) {
         sliderPosition = ageFloatRange
     }
 
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = "Age:",
+            modifier = Modifier.align(Alignment.CenterStart)
+        )
+
+        val minAge = sliderPosition.start.roundToInt()
+        val maxAge = sliderPosition.endInclusive.roundToInt()
+
+        val ageValues = "$minAge - $maxAge"
+        Text(
+            text = ageValues,
+            modifier = Modifier.align(Alignment.CenterEnd)
+        )
+    }
     RangeSlider(
         value = sliderPosition,
         onValueChange = { range ->
             sliderPosition = range
         },
         valueRange = maxAgeRange.toFloatRange(),
-        onValueChangeFinished = { update.invoke(sliderPosition.toAgeRange()) }
+        onValueChangeFinished = { update.invoke(sliderPosition.toAgeRange()) },
+        colors = SliderDefaults.colors(
+            thumbColor = CoreColors.secondary.mainColor,
+            activeTrackColor = CoreColors.secondary.mainColor,
+        )
     )
-    Box(Modifier.fillMaxWidth()) {
-        Text(
-            modifier = Modifier.align(Alignment.CenterStart),
-            text = sliderPosition.start.roundToInt().toString()
-        )
-        Text(
-            modifier = Modifier.align(Alignment.CenterEnd),
-            text = sliderPosition.endInclusive.roundToInt().toString()
-        )
-    }
 }
 
 private fun AgeRange.toFloatRange(): ClosedFloatingPointRange<Float> =

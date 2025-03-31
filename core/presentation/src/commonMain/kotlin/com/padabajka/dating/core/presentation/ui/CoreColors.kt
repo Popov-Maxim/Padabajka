@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 @Suppress("MagicNumber")
 object CoreColors {
-    private const val totalVariant: Long = 0x985353
+    private const val totalVariant: Long = 0x32985353
 
     val background = ColorGroup(
         0xFFFBFBFF,
