@@ -2,10 +2,8 @@ package com.padabajka.dating.feature.swiper.presentation.screen.search
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.RangeSlider
-import androidx.compose.material.SliderDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,7 +20,6 @@ import com.padabajka.dating.core.repository.api.model.profile.rangeTo
 import com.padabajka.dating.core.repository.api.model.profile.toAge
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AgeRange(ageRange: AgeRange, update: (AgeRange) -> Unit) {
     val ageFloatRange = ageRange.toFloatRange()
@@ -46,17 +43,18 @@ fun AgeRange(ageRange: AgeRange, update: (AgeRange) -> Unit) {
             modifier = Modifier.align(Alignment.CenterEnd)
         )
     }
-    RangeSlider(
+    val colors = SliderDefaults.colors(
+        thumbColor = CoreColors.secondary.mainColor,
+        activeTrackColor = CoreColors.secondary.mainColor,
+    )
+    CustomRangeSlider(
         value = sliderPosition,
         onValueChange = { range ->
             sliderPosition = range
         },
         valueRange = maxAgeRange.toFloatRange(),
         onValueChangeFinished = { update.invoke(sliderPosition.toAgeRange()) },
-        colors = SliderDefaults.colors(
-            thumbColor = CoreColors.secondary.mainColor,
-            activeTrackColor = CoreColors.secondary.mainColor,
-        )
+        colors = colors
     )
 }
 

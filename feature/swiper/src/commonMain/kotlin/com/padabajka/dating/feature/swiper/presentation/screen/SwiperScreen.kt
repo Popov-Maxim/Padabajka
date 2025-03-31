@@ -5,15 +5,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Text
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -28,18 +30,26 @@ import com.padabajka.dating.feature.swiper.presentation.model.ApplySearchPrefEve
 import com.padabajka.dating.feature.swiper.presentation.screen.search.ShearedPrefEditorDialog
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwiperScreen(
     swiperScreenComponent: SwiperScreenComponent,
     navigateBar: @Composable () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden
-    )
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     val state by swiperScreenComponent.state.subscribeAsState()
 
     CustomScaffold(
-        topBar = { TopBar(sheetState) },
+        topBar = {
+            TopBar {
+                scope.launch {
+                    showBottomSheet = true
+                }
+            }
+        },
         bottomBar = navigateBar
     ) {
         if (TEST_MODE) {
@@ -49,21 +59,24 @@ fun SwiperScreen(
         }
     }
 
-    ShearedPrefEditorDialog(
-        sheetState = sheetState,
-        searchPreferences = state.searchPreferences,
-        applyDiff = { newSearchPref ->
-            swiperScreenComponent.onEvent(ApplySearchPrefEvent(newSearchPref))
-        }
-    )
+    if (showBottomSheet) {
+        ShearedPrefEditorDialog(
+            sheetState = sheetState,
+            searchPreferences = state.searchPreferences,
+            applyDiff = { newSearchPref ->
+                swiperScreenComponent.onEvent(ApplySearchPrefEvent(newSearchPref))
+            },
+            onDismissRequest = {
+                showBottomSheet = false
+            }
+        )
+    }
 }
 
 @Composable
 private fun TopBar(
-    sheetState: ModalBottomSheetState
+    openShearedPrefEditor: () -> Unit
 ) {
-    val scope = rememberCoroutineScope()
-
     Box(modifier = Modifier.height(70.dp).fillMaxWidth()) {
         Text(
             modifier = Modifier
@@ -76,11 +89,7 @@ private fun TopBar(
             fontWeight = FontWeight.Bold
         )
         IconButton(
-            onClick = {
-                scope.launch {
-                    sheetState.show()
-                }
-            },
+            onClick = openShearedPrefEditor,
             modifier = Modifier
                 .size(70.dp)
                 .align(Alignment.CenterEnd)

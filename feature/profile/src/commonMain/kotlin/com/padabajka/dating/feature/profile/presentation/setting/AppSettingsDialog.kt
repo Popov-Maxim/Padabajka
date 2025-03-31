@@ -10,11 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.TextField
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,7 +42,7 @@ fun AppSettingsDialog(
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = MaterialTheme.shapes.large,
-            elevation = 8.dp,
+            tonalElevation = 8.dp,
             modifier = Modifier.padding(16.dp)
         ) {
             Column(
@@ -52,7 +52,7 @@ fun AppSettingsDialog(
             ) {
                 Text(
                     text = "App Settings",
-                    style = MaterialTheme.typography.h6,
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
@@ -73,7 +73,7 @@ fun AppSettingsDialog(
                     SelectedHost.entries.forEach { host ->
                         val isSelected = host == selectedHost
                         val backgroundColor =
-                            if (isSelected) MaterialTheme.colors.primary else Color.Unspecified
+                            if (isSelected) MaterialTheme.colorScheme.primary else Color.Unspecified
                         val textColor = if (isSelected) Color.White else Color.Unspecified
                         TextButton(
                             modifier = Modifier.background(backgroundColor),

@@ -43,7 +43,6 @@ android {
 dependencies {
     implementation(projects.shared)
     implementation(compose.ui)
-    implementation(compose.material)
     implementation(libs.androidx.activity.compose)
     implementation(libs.decompose)
 
