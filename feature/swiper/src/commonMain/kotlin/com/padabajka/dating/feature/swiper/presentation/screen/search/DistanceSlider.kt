@@ -2,9 +2,8 @@ package com.padabajka.dating.feature.swiper.presentation.screen.search
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Slider
-import androidx.compose.material.SliderDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,7 +34,7 @@ fun DistanceSlider(distanceInKm: Int, updateDistance: (Int) -> Unit) {
             modifier = Modifier.align(Alignment.CenterEnd)
         )
     }
-    Slider(
+    CustomSlider(
         value = distance,
         onValueChange = {
             distance = it

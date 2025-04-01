@@ -14,13 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,14 +35,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.feature.swiper.presentation.model.SearchPreferencesItem
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.collectIndexed
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShearedPrefEditorDialog(
-    sheetState: ModalBottomSheetState,
+    sheetState: SheetState,
     searchPreferences: SearchPreferencesItem,
     applyDiff: (SearchPreferencesItem) -> Unit,
-    context: @Composable () -> Unit = {}
+    onDismissRequest: () -> Unit,
 ) {
     var searchPreferencesItem by remember { mutableStateOf(searchPreferences) }
     val showReset = searchPreferencesItem != searchPreferences
@@ -52,33 +55,33 @@ fun ShearedPrefEditorDialog(
     }
     LaunchedEffect(sheetState, searchPreferencesItem) {
         snapshotFlow { sheetState.currentValue }.collectIndexed { index, value ->
-            if (index != 0 && value == ModalBottomSheetValue.Hidden) {
+            if (index != 0 && value == SheetValue.Hidden) {
                 applyDiff(searchPreferencesItem)
             }
         }
     }
 
-    ModalBottomSheetLayout(
+    ModalBottomSheet(
         modifier = Modifier.fillMaxSize(),
         sheetState = sheetState,
-        sheetElevation = 0.dp,
-        sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
-        sheetContent = {
-            when (val searchPref = searchPreferencesItem) {
-                SearchPreferencesItem.Loading -> {}
-                is SearchPreferencesItem.Success -> SearchPrefEditor(
-                    searchPreferences = searchPref,
-                    showReset = showReset,
-                    resetDiff = {
-                        searchPreferencesItem = searchPreferences
-                    }
-                ) {
-                    searchPreferencesItem = it
+        tonalElevation = 0.dp,
+        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+        onDismissRequest = onDismissRequest,
+        dragHandle = null // TODO add dragHandle
+    ) {
+        when (val searchPref = searchPreferencesItem) {
+            SearchPreferencesItem.Loading -> {}
+            is SearchPreferencesItem.Success -> SearchPrefEditor(
+                searchPreferences = searchPref,
+                showReset = showReset,
+                resetDiff = {
+                    searchPreferencesItem = searchPreferences
                 }
+            ) {
+                searchPreferencesItem = it
             }
-        },
-        content = context
-    )
+        }
+    }
 }
 
 @Composable
@@ -133,10 +136,10 @@ private fun SearchPrefEditor(
             .padding(horizontal = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        GendersSelector(searchPreferences.lookingGenders) {
+        GendersSelector(searchPreferences.lookingGenders.first()) {
             update.invoke(
                 searchPreferences.copy(
-                    lookingGenders = it
+                    lookingGenders = persistentListOf(it)
                 )
             )
         }

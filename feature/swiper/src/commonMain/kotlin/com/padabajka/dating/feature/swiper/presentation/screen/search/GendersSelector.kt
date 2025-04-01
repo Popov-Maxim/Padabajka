@@ -2,44 +2,50 @@ package com.padabajka.dating.feature.swiper.presentation.screen.search
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FilterChip
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.Icon
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.SingleChoiceSegmentedButtonRowScope
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import com.padabajka.dating.core.repository.api.model.profile.Gender
-import kotlinx.collections.immutable.PersistentList
 
 @Composable
 fun GendersSelector(
-    genders: PersistentList<Gender>,
-    update: (PersistentList<Gender>) -> Unit
+    selectedGender: Gender,
+    update: (Gender) -> Unit
 ) {
     Row(Modifier.fillMaxWidth()) {
-        Gender.entries.forEach { gender ->
-            GenderChip(
-                gender = gender,
-                selected = genders.any { it == gender },
-                select = { selected -> update.invoke(genders.add(selected)) },
-                unselect = { unselected -> update.invoke(genders.remove(unselected)) }
-            )
+        SingleChoiceSegmentedButtonRow {
+            val genders = Gender.entries
+            genders.forEachIndexed { index, gender ->
+                GenderSegment(
+                    gender = gender,
+                    shape = SegmentedButtonDefaults.itemShape(index = index, count = genders.size),
+                    selected = selectedGender == gender,
+                    select = { selected -> update.invoke(selected) },
+                    unselect = { unselected -> update.invoke(unselected) }
+                )
+            }
         }
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun GenderChip(
+private fun SingleChoiceSegmentedButtonRowScope.GenderSegment(
     gender: Gender,
+    shape: Shape,
     selected: Boolean,
     select: (Gender) -> Unit,
     unselect: (Gender) -> Unit
 ) {
-    FilterChip(
+    SegmentedButton(
         onClick = {
             val newSelected = selected.not()
             if (newSelected) {
@@ -49,7 +55,7 @@ private fun GenderChip(
             }
         },
         selected = selected,
-        leadingIcon = if (selected) {
+        icon = if (selected) {
             {
                 Icon(
                     imageVector = Icons.Filled.Done,
@@ -66,7 +72,9 @@ private fun GenderChip(
                 )
             }
         },
-    ) {
-        Text(gender.raw)
-    }
+        shape = shape,
+        label = {
+            Text(gender.raw)
+        }
+    )
 }

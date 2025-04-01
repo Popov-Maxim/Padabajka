@@ -12,10 +12,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -150,7 +150,7 @@ private fun ProfileScreen(
 private fun LogoutButton(modifier: Modifier = Modifier, onLogout: () -> Unit) {
     Button(
         onClick = onLogout,
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
         modifier = modifier
     ) {
         Text("Logout", color = Color.White)
@@ -164,7 +164,7 @@ private fun AppSettingButton(modifier: Modifier = Modifier) {
     Button(
         onClick = { showDialog = true },
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = CoreColors.secondary.mainColor,
+            containerColor = CoreColors.secondary.mainColor,
             contentColor = CoreColors.secondary.textColor,
         ),
         modifier = modifier
