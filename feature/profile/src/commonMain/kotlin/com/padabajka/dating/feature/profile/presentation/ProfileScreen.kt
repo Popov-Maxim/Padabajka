@@ -45,17 +45,34 @@ fun ProfileScreen(component: ProfileScreenComponent, navigateBar: @Composable ()
     CustomScaffold(
         bottomBar = navigateBar,
     ) {
-        when (val profile = state.value) {
-            ProfileValue.Loading -> LoadingScreen()
-            is ProfileValue.Loaded -> ProfileScreen(component, profile)
-            ProfileValue.Error -> ErrorScreen(component)
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column {
+                when (val profile = state.value) {
+                    ProfileValue.Loading -> LoadingScreen()
+                    is ProfileValue.Loaded -> ProfileScreen(component, profile)
+                    ProfileValue.Error -> ErrorScreen(component)
+                }
+                LogoutButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    component.onEvent(LogoutEvent)
+                }
+
+                AppSettingButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun ErrorScreen(component: ProfileScreenComponent) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier) {
         Column(
             modifier = Modifier.align(Alignment.Center).wrapContentWidth(),
         ) {
@@ -74,20 +91,15 @@ private fun ErrorScreen(component: ProfileScreenComponent) {
                     fontSize = 25.sp
                 )
             }
-            LogoutButton {
-                component.onEvent(LogoutEvent)
-            }
-
-            AppSettingButton()
         }
     }
 }
 
 @Composable
 private fun LoadingScreen() {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier) {
         CircularProgressIndicator(
-            modifier = Modifier.size(100.dp).align(Alignment.Center)
+            modifier = Modifier.size(140.dp).align(Alignment.Center)
         )
     }
 }
@@ -130,19 +142,6 @@ private fun ProfileScreen(
                 Text("Open Profile Editor")
             }
         }
-        LogoutButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            component.onEvent(LogoutEvent)
-        }
-
-        AppSettingButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        )
     }
 }
 
