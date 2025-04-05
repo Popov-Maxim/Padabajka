@@ -8,8 +8,7 @@ import kotlinx.datetime.periodUntil
 import kotlinx.datetime.todayIn
 
 data class Profile(
-    val firstName: String,
-    val lastName: String,
+    val name: String,
     val birthday: LocalDate,
     val images: PersistentList<Image>,
     val aboutMe: String,

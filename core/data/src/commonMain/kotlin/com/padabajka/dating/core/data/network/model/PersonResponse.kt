@@ -11,8 +11,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PersonResponse(
     val personId: PersonId,
-    val firstName: String,
-    val lastName: String,
+    val name: String,
     val birthday: String,
     val aboutMe: String,
     val images: List<ImageDto>
@@ -27,8 +26,7 @@ fun PersonResponse.toPerson(): Person {
 
 fun PersonResponse.toProfile(): Profile {
     return Profile(
-        firstName = firstName,
-        lastName = lastName,
+        name = name,
         birthday = LocalDate.parse(birthday),
         images = images.map { it.toImage() }.toPersistentList(),
         aboutMe = aboutMe,

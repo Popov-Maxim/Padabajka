@@ -17,7 +17,6 @@ import com.padabajka.dating.feature.profile.domain.SaveProfileUseCase
 import com.padabajka.dating.feature.profile.domain.update.AboutMeUpdateUseCase
 import com.padabajka.dating.feature.profile.domain.update.FirstNameUpdateUseCase
 import com.padabajka.dating.feature.profile.domain.update.HideAchievementUseCase
-import com.padabajka.dating.feature.profile.domain.update.LastNameUpdateUseCase
 import com.padabajka.dating.feature.profile.domain.update.MainAchievementUpdateUseCase
 import com.padabajka.dating.feature.profile.domain.update.MakeAchievementVisibleUseCase
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
@@ -76,12 +75,6 @@ private val domainModule = module {
 
     factory<FirstNameUpdateUseCase> {
         FirstNameUpdateUseCase(
-            repository = get()
-        )
-    }
-
-    factory<LastNameUpdateUseCase> {
-        LastNameUpdateUseCase(
             repository = get()
         )
     }

@@ -16,8 +16,7 @@ sealed interface ProfileValue {
     data object Error : ProfileValue
     data object Loading : ProfileValue
     data class Loaded(
-        val firstName: String,
-        val lastName: String,
+        val name: String,
         val birthday: LocalDate,
         val images: PersistentList<Image>,
         val aboutMe: String,
@@ -29,8 +28,7 @@ sealed interface ProfileValue {
 
 fun Profile.toUIProfileValue(): ProfileValue.Loaded {
     return ProfileValue.Loaded(
-        firstName,
-        lastName,
+        name,
         birthday,
         images,
         aboutMe,

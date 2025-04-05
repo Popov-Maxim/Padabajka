@@ -95,8 +95,7 @@ fun TestDeckOfCards() {
 private fun createPersonItem(index: Int): PersonItem {
     return PersonItem(
         id = PersonId("index"),
-        firstName = "firstName $index",
-        lastName = "lastName $index",
+        name = "Name $index",
         age = Age.minAge,
         images = persistentListOf(),
         aboutMe = "aboutMe $index",

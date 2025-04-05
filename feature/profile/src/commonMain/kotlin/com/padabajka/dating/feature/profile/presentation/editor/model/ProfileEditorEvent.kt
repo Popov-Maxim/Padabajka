@@ -8,10 +8,8 @@ sealed interface ProfileEditorEvent
 data object SaveProfileUpdatesClickEvent : ProfileEditorEvent
 data object DiscardProfileUpdatesClickEvent : ProfileEditorEvent
 
-data class FirstNameFieldUpdateEvent(val firstName: String) : ProfileEditorEvent
-data object FirstNameFieldLoosFocusEvent : ProfileEditorEvent
-data class LastNameFieldUpdateEvent(val lastName: String) : ProfileEditorEvent
-data object LastNameFieldLoosFocusEvent : ProfileEditorEvent
+data class NameFieldUpdateEvent(val name: String) : ProfileEditorEvent
+data object NameFieldLoosFocusEvent : ProfileEditorEvent
 data class AboutMeFieldUpdateEvent(val aboutMe: String) : ProfileEditorEvent
 data object AboutMeFieldLoosFocusEvent : ProfileEditorEvent
 

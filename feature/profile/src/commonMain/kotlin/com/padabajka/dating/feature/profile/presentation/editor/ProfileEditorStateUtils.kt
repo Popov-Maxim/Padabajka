@@ -38,12 +38,8 @@ fun ProfileEditorState.updateAboutMe(aboutMe: String): ProfileEditorState {
     return this.copy(aboutMe = this.aboutMe.updatedValue(aboutMe))
 }
 
-fun ProfileEditorState.updateLastName(lastName: String): ProfileEditorState {
-    return this.copy(lastName = this.lastName.updatedValue(lastName))
-}
-
-fun ProfileEditorState.updateFirstName(firstName: String): ProfileEditorState {
-    return this.copy(firstName = this.firstName.updatedValue(firstName))
+fun ProfileEditorState.updateName(name: String): ProfileEditorState {
+    return this.copy(name = this.name.updatedValue(name))
 }
 
 fun ProfileEditorState.addImage(image: Image): ProfileEditorState {
