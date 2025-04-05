@@ -10,6 +10,7 @@ import com.padabajka.dating.feature.profile.presentation.ProfileScreen
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreen
 import com.padabajka.dating.feature.swiper.presentation.screen.SwiperScreen
 import com.padabajka.dating.navigation.AuthScopeNavigateComponent
+import com.padabajka.dating.settings.presentation.SettingScreen
 
 @Composable
 fun AuthScopeScreen(component: AuthScopeNavigateComponent) {
@@ -28,13 +29,18 @@ fun AuthScopeScreen(component: AuthScopeNavigateComponent) {
         val instance = child.instance
         when (instance) {
             is AuthScopeNavigateComponent.Child.ProfileScreen ->
-                ProfileScreen(instance.component, navigateBar)
+                ProfileScreen(instance.component, navigateBar) {
+                    component.openSettings()
+                }
 
             is AuthScopeNavigateComponent.Child.SwiperScreen ->
                 SwiperScreen(instance.component, navigateBar)
 
             is AuthScopeNavigateComponent.Child.ProfileEditorScreen ->
                 ProfileEditorScreen(instance.component)
+
+            is AuthScopeNavigateComponent.Child.SettingScreen ->
+                SettingScreen(instance.component)
         }
     }
 }

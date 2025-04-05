@@ -54,7 +54,6 @@ fun GendersSelector(
     Box(
         Modifier.fillMaxWidth().height(40.dp).onGloballyPositioned {
             containerInPixels = it.size
-            println("LOG UI: $container")
         }.background(Color(color = 0x551B4564), RoundedCornerShape(20.dp))
     ) {
         if (container != DpSize.Zero) {

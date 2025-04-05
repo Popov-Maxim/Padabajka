@@ -2,6 +2,8 @@ package com.padabajka.dating.core.presentation.ui.drawable.icon
 
 import androidx.compose.runtime.Composable
 import com.padabajka.dating.core.presentation.ui.resource.CoreRes
+import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_left_icon
+import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_right_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.likes_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.message_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.profile_icon
@@ -31,4 +33,12 @@ object CoreIcons {
     val SearchPref
         @Composable
         get() = painterResource(CoreRes.svg.search_pref_icon)
+
+    val BackArrow
+        @Composable
+        get() = painterResource(CoreRes.svg.arrow_left_icon)
+
+    val RightArrow
+        @Composable
+        get() = painterResource(CoreRes.svg.arrow_right_icon)
 }

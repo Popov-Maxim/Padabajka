@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.profile.presentation.setting
+package com.padabajka.dating.settings.presentation.setting
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

@@ -23,3 +23,11 @@ internal val CoreRes.svg.profile_icon: String
 @OptIn(ExperimentalResourceApi::class)
 internal val CoreRes.svg.search_pref_icon: String
     get() = Res.getUri("drawable/search_pref_icon.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.arrow_left_icon: String
+    get() = Res.getUri("drawable/arrow_left_icon.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.arrow_right_icon: String
+    get() = Res.getUri("drawable/arrow_right_icon.svg")

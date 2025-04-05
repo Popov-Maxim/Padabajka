@@ -45,6 +45,7 @@ kotlin {
             implementation(projects.feature.swiper)
             implementation(projects.feature.match)
             implementation(projects.feature.messenger)
+            implementation(projects.feature.settings)
             implementation(projects.core.networking)
 
             implementation(libs.gitlive.firebase.auth)

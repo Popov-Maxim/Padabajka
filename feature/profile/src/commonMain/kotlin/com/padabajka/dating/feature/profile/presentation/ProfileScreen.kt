@@ -12,15 +12,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,51 +28,56 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
-import com.padabajka.dating.core.presentation.ui.mainColor
-import com.padabajka.dating.core.presentation.ui.textColor
-import com.padabajka.dating.feature.profile.presentation.model.LogoutEvent
+import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
 import com.padabajka.dating.feature.profile.presentation.model.OpenEditorEvent
 import com.padabajka.dating.feature.profile.presentation.model.ProfileValue
 import com.padabajka.dating.feature.profile.presentation.model.UpdateProfileEvent
-import com.padabajka.dating.feature.profile.presentation.setting.AppSettingsDialog
 
 @Composable
-fun ProfileScreen(component: ProfileScreenComponent, navigateBar: @Composable () -> Unit) {
+fun ProfileScreen(
+    component: ProfileScreenComponent,
+    navigateBar: @Composable () -> Unit,
+    openSettings: () -> Unit
+) {
     val state by component.state.subscribeAsState()
 
     CustomScaffold(
         bottomBar = navigateBar,
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column {
-                when (val profile = state.value) {
-                    ProfileValue.Loading -> LoadingScreen()
-                    is ProfileValue.Loaded -> ProfileScreen(component, profile)
-                    ProfileValue.Error -> ErrorScreen(component)
-                }
-                LogoutButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    component.onEvent(LogoutEvent)
-                }
-
-                AppSettingButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+        topBar = {
+            Box(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.CenterStart),
+                    text = "Profile",
+                    fontFamily = PlayfairDisplay,
+                    fontSize = 30.sp
                 )
+                IconButton(
+                    onClick = openSettings,
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = "settings"
+                    )
+                }
             }
+        }
+    ) {
+        when (val profile = state.value) {
+            ProfileValue.Loading -> LoadingScreen()
+            is ProfileValue.Loaded -> ProfileScreen(component, profile)
+            ProfileValue.Error -> ErrorScreen(component)
         }
     }
 }
 
 @Composable
 private fun ErrorScreen(component: ProfileScreenComponent) {
-    Box(modifier = Modifier) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.align(Alignment.Center).wrapContentWidth(),
         ) {
@@ -97,7 +102,7 @@ private fun ErrorScreen(component: ProfileScreenComponent) {
 
 @Composable
 private fun LoadingScreen() {
-    Box(modifier = Modifier) {
+    Box(modifier = Modifier.fillMaxSize()) {
         CircularProgressIndicator(
             modifier = Modifier.size(140.dp).align(Alignment.Center)
         )
@@ -142,36 +147,5 @@ private fun ProfileScreen(
                 Text("Open Profile Editor")
             }
         }
-    }
-}
-
-@Composable
-private fun LogoutButton(modifier: Modifier = Modifier, onLogout: () -> Unit) {
-    Button(
-        onClick = onLogout,
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-        modifier = modifier
-    ) {
-        Text("Logout", color = Color.White)
-    }
-}
-
-@Composable
-private fun AppSettingButton(modifier: Modifier = Modifier) {
-    var showDialog by remember { mutableStateOf(false) }
-
-    Button(
-        onClick = { showDialog = true },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = CoreColors.secondary.mainColor,
-            contentColor = CoreColors.secondary.textColor,
-        ),
-        modifier = modifier
-    ) {
-        Text("AppSettings")
-    }
-
-    if (showDialog) {
-        AppSettingsDialog { showDialog = false }
     }
 }
