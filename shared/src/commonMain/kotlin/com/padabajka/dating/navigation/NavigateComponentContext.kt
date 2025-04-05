@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.navigate
+import com.arkivanov.decompose.router.stack.pop
 import kotlinx.serialization.KSerializer
 import org.koin.core.component.KoinComponent
 
@@ -33,6 +34,10 @@ abstract class NavigateComponentContext<Config : Any, Child : Any> (
         navigation.navigate {
             listOf(configuration)
         }
+    }
+
+    protected fun navigateBack() {
+        navigation.pop()
     }
 
     protected abstract fun createChild(

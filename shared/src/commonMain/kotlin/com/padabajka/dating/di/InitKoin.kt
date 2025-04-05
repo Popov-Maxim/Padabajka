@@ -8,6 +8,7 @@ import com.padabajka.dating.feature.auth.di.authModules
 import com.padabajka.dating.feature.image.di.imageModules
 import com.padabajka.dating.feature.profile.di.profileModules
 import com.padabajka.dating.feature.swiper.di.swiperModules
+import com.padabajka.dating.settings.di.settingDiModules
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -33,6 +34,7 @@ fun initKoin(platformModule: Module) {
             *domainDiModules,
             *presentationDiModules,
             *imageModules,
+            *settingDiModules,
             platformModule,
             applicationScopeModule
         )
