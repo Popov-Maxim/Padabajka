@@ -16,14 +16,12 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFie
 import com.padabajka.dating.feature.profile.presentation.editor.model.ConsumeInternalErrorEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.DeleteImageEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.DiscardProfileUpdatesClickEvent
-import com.padabajka.dating.feature.profile.presentation.editor.model.FirstNameFieldLoosFocusEvent
-import com.padabajka.dating.feature.profile.presentation.editor.model.FirstNameFieldUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.HideAchievementClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ImageAddEvent
-import com.padabajka.dating.feature.profile.presentation.editor.model.LastNameFieldLoosFocusEvent
-import com.padabajka.dating.feature.profile.presentation.editor.model.LastNameFieldUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.MakeAchievementMainClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.MakeAchievementVisibleClickEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.NameFieldLoosFocusEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.NameFieldUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.NavigateBackEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorState
@@ -52,10 +50,8 @@ class ProfileEditorScreenComponent(
         when (event) {
             DiscardProfileUpdatesClickEvent -> discardUpdates()
             SaveProfileUpdatesClickEvent -> saveUpdates()
-            is FirstNameFieldUpdateEvent -> updateFirstName(event.firstName)
-            FirstNameFieldLoosFocusEvent -> trimFirstName()
-            is LastNameFieldUpdateEvent -> updateLastName(event.lastName)
-            LastNameFieldLoosFocusEvent -> trimLastName()
+            is NameFieldUpdateEvent -> updateName(event.name)
+            NameFieldLoosFocusEvent -> trimName()
             is AboutMeFieldUpdateEvent -> updateAboutMe(event.aboutMe)
             AboutMeFieldLoosFocusEvent -> trimAboutMe()
             is HideAchievementClickEvent -> hideAchievement(event.achievement)
@@ -118,28 +114,16 @@ class ProfileEditorScreenComponent(
             }
         )
 
-    private fun updateFirstName(firstName: String) {
+    private fun updateName(name: String) {
         reduce {
-            it.updateFirstName(firstName)
+            it.updateName(name)
         }
     }
 
-    private fun trimFirstName() {
-        val firstName = state.value.firstName.value
-        val trimmedFirstName = firstName.trim()
-        updateFirstName(trimmedFirstName)
-    }
-
-    private fun updateLastName(lastName: String) {
-        reduce {
-            it.updateLastName(lastName)
-        }
-    }
-
-    private fun trimLastName() {
-        val lastName = state.value.lastName.value
-        val trimmedLastName = lastName.trim()
-        updateLastName(trimmedLastName)
+    private fun trimName() {
+        val name = state.value.name.value
+        val trimmedName = name.trim()
+        updateName(trimmedName)
     }
 
     private fun updateAboutMe(aboutMe: String) {

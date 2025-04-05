@@ -51,8 +51,7 @@ data class NativeAdItem(
 @Immutable
 data class PersonItem(
     val id: PersonId,
-    val firstName: String,
-    val lastName: String,
+    val name: String,
     val age: Age,
     val images: PersistentList<Image>,
     val aboutMe: String,
@@ -73,8 +72,7 @@ fun Person.toUIPerson(): PersonItem {
     return this.run {
         PersonItem(
             id,
-            profile.firstName,
-            profile.lastName,
+            profile.name,
             profile.age,
             profile.images,
             profile.aboutMe,

@@ -150,11 +150,11 @@ private fun ProfileScreen(
                         verticalArrangement = Arrangement.spacedBy(5.dp)
                     ) {
                         Text(
-                            text = profile.firstName,
+                            text = profile.name,
                             fontSize = 26.sp
                         )
                         Text(
-                            text = profile.lastName,
+                            text = "Looking for",
                         )
                     }
                 }

@@ -18,8 +18,7 @@ class RemoveProfileDataSourceImpl(
     }
 
     override suspend fun replace(current: Profile?, newProfile: Profile) {
-        val firstName = fieldForUpdate(current, newProfile, Profile::firstName)
-        val lastName = fieldForUpdate(current, newProfile, Profile::lastName)
+        val name = fieldForUpdate(current, newProfile, Profile::name)
         val birthday = fieldForUpdate(current, newProfile, Profile::birthday)?.toString()
         val aboutMe = fieldForUpdate(current, newProfile, Profile::aboutMe)
         // TODO(Image): need use only Image.Url in this code?
@@ -27,8 +26,7 @@ class RemoveProfileDataSourceImpl(
             ?.filterIsInstance<Image.Url>()
             ?.map { it.toImageDto() }
         val parameters = mapOfNotNull(
-            ProfileApi.PatchParams.Key.FirstName to firstName,
-            ProfileApi.PatchParams.Key.LastName to lastName,
+            ProfileApi.PatchParams.Key.Name to name,
             ProfileApi.PatchParams.Key.Birthday to birthday,
             ProfileApi.PatchParams.Key.AboutMe to aboutMe,
             ProfileApi.PatchParams.Key.Images to images?.serializeToString()

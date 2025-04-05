@@ -110,7 +110,7 @@ private fun PersonCard(
             Column(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
                 val textColor = Color.White
                 Text(
-                    text = "${personItem.firstName}, ${personItem.age.raw}",
+                    text = "${personItem.name}, ${personItem.age.raw}",
                     fontSize = 26.sp,
                     color = textColor
                 )

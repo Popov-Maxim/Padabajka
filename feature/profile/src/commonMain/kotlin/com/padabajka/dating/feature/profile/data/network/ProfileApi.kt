@@ -10,8 +10,7 @@ interface ProfileApi {
     @JvmInline
     value class PatchParams(val raw: Map<Key, String>) {
         enum class Key(val raw: String) {
-            FirstName("first_name"),
-            LastName("last_name"),
+            Name("name"),
             Birthday("birthday"),
             AboutMe("about_me"),
             Images("images"),

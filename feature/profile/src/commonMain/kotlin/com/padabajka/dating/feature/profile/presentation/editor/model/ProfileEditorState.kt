@@ -13,8 +13,7 @@ import kotlinx.datetime.LocalDate
 
 @Immutable
 data class ProfileEditorState(
-    val firstName: ProfileField<String>,
-    val lastName: ProfileField<String>,
+    val name: ProfileField<String>,
     val birthday: ProfileField<LocalDate>,
     val images: ProfileField<PersistentList<Image>>,
     val aboutMe: ProfileField<String>,
@@ -25,8 +24,7 @@ data class ProfileEditorState(
 ) : State {
 
     fun updated(profile: Profile): ProfileEditorState = copy(
-        firstName = firstName.copy(value = profile.firstName),
-        lastName = lastName.copy(value = profile.lastName),
+        name = name.copy(value = profile.name),
         birthday = birthday.copy(value = profile.birthday),
         images = images.copy(value = profile.images),
         aboutMe = aboutMe.copy(value = profile.aboutMe),
@@ -50,8 +48,7 @@ data class Issue(
 
 fun Profile.toEditorState(): ProfileEditorState {
     return ProfileEditorState(
-        firstName = firstName.toField(),
-        lastName = lastName.toField(),
+        name = name.toField(),
         birthday = birthday.toField(),
         images = images.toField(),
         aboutMe = aboutMe.toField(),
@@ -62,8 +59,7 @@ fun Profile.toEditorState(): ProfileEditorState {
 }
 
 fun Profile.updated(state: ProfileEditorState) = copy(
-    firstName = state.firstName.value,
-    lastName = state.lastName.value,
+    name = state.name.value,
     birthday = state.birthday.value,
     images = state.images.value,
     aboutMe = state.aboutMe.value,

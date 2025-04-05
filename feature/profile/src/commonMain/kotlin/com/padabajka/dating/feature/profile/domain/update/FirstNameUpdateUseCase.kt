@@ -11,7 +11,7 @@ class FirstNameUpdateUseCase(private val repository: DraftProfileRepository) {
     suspend operator fun invoke(firstName: String) {
         repository.update { profile ->
             profile.copy(
-                firstName = firstName
+                name = firstName
             )
         }
     }
