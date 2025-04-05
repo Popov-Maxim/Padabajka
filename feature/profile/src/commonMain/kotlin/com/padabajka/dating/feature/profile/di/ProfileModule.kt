@@ -124,6 +124,7 @@ private val presentationModule = module {
     factory<ProfileEditorScreenComponent> { parameters ->
         ProfileEditorScreenComponent(
             context = parameters.get(),
+            navigateBack = parameters.get(),
             profileRepository = get(),
             saveProfileUseCaseFactory = { get() },
             getLocalImageUseCaseFactory = { get() }

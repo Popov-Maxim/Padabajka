@@ -1,11 +1,13 @@
 package com.padabajka.dating.core.presentation.ui
 
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Shape
 
 @Suppress("UnusedParameter")
 @Composable
@@ -15,13 +17,16 @@ fun TextInputField(
     onChange: (String) -> Unit,
     onFocusLost: () -> Unit = {},
     isError: Boolean = false,
+    singleLine: Boolean = true,
+    shape: Shape = TextFieldDefaults.shape,
     modifier: Modifier = Modifier
 ) {
     val wasFocused = remember { mutableStateOf(false) }
     TextField(
         value = text,
         onValueChange = onChange,
-        singleLine = true,
+        singleLine = singleLine,
+        shape = shape,
         isError = isError,
         modifier = modifier.onFocusChanged {
             if (!it.isFocused && wasFocused.value) {

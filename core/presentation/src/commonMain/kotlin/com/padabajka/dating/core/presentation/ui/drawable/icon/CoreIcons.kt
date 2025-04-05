@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.padabajka.dating.core.presentation.ui.resource.CoreRes
 import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_left_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_right_icon
+import com.padabajka.dating.core.presentation.ui.resource.drawable.camera_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.likes_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.message_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.profile_icon
@@ -41,4 +42,10 @@ object CoreIcons {
     val RightArrow
         @Composable
         get() = painterResource(CoreRes.svg.arrow_right_icon)
+
+    object Editor {
+        val Camera
+            @Composable
+            get() = painterResource(CoreRes.svg.camera_icon)
+    }
 }
