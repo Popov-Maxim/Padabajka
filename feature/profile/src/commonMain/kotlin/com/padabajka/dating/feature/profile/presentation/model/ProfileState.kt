@@ -4,6 +4,7 @@ import com.padabajka.dating.core.presentation.State
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Detail
 import com.padabajka.dating.core.repository.api.model.profile.Image
+import com.padabajka.dating.core.repository.api.model.profile.LockingForData
 import com.padabajka.dating.core.repository.api.model.profile.Profile
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.datetime.LocalDate
@@ -20,6 +21,7 @@ sealed interface ProfileValue {
         val birthday: LocalDate,
         val images: PersistentList<Image>,
         val aboutMe: String,
+        val lockingFor: LockingForData,
         val details: PersistentList<Detail>,
         val mainAchievement: Achievement?,
         val achievements: PersistentList<Achievement>
@@ -32,6 +34,7 @@ fun Profile.toUIProfileValue(): ProfileValue.Loaded {
         birthday,
         images,
         aboutMe,
+        lockingFor,
         details,
         mainAchievement,
         achievements

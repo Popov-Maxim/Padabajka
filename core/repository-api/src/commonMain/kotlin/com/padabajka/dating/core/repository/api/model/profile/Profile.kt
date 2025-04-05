@@ -12,7 +12,9 @@ data class Profile(
     val birthday: LocalDate,
     val images: PersistentList<Image>,
     val aboutMe: String,
+    val lockingFor: LockingForData,
     val details: PersistentList<Detail>,
+    // val attitudes: List<> TODO(Response): add attitudes
     val mainAchievement: Achievement?,
     val achievements: PersistentList<Achievement>
 ) {
@@ -24,3 +26,11 @@ data class Profile(
             return birthday.periodUntil(now).years.toAge()
         }
 } // TODO: add override equals()
+
+val LocalDate.age: Age
+    get() {
+        val timeZone = TimeZone.currentSystemDefault()
+        val now = Clock.System.todayIn(timeZone)
+
+        return this.periodUntil(now).years.toAge()
+    }
