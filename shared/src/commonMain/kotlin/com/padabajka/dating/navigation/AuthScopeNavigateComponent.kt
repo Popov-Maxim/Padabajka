@@ -51,7 +51,10 @@ class AuthScopeNavigateComponent(
 
             Configuration.ProfileEditorScreen -> Child.ProfileEditorScreen(
                 component = get {
-                    parametersOf(context)
+                    parametersOf(
+                        context,
+                        ::navigateBack
+                    )
                 }
             )
 

@@ -1,16 +1,17 @@
 package com.padabajka.dating.feature.profile.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -25,14 +26,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.ImageLoader
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
+import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
+import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.profile.presentation.model.OpenEditorEvent
 import com.padabajka.dating.feature.profile.presentation.model.ProfileValue
 import com.padabajka.dating.feature.profile.presentation.model.UpdateProfileEvent
+import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ProfileScreen(
@@ -114,38 +124,68 @@ private fun ProfileScreen(
     component: ProfileScreenComponent,
     profile: ProfileValue.Loaded
 ) {
-    Column {
-        Column(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(10.dp)
-                .clip(RoundedCornerShape(20.dp))
+    Column(modifier = Modifier.padding(horizontal = 15.dp)) {
+        Box(
+            modifier = Modifier
+                .innerShadow(
+                    color = Color(color = 0xFFA1A1A1),
+                    shape = RoundedCornerShape(20.dp)
+                )
         ) {
-            Box(
-                modifier = Modifier.fillMaxWidth().height(140.dp)
+            Column(
+                modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                    .padding(vertical = 20.dp, horizontal = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                Row(modifier = Modifier.fillMaxSize().padding(20.dp)) {
-                    Box(modifier = Modifier.size(100.dp).background(Color.LightGray))
-                    Column(modifier = Modifier.padding(start = 20.dp)) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    ProfileAvatar(
+                        model = profile.images.first().raw(),
+                        size = 100.dp
+                    )
+                    Column(
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        verticalArrangement = Arrangement.spacedBy(5.dp)
+                    ) {
                         Text(
                             text = profile.firstName,
-                            modifier = Modifier.weight(1f)
+                            fontSize = 26.sp
                         )
                         Text(
                             text = profile.lastName,
-                            modifier = Modifier.weight(1f)
                         )
                     }
                 }
-            }
-            Button(
-                onClick = { component.onEvent(OpenEditorEvent) },
-                modifier = Modifier.fillMaxWidth().padding(
-                    start = 20.dp,
-                    end = 20.dp,
-                    bottom = 20.dp
-                )
-            ) {
-                Text("Open Profile Editor")
+                Button(
+                    onClick = { component.onEvent(OpenEditorEvent) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Open Profile Editor")
+                }
             }
         }
     }
+}
+
+@Composable
+private fun ProfileAvatar(
+    model: Any?,
+    size: Dp,
+) {
+    val context = LocalPlatformContext.current
+    val imageLoader: ImageLoader = koinInject { parametersOf(context) }
+
+    val imageShape = CircleShape
+    AsyncImage(
+        model = model,
+        modifier = Modifier.background(
+            color = Color.DarkGray,
+            shape = imageShape
+        ).size(size).clip(imageShape),
+        imageLoader = imageLoader,
+        contentDescription = null,
+        contentScale = ContentScale.Crop
+    )
 }

@@ -14,6 +14,7 @@ import com.padabajka.dating.feature.profile.domain.SaveProfileUseCase
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldLoosFocusEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ConsumeInternalErrorEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.DeleteImageEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.DiscardProfileUpdatesClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.FirstNameFieldLoosFocusEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.FirstNameFieldUpdateEvent
@@ -23,6 +24,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.LastNameFi
 import com.padabajka.dating.feature.profile.presentation.editor.model.LastNameFieldUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.MakeAchievementMainClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.MakeAchievementVisibleClickEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.NavigateBackEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorState
 import com.padabajka.dating.feature.profile.presentation.editor.model.RemoveMainAchievementClickEvent
@@ -33,6 +35,7 @@ import com.padabajka.dating.feature.profile.presentation.model.InternalError
 
 class ProfileEditorScreenComponent(
     context: ComponentContext,
+    private val navigateBack: () -> Unit,
     private val profileRepository: ProfileRepository,
     saveProfileUseCaseFactory: Factory<SaveProfileUseCase>,
     getLocalImageUseCaseFactory: Factory<GetLocalImageUseCase>
@@ -62,6 +65,8 @@ class ProfileEditorScreenComponent(
             is ImageAddEvent -> addImage(event.image)
             ConsumeInternalErrorEvent -> consumeInternalError()
             // TODO: add details and images events
+            NavigateBackEvent -> navigateBack()
+            is DeleteImageEvent -> deleteImage(event.image)
         }
     }
 
@@ -157,6 +162,10 @@ class ProfileEditorScreenComponent(
         mapper = { TODO(it.toString()) },
         update = { state, _ -> state }
     )
+
+    private fun deleteImage(image: Image) = reduce {
+        it.deleteImage(image)
+    }
 
     private fun trimAboutMe() {
         val aboutMe = state.value.aboutMe.value

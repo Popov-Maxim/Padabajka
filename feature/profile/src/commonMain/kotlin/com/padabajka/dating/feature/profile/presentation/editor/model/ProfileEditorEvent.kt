@@ -16,10 +16,13 @@ data class AboutMeFieldUpdateEvent(val aboutMe: String) : ProfileEditorEvent
 data object AboutMeFieldLoosFocusEvent : ProfileEditorEvent
 
 data class ImageAddEvent(val image: Image) : ProfileEditorEvent
+data class DeleteImageEvent(val image: Image) : ProfileEditorEvent
 
 data class HideAchievementClickEvent(val achievement: Achievement) : ProfileEditorEvent
 data class MakeAchievementVisibleClickEvent(val achievement: Achievement) : ProfileEditorEvent
 data class MakeAchievementMainClickEvent(val achievement: Achievement) : ProfileEditorEvent
 data object RemoveMainAchievementClickEvent : ProfileEditorEvent
+
+data object NavigateBackEvent : ProfileEditorEvent
 
 data object ConsumeInternalErrorEvent : ProfileEditorEvent

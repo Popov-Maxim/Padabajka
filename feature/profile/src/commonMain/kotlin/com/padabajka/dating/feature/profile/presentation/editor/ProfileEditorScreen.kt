@@ -1,42 +1,60 @@
 package com.padabajka.dating.feature.profile.presentation.editor
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.TextInputField
+import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
+import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
+import com.padabajka.dating.core.presentation.ui.mainColor
+import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
+import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.image.rememberImagePicker
+import com.padabajka.dating.feature.profile.presentation.editor.dialog.EditImageDialog
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldUpdateEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.DeleteImageEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.DiscardProfileUpdatesClickEvent
-import com.padabajka.dating.feature.profile.presentation.editor.model.FirstNameFieldUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ImageAddEvent
-import com.padabajka.dating.feature.profile.presentation.editor.model.LastNameFieldUpdateEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.NavigateBackEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.SaveProfileUpdatesClickEvent
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
@@ -44,63 +62,46 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
     val state by component.state.subscribeAsState()
-    Column {
-        val firstName = state.firstName.value
-        val modifier = Modifier.height(70.dp).padding(10.dp)
-        TextEditField(
-            text = firstName,
-            label = "First Name",
-            onChange = {
-                component.onEvent(FirstNameFieldUpdateEvent(it))
-            },
-            modifier = modifier
-        )
-        Spacer(modifier = Modifier.height(40.dp))
-
-        val lastName = state.lastName.value
-        TextEditField(
-            text = lastName,
-            label = "Last Name",
-            onChange = {
-                component.onEvent(LastNameFieldUpdateEvent(it))
-            },
-            modifier = modifier
-        )
-        Spacer(modifier = Modifier.height(40.dp))
-
-        val aboutMe = state.aboutMe.value
-        TextEditField(
-            text = aboutMe,
-            label = "About Me",
-            onChange = {
-                component.onEvent(AboutMeFieldUpdateEvent(it))
-            },
-            modifier = modifier
-        )
-
-        ImageFields(images = state.images.value, component = component)
-
-        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-            Button(
-                modifier = Modifier.padding(10.dp),
-                onClick = {
-                    component.onEvent(DiscardProfileUpdatesClickEvent)
-                }
-            ) {
-                Text(
-                    text = "Сбросить"
-                )
+    CustomScaffold(
+        topBar = { TopBar(component::onEvent) }
+    ) {
+        Column {
+            Box(modifier = Modifier.padding(10.dp)) {
+                ImageFields(images = state.images.value, component = component)
             }
 
-            Button(
-                modifier = Modifier.padding(10.dp),
-                onClick = {
-                    component.onEvent(SaveProfileUpdatesClickEvent)
+            val aboutMe = state.aboutMe.value
+            TextEditField(
+                modifier = Modifier.padding(20.dp),
+                text = aboutMe,
+                label = "Bio",
+                onChange = {
+                    component.onEvent(AboutMeFieldUpdateEvent(it))
+                },
+            )
+
+            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Button(
+                    modifier = Modifier.padding(10.dp),
+                    onClick = {
+                        component.onEvent(DiscardProfileUpdatesClickEvent)
+                    }
+                ) {
+                    Text(
+                        text = "Сбросить"
+                    )
                 }
-            ) {
-                Text(
-                    text = "Принять"
-                )
+
+                Button(
+                    modifier = Modifier.padding(10.dp),
+                    onClick = {
+                        component.onEvent(SaveProfileUpdatesClickEvent)
+                    }
+                ) {
+                    Text(
+                        text = "Принять"
+                    )
+                }
             }
         }
     }
@@ -111,28 +112,26 @@ private fun ImageFields(
     images: List<Image>,
     component: ProfileEditorScreenComponent
 ) {
-    val context = LocalPlatformContext.current
-    val imageLoader: ImageLoader = koinInject { parametersOf(context) }
-
     val matrix = (0 until MAX_IMAGE).chunked(COLUMNS_COUNT)
-    Column {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
         matrix.onEach { line ->
-            Row {
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 line.onEach { i ->
                     val image = images.getOrNull(i)
 
-                    val fieldModifier = Modifier.weight(1f).height(200.dp).padding(1.dp)
+                    val fieldModifier = Modifier.weight(1f).aspectRatio(ratio = 2.0f / 3)
+                        .clip(RoundedCornerShape(10.dp))
                     if (image != null) {
-                        AsyncImage(
-                            modifier = fieldModifier.background(Color.DarkGray),
-                            imageLoader = imageLoader,
-                            model = image.raw(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop
-                        )
+                        ProfileImage(fieldModifier, image, component::onEvent)
                     } else {
                         ImageField(
-                            modifier = fieldModifier.background(Color.DarkGray.copy(alpha = 0.5f)),
+                            modifier = fieldModifier.background(Color(color = 0xFFD9D9D9))
+                                .innerShadow(
+                                    color = Color(color = 0xFFA1A1A1),
+                                    shape = RoundedCornerShape(10.dp)
+                                ),
                         ) {
                             component.onEvent(ImageAddEvent(it))
                         }
@@ -140,6 +139,39 @@ private fun ImageFields(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ProfileImage(modifier: Modifier, image: Image, onEvent: (ProfileEditorEvent) -> Unit) {
+    val context = LocalPlatformContext.current
+    val imageLoader: ImageLoader = koinInject { parametersOf(context) }
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = modifier.clickable {
+            showDialog = true
+        }
+    ) {
+        AsyncImage(
+            modifier = Modifier.background(Color.DarkGray),
+            imageLoader = imageLoader,
+            model = image.raw(),
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
+    }
+
+    if (showDialog) {
+        EditImageDialog(
+            delete = {
+                onEvent(DeleteImageEvent(image))
+            },
+            onDismissRequest = {
+                showDialog = false
+            }
+        )
     }
 }
 
@@ -153,17 +185,19 @@ private fun ImageField(
             onChange(it)
         }
     }
-    IconButton(
-        onClick = {
-            MainScope().launch {
+    val coroutineScope = rememberCoroutineScope()
+    Box(
+        modifier = modifier.clickable {
+            coroutineScope.launch {
                 imagePicker.pickImage()
             }
-        },
-        modifier = modifier
+        }
     ) {
         Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = "Settings",
+            modifier = Modifier.size(50.dp).align(Alignment.Center),
+            tint = CoreColors.background.mainColor,
+            painter = CoreIcons.Editor.Camera,
+            contentDescription = "Add camera",
         )
     }
 }
@@ -175,19 +209,53 @@ private fun TextEditField(
     onChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(modifier) {
-        Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
-            Text(
-                text = label,
-                modifier = Modifier.wrapContentSize().align(Alignment.CenterStart)
-            )
-        }
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
+        Text(
+            text = label,
+            fontSize = 20.sp,
+            modifier = Modifier.wrapContentSize().align(Alignment.Start)
+        )
         TextInputField(
             text = text,
             hint = "",
             onChange = onChange,
-            modifier = Modifier.weight(2f).fillMaxHeight()
+            singleLine = false,
+            shape = RoundedCornerShape(20.dp),
+            modifier = Modifier.height(125.dp).fillMaxWidth()
         )
+    }
+}
+
+@Composable
+private fun TopBar(onEvent: (ProfileEditorEvent) -> Unit) {
+    Box(
+        modifier = Modifier.background(CoreColors.background.mainColor)
+            .padding(vertical = 10.dp, horizontal = 10.dp)
+    ) {
+        Row(
+            modifier = Modifier.align(Alignment.CenterStart),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = { onEvent(NavigateBackEvent) },
+            ) {
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    painter = CoreIcons.BackArrow,
+                    contentDescription = "Back",
+                )
+            }
+            Spacer(modifier = Modifier.width(5.dp))
+            Text(
+                text = "Editor",
+                fontSize = 30.sp,
+                color = CoreColors.background.textColor,
+                fontFamily = PlayfairDisplay
+            )
+        }
     }
 }
 

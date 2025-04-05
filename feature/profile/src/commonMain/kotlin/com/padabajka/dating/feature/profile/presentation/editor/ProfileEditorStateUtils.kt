@@ -49,3 +49,7 @@ fun ProfileEditorState.updateFirstName(firstName: String): ProfileEditorState {
 fun ProfileEditorState.addImage(image: Image): ProfileEditorState {
     return this.copy(images = this.images.updatedValue { it.add(image) })
 }
+
+fun ProfileEditorState.deleteImage(image: Image): ProfileEditorState {
+    return this.copy(images = this.images.updatedValue { it.remove(image) })
+}
