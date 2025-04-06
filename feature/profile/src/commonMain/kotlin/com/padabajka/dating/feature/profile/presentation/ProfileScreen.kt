@@ -27,6 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,9 +36,14 @@ import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
+import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
+import com.padabajka.dating.core.presentation.ui.textColor
+import com.padabajka.dating.core.presentation.ui.toDpSize
+import com.padabajka.dating.core.repository.api.model.profile.age
 import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.profile.presentation.model.OpenEditorEvent
 import com.padabajka.dating.feature.profile.presentation.model.ProfileValue
@@ -147,15 +154,29 @@ private fun ProfileScreen(
                     )
                     Column(
                         modifier = Modifier.align(Alignment.CenterVertically),
-                        verticalArrangement = Arrangement.spacedBy(5.dp)
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
+                        val nameWithAge = "${profile.name}, ${profile.birthday.age.raw}"
                         Text(
-                            text = profile.name,
+                            text = nameWithAge,
                             fontSize = 26.sp
                         )
-                        Text(
-                            text = "Looking for",
-                        )
+                        val density = LocalDensity.current.density
+
+                        Box(
+                            modifier = Modifier
+                                .background(color = CoreColors.secondary.mainColor, shape = RoundedCornerShape(10.dp))
+                                .onGloballyPositioned {
+                                    println("LOG UI: ${it.size.toDpSize(density)}")
+                                }
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(horizontal = 15.dp, vertical = 2.dp),
+                                text = profile.lockingFor.type.id.raw,
+                                fontSize = 15.sp,
+                                color = CoreColors.secondary.textColor
+                            )
+                        }
                     }
                 }
                 Button(
