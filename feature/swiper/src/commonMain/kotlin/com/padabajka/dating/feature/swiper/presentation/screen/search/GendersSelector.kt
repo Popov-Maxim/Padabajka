@@ -31,17 +31,18 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.presentation.ui.toDpSize
-import com.padabajka.dating.core.repository.api.model.profile.Gender
+import com.padabajka.dating.feature.swiper.presentation.model.GenderUI
 
 @Composable
 fun GendersSelector(
-    selectedGender: Gender,
-    update: (Gender) -> Unit
+    selectedGender: GenderUI,
+    update: (GenderUI) -> Unit
 ) {
-    val genders = Gender.entries
+    val genders = GenderUI.entries
     val selectedIndex = genders.indexOf(selectedGender)
 
     var containerInPixels by remember { mutableStateOf(IntSize(0, 0)) }
@@ -86,11 +87,11 @@ fun GendersSelector(
 
 @Composable
 private fun SingleChoiceSegmentedButtonRowScope.GenderSegment(
-    gender: Gender,
+    gender: GenderUI,
     shape: Shape,
     selected: Boolean,
-    select: (Gender) -> Unit,
-    unselect: (Gender) -> Unit
+    select: (GenderUI) -> Unit,
+    unselect: (GenderUI) -> Unit
 ) {
     SegmentedButton(
         colors = SegmentedButtonDefaults.colors(
@@ -122,7 +123,7 @@ private fun SingleChoiceSegmentedButtonRowScope.GenderSegment(
         shape = shape,
         label = {
             Text(
-                text = gender.raw,
+                text = gender.textId.translate(),
                 fontSize = 15.sp
             )
         }

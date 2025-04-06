@@ -34,8 +34,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.feature.swiper.presentation.model.SearchPreferencesItem
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.collectIndexed
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,7 +94,7 @@ private fun SearchPrefEditor(
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = "Filters",
+            text = StaticTextId.UiId.Filters.translate(),
             fontSize = 24.sp,
             modifier = Modifier.align(Alignment.CenterStart).padding(20.dp)
         )
@@ -136,10 +137,10 @@ private fun SearchPrefEditor(
             .padding(horizontal = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        GendersSelector(searchPreferences.lookingGenders.first()) {
+        GendersSelector(searchPreferences.lookingGender) {
             update.invoke(
                 searchPreferences.copy(
-                    lookingGenders = persistentListOf(it)
+                    lookingGender = it
                 )
             )
         }
