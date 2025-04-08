@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
@@ -15,6 +16,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slid
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.FpsMonitor
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.feature.auth.presentation.screen.LoginScreen
 import com.padabajka.dating.feature.auth.presentation.screen.RegisterScreen
@@ -75,6 +77,7 @@ private fun PadabajkaTheme(content: @Composable () -> Unit) {
     MaterialTheme {
         Box(Modifier.background(CoreColors.background.mainColor).fillMaxSize()) {
             content.invoke()
+            FpsMonitor(modifier = Modifier.align(Alignment.TopStart))
         }
     }
 }

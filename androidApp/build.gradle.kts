@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.google.services)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.firebase.perf)
 }
 
 android {
@@ -48,4 +49,5 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.perf)
 }
