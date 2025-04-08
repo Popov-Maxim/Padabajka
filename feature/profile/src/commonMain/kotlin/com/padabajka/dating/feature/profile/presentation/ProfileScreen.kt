@@ -27,8 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,7 +40,6 @@ import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
 import com.padabajka.dating.core.presentation.ui.textColor
-import com.padabajka.dating.core.presentation.ui.toDpSize
 import com.padabajka.dating.core.repository.api.model.profile.age
 import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.profile.presentation.model.OpenEditorEvent
@@ -161,14 +158,9 @@ private fun ProfileScreen(
                             text = nameWithAge,
                             fontSize = 26.sp
                         )
-                        val density = LocalDensity.current.density
-
                         Box(
                             modifier = Modifier
                                 .background(color = CoreColors.secondary.mainColor, shape = RoundedCornerShape(10.dp))
-                                .onGloballyPositioned {
-                                    println("LOG UI: ${it.size.toDpSize(density)}")
-                                }
                         ) {
                             Text(
                                 modifier = Modifier.padding(horizontal = 15.dp, vertical = 2.dp),
