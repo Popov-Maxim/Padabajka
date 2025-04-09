@@ -28,9 +28,10 @@ data class SwiperState(
 sealed interface SearchPreferencesItem {
     data class Success(
         val ageRange: AgeRange,
-        val lookingGenders: PersistentList<Gender>,
+        val lookingGender: GenderUI,
         val distanceInKm: Int,
     ) : SearchPreferencesItem
+
     data object Loading : SearchPreferencesItem
 }
 
@@ -84,16 +85,27 @@ fun Person.toUIPerson(): PersonItem {
 }
 
 fun SearchPreferences.toUISearchPreferences(): SearchPreferencesItem {
+    val lookingGender = if (lookingGenders.size == 1) {
+        lookingGenders.first()
+    } else {
+        Gender.Everyone
+    }
     return this.run {
         SearchPreferencesItem.Success(
             ageRange,
-            lookingGenders,
+            lookingGender.toGenderUI(),
             distanceInKm,
         )
     }
 }
 
 fun SearchPreferencesItem.Success.toSearchPreferences(): SearchPreferences {
+    val lookingGenders = when (lookingGender) {
+        GenderUI.Male,
+        GenderUI.Female -> listOf(lookingGender.toGender())
+
+        GenderUI.Everyone -> Gender.entries.toList()
+    }
     return this.run {
         SearchPreferences(
             ageRange,

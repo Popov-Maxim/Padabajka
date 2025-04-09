@@ -13,6 +13,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
 import kotlin.math.roundToInt
 
@@ -25,10 +27,10 @@ fun DistanceSlider(distanceInKm: Int, updateDistance: (Int) -> Unit) {
 
     Box(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = "Distance:",
+            text = "${StaticTextId.UiId.Distance.translate()}:",
             modifier = Modifier.align(Alignment.CenterStart)
         )
-        val ageValues = "${distance.roundToInt()} km"
+        val ageValues = "${distance.roundToInt()} ${StaticTextId.UiId.Km.translate()}"
         Text(
             text = ageValues,
             modifier = Modifier.align(Alignment.CenterEnd)

@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
 import com.padabajka.dating.core.presentation.ui.mainColor
@@ -49,7 +51,7 @@ fun SettingScreen(component: SettingScreenComponent) {
         val settingsButtonData = listOf(
             SettingButtonData(
                 iconData = CoreIcons.NavigationBar.Profile.toData(),
-                text = "Name",
+                text = StaticTextId.UiId.Name.translate(),
                 secondText = null,
                 onClick = {}
             ),
@@ -61,7 +63,7 @@ fun SettingScreen(component: SettingScreenComponent) {
             ),
             SettingButtonData(
                 iconData = Icons.AutoMirrored.Filled.ExitToApp.toData(),
-                text = "Logout",
+                text = StaticTextId.UiId.LogOut.translate(),
                 secondText = null,
                 onClick = { component.onEvent(LogOutEvent) }
             )
@@ -76,7 +78,7 @@ fun SettingScreen(component: SettingScreenComponent) {
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
-                    text = "General",
+                    text = StaticTextId.UiId.General.translate(),
                     fontSize = 24.sp
                 )
                 Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
@@ -181,7 +183,7 @@ private fun TopBar(onEvent: (SettingsEvent) -> Unit) {
             }
             Spacer(modifier = Modifier.width(5.dp))
             Text(
-                text = "Settings",
+                text = StaticTextId.UiId.Settings.translate(),
                 fontSize = 30.sp,
                 color = CoreColors.background.textColor,
                 fontFamily = PlayfairDisplay
