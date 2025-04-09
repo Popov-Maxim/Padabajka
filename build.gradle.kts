@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.kotlinCocoapods) apply false
     alias(libs.plugins.jetbrainsCompose) apply false
     alias(libs.plugins.detekt)
+    alias(libs.plugins.firebase.perf) apply false
+    alias(libs.plugins.google.services) apply false
 }
 
 detekt {

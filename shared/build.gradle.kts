@@ -49,6 +49,7 @@ kotlin {
             implementation(projects.core.networking)
 
             implementation(libs.gitlive.firebase.auth)
+            implementation(libs.gitlive.firebase.perf)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

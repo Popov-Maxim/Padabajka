@@ -15,6 +15,7 @@ org-jetbrains-kotlin-jvm = "1.9.22"
 detekt = "1.23.3"
 koin = "3.6.0-alpha1"
 firebase = "32.7.3"
+firebase-perf = "1.4.2"
 gitlive-firebase = "1.11.1"
 datastore = "1.1.2"
 immutable-collections = "0.3.7"
@@ -43,7 +44,9 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-perf = { module = "com.google.firebase:firebase-perf" }
 gitlive-firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "gitlive-firebase"}
+gitlive-firebase-perf = { module = "dev.gitlive:firebase-perf", version.ref = "gitlive-firebase"}
 datastore = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 immutable-collections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "immutable-collections" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
@@ -72,3 +75,4 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 mockmp = { id = "org.kodein.mock.mockmp", version.ref = "mockmp" }
+firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebase-perf" }

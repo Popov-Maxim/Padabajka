@@ -27,6 +27,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(libs.immutable.collections)
+            api(libs.coroutines.core)
             implementation(libs.koin.core)
         }
         commonTest.dependencies {
