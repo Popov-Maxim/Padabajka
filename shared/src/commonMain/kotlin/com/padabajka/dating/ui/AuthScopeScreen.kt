@@ -6,6 +6,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.feature.messenger.presentation.MessengerScreen
 import com.padabajka.dating.feature.profile.presentation.ProfileScreen
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreen
 import com.padabajka.dating.feature.swiper.presentation.screen.SwiperScreen
@@ -18,7 +19,8 @@ fun AuthScopeScreen(component: AuthScopeNavigateComponent) {
     val navigateBar = @Composable {
         NavigateBar(
             openSwiper = component::openSwiper,
-            openProfile = component::openProfile
+            openProfile = component::openProfile,
+            openMessenger = component::openMessenger
         )
     }
 
@@ -41,6 +43,9 @@ fun AuthScopeScreen(component: AuthScopeNavigateComponent) {
 
             is AuthScopeNavigateComponent.Child.SettingScreen ->
                 SettingScreen(instance.component)
+
+            is AuthScopeNavigateComponent.Child.MessengerScreen ->
+                MessengerScreen(instance.component)
         }
     }
 }

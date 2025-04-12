@@ -2,49 +2,153 @@ package com.padabajka.dating.feature.messenger.presentation
 
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.domain.Factory
+import com.padabajka.dating.core.domain.delegate
 import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.presentation.event.consumed
+import com.padabajka.dating.core.presentation.event.raised
 import com.padabajka.dating.core.presentation.event.raisedIfNotNull
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
+import com.padabajka.dating.core.repository.api.model.messenger.Message
+import com.padabajka.dating.core.repository.api.model.messenger.MessageDirection
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
+import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
+import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
+import com.padabajka.dating.feature.messenger.domain.ChatMessagesUseCase
 import com.padabajka.dating.feature.messenger.domain.ReactToMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.ReadMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.SendMessageUseCase
+import com.padabajka.dating.feature.messenger.domain.StartTypingUseCase
+import com.padabajka.dating.feature.messenger.domain.StopTypingUseCase
+import com.padabajka.dating.feature.messenger.presentation.model.ChatLoadingState
 import com.padabajka.dating.feature.messenger.presentation.model.ConsumeInternalErrorEvent
+import com.padabajka.dating.feature.messenger.presentation.model.EndOfMessagesListReachedEvent
 import com.padabajka.dating.feature.messenger.presentation.model.InternalError
 import com.padabajka.dating.feature.messenger.presentation.model.MessageGotReadEvent
 import com.padabajka.dating.feature.messenger.presentation.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.model.MessengerState
+import com.padabajka.dating.feature.messenger.presentation.model.NextMessageFieldLostFocusEvent
 import com.padabajka.dating.feature.messenger.presentation.model.NextMessageTextUpdateEvent
 import com.padabajka.dating.feature.messenger.presentation.model.ReactToMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.model.RemoveParentMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.model.SelectParentMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.model.SendMessageClickEvent
+import com.padabajka.dating.feature.messenger.presentation.model.item.IncomingMessageItem
+import com.padabajka.dating.feature.messenger.presentation.model.item.MessageItem
+import com.padabajka.dating.feature.messenger.presentation.model.item.OutgoingMessageItem
+import com.padabajka.dating.feature.messenger.presentation.model.item.ParentMessageItem
+import com.padabajka.dating.feature.messenger.presentation.model.item.addDateItems
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class MessengerComponent(
+    context: ComponentContext,
     private val chatId: ChatId,
-    private val sendMessageUseCase: Factory<SendMessageUseCase>,
-    private val readMessageUseCase: Factory<ReadMessageUseCase>,
-    private val reactToMessageUseCase: Factory<ReactToMessageUseCase>,
-    context: ComponentContext
+    chatMessagesUseCaseFactory: Factory<ChatMessagesUseCase>,
+    sendMessageUseCaseFactory: Factory<SendMessageUseCase>,
+    readMessageUseCaseFactory: Factory<ReadMessageUseCase>,
+    reactToMessageUseCaseFactory: Factory<ReactToMessageUseCase>,
+    startTypingUseCaseFactory: Factory<StartTypingUseCase>,
+    stopTypingUseCaseFactory: Factory<StopTypingUseCase>
 ) : BaseComponent<MessengerState>(context, MessengerState()) {
 
-    // TODO Add message editing events
+    private val chatMessagesUseCase by chatMessagesUseCaseFactory.delegate()
+    private val sendMessageUseCase by sendMessageUseCaseFactory.delegate()
+    private val readMessageUseCase by readMessageUseCaseFactory.delegate()
+    private val reactToMessageUseCase by reactToMessageUseCaseFactory.delegate()
+    private val startTypingUseCase by startTypingUseCaseFactory.delegate()
+    private val stopTypingUseCase by stopTypingUseCaseFactory.delegate()
+
+    private var typingJob: Job? = null
+
+    init {
+        mapAndReduceException(
+            action = {
+                val messagesFlow = chatMessagesUseCase(chatId)
+                messagesFlow
+                    .map { messages ->
+                        messages.map { message -> message.toMessageItem() }
+                    }.map { messageItems ->
+                        messageItems.addDateItems()
+                    }
+                    .collect { messengerItems ->
+                        reduce {
+                            it.copy(
+                                messengerItems = messengerItems,
+                                chatLoadingState = ChatLoadingState.Loaded
+                            )
+                        }
+                    }
+            },
+            mapper = {
+                println("Init messengerComponent: $it")
+                // TODO: Track unexpected error
+                // TODO: Add option to resubscribe
+            },
+            update = { state, _ ->
+                state.copy(internalErrorStateEvent = raised)
+            }
+        )
+//        componentScope.launch {
+//            chatMessagesUseCase(chatId)
+//        }
+    }
+
     fun onEvent(event: MessengerEvent) {
         when (event) {
             is NextMessageTextUpdateEvent -> updateNextMessageText(event.nextMessageText)
+            NextMessageFieldLostFocusEvent -> notifyTypingStopped()
             is SelectParentMessageEvent -> updateParentMessageId(event.messageId)
             RemoveParentMessageEvent -> updateParentMessageId(null)
             ConsumeInternalErrorEvent -> consumeInternalErrorEvent()
             is MessageGotReadEvent -> readMessage(event.messageId)
             is ReactToMessageEvent -> reactToMessage(event.messageId, event.reaction)
-            SendMessageClickEvent -> sendMessage(state.value)
+            EndOfMessagesListReachedEvent -> loadMoreMessages()
+            is SendMessageClickEvent -> sendMessage(event.message, event.parentMessageId)
         }
     }
 
-    private fun updateNextMessageText(text: String) = reduce {
-        it.copy(nextMessageText = text)
+    override fun onStopped() {
+        notifyTypingStopped()
+    }
+
+    private fun notifyTypingStopped() {
+        componentScope.launch {
+            if (typingJob == null) {
+                return@launch
+            }
+            typingJob?.cancel()
+            typingJob = null
+            stopTypingUseCase(chatId)
+        }
+    }
+
+    private fun notifyTyping() {
+        componentScope.launch {
+            if (typingJob == null) {
+                startTypingUseCase(chatId)
+            }
+
+            typingJob?.cancel()
+            typingJob = componentScope.launch {
+                delay(TYPING_STOP_DELAY)
+                stopTypingUseCase(chatId)
+                typingJob = null
+            }
+        }
+    }
+
+    private fun loadMoreMessages() {
+        // Implement message pagination
+    }
+
+    private fun updateNextMessageText(text: String) {
+        reduce {
+            it.copy(nextMessageText = text)
+        }
+        notifyTyping()
     }
 
     private fun updateParentMessageId(messageId: MessageId?) = reduce {
@@ -57,7 +161,7 @@ class MessengerComponent(
 
     private fun readMessage(messageId: MessageId) = mapAndReduceException(
         action = {
-            readMessageUseCase.get().invoke(chatId, messageId)
+            readMessageUseCase(messageId)
         },
         mapper = { InternalError },
         update = { state, internalError ->
@@ -68,7 +172,7 @@ class MessengerComponent(
     private fun reactToMessage(messageId: MessageId, reaction: MessageReaction) =
         mapAndReduceException(
             action = {
-                reactToMessageUseCase.get().invoke(chatId, messageId, reaction)
+                reactToMessageUseCase(messageId, reaction)
             },
             mapper = { InternalError },
             update = { state, internalError ->
@@ -76,18 +180,64 @@ class MessengerComponent(
             }
         )
 
-    private fun sendMessage(state: MessengerState) = mapAndReduceException(
-        action = {
-            val messageText = state.nextMessageText
-            val parentMessageId = state.parentMessageId
+    @Suppress("TooGenericExceptionCaught", "SwallowedException")
+    private fun sendMessage(message: String, parentMessageId: MessageId?) {
+        componentScope.launch {
+            reduce { state ->
+                state.copy(nextMessageText = "", parentMessageId = null)
+            }
 
-            sendMessageUseCase.get().invoke(chatId, messageText, parentMessageId)
-        },
-        mapper = {
-            // TODO: Implement
-        },
-        update = { state, _ ->
-            state
+            try {
+                sendMessageUseCase(chatId, message, parentMessageId)
+            } catch (e: Throwable) {
+//                reduce { state ->
+//                    state.copy(
+//                        nextMessageText = message,
+//                        parentMessageId = parentMessageId,
+//                        internalErrorStateEvent = raised
+//                    )
+//                }
+            }
         }
-    )
+    }
+
+    private fun Message.toMessageItem(): MessageItem {
+        return when (direction) {
+            MessageDirection.OUTGOING -> OutgoingMessageItem(
+                id = id,
+                content = content,
+                sentTime = creationTime,
+                hasBeenRead = status.hasBeenRead(),
+                reaction = reaction,
+                parentMessage = parentMessage?.toItem()
+            )
+            MessageDirection.INCOMING -> IncomingMessageItem(
+                id = id,
+                content = content,
+                sentTime = creationTime,
+                hasBeenRead = status.hasBeenRead(),
+                reaction = reaction,
+                parentMessage = parentMessage?.toItem()
+            )
+        }
+    }
+
+    private fun MessageStatus.hasBeenRead(): Boolean {
+        return when (this) {
+            MessageStatus.Read -> true
+            else -> false
+        }
+    }
+
+    private fun ParentMessage.toItem(): ParentMessageItem {
+        return ParentMessageItem(
+            id = id,
+            content = content,
+            direction = direction
+        )
+    }
+
+    companion object {
+        private const val TYPING_STOP_DELAY = 2000L
+    }
 }

@@ -47,6 +47,7 @@ kotlin {
             api(libs.coil.compose)
             api(libs.coil.network.ktor)
             api(libs.coil.svg)
+            api(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

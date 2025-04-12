@@ -20,14 +20,15 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 fun NavigateBar(
     openSwiper: () -> Unit,
-    openProfile: () -> Unit
+    openProfile: () -> Unit,
+    openMessenger: () -> Unit
 ) {
     Row(
         modifier = Modifier.height(65.dp)
             .background(CoreColors.background.mainColor)
     ) {
         val iconData = persistentListOf(
-            CoreIcons.NavigationBar.Messenger.toIconData("Messenger") {},
+            CoreIcons.NavigationBar.Messenger.toIconData("Messenger", openMessenger),
             CoreIcons.NavigationBar.Likes.toIconData("Likes") {},
             CoreIcons.NavigationBar.Swiper.toIconData("Swiper", openSwiper),
             CoreIcons.NavigationBar.Profile.toIconData("Profile", openProfile)

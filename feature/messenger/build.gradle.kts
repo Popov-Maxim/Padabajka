@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.jetbrainsCompose)
 }
 
 kotlin {
@@ -30,6 +31,7 @@ kotlin {
             api(projects.core.domain)
             api(projects.core.repositoryApi)
             api(projects.core.data)
+            implementation(projects.feature.messenger.data)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -42,5 +44,11 @@ android {
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()
+    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
