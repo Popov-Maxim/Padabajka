@@ -13,6 +13,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.repository.api.model.profile.Age
 import com.padabajka.dating.core.repository.api.model.profile.AgeRange
@@ -30,7 +32,7 @@ fun AgeRange(ageRange: AgeRange, update: (AgeRange) -> Unit) {
 
     Box(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = "Age:",
+            text = "${StaticTextId.UiId.Age.translate()}:",
             modifier = Modifier.align(Alignment.CenterStart)
         )
 

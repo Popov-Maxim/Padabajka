@@ -39,6 +39,8 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.TextInputField
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
 import com.padabajka.dating.core.presentation.ui.mainColor
@@ -74,7 +76,7 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
             TextEditField(
                 modifier = Modifier.padding(20.dp),
                 text = aboutMe,
-                label = "Bio",
+                label = StaticTextId.UiId.Bio.translate(),
                 onChange = {
                     component.onEvent(AboutMeFieldUpdateEvent(it))
                 },
@@ -250,7 +252,7 @@ private fun TopBar(onEvent: (ProfileEditorEvent) -> Unit) {
             }
             Spacer(modifier = Modifier.width(5.dp))
             Text(
-                text = "Editor",
+                text = StaticTextId.UiId.Editor.translate(),
                 fontSize = 30.sp,
                 color = CoreColors.background.textColor,
                 fontFamily = PlayfairDisplay
