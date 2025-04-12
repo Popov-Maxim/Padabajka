@@ -1,10 +1,10 @@
 package com.padabajka.dating.core.repository.api.model.profile
 
-data class LockingForData(
+data class LookingForData(
     val type: Text,
     val detail: Text? = null
 ) {
     companion object {
-        val default = LockingForData(type = Text(Text.Id("just_meeting")))
+        val default = LookingForData(type = Text(Text.Id("non_romantic")))
     }
 }

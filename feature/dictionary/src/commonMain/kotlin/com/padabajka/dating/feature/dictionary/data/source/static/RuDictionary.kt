@@ -1,15 +1,6 @@
 package com.padabajka.dating.feature.dictionary.data.source.static
 
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
-import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId.AssetId.CasualDating
-import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId.AssetId.Dating
-import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId.AssetId.Flirt
-import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId.AssetId.JustForFun
-import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId.AssetId.JustMeeting
-import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId.AssetId.LanguageExchange
-import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId.AssetId.LookingForFriends
-import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId.AssetId.Networking
-import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId.AssetId.PeopleToGoOutWith
 
 @Suppress("CyclomaticComplexMethod")
 class RuDictionary : Dictionary() {
@@ -30,20 +21,25 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Bio -> "Био"
             StaticTextId.UiId.OpenProfileEditor -> "Открыть редактор профиля"
             StaticTextId.UiId.Filters -> "Фильтр"
+            StaticTextId.UiId.LookingFor -> "Ищу..."
         }
     }
 
     override fun getAssetWord(assetId: StaticTextId.AssetId): String {
         return when (assetId) {
-            JustMeeting -> "Просто знвкомства"
-            LookingForFriends -> "Новые друзья"
-            PeopleToGoOutWith -> "Компания для движа"
-            LanguageExchange -> "Языковая практика"
-            Networking -> "Нетворкинг"
-            CasualDating -> "Лёгкие свидания"
-            Dating -> "Свидания"
-            Flirt -> "Флирт"
-            JustForFun -> "просто «развлечься»"
+            StaticTextId.AssetId.NonRomantic -> "Не роматические"
+            StaticTextId.AssetId.LookingForFriends -> "Новые друзья"
+            StaticTextId.AssetId.PeopleToGoOutWith -> "Компания для движа"
+            StaticTextId.AssetId.LanguageExchange -> "Языковая практика"
+            StaticTextId.AssetId.Networking -> "Нетворкинг"
+
+            StaticTextId.AssetId.CasualRelationship -> "Легкие отношения"
+            StaticTextId.AssetId.Dating -> "Свидания"
+            StaticTextId.AssetId.Flirt -> "Флирт"
+            StaticTextId.AssetId.JustForFun -> "просто «развлечься»"
+
+            StaticTextId.AssetId.SeriousRelationship -> "Серьезные отношения"
+            StaticTextId.AssetId.BuildingFamily -> "Создания семьи"
         }
     }
 }

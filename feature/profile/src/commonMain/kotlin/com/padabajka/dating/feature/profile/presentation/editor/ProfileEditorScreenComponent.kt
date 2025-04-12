@@ -9,6 +9,7 @@ import com.padabajka.dating.core.presentation.event.raisedIfNotNull
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Image
+import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.feature.image.domain.GetLocalImageUseCase
 import com.padabajka.dating.feature.profile.domain.SaveProfileUseCase
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldLoosFocusEvent
@@ -18,6 +19,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.DeleteImag
 import com.padabajka.dating.feature.profile.presentation.editor.model.DiscardProfileUpdatesClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.HideAchievementClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ImageAddEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.LookingForUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.MakeAchievementMainClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.MakeAchievementVisibleClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.NameFieldLoosFocusEvent
@@ -63,6 +65,7 @@ class ProfileEditorScreenComponent(
             // TODO: add details and images events
             NavigateBackEvent -> navigateBack()
             is DeleteImageEvent -> deleteImage(event.image)
+            is LookingForUpdateEvent -> updateLoockingForData(event.data)
         }
     }
 
@@ -129,6 +132,12 @@ class ProfileEditorScreenComponent(
     private fun updateAboutMe(aboutMe: String) {
         reduce {
             it.updateAboutMe(aboutMe)
+        }
+    }
+
+    private fun updateLoockingForData(data: LookingForData) {
+        reduce {
+            it.updateLookingForData(data)
         }
     }
 

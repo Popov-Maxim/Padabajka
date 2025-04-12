@@ -14,11 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -47,15 +51,19 @@ import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.profile.Image
+import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.image.rememberImagePicker
 import com.padabajka.dating.feature.profile.presentation.editor.dialog.EditImageDialog
+import com.padabajka.dating.feature.profile.presentation.editor.dialog.EditLookingForDialog
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.DeleteImageEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.DiscardProfileUpdatesClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ImageAddEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.LookingForUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.NavigateBackEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileField
 import com.padabajka.dating.feature.profile.presentation.editor.model.SaveProfileUpdatesClickEvent
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -67,7 +75,10 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
     CustomScaffold(
         topBar = { TopBar(component::onEvent) }
     ) {
-        Column {
+        val scrollState = rememberScrollState()
+        Column(
+            modifier = Modifier.verticalScroll(scrollState)
+        ) {
             Box(modifier = Modifier.padding(10.dp)) {
                 ImageFields(images = state.images.value, component = component)
             }
@@ -80,6 +91,14 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
                 onChange = {
                     component.onEvent(AboutMeFieldUpdateEvent(it))
                 },
+            )
+
+            LookingForField(
+                modifier = Modifier.padding(20.dp),
+                field = state.lookingFor,
+                onChange = {
+                    component.onEvent(LookingForUpdateEvent(it))
+                }
             )
 
             Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
@@ -220,13 +239,87 @@ private fun TextEditField(
             fontSize = 20.sp,
             modifier = Modifier.wrapContentSize().align(Alignment.Start)
         )
+        val shape = RoundedCornerShape(20.dp)
         TextInputField(
             text = text,
             hint = "",
             onChange = onChange,
             singleLine = false,
-            shape = RoundedCornerShape(20.dp),
+            shape = shape,
             modifier = Modifier.height(125.dp).fillMaxWidth()
+                .innerShadow(
+                    color = Color(color = 0xFFA1A1A1),
+                    shape = shape
+                ),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            )
+        )
+    }
+}
+
+@Composable
+private fun LookingForField(
+    field: ProfileField<LookingForData>,
+    onChange: (LookingForData) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
+        Text(
+            text = StaticTextId.UiId.LookingFor.translate(),
+            fontSize = 20.sp,
+            modifier = Modifier.wrapContentSize().align(Alignment.Start)
+        )
+
+        val shape = RoundedCornerShape(20.dp)
+        Box(
+            modifier = Modifier
+                .shadow(5.dp, shape)
+                .clip(shape)
+                .background(Color.White)
+                .clickable { showDialog = true }
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(vertical = 20.dp, horizontal = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    modifier = Modifier.padding(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(5.dp)
+                ) {
+                    val value = field.value
+                    Text(text = value.type.translate(), fontSize = 15.sp)
+                    val detail = value.detail
+                    if (detail != null) {
+                        Text(text = detail.translate(), fontSize = 12.sp)
+                    }
+                }
+                Icon(
+                    painter = CoreIcons.RightArrow,
+                    contentDescription = "Right arrow",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+    }
+
+    if (showDialog) {
+        EditLookingForDialog(
+            apply = onChange,
+            onDismissRequest = { showDialog = false }
         )
     }
 }

@@ -12,7 +12,7 @@ data class Profile(
     val birthday: LocalDate,
     val images: PersistentList<Image>,
     val aboutMe: String,
-    val lockingFor: LockingForData,
+    val lookingFor: LookingForData,
     val details: PersistentList<Detail>,
     // val attitudes: List<> TODO(Response): add attitudes
     val mainAchievement: Achievement?,

@@ -1,6 +1,6 @@
 package com.padabajka.dating.core.data.network.model
 
-import com.padabajka.dating.core.repository.api.model.profile.LockingForData
+import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.profile.Profile
 import com.padabajka.dating.core.repository.api.model.swiper.Person
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
@@ -15,7 +15,7 @@ data class PersonResponse(
     val name: String,
     val birthday: String,
     val aboutMe: String,
-    val lockingFor: LockingForDataDto? = null,
+    val lookingFor: LookingForDataDto? = null,
     val images: List<ImageDto>
 )
 
@@ -32,7 +32,7 @@ fun PersonResponse.toProfile(): Profile {
         birthday = LocalDate.parse(birthday),
         images = images.map { it.toImage() }.toPersistentList(),
         aboutMe = aboutMe,
-        lockingFor = lockingFor?.toLockingForData() ?: LockingForData.default,
+        lookingFor = lookingFor?.toLookingForData() ?: LookingForData.default,
         details = persistentListOf(),
         mainAchievement = null,
         achievements = persistentListOf()

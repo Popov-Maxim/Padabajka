@@ -166,7 +166,7 @@ private fun ProfileScreen(
                         ) {
                             Text(
                                 modifier = Modifier.padding(horizontal = 15.dp, vertical = 2.dp),
-                                text = profile.lockingFor.type.id.raw,
+                                text = profile.lookingFor.type.translate(),
                                 fontSize = 15.sp,
                                 color = CoreColors.secondary.textColor
                             )
