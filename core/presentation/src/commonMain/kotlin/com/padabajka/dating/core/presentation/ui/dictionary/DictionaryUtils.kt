@@ -5,6 +5,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import com.padabajka.dating.core.repository.api.DictionaryRepository
 import com.padabajka.dating.core.repository.api.model.dictionary.Language
+import com.padabajka.dating.core.repository.api.model.profile.Text
 import org.koin.compose.rememberCurrentKoinScope
 
 @Composable
@@ -20,6 +21,13 @@ fun StaticTextId.translate(lang: Language = Language.Static.EN): String {
     val dictionary = rememberDictionary()
 
     return dictionary.stableGetText(this.id, lang) ?: TODO()
+}
+
+@Composable
+fun Text.translate(lang: Language = Language.Static.EN): String {
+    val dictionary = rememberDictionary()
+
+    return dictionary.stableGetText(this.id.raw, lang) ?: this.default ?: "TODO()"
 }
 
 @Stable

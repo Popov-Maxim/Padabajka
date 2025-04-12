@@ -3,45 +3,57 @@ package com.padabajka.dating.core.presentation.ui.dictionary
 sealed interface StaticTextId {
     val id: String
 
-    enum class UiId(override val id: String) : StaticTextId {
+    enum class UiId(val rawId: String) : StaticTextId {
+
         // Headers
-        Settings(id = "settings"),
-        Profile(id = "profile"),
-        Editor(id = "editor"),
+        Settings(rawId = "settings"),
+        Profile(rawId = "profile"),
+        Editor(rawId = "editor"),
 
         // Setting screen
-        Name(id = "name"),
-        LogOut(id = "log_out"),
-        General(id = "general_error"),
+        Name(rawId = "name"),
+        LogOut(rawId = "log_out"),
+        General(rawId = "general_error"),
 
         // Total for Profile
-        Male(id = "male"),
-        Female(id = "female"),
-        Everyone(id = "everyone"),
-        Age(id = "age"),
-        Distance(id = "distance"),
-        Km(id = "km"),
-        Bio(id = "bio"),
+        Male(rawId = "male"),
+        Female(rawId = "female"),
+        Everyone(rawId = "everyone"),
+        Age(rawId = "age"),
+        Distance(rawId = "distance"),
+        Km(rawId = "km"),
+        Bio(rawId = "bio"),
+        LookingFor(rawId = "looking_for"),
 
         // Profile screen
-        OpenProfileEditor(id = "open_profile_editor"),
+        OpenProfileEditor(rawId = "open_profile_editor"),
 
         // Search Pref screen
-        Filters(id = "filters")
+        Filters(rawId = "filters"),
+
+        // Profile editor
+
+        // --------------
+        ;
+        override val id: String = "${rawId}_ui_id"
     }
 
     enum class AssetId(override val id: String) : StaticTextId {
-        // locking_for
-        JustMeeting(id = "just_meeting"),
+        // looking_for
+        NonRomantic(id = "non_romantic"),
         LookingForFriends(id = "looking_for_friends"),
         PeopleToGoOutWith(id = "people_to_go_out_with"),
         LanguageExchange(id = "language_exchange"),
         Networking(id = "networking"),
 
-        CasualDating(id = "casual_dating"),
+        CasualRelationship(id = "casual_relationship"),
         Dating(id = "dating"),
         Flirt(id = "flirt"),
-        JustForFun(id = "just_for_fun")
+        JustForFun(id = "just_for_fun"),
+
+        SeriousRelationship(id = "serious_relationship"),
+        BuildingFamily(id = "building_family"),
+        // ------------------ looking_for
     }
 
     companion object {

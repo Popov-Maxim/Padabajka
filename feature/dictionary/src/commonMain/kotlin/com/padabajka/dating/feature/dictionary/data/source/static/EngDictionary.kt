@@ -21,20 +21,25 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Bio -> "Bio"
             StaticTextId.UiId.OpenProfileEditor -> "Open profile editor"
             StaticTextId.UiId.Filters -> "Filters"
+            StaticTextId.UiId.LookingFor -> "Looking for..."
         }
     }
 
     override fun getAssetWord(assetId: StaticTextId.AssetId): String {
         return when (assetId) {
-            StaticTextId.AssetId.JustMeeting -> "Just meeting"
+            StaticTextId.AssetId.NonRomantic -> "Non-romantic"
             StaticTextId.AssetId.LookingForFriends -> "Looking for friends"
             StaticTextId.AssetId.PeopleToGoOutWith -> "People to go out with"
             StaticTextId.AssetId.LanguageExchange -> "Language exchange"
             StaticTextId.AssetId.Networking -> "Networking"
-            StaticTextId.AssetId.CasualDating -> "Casual dating"
+
+            StaticTextId.AssetId.CasualRelationship -> "Casual relationship"
             StaticTextId.AssetId.Dating -> "Dating"
             StaticTextId.AssetId.Flirt -> "Flirt"
             StaticTextId.AssetId.JustForFun -> "Just for fun"
+
+            StaticTextId.AssetId.SeriousRelationship -> "Serious relationship"
+            StaticTextId.AssetId.BuildingFamily -> "Building family"
         }
     }
 }

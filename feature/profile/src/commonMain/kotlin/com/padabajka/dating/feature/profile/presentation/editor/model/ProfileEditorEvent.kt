@@ -2,6 +2,7 @@ package com.padabajka.dating.feature.profile.presentation.editor.model
 
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Image
+import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 
 sealed interface ProfileEditorEvent
 
@@ -12,6 +13,7 @@ data class NameFieldUpdateEvent(val name: String) : ProfileEditorEvent
 data object NameFieldLoosFocusEvent : ProfileEditorEvent
 data class AboutMeFieldUpdateEvent(val aboutMe: String) : ProfileEditorEvent
 data object AboutMeFieldLoosFocusEvent : ProfileEditorEvent
+data class LookingForUpdateEvent(val data: LookingForData) : ProfileEditorEvent
 
 data class ImageAddEvent(val image: Image) : ProfileEditorEvent
 data class DeleteImageEvent(val image: Image) : ProfileEditorEvent

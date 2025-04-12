@@ -14,6 +14,7 @@ interface ProfileApi {
             Birthday("birthday"),
             AboutMe("about_me"),
             Images("images"),
+            LookingFor("looking_for")
         }
     }
 

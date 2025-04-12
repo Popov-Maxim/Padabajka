@@ -15,10 +15,18 @@ data class TextDto(
 }
 
 fun TextDto.Id.toTextId(): Text.Id = Text.Id(raw)
+fun Text.Id.toTextIdDto(): TextDto.Id = TextDto.Id(raw)
 
 fun TextDto.toText(): Text {
     return Text(
         id.toTextId(),
+        default
+    )
+}
+
+fun Text.toTextDto(): TextDto {
+    return TextDto(
+        id.toTextIdDto(),
         default
     )
 }

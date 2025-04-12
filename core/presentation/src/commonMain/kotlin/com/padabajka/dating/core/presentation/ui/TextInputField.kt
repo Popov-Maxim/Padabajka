@@ -1,6 +1,7 @@
 package com.padabajka.dating.core.presentation.ui
 
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -19,7 +20,8 @@ fun TextInputField(
     isError: Boolean = false,
     singleLine: Boolean = true,
     shape: Shape = TextFieldDefaults.shape,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colors: TextFieldColors = TextFieldDefaults.colors()
 ) {
     val wasFocused = remember { mutableStateOf(false) }
     TextField(
@@ -33,6 +35,7 @@ fun TextInputField(
                 onFocusLost()
             }
             wasFocused.value = it.isFocused
-        }
+        },
+        colors = colors
     )
 }

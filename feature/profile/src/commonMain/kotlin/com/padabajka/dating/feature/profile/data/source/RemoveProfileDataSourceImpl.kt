@@ -1,7 +1,7 @@
 package com.padabajka.dating.feature.profile.data.source
 
-import com.padabajka.dating.core.data.network.model.ImageDto
 import com.padabajka.dating.core.data.network.model.toImageDto
+import com.padabajka.dating.core.data.network.model.toLookingForDataDto
 import com.padabajka.dating.core.data.network.model.toProfile
 import com.padabajka.dating.core.domain.mapOfNotNull
 import com.padabajka.dating.core.repository.api.model.profile.Image
@@ -25,11 +25,14 @@ class RemoveProfileDataSourceImpl(
         val images = fieldForUpdate(current, newProfile, Profile::images)
             ?.filterIsInstance<Image.Url>()
             ?.map { it.toImageDto() }
+        val lookingFor = fieldForUpdate(current, newProfile, Profile::lookingFor)
+            ?.toLookingForDataDto()
         val parameters = mapOfNotNull(
             ProfileApi.PatchParams.Key.Name to name,
             ProfileApi.PatchParams.Key.Birthday to birthday,
             ProfileApi.PatchParams.Key.AboutMe to aboutMe,
-            ProfileApi.PatchParams.Key.Images to images?.serializeToString()
+            ProfileApi.PatchParams.Key.Images to images?.serializeToString(),
+            ProfileApi.PatchParams.Key.LookingFor to lookingFor?.serializeToString()
         )
         profileApi.patch(ProfileApi.PatchParams(parameters))
     }
@@ -38,7 +41,7 @@ class RemoveProfileDataSourceImpl(
         return newProfile.field().takeIf { it != current?.field() }
     }
 
-    private fun List<ImageDto>.serializeToString(): String {
+    private inline fun <reified T> T.serializeToString(): String {
         return Json.encodeToString(this)
     }
 }
