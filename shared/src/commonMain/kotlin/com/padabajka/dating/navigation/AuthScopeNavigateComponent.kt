@@ -1,6 +1,8 @@
 package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
+import com.padabajka.dating.core.repository.api.model.messenger.ChatId
+import com.padabajka.dating.feature.messenger.presentation.MessengerComponent
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
 import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
@@ -29,6 +31,10 @@ class AuthScopeNavigateComponent(
 
     fun openSettings() {
         navigate(Configuration.SettingScreen)
+    }
+
+    fun openMessenger() {
+        navigate(Configuration.MessengerScreen)
     }
 
     override fun createChild(
@@ -66,6 +72,10 @@ class AuthScopeNavigateComponent(
                     )
                 }
             )
+
+            Configuration.MessengerScreen -> Child.MessengerScreen(
+                component = get { parametersOf(context, ChatId("1")) }
+            )
         }
     }
 
@@ -75,6 +85,7 @@ class AuthScopeNavigateComponent(
 
         data class SwiperScreen(val component: SwiperScreenComponent) : Child
         data class ProfileScreen(val component: ProfileScreenComponent) : Child
+        data class MessengerScreen(val component: MessengerComponent) : Child
     }
 
     @Serializable
@@ -90,5 +101,8 @@ class AuthScopeNavigateComponent(
 
         @Serializable
         data object SettingScreen : Configuration
+
+        @Serializable
+        data object MessengerScreen : Configuration
     }
 }

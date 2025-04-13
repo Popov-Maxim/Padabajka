@@ -1,6 +1,6 @@
 [versions]
 agp = "8.9.0"
-kotlin = "1.9.22"
+kotlin = "1.9.23"
 kotlinx-datetime = "0.5.0"
 kotlinx-serialization = "1.6.3"
 google-services = "4.4.1"
@@ -23,6 +23,9 @@ mockmp = "1.17.0"
 espresso-core = "3.5.1"
 firebaseAuth = "22.3.1"
 yandex-ads = "6.4.1"
+room = "2.7.0-alpha01"
+ksp = "1.9.23-1.0.20"
+sqlite = "2.5.0-SNAPSHOT"
 projectConfig-minSdk = "24"
 projectConfig-compileSdk = "34"
 projectConfig-targetSdk = "34"
@@ -62,6 +65,10 @@ ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "kto
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor2", version.ref = "coil-network" }
 coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil-network" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+sqlite-framework = { module = "androidx.sqlite:sqlite-framework", version.ref = "sqlite" }
 
 [plugins]
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
@@ -76,3 +83,5 @@ org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 mockmp = { id = "org.kodein.mock.mockmp", version.ref = "mockmp" }
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebase-perf" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }

@@ -48,6 +48,7 @@ kotlin {
             implementation(projects.feature.settings)
             implementation(projects.feature.dictionary)
             implementation(projects.core.networking)
+            implementation(projects.component.room)
 
             implementation(libs.gitlive.firebase.auth)
             implementation(libs.gitlive.firebase.perf)

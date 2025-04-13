@@ -5,6 +5,7 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnDestroy
+import com.arkivanov.essenty.lifecycle.doOnStop
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -29,6 +30,7 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
         context.lifecycle.doOnDestroy {
             componentScope.cancel("Component destroyed")
         }
+        context.lifecycle.doOnStop { onStopped() }
     }
 
     protected fun reduce(update: (state: T) -> T): Job = reducerScope.launch {
@@ -54,4 +56,6 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
 
         reduce { update(it, mappedException) }
     }
+
+    open fun onStopped() {}
 }
