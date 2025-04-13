@@ -16,7 +16,6 @@ import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteMessageDataSource
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Clock
@@ -26,7 +25,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 internal class MessageRepositoryImpl(
-    scope: CoroutineScope,
     authRepository: AuthRepository,
     private val localMessageDataSource: LocalMessageDataSource,
     private val remoteMessageDataSource: RemoteMessageDataSource

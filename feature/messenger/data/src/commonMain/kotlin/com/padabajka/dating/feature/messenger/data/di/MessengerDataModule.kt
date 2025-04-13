@@ -15,7 +15,6 @@ import org.koin.dsl.module
 val messengerDataModule = module {
     single<MessageRepository> {
         MessageRepositoryImpl(
-            scope = get(),
             authRepository = get(),
             localMessageDataSource = get(),
             remoteMessageDataSource = get()
