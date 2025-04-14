@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.messenger.presentation.element
+package com.padabajka.dating.feature.messenger.presentation.chat.ui
 
 import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Box
@@ -17,13 +17,13 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.padabajka.dating.feature.messenger.presentation.model.ChatLoadingState
-import com.padabajka.dating.feature.messenger.presentation.model.EndOfMessagesListReachedEvent
-import com.padabajka.dating.feature.messenger.presentation.model.MessengerEvent
-import com.padabajka.dating.feature.messenger.presentation.model.item.IncomingMessageItem
-import com.padabajka.dating.feature.messenger.presentation.model.item.MessengerItem
-import com.padabajka.dating.feature.messenger.presentation.model.item.OutgoingMessageItem
-import com.padabajka.dating.feature.messenger.presentation.model.item.TimeItem
+import com.padabajka.dating.feature.messenger.presentation.chat.model.ChatLoadingState
+import com.padabajka.dating.feature.messenger.presentation.chat.model.EndOfMessagesListReachedEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.item.IncomingMessageItem
+import com.padabajka.dating.feature.messenger.presentation.chat.model.item.MessengerItem
+import com.padabajka.dating.feature.messenger.presentation.chat.model.item.OutgoingMessageItem
+import com.padabajka.dating.feature.messenger.presentation.chat.model.item.TimeItem
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterIsInstance

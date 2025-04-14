@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.messenger.presentation.element
+package com.padabajka.dating.feature.messenger.presentation.chat.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background

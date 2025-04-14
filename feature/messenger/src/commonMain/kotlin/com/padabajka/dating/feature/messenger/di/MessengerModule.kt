@@ -1,13 +1,13 @@
 package com.padabajka.dating.feature.messenger.di
 
 import com.padabajka.dating.feature.messenger.data.di.messengerDataModule
-import com.padabajka.dating.feature.messenger.domain.ChatMessagesUseCase
-import com.padabajka.dating.feature.messenger.domain.ReactToMessageUseCase
-import com.padabajka.dating.feature.messenger.domain.ReadMessageUseCase
-import com.padabajka.dating.feature.messenger.domain.SendMessageUseCase
-import com.padabajka.dating.feature.messenger.domain.StartTypingUseCase
-import com.padabajka.dating.feature.messenger.domain.StopTypingUseCase
-import com.padabajka.dating.feature.messenger.presentation.MessengerComponent
+import com.padabajka.dating.feature.messenger.domain.chat.ChatMessagesUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.ReactToMessageUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.ReadMessageUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.SendMessageUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.StartTypingUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.StopTypingUseCase
+import com.padabajka.dating.feature.messenger.presentation.chat.ChatComponent
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -22,7 +22,7 @@ private val domainModule = module {
 
 private val presentationModule = module {
     factory { parameters ->
-        MessengerComponent(
+        ChatComponent(
             context = parameters.get(),
             chatId = parameters.get(),
             chatMessagesUseCaseFactory = { get() },

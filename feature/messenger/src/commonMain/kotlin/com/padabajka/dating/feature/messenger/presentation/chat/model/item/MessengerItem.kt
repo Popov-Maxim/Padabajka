@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.messenger.presentation.model.item
+package com.padabajka.dating.feature.messenger.presentation.chat.model.item
 
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList

@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.messenger.presentation
+package com.padabajka.dating.feature.messenger.presentation.chat
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,11 +9,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.padabajka.dating.feature.messenger.presentation.element.Chat
-import com.padabajka.dating.feature.messenger.presentation.element.MessageField
+import com.padabajka.dating.feature.messenger.presentation.chat.ui.Chat
+import com.padabajka.dating.feature.messenger.presentation.chat.ui.MessageField
 
 @Composable
-fun MessengerScreen(component: MessengerComponent) {
+fun ChatScreen(component: ChatComponent) {
     val state by component.state.subscribeAsState()
     val followNewItems = remember {
         mutableStateOf(true)
