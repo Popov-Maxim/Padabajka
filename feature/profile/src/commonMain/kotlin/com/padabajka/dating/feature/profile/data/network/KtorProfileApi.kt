@@ -27,6 +27,18 @@ class KtorProfileApi(
         return response.body()
     }
 
+    override suspend fun get(userId: String): PersonResponse {
+        val client = ktorClientProvider.client()
+
+        val response = client.get {
+            url {
+                path(ProfileApi.PATH_FOR_GET + "/$userId")
+            }
+        }
+
+        return response.body()
+    }
+
     @Suppress("TooGenericExceptionCaught")
     override suspend fun patch(params: ProfileApi.PatchParams) {
         val client = ktorClientProvider.client()

@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.swiper.data.person.network
+package com.padabajka.dating.feature.swiper.data.candidate.network
 
 import com.padabajka.dating.core.data.network.model.PersonResponse
 import com.padabajka.dating.core.networking.KtorClientProvider
@@ -9,9 +9,9 @@ import io.ktor.client.request.get
 import io.ktor.http.ParametersBuilder
 import io.ktor.http.path
 
-class KtorPersonApi(
+class KtorCandidateApi(
     private val ktorClientProvider: KtorClientProvider
-) : PersonApi {
+) : CandidateApi {
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun getPersons(
@@ -23,7 +23,7 @@ class KtorPersonApi(
 
         val response = client.get {
             url {
-                path(PersonApi.PATH)
+                path(CandidateApi.PATH)
 
                 parameters.append(searchPreferences)
                 parameters.append(COUNT, count.toString())

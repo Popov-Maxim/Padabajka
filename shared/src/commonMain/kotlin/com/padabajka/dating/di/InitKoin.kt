@@ -8,6 +8,7 @@ import com.padabajka.dating.feature.ads.di.adModules
 import com.padabajka.dating.feature.auth.di.authModules
 import com.padabajka.dating.feature.dictionary.di.dictionaryDiModules
 import com.padabajka.dating.feature.image.di.imageModules
+import com.padabajka.dating.feature.match.di.matchDiModules
 import com.padabajka.dating.feature.messenger.di.messengerModules
 import com.padabajka.dating.feature.profile.di.profileModules
 import com.padabajka.dating.feature.swiper.di.swiperModules
@@ -40,6 +41,7 @@ fun initKoin(platformModule: Module) {
             *settingDiModules,
             *dictionaryDiModules,
             *messengerModules,
+            *matchDiModules,
             roomModule,
             platformModule,
             applicationScopeModule
