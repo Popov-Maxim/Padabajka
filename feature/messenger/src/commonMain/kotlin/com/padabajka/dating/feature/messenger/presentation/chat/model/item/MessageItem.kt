@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.messenger.presentation.model.item
+package com.padabajka.dating.feature.messenger.presentation.chat.model.item
 
 import androidx.compose.runtime.Immutable
 import com.padabajka.dating.core.repository.api.model.messenger.Message

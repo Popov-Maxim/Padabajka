@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.messenger.presentation.element
+package com.padabajka.dating.feature.messenger.presentation.chat.ui
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,10 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
-import com.padabajka.dating.feature.messenger.presentation.model.MessengerEvent
-import com.padabajka.dating.feature.messenger.presentation.model.NextMessageFieldLostFocusEvent
-import com.padabajka.dating.feature.messenger.presentation.model.NextMessageTextUpdateEvent
-import com.padabajka.dating.feature.messenger.presentation.model.SendMessageClickEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.NextMessageFieldLostFocusEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.NextMessageTextUpdateEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.SendMessageClickEvent
 
 // TODO: implement proper ui
 @Composable

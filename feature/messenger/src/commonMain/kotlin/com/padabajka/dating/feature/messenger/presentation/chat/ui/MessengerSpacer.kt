@@ -1,11 +1,11 @@
-package com.padabajka.dating.feature.messenger.presentation.element
+package com.padabajka.dating.feature.messenger.presentation.chat.ui
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.padabajka.dating.feature.messenger.presentation.model.item.MessengerItem
+import com.padabajka.dating.feature.messenger.presentation.chat.model.item.MessengerItem
 
 @Composable
 fun MessengerSpacer(first: MessengerItem, second: MessengerItem) {

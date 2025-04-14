@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.messenger.domain
+package com.padabajka.dating.feature.messenger.domain.chat
 
 import com.padabajka.dating.core.repository.api.MessageRepository
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId

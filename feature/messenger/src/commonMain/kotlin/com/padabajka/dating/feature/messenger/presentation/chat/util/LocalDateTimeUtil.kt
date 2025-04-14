@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.messenger.presentation.util
+package com.padabajka.dating.feature.messenger.presentation.chat.util
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod

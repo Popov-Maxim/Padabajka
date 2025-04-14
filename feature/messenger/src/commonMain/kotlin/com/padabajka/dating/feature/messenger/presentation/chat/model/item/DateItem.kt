@@ -1,9 +1,9 @@
-package com.padabajka.dating.feature.messenger.presentation.model.item
+package com.padabajka.dating.feature.messenger.presentation.chat.model.item
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import com.padabajka.dating.feature.messenger.presentation.util.currentDate
-import com.padabajka.dating.feature.messenger.presentation.util.yesterdayDate
+import com.padabajka.dating.feature.messenger.presentation.chat.util.currentDate
+import com.padabajka.dating.feature.messenger.presentation.chat.util.yesterdayDate
 import kotlinx.datetime.LocalDate
 
 @Immutable

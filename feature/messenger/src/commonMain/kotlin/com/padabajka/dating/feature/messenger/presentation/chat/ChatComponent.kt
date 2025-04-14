@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.messenger.presentation
+package com.padabajka.dating.feature.messenger.presentation.chat
 
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.domain.Factory
@@ -10,33 +10,33 @@ import com.padabajka.dating.core.presentation.event.raisedIfNotNull
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
-import com.padabajka.dating.feature.messenger.domain.ChatMessagesUseCase
-import com.padabajka.dating.feature.messenger.domain.ReactToMessageUseCase
-import com.padabajka.dating.feature.messenger.domain.ReadMessageUseCase
-import com.padabajka.dating.feature.messenger.domain.SendMessageUseCase
-import com.padabajka.dating.feature.messenger.domain.StartTypingUseCase
-import com.padabajka.dating.feature.messenger.domain.StopTypingUseCase
-import com.padabajka.dating.feature.messenger.presentation.model.ChatLoadingState
-import com.padabajka.dating.feature.messenger.presentation.model.ConsumeInternalErrorEvent
-import com.padabajka.dating.feature.messenger.presentation.model.EndOfMessagesListReachedEvent
-import com.padabajka.dating.feature.messenger.presentation.model.InternalError
-import com.padabajka.dating.feature.messenger.presentation.model.MessageGotReadEvent
-import com.padabajka.dating.feature.messenger.presentation.model.MessengerEvent
-import com.padabajka.dating.feature.messenger.presentation.model.MessengerState
-import com.padabajka.dating.feature.messenger.presentation.model.NextMessageFieldLostFocusEvent
-import com.padabajka.dating.feature.messenger.presentation.model.NextMessageTextUpdateEvent
-import com.padabajka.dating.feature.messenger.presentation.model.ReactToMessageEvent
-import com.padabajka.dating.feature.messenger.presentation.model.RemoveParentMessageEvent
-import com.padabajka.dating.feature.messenger.presentation.model.SelectParentMessageEvent
-import com.padabajka.dating.feature.messenger.presentation.model.SendMessageClickEvent
-import com.padabajka.dating.feature.messenger.presentation.model.item.addDateItems
-import com.padabajka.dating.feature.messenger.presentation.model.item.toMessageItem
+import com.padabajka.dating.feature.messenger.domain.chat.ChatMessagesUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.ReactToMessageUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.ReadMessageUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.SendMessageUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.StartTypingUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.StopTypingUseCase
+import com.padabajka.dating.feature.messenger.presentation.chat.model.ChatLoadingState
+import com.padabajka.dating.feature.messenger.presentation.chat.model.ChatState
+import com.padabajka.dating.feature.messenger.presentation.chat.model.ConsumeInternalErrorEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.EndOfMessagesListReachedEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.InternalError
+import com.padabajka.dating.feature.messenger.presentation.chat.model.MessageGotReadEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.NextMessageFieldLostFocusEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.NextMessageTextUpdateEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.ReactToMessageEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.RemoveParentMessageEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.SelectParentMessageEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.SendMessageClickEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.item.addDateItems
+import com.padabajka.dating.feature.messenger.presentation.chat.model.item.toMessageItem
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class MessengerComponent(
+class ChatComponent(
     context: ComponentContext,
     private val chatId: ChatId,
     chatMessagesUseCaseFactory: Factory<ChatMessagesUseCase>,
@@ -45,7 +45,7 @@ class MessengerComponent(
     reactToMessageUseCaseFactory: Factory<ReactToMessageUseCase>,
     startTypingUseCaseFactory: Factory<StartTypingUseCase>,
     stopTypingUseCaseFactory: Factory<StopTypingUseCase>
-) : BaseComponent<MessengerState>(context, MessengerState()) {
+) : BaseComponent<ChatState>(context, ChatState()) {
 
     private val chatMessagesUseCase by chatMessagesUseCaseFactory.delegate()
     private val sendMessageUseCase by sendMessageUseCaseFactory.delegate()

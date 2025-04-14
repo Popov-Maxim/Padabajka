@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.messenger.presentation.element
+package com.padabajka.dating.feature.messenger.presentation.chat.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.padabajka.dating.core.presentation.hourMinutes
-import com.padabajka.dating.feature.messenger.presentation.model.MessengerEvent
-import com.padabajka.dating.feature.messenger.presentation.model.item.OutgoingMessageItem
+import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.item.OutgoingMessageItem
 
 @Suppress("UnusedParameter")
 @Composable
