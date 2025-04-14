@@ -1,8 +1,12 @@
 package com.padabajka.dating.feature.messenger.presentation.model.item
 
 import androidx.compose.runtime.Immutable
+import com.padabajka.dating.core.repository.api.model.messenger.Message
+import com.padabajka.dating.core.repository.api.model.messenger.MessageDirection
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
+import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
+import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
 import kotlinx.datetime.LocalDateTime
 
 @Immutable
@@ -36,3 +40,39 @@ data class IncomingMessageItem(
     override val reaction: MessageReaction?,
     override val parentMessage: ParentMessageItem?
 ) : MessageItem
+
+fun Message.toMessageItem(): MessageItem {
+    return when (direction) {
+        MessageDirection.OUTGOING -> OutgoingMessageItem(
+            id = id,
+            content = content,
+            sentTime = creationTime,
+            hasBeenRead = status.hasBeenRead(),
+            reaction = reaction,
+            parentMessage = parentMessage?.toItem()
+        )
+        MessageDirection.INCOMING -> IncomingMessageItem(
+            id = id,
+            content = content,
+            sentTime = creationTime,
+            hasBeenRead = status.hasBeenRead(),
+            reaction = reaction,
+            parentMessage = parentMessage?.toItem()
+        )
+    }
+}
+
+private fun MessageStatus.hasBeenRead(): Boolean {
+    return when (this) {
+        MessageStatus.Read -> true
+        else -> false
+    }
+}
+
+private fun ParentMessage.toItem(): ParentMessageItem {
+    return ParentMessageItem(
+        id = id,
+        content = content,
+        direction = direction
+    )
+}

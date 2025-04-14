@@ -28,6 +28,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.core.repositoryApi)
+            api(projects.core.data)
 
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)

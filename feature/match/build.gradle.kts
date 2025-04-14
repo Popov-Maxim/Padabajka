@@ -30,6 +30,9 @@ kotlin {
             api(projects.core.domain)
             api(projects.core.repositoryApi)
             api(projects.core.data)
+            api(projects.component.room)
+
+            implementation(projects.feature.messenger)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

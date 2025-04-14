@@ -1,8 +1,8 @@
 package com.padabajka.dating.feature.swiper.di
 
 import com.padabajka.dating.core.data.utils.DataStoreUtils
+import com.padabajka.dating.core.repository.api.CandidateRepository
 import com.padabajka.dating.core.repository.api.CardRepository
-import com.padabajka.dating.core.repository.api.PersonRepository
 import com.padabajka.dating.core.repository.api.ReactionRepository
 import com.padabajka.dating.core.repository.api.SearchPreferencesRepository
 import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
@@ -10,11 +10,11 @@ import com.padabajka.dating.feature.swiper.data.CardRepositoryImpl
 import com.padabajka.dating.feature.swiper.data.CardSelector
 import com.padabajka.dating.feature.swiper.data.CardSelectorProvider
 import com.padabajka.dating.feature.swiper.data.NoAdCardSelector
-import com.padabajka.dating.feature.swiper.data.person.PersonRepositoryImpl
-import com.padabajka.dating.feature.swiper.data.person.network.KtorPersonApi
-import com.padabajka.dating.feature.swiper.data.person.network.PersonApi
-import com.padabajka.dating.feature.swiper.data.person.source.RemotePersonDataSource
-import com.padabajka.dating.feature.swiper.data.person.source.RemotePersonDataSourceImpl
+import com.padabajka.dating.feature.swiper.data.candidate.CandidateRepositoryImpl
+import com.padabajka.dating.feature.swiper.data.candidate.network.CandidateApi
+import com.padabajka.dating.feature.swiper.data.candidate.network.KtorCandidateApi
+import com.padabajka.dating.feature.swiper.data.candidate.source.RemoteCandidateDataSource
+import com.padabajka.dating.feature.swiper.data.candidate.source.RemoteCandidateDataSourceImpl
 import com.padabajka.dating.feature.swiper.data.reaction.ReactionRepositoryImpl
 import com.padabajka.dating.feature.swiper.data.reaction.network.FakeReactionApi
 import com.padabajka.dating.feature.swiper.data.reaction.network.ReactionApi
@@ -35,28 +35,28 @@ private val dataModule = module {
 
     single<CardRepository> {
         CardRepositoryImpl(
-            personRepository = get(),
+            candidateRepository = get(),
             nativeAdRepository = get(),
             reactionRepository = get(),
             cardSelectorProvider = get()
         )
     }
 
-    single<PersonRepository> {
-        PersonRepositoryImpl(
+    single<CandidateRepository> {
+        CandidateRepositoryImpl(
             scope = get(),
-            remotePersonDataSource = get()
+            remoteCandidateDataSource = get()
         )
     }
 
-    factory<RemotePersonDataSource> {
-        RemotePersonDataSourceImpl(
-            personApi = get()
+    factory<RemoteCandidateDataSource> {
+        RemoteCandidateDataSourceImpl(
+            candidateApi = get()
         )
     }
 
-    factory<PersonApi> {
-        KtorPersonApi(
+    factory<CandidateApi> {
+        KtorCandidateApi(
             ktorClientProvider = get()
         )
     }
@@ -75,7 +75,10 @@ private val dataModule = module {
     }
 
     factory<ReactionApi> {
-        FakeReactionApi()
+        FakeReactionApi(
+            matchRepository = get(),
+            personRepository = get()
+        )
     }
 
     factory<CardSelectorProvider> {

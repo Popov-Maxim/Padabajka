@@ -1,8 +1,8 @@
 package com.padabajka.dating.feature.swiper.data
 
+import com.padabajka.dating.core.repository.api.CandidateRepository
 import com.padabajka.dating.core.repository.api.CardRepository
 import com.padabajka.dating.core.repository.api.NativeAdRepository
-import com.padabajka.dating.core.repository.api.PersonRepository
 import com.padabajka.dating.core.repository.api.ReactionRepository
 import com.padabajka.dating.core.repository.api.model.ads.PlatformNativeAd
 import com.padabajka.dating.core.repository.api.model.swiper.AdCard
@@ -15,7 +15,7 @@ import com.padabajka.dating.core.repository.api.model.swiper.Reaction
 import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
 
 class CardRepositoryImpl(
-    private val personRepository: PersonRepository,
+    private val candidateRepository: CandidateRepository,
     private val nativeAdRepository: NativeAdRepository,
     private val reactionRepository: ReactionRepository,
     private val cardSelectorProvider: CardSelectorProvider
@@ -38,7 +38,7 @@ class CardRepositoryImpl(
 
     override suspend fun react(reaction: Reaction) {
         if (reaction is PersonReaction) {
-            personRepository.setUsed(reaction.id)
+            candidateRepository.setUsed(reaction.id)
         }
         reactionRepository.react(reaction)
     }
@@ -49,7 +49,7 @@ class CardRepositoryImpl(
     }
 
     private suspend fun getPersonCard(searchPreferences: SearchPreferences): Card {
-        val person = personRepository.getPerson(searchPreferences)
+        val person = candidateRepository.getCandidate(searchPreferences)
 
         return person?.toCard() ?: EmptyCard
     }

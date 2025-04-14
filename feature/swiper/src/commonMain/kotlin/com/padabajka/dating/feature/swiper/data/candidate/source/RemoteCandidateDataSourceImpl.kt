@@ -1,20 +1,20 @@
-package com.padabajka.dating.feature.swiper.data.person.source
+package com.padabajka.dating.feature.swiper.data.candidate.source
 
 import com.padabajka.dating.core.data.network.model.toPerson
 import com.padabajka.dating.core.repository.api.model.swiper.Person
 import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
-import com.padabajka.dating.feature.swiper.data.person.network.PersonApi
+import com.padabajka.dating.feature.swiper.data.candidate.network.CandidateApi
 
-class RemotePersonDataSourceImpl(
-    private val personApi: PersonApi
-) : RemotePersonDataSource {
+class RemoteCandidateDataSourceImpl(
+    private val candidateApi: CandidateApi
+) : RemoteCandidateDataSource {
 
     override suspend fun getPersons(
         count: Int,
         loaded: Set<Person>,
         searchPreferences: SearchPreferences
     ): List<Person> {
-        return personApi.getPersons(count, loaded.map(Person::id), searchPreferences)
+        return candidateApi.getPersons(count, loaded.map(Person::id), searchPreferences)
             .map { it.toPerson() }
     }
 }

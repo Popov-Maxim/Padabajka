@@ -1,14 +1,14 @@
-package com.padabajka.dating.feature.swiper.data.person
+package com.padabajka.dating.feature.swiper.data.candidate
 
 import com.padabajka.dating.core.data.Atomic
 import com.padabajka.dating.core.data.MutableAtomic
 import com.padabajka.dating.core.data.atomic
 import com.padabajka.dating.core.data.mutableAtomic
-import com.padabajka.dating.core.repository.api.PersonRepository
+import com.padabajka.dating.core.repository.api.CandidateRepository
 import com.padabajka.dating.core.repository.api.model.swiper.Person
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
-import com.padabajka.dating.feature.swiper.data.person.source.RemotePersonDataSource
+import com.padabajka.dating.feature.swiper.data.candidate.source.RemoteCandidateDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -17,10 +17,10 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class PersonRepositoryImpl(
+class CandidateRepositoryImpl(
     private val scope: CoroutineScope,
-    private val remotePersonDataSource: RemotePersonDataSource
-) : PersonRepository {
+    private val remoteCandidateDataSource: RemoteCandidateDataSource
+) : CandidateRepository {
 
     private var actualSearchPreferences: MutableAtomic<SearchPreferences?> = mutableAtomic(null)
 
@@ -35,7 +35,7 @@ class PersonRepositoryImpl(
 
     private val personObtainMutex = Mutex()
 
-    override suspend fun getPerson(searchPreferences: SearchPreferences): Person? {
+    override suspend fun getCandidate(searchPreferences: SearchPreferences): Person? {
         updateSearchPreferences(searchPreferences)
         return obtainPerson(searchPreferences)
     }
@@ -85,7 +85,7 @@ class PersonRepositoryImpl(
 
         val loaded = shared + preloaded
 
-        val newPersons = remotePersonDataSource.getPersons(LOADING_COUNT, loaded, searchPreferences)
+        val newPersons = remoteCandidateDataSource.getPersons(LOADING_COUNT, loaded, searchPreferences)
         if (newPersons.isNotEmpty()) {
             preloadedPersons {
                 if (containsKey(searchPreferences)) {

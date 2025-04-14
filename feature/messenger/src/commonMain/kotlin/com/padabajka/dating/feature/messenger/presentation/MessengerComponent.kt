@@ -8,12 +8,8 @@ import com.padabajka.dating.core.presentation.event.consumed
 import com.padabajka.dating.core.presentation.event.raised
 import com.padabajka.dating.core.presentation.event.raisedIfNotNull
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
-import com.padabajka.dating.core.repository.api.model.messenger.Message
-import com.padabajka.dating.core.repository.api.model.messenger.MessageDirection
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
-import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
-import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
 import com.padabajka.dating.feature.messenger.domain.ChatMessagesUseCase
 import com.padabajka.dating.feature.messenger.domain.ReactToMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.ReadMessageUseCase
@@ -33,11 +29,8 @@ import com.padabajka.dating.feature.messenger.presentation.model.ReactToMessageE
 import com.padabajka.dating.feature.messenger.presentation.model.RemoveParentMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.model.SelectParentMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.model.SendMessageClickEvent
-import com.padabajka.dating.feature.messenger.presentation.model.item.IncomingMessageItem
-import com.padabajka.dating.feature.messenger.presentation.model.item.MessageItem
-import com.padabajka.dating.feature.messenger.presentation.model.item.OutgoingMessageItem
-import com.padabajka.dating.feature.messenger.presentation.model.item.ParentMessageItem
 import com.padabajka.dating.feature.messenger.presentation.model.item.addDateItems
+import com.padabajka.dating.feature.messenger.presentation.model.item.toMessageItem
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -199,42 +192,6 @@ class MessengerComponent(
 //                }
             }
         }
-    }
-
-    private fun Message.toMessageItem(): MessageItem {
-        return when (direction) {
-            MessageDirection.OUTGOING -> OutgoingMessageItem(
-                id = id,
-                content = content,
-                sentTime = creationTime,
-                hasBeenRead = status.hasBeenRead(),
-                reaction = reaction,
-                parentMessage = parentMessage?.toItem()
-            )
-            MessageDirection.INCOMING -> IncomingMessageItem(
-                id = id,
-                content = content,
-                sentTime = creationTime,
-                hasBeenRead = status.hasBeenRead(),
-                reaction = reaction,
-                parentMessage = parentMessage?.toItem()
-            )
-        }
-    }
-
-    private fun MessageStatus.hasBeenRead(): Boolean {
-        return when (this) {
-            MessageStatus.Read -> true
-            else -> false
-        }
-    }
-
-    private fun ParentMessage.toItem(): ParentMessageItem {
-        return ParentMessageItem(
-            id = id,
-            content = content,
-            direction = direction
-        )
     }
 
     companion object {

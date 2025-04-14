@@ -2,6 +2,7 @@ package com.padabajka.dating.feature.profile.data
 
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.profile.Profile
+import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.profile.data.source.RemoveProfileDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,5 +24,9 @@ class ProfileRepositoryImpl(
     override suspend fun replace(profile: Profile) {
         removeProfileDataSource.replace(_profile.value, profile)
         _profile.value = profile
+    }
+
+    override suspend fun profile(userId: PersonId): Profile {
+        return removeProfileDataSource.getProfile(userId.raw)
     }
 }
