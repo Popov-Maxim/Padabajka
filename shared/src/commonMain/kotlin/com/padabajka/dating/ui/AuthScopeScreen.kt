@@ -6,7 +6,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.padabajka.dating.core.repository.api.model.messenger.ChatId
+import com.padabajka.dating.feature.messenger.presentation.MessengerScreen
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatScreen
 import com.padabajka.dating.feature.profile.presentation.ProfileScreen
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreen
@@ -21,7 +21,7 @@ fun AuthScopeScreen(component: AuthScopeNavigateComponent) {
         NavigateBar(
             openSwiper = component::openSwiper,
             openProfile = component::openProfile,
-            openMessenger = { component.openChat(ChatId("1")) }
+            openMessenger = component::openMessenger
         )
     }
 
@@ -47,6 +47,9 @@ fun AuthScopeScreen(component: AuthScopeNavigateComponent) {
 
             is AuthScopeNavigateComponent.Child.ChatScreen ->
                 ChatScreen(instance.component)
+
+            is AuthScopeNavigateComponent.Child.MessengerScreen ->
+                MessengerScreen(instance.component, navigateBar)
         }
     }
 }

@@ -23,7 +23,7 @@ interface MessageDao {
     fun messagesByChatId(chatId: String): Flow<List<MessageEntry>>
 
     @Query("SELECT * FROM messages WHERE chatId = :chatId ORDER BY creationTime DESC LIMIT 1")
-    suspend fun lastMessageByChatId(chatId: String): MessageEntry?
+    fun lastMessageByChatId(chatId: String): Flow<MessageEntry?>
 
     @Query("DELETE FROM messages WHERE id = :id")
     suspend fun deleteMessageById(id: String)

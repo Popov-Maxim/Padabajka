@@ -9,6 +9,8 @@ sealed interface StaticTextId {
         Settings(rawId = "settings"),
         Profile(rawId = "profile"),
         Editor(rawId = "editor"),
+        Matches(rawId = "matches"),
+        Chats(rawId = "chats"),
 
         // Setting screen
         Name(rawId = "name"),

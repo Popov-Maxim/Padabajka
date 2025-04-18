@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b23ffa1b1f6335e6002380fa7007234f",
+    "identityHash": "17b144c52e9df8b48f48dcce065cb9af",
     "entities": [
       {
         "tableName": "messages",
@@ -124,7 +124,7 @@
       },
       {
         "tableName": "matches",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `personId` TEXT NOT NULL, `chatId` TEXT, `creationTime` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `personId` TEXT NOT NULL, `chatId` TEXT NOT NULL, `creationTime` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -141,7 +141,8 @@
           {
             "fieldPath": "chatId",
             "columnName": "chatId",
-            "affinity": "TEXT"
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "creationTime",
@@ -160,7 +161,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b23ffa1b1f6335e6002380fa7007234f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '17b144c52e9df8b48f48dcce065cb9af')"
     ]
   }
 }

@@ -9,6 +9,8 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Settings -> "Настройки"
             StaticTextId.UiId.Profile -> "Профиль"
             StaticTextId.UiId.Editor -> "Редактор"
+            StaticTextId.UiId.Matches -> "Метчи"
+            StaticTextId.UiId.Chats -> "Чаты"
             StaticTextId.UiId.Name -> "Имя"
             StaticTextId.UiId.LogOut -> "Выйти"
             StaticTextId.UiId.General -> "Общее"
