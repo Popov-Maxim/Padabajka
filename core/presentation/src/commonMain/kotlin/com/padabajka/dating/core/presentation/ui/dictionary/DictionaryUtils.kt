@@ -17,14 +17,14 @@ fun rememberDictionary(): DictionaryRepository {
 }
 
 @Composable
-fun StaticTextId.translate(lang: Language = Language.Static.EN): String {
+fun StaticTextId.translate(lang: Language = defaultLanguage): String {
     val dictionary = rememberDictionary()
 
     return dictionary.stableGetText(this.id, lang) ?: TODO()
 }
 
 @Composable
-fun Text.translate(lang: Language = Language.Static.EN): String {
+fun Text.translate(lang: Language = defaultLanguage): String {
     val dictionary = rememberDictionary()
 
     return dictionary.stableGetText(this.id.raw, lang) ?: this.default ?: "TODO()"
@@ -34,3 +34,5 @@ fun Text.translate(lang: Language = Language.Static.EN): String {
 private fun DictionaryRepository.stableGetText(id: String, lang: Language): String? {
     return getText(id, lang)
 }
+
+private val defaultLanguage = Language.Static.EN

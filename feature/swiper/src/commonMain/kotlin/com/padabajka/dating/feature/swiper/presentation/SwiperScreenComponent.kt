@@ -103,7 +103,7 @@ class SwiperScreenComponent(
 
     private fun likeCard(cardItem: CardItem) {
         if (cardItem is PersonItem) {
-            reactPersonAndUpdateCardDeck(PersonReaction.Dislike(cardItem.id))
+            reactPersonAndUpdateCardDeck(PersonReaction.Like(cardItem.id))
         } else {
             updateCardDeck()
         }
@@ -111,7 +111,7 @@ class SwiperScreenComponent(
 
     private fun superLikeCard(cardItem: CardItem) {
         if (cardItem is PersonItem) {
-            reactPersonAndUpdateCardDeck(PersonReaction.Dislike(cardItem.id))
+            reactPersonAndUpdateCardDeck(PersonReaction.SuperLike(cardItem.id))
         } else {
             updateCardDeck()
         }

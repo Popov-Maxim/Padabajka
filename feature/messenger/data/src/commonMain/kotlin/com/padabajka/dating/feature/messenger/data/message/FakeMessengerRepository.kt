@@ -12,6 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -92,6 +93,10 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
     }
 
     override fun messages(chatId: ChatId): Flow<List<Message>> = messagesFlow
+
+    override fun lastMessage(chatId: ChatId): Flow<Message?> {
+        return messagesFlow.map { it.first() }
+    }
 
     override suspend fun sendMessage(chatId: ChatId, content: String, parentMessageId: MessageId?) {
         val message = Message(

@@ -8,6 +8,6 @@ import androidx.room.PrimaryKey
 class MatchEntry(
     @PrimaryKey val id: String,
     @ColumnInfo("personId") val personId: String,
-    @ColumnInfo("chatId") val chatId: String?,
+    @ColumnInfo("chatId") val chatId: String,
     @ColumnInfo("creationTime") val creationTime: Long
 )

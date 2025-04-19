@@ -7,7 +7,7 @@ import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 class RoomLocalPersonDataSource(
     private val personDao: PersonDao
 ) : LocalPersonDataSource {
-    override suspend fun getPerson(personId: PersonId): PersonEntry {
+    override suspend fun getPerson(personId: PersonId): PersonEntry? {
         return personDao.getPerson(personId.raw)
     }
 

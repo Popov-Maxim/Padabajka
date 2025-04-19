@@ -15,6 +15,10 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
                 entries.map(MessageEntry::toDto)
             }
 
+    override fun lastMessage(chatId: String): Flow<MessageDto?> {
+        return messageDao.lastMessageByChatId(chatId).map { it?.toDto() }
+    }
+
     override suspend fun message(messageId: String): MessageDto {
         return messageDao.messageById(messageId).toDto()
     }

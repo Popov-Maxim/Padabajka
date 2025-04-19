@@ -10,7 +10,7 @@ import com.padabajka.dating.component.room.person.entry.PersonEntry
 interface PersonDao {
 
     @Query("SELECT * FROM person WHERE id = :id")
-    suspend fun getPerson(id: String): PersonEntry
+    suspend fun getPerson(id: String): PersonEntry?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(person: PersonEntry)

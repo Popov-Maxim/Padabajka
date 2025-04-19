@@ -41,6 +41,11 @@ internal class MessageRepositoryImpl(
             messages.map { it.toDomain() }
         }
 
+    override fun lastMessage(chatId: ChatId): Flow<Message?> {
+        return localMessageDataSource.lastMessage(chatId.raw)
+            .map { it?.toDomain() }
+    }
+
     override suspend fun sendMessage(
         chatId: ChatId,
         content: String,

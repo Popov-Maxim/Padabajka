@@ -9,7 +9,7 @@ fun Match.toEntry(): MatchEntry {
     return MatchEntry(
         id = id.raw,
         personId = person.id.raw,
-        chatId = chatId?.raw,
+        chatId = chatId.raw,
         creationTime = creationTime
     )
 }
@@ -18,7 +18,7 @@ fun MatchEntry.toMatch(person: Person): Match {
     return Match(
         id = Match.Id(id),
         person = person,
-        chatId = chatId?.let(::ChatId),
+        chatId = chatId.let(::ChatId),
         creationTime = creationTime
     )
 }

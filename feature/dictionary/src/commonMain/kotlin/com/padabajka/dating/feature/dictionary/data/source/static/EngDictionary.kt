@@ -9,6 +9,8 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Settings -> "Settings"
             StaticTextId.UiId.Profile -> "Profile"
             StaticTextId.UiId.Editor -> "Editor"
+            StaticTextId.UiId.Matches -> "Matches"
+            StaticTextId.UiId.Chats -> "Chats"
             StaticTextId.UiId.Name -> "Name"
             StaticTextId.UiId.LogOut -> "Logout"
             StaticTextId.UiId.General -> "General"

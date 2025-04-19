@@ -57,6 +57,7 @@ fun DeckOfCards(
                             Swipe.Right -> LikeEvent(card)
                             Swipe.Up -> SuperLikeEvent(card)
                         }
+                        println("LOG UI: $it")
 
                         swiperScreenComponent.onEvent(reaction)
                     },

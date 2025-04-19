@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 internal interface LocalMessageDataSource {
     fun messages(chatId: String): Flow<List<MessageDto>>
+    fun lastMessage(chatId: String): Flow<MessageDto?>
     suspend fun message(messageId: String): MessageDto
     suspend fun addMessage(message: MessageDto)
     suspend fun updateMessage(messageId: String, update: (MessageDto) -> MessageDto)
