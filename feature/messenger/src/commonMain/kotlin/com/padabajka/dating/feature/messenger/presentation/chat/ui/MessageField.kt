@@ -2,7 +2,7 @@ package com.padabajka.dating.feature.messenger.presentation.chat.ui
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -54,9 +54,10 @@ fun MessageField(
             prefix = { Spacer(Modifier.width(30.dp)) }
         )
         IconButton(
+            modifier = Modifier.padding(top = 5.dp, bottom = 5.dp, end = 10.dp),
             onClick = {
                 followNewItems.value = true
-                onEvent(SendMessageClickEvent(text, null))
+                onEvent(SendMessageClickEvent(text))
             }
         ) {
             Icon(
@@ -64,7 +65,6 @@ fun MessageField(
                 contentDescription = "Send message"
             )
         }
-        Spacer(modifier = Modifier.size(8.dp))
     }
 }
 
@@ -74,7 +74,7 @@ private fun TextFieldDefaults.transparentColors(
     cursorColor: Color = Color.Unspecified,
     labelColor: Color = Color.Unspecified,
 ): TextFieldColors {
-    return TextFieldDefaults.colors(
+    return this.colors(
         focusedContainerColor = Color.Transparent,
         unfocusedContainerColor = Color.Transparent,
         disabledContainerColor = Color.Transparent,

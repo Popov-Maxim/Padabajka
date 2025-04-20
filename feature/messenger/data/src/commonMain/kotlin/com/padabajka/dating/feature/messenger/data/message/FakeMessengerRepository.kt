@@ -7,6 +7,7 @@ import com.padabajka.dating.core.repository.api.model.messenger.MessageDirection
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
+import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -81,14 +82,24 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
     private fun createIncomingMessage(): Message {
         val content = "New incoming message"
         val id = MessageId("${nextMessageId++}")
+        val hasParentMessage = (1..100).random() > 50
+        val parentMessage = messagesList.takeIf { hasParentMessage }?.random()
         return Message(
             id = id,
             direction = MessageDirection.INCOMING,
             content = content,
             creationTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
             status = MessageStatus.Unread,
-            parentMessage = null,
+            parentMessage = parentMessage?.toParent(),
             reaction = null
+        )
+    }
+
+    private fun Message.toParent(): ParentMessage {
+        return ParentMessage(
+            id = id,
+            direction = direction,
+            content = content
         )
     }
 
@@ -106,7 +117,7 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
             creationTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
             status = MessageStatus.Read,
             reaction = null,
-            parentMessage = null
+            parentMessage = messagesList.find { it.id == parentMessageId }?.toParent()
         )
         messagesList = messagesList + message
         messagesFlow.emit(messagesList.reversed())

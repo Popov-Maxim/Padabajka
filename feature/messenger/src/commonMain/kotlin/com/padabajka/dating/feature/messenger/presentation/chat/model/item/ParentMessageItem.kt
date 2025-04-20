@@ -10,3 +10,15 @@ data class ParentMessageItem(
     val content: String,
     val direction: MessageDirection
 )
+
+fun MessageItem.toParentMessageItem(): ParentMessageItem {
+    val direction = when (this) {
+        is OutgoingMessageItem -> MessageDirection.OUTGOING
+        is IncomingMessageItem -> MessageDirection.INCOMING
+    }
+    return ParentMessageItem(
+        id = id,
+        content = content,
+        direction = direction
+    )
+}
