@@ -5,6 +5,9 @@ import androidx.compose.runtime.Immutable
 import com.padabajka.dating.feature.messenger.presentation.chat.util.currentDate
 import com.padabajka.dating.feature.messenger.presentation.chat.util.yesterdayDate
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.format
+import kotlinx.datetime.format.MonthNames
+import kotlinx.datetime.format.char
 
 @Immutable
 interface TimeItem : MessengerItem {
@@ -43,6 +46,13 @@ class DateTimeItem(private val date: LocalDate) : TimeItem {
 
     @Composable
     override fun labelText(): String {
-        return "${date.dayOfMonth}:${date.monthNumber}"
+        val format = LocalDate.Format {
+            monthName(MonthNames.ENGLISH_ABBREVIATED)
+            char(' ')
+            dayOfMonth()
+            chars(", ")
+            year()
+        }
+        return date.format(format)
     }
 }

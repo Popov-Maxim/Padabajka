@@ -21,6 +21,16 @@ object CoreColors {
         0xFFFFFFFF,
         totalVariant,
     )
+
+    object Chat {
+        val secondary = ColorGroup(
+            0xFF7561FF,
+            0xFFFFFFFF,
+            totalVariant,
+        )
+
+        val message = secondary
+    }
 }
 
 data class ColorGroup(

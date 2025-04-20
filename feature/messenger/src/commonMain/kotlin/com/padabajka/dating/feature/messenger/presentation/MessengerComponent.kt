@@ -1,7 +1,6 @@
 package com.padabajka.dating.feature.messenger.presentation
 
 import com.arkivanov.decompose.ComponentContext
-import com.padabajka.dating.core.data.uuid
 import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.feature.messenger.domain.MatchWithChatUseCase
@@ -11,8 +10,8 @@ import com.padabajka.dating.feature.messenger.presentation.model.EmptyChatItem
 import com.padabajka.dating.feature.messenger.presentation.model.MatchItem
 import com.padabajka.dating.feature.messenger.presentation.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.model.MessengerState
-import com.padabajka.dating.feature.messenger.presentation.model.NewChatEvent
 import com.padabajka.dating.feature.messenger.presentation.model.OpenChatEvent
+import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
 import com.padabajka.dating.feature.messenger.presentation.model.toPersonItem
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -20,7 +19,7 @@ import kotlinx.coroutines.flow.map
 
 class MessengerComponent(
     context: ComponentContext,
-    private val openChat: (chatId: ChatId) -> Unit,
+    private val openChat: (chatId: ChatId, personItem: PersonItem) -> Unit,
     private val matchWithChatUseCase: MatchWithChatUseCase,
 ) : BaseComponent<MessengerState>(
     context,
@@ -63,8 +62,7 @@ class MessengerComponent(
 
     fun onEvent(event: MessengerEvent) {
         when (event) {
-            is OpenChatEvent -> openChat(event.chatId)
-            is NewChatEvent -> openChat(ChatId(uuid()))
+            is OpenChatEvent -> openChat(event.chatId, event.personItem)
         }
     }
 }

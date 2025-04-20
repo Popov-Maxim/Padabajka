@@ -24,6 +24,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.OpenProfileEditor -> "Open profile editor"
             StaticTextId.UiId.Filters -> "Filters"
             StaticTextId.UiId.LookingFor -> "Looking for..."
+            StaticTextId.UiId.EnterMessage -> "Enter message..."
         }
     }
 

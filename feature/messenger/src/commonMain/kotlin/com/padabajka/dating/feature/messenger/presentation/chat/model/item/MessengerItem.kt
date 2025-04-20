@@ -15,11 +15,10 @@ fun List<MessageItem>.addDateItems(): PersistentList<MessengerItem> =
 
         val dateGroups = this@addDateItems.groupBy { it.sentTime.date }
             .entries
-            .sortedBy { (date, _) -> date }
+            .sortedByDescending { (date, _) -> date }
 
-        for ((date, messagesList) in dateGroups.dropLast(1)) {
+        for ((date, messagesList) in dateGroups) {
             addAll(messagesList)
             add(TimeItem.getTimeItem(date))
         }
-        addAll(dateGroups.last().value)
     }.toPersistentList()
