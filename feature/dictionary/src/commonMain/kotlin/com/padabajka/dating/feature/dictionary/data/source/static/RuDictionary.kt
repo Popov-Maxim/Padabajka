@@ -24,6 +24,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.OpenProfileEditor -> "Открыть редактор профиля"
             StaticTextId.UiId.Filters -> "Фильтр"
             StaticTextId.UiId.LookingFor -> "Ищу..."
+            StaticTextId.UiId.EnterMessage -> "Введите сообщение..."
         }
     }
 

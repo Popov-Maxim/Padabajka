@@ -91,7 +91,7 @@ internal class MessageRepositoryImpl(
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override suspend fun reactToMessage(
         messageId: MessageId,
-        reaction: MessageReaction
+        reaction: MessageReaction?
     ) {
         localMessageDataSource.updateMessage(messageId.raw) {
             it.copy(reaction = reaction, reactionSynced = false)

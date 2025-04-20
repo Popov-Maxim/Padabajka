@@ -3,18 +3,25 @@ package com.padabajka.dating.feature.messenger.presentation.chat.ui
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.NextMessageFieldLostFocusEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.NextMessageTextUpdateEvent
@@ -41,19 +48,49 @@ fun MessageField(
                     }
                 },
             value = text,
-            onValueChange = { onEvent(NextMessageTextUpdateEvent(it)) }
+            onValueChange = { onEvent(NextMessageTextUpdateEvent(it)) },
+            colors = TextFieldDefaults.transparentColors(),
+            placeholder = { Text(StaticTextId.UiId.EnterMessage.translate()) },
+            prefix = { Spacer(Modifier.width(30.dp)) }
         )
-        Button(
+        IconButton(
             onClick = {
                 followNewItems.value = true
                 onEvent(SendMessageClickEvent(text, null))
             }
         ) {
             Icon(
-                painter = rememberVectorPainter(image = Icons.Filled.ArrowForward),
+                painter = rememberVectorPainter(image = Icons.AutoMirrored.Filled.ArrowForward),
                 contentDescription = "Send message"
             )
         }
         Spacer(modifier = Modifier.size(8.dp))
     }
+}
+
+@Composable
+private fun TextFieldDefaults.transparentColors(
+    textColor: Color = Color.Unspecified,
+    cursorColor: Color = Color.Unspecified,
+    labelColor: Color = Color.Unspecified,
+): TextFieldColors {
+    return TextFieldDefaults.colors(
+        focusedContainerColor = Color.Transparent,
+        unfocusedContainerColor = Color.Transparent,
+        disabledContainerColor = Color.Transparent,
+
+        focusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent,
+        disabledIndicatorColor = Color.Transparent,
+
+        cursorColor = cursorColor,
+
+        focusedTextColor = textColor,
+        unfocusedTextColor = textColor,
+        disabledTextColor = textColor,
+
+        focusedLabelColor = labelColor,
+        unfocusedLabelColor = labelColor,
+        disabledLabelColor = labelColor,
+    )
 }

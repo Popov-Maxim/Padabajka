@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.feature.messenger.presentation.MessengerComponent
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatComponent
+import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
 import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
@@ -36,10 +37,6 @@ class AuthScopeNavigateComponent(
 
     fun openMessenger() {
         navigate(Configuration.MessengerScreen)
-    }
-
-    fun openChat(chatId: ChatId) {
-        navigate(Configuration.ChatScreen(chatId))
     }
 
     override fun createChild(
@@ -79,14 +76,23 @@ class AuthScopeNavigateComponent(
             )
 
             is Configuration.ChatScreen -> Child.ChatScreen(
-                component = get { parametersOf(context, configuration.chatId) }
+                component = get {
+                    parametersOf(
+                        context,
+                        configuration.chatId,
+                        configuration.personItem,
+                        ::navigateBack
+                    )
+                }
             )
 
             Configuration.MessengerScreen -> Child.MessengerScreen(
                 component = get {
                     parametersOf(
                         context,
-                        { chatId: ChatId -> navigate(Configuration.ChatScreen(chatId)) }
+                        { chatId: ChatId, personItem: PersonItem ->
+                            navigate(Configuration.ChatScreen(chatId, personItem))
+                        }
                     )
                 }
             )
@@ -121,6 +127,9 @@ class AuthScopeNavigateComponent(
         data object MessengerScreen : Configuration
 
         @Serializable
-        data class ChatScreen(val chatId: ChatId) : Configuration
+        data class ChatScreen(
+            val chatId: ChatId,
+            val personItem: PersonItem
+        ) : Configuration
     }
 }

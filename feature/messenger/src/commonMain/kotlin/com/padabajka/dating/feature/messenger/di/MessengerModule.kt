@@ -28,6 +28,8 @@ private val presentationModule = module {
         ChatComponent(
             context = parameters.get(),
             chatId = parameters.get(),
+            personItem = parameters.get(),
+            navigateBack = parameters.get(),
             chatMessagesUseCaseFactory = { get() },
             sendMessageUseCaseFactory = { get() },
             readMessageUseCaseFactory = { get() },

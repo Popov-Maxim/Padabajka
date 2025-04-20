@@ -11,5 +11,5 @@ interface MessageRepository {
     fun lastMessage(chatId: ChatId): Flow<Message?>
     suspend fun sendMessage(chatId: ChatId, content: String, parentMessageId: MessageId? = null)
     suspend fun readMessage(messageId: MessageId)
-    suspend fun reactToMessage(messageId: MessageId, reaction: MessageReaction)
+    suspend fun reactToMessage(messageId: MessageId, reaction: MessageReaction?)
 }

@@ -1,13 +1,16 @@
 package com.padabajka.dating.feature.messenger.presentation.chat.ui
 
 import androidx.compose.foundation.interaction.DragInteraction
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -21,8 +24,8 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.ChatLoadin
 import com.padabajka.dating.feature.messenger.presentation.chat.model.EndOfMessagesListReachedEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.IncomingMessageItem
+import com.padabajka.dating.feature.messenger.presentation.chat.model.item.MessageItem
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.MessengerItem
-import com.padabajka.dating.feature.messenger.presentation.chat.model.item.OutgoingMessageItem
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.TimeItem
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.flow.collectLatest
@@ -97,16 +100,21 @@ fun MessageList(
     }
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(10.dp),
         state = listState,
-        reverseLayout = true
+        reverseLayout = true,
+        verticalArrangement = Arrangement.spacedBy(7.dp, alignment = Alignment.Bottom)
     ) {
         itemsIndexed(
             items = messengerItems,
             key = { _, item -> item.key }
         ) { index, item ->
             when (item) {
-                is IncomingMessageItem -> IncomingMessage(item, onEvent)
-                is OutgoingMessageItem -> OutgoingMessage(item, onEvent)
+                is MessageItem -> Message(
+                    message = item,
+                    shape = RoundedCornerShape(15.dp),
+                    onEvent = onEvent
+                )
                 is TimeItem -> TimePeriod(item.labelText())
             }
             if (index == messengerItems.lastIndex) {
@@ -114,7 +122,7 @@ fun MessageList(
                     onEvent(EndOfMessagesListReachedEvent)
                 }
             } else {
-                MessengerSpacer(messengerItems[index + 1], item)
+//                MessengerSpacer(messengerItems[index + 1], item)
             }
         }
     }

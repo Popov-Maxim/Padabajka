@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -24,18 +23,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.ImageLoader
-import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
+import com.padabajka.dating.core.presentation.ui.ProfileAvatar
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
@@ -47,8 +41,6 @@ import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.profile.presentation.model.OpenEditorEvent
 import com.padabajka.dating.feature.profile.presentation.model.ProfileValue
 import com.padabajka.dating.feature.profile.presentation.model.UpdateProfileEvent
-import org.koin.compose.koinInject
-import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ProfileScreen(
@@ -149,7 +141,7 @@ private fun ProfileScreen(
                 ) {
                     ProfileAvatar(
                         model = profile.images.first().raw(),
-                        size = 100.dp
+                        modifier = Modifier.size(100.dp)
                     )
                     Column(
                         modifier = Modifier.align(Alignment.CenterVertically),
@@ -182,25 +174,4 @@ private fun ProfileScreen(
             }
         }
     }
-}
-
-@Composable
-private fun ProfileAvatar(
-    model: Any?,
-    size: Dp,
-) {
-    val context = LocalPlatformContext.current
-    val imageLoader: ImageLoader = koinInject { parametersOf(context) }
-
-    val imageShape = CircleShape
-    AsyncImage(
-        model = model,
-        modifier = Modifier.background(
-            color = Color.DarkGray,
-            shape = imageShape
-        ).size(size).clip(imageShape),
-        imageLoader = imageLoader,
-        contentDescription = null,
-        contentScale = ContentScale.Crop
-    )
 }
