@@ -23,6 +23,7 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.EndOfMessa
 import com.padabajka.dating.feature.messenger.presentation.chat.model.InternalError
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessageGotReadEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.NavigateBackEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.NextMessageFieldLostFocusEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.NextMessageTextUpdateEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ReactToMessageEvent
@@ -31,6 +32,7 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.SelectPare
 import com.padabajka.dating.feature.messenger.presentation.chat.model.SendMessageClickEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.addDateItems
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.toMessageItem
+import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -39,13 +41,15 @@ import kotlinx.coroutines.launch
 class ChatComponent(
     context: ComponentContext,
     private val chatId: ChatId,
+    personItem: PersonItem,
+    private val navigateBack: () -> Unit,
     chatMessagesUseCaseFactory: Factory<ChatMessagesUseCase>,
     sendMessageUseCaseFactory: Factory<SendMessageUseCase>,
     readMessageUseCaseFactory: Factory<ReadMessageUseCase>,
     reactToMessageUseCaseFactory: Factory<ReactToMessageUseCase>,
     startTypingUseCaseFactory: Factory<StartTypingUseCase>,
     stopTypingUseCaseFactory: Factory<StopTypingUseCase>
-) : BaseComponent<ChatState>(context, ChatState()) {
+) : BaseComponent<ChatState>(context, ChatState(personItem)) {
 
     private val chatMessagesUseCase by chatMessagesUseCaseFactory.delegate()
     private val sendMessageUseCase by sendMessageUseCaseFactory.delegate()
@@ -84,9 +88,6 @@ class ChatComponent(
                 state.copy(internalErrorStateEvent = raised)
             }
         )
-//        componentScope.launch {
-//            chatMessagesUseCase(chatId)
-//        }
     }
 
     fun onEvent(event: MessengerEvent) {
@@ -100,6 +101,7 @@ class ChatComponent(
             is ReactToMessageEvent -> reactToMessage(event.messageId, event.reaction)
             EndOfMessagesListReachedEvent -> loadMoreMessages()
             is SendMessageClickEvent -> sendMessage(event.message, event.parentMessageId)
+            NavigateBackEvent -> navigateBack()
         }
     }
 
@@ -162,7 +164,7 @@ class ChatComponent(
         }
     )
 
-    private fun reactToMessage(messageId: MessageId, reaction: MessageReaction) =
+    private fun reactToMessage(messageId: MessageId, reaction: MessageReaction?) =
         mapAndReduceException(
             action = {
                 reactToMessageUseCase(messageId, reaction)

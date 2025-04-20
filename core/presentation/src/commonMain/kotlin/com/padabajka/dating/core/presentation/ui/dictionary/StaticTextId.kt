@@ -36,6 +36,9 @@ sealed interface StaticTextId {
         // Profile editor
 
         // --------------
+
+        // Chat screen
+        EnterMessage(rawId = "enter_message"),
         ;
         override val id: String = "${rawId}_ui_id"
     }

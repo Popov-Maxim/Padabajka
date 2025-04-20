@@ -8,6 +8,7 @@ import com.padabajka.dating.core.repository.api.model.swiper.Person
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.MessageItem
 import kotlinx.collections.immutable.PersistentList
+import kotlinx.serialization.Serializable
 
 data class MessengerState(
     val matchesWithoutChat: PersistentList<EmptyChatItem>,
@@ -31,14 +32,15 @@ data class MatchItem(
     val creationTime: Long
 )
 
+@Serializable
 data class PersonItem(
     val id: PersonId,
     val name: String,
-    val image: Image,
+    val image: Image.Url,
 )
 
 fun Person.toPersonItem() = PersonItem(
     id = id,
     name = profile.name,
-    image = profile.images.first()
+    image = profile.images.filterIsInstance<Image.Url>().first()
 )

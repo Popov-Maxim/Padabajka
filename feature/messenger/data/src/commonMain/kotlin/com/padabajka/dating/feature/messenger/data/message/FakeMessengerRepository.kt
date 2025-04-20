@@ -121,8 +121,11 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
 
     override suspend fun reactToMessage(
         messageId: MessageId,
-        reaction: MessageReaction
+        reaction: MessageReaction?
     ) {
-        TODO("Not yet implemented")
+        messagesList = messagesList.map {
+            if (it.id == messageId) it.copy(reaction = reaction) else it
+        }
+        messagesFlow.emit(messagesList.reversed())
     }
 }

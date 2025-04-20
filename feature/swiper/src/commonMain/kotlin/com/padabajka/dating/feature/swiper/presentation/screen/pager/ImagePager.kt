@@ -1,6 +1,5 @@
 package com.padabajka.dating.feature.swiper.presentation.screen.pager
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,15 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
-import coil3.ImageLoader
 import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
+import com.padabajka.dating.core.presentation.ui.utils.rememberImageLoader
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.raw
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
-import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ImagePager(
@@ -34,8 +30,7 @@ fun ImagePager(
     images: PersistentList<Image>,
     onPageChanged: (PagerData) -> Unit
 ) {
-    val context = LocalPlatformContext.current
-    val imageLoader: ImageLoader = koinInject { parametersOf(context) }
+    val imageLoader = rememberImageLoader()
     val pagerState = rememberPagerState(pageCount = {
         images.size
     })
@@ -84,14 +79,12 @@ fun ImagePager(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 private suspend fun PagerState.scrollBack() {
     if (this.currentPage > 0) {
         this.animateScrollToPage(this.currentPage - 1)
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 private suspend fun PagerState.scrollToNext() {
     if (this.currentPage < this.pageCount - 1) {
         this.animateScrollToPage(this.currentPage + 1)
