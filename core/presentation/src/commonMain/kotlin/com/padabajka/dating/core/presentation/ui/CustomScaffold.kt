@@ -8,11 +8,12 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun CustomScaffold(
+    modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit
 ) {
-    Column {
+    Column(modifier) {
         topBar()
         MainBlock(content)
         bottomBar()

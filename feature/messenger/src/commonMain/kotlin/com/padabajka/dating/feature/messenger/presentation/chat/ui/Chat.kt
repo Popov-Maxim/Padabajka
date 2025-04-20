@@ -87,7 +87,7 @@ fun Chat(
 }
 
 @Composable
-fun MessageList(
+private fun MessageList(
     messengerItems: PersistentList<MessengerItem>,
     listState: LazyListState,
     followNewItems: MutableState<Boolean>,

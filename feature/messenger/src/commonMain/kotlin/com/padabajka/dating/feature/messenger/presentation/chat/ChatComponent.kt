@@ -30,6 +30,7 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.ReactToMes
 import com.padabajka.dating.feature.messenger.presentation.chat.model.RemoveParentMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.SelectParentMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.SendMessageClickEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.item.ParentMessageItem
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.addDateItems
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.toMessageItem
 import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
@@ -94,13 +95,13 @@ class ChatComponent(
         when (event) {
             is NextMessageTextUpdateEvent -> updateNextMessageText(event.nextMessageText)
             NextMessageFieldLostFocusEvent -> notifyTypingStopped()
-            is SelectParentMessageEvent -> updateParentMessageId(event.messageId)
-            RemoveParentMessageEvent -> updateParentMessageId(null)
+            is SelectParentMessageEvent -> updateParentMessage(event.message)
+            RemoveParentMessageEvent -> updateParentMessage(null)
             ConsumeInternalErrorEvent -> consumeInternalErrorEvent()
             is MessageGotReadEvent -> readMessage(event.messageId)
             is ReactToMessageEvent -> reactToMessage(event.messageId, event.reaction)
             EndOfMessagesListReachedEvent -> loadMoreMessages()
-            is SendMessageClickEvent -> sendMessage(event.message, event.parentMessageId)
+            is SendMessageClickEvent -> sendMessage(event.message)
             NavigateBackEvent -> navigateBack()
         }
     }
@@ -146,8 +147,8 @@ class ChatComponent(
         notifyTyping()
     }
 
-    private fun updateParentMessageId(messageId: MessageId?) = reduce {
-        it.copy(parentMessageId = messageId)
+    private fun updateParentMessage(messageId: ParentMessageItem?) = reduce {
+        it.copy(parentMessage = messageId)
     }
 
     private fun consumeInternalErrorEvent() = reduce {
@@ -176,10 +177,11 @@ class ChatComponent(
         )
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
-    private fun sendMessage(message: String, parentMessageId: MessageId?) {
+    private fun sendMessage(message: String) {
         componentScope.launch {
+            val parentMessageId = state.value.parentMessage?.id
             reduce { state ->
-                state.copy(nextMessageText = "", parentMessageId = null)
+                state.copy(nextMessageText = "", parentMessage = null)
             }
 
             try {

@@ -41,12 +41,20 @@ fun AppSettingsDialog(
     ipAddressProvider: IpAddressProvider = koinInject(),
     onDismiss: () -> Unit
 ) {
-    var ipAddress by remember { mutableStateOf(ipAddressProvider.getIpAddress() ?: "") }
+    var ipAddress by remember {
+        val host = settings.hostData.run { this as? Host.Custom }?.host
+        mutableStateOf(host ?: ipAddressProvider.getIpAddress() ?: "")
+    }
     var selectedHost by remember { mutableStateOf(settings.hostData.toSelectedHost()) }
     val currentShowFps by settings.showFps.collectAsState()
     var showFps by remember(currentShowFps) { mutableStateOf(currentShowFps) }
     LaunchedEffect(settings.hostData) {
         selectedHost = settings.hostData.toSelectedHost()
+        if (settings.hostData !is Host.Custom) {
+            ipAddressProvider.getIpAddress()?.let {
+                ipAddress = it
+            }
+        }
     }
 
     Dialog(onDismissRequest = onDismiss) {

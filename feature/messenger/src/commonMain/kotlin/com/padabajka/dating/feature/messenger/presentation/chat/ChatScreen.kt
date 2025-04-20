@@ -26,6 +26,7 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerE
 import com.padabajka.dating.feature.messenger.presentation.chat.model.NavigateBackEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.ui.Chat
 import com.padabajka.dating.feature.messenger.presentation.chat.ui.MessageField
+import com.padabajka.dating.feature.messenger.presentation.chat.ui.ParentMessageField
 import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
 
 @Composable
@@ -40,12 +41,21 @@ fun ChatScreen(component: ChatComponent) {
             TopBar(state.person, component::onEvent)
         },
         bottomBar = {
-            MessageField(
-                modifier = Modifier.fillMaxWidth(),
-                text = state.nextMessageText,
-                followNewItems = followNewItems,
-                onEvent = component::onEvent
-            )
+            Column {
+                val parentMessage = state.parentMessage
+                if (parentMessage != null) {
+                    ParentMessageField(
+                        parentMessage = parentMessage,
+                        onEvent = component::onEvent
+                    )
+                }
+                MessageField(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = state.nextMessageText,
+                    followNewItems = followNewItems,
+                    onEvent = component::onEvent
+                )
+            }
         }
     ) {
         Chat(
