@@ -20,7 +20,8 @@ val messengerDataModule = module {
         MessageRepositoryImpl(
             authRepository = get(),
             localMessageDataSource = get(),
-            remoteMessageDataSource = get()
+            remoteMessageDataSource = get(),
+            personRepository = get()
         )
     }
     single<TypingRepository> {

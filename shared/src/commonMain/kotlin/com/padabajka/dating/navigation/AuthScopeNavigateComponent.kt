@@ -1,6 +1,7 @@
 package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
+import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.feature.messenger.presentation.MessengerComponent
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatComponent
@@ -15,7 +16,8 @@ import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 
 class AuthScopeNavigateComponent(
-    context: ComponentContext
+    context: ComponentContext,
+    private val userId: UserId
 ) : NavigateComponentContext<AuthScopeNavigateComponent.Configuration, AuthScopeNavigateComponent.Child>(
     context,
     Configuration.serializer(),
@@ -81,6 +83,7 @@ class AuthScopeNavigateComponent(
                         context,
                         configuration.chatId,
                         configuration.personItem,
+                        userId,
                         ::navigateBack
                     )
                 }

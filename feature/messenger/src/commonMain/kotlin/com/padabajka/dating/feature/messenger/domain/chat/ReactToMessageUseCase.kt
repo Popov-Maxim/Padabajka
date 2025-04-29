@@ -5,8 +5,12 @@ import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 
 class ReactToMessageUseCase(private val messageRepository: MessageRepository) {
-    suspend operator fun invoke(messageId: MessageId, reaction: MessageReaction?) {
-        // TODO: Add error handling
-        messageRepository.reactToMessage(messageId, reaction)
+
+    suspend operator fun invoke(messageId: MessageId, reactionValue: MessageReaction.Value?) {
+        if (reactionValue != null) {
+            messageRepository.reactToMessage(messageId, reactionValue)
+        } else {
+            messageRepository.removeReactToMessage(messageId)
+        }
     }
 }

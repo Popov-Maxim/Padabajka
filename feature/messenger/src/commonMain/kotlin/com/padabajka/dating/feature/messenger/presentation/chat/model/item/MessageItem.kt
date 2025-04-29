@@ -5,8 +5,9 @@ import com.padabajka.dating.core.repository.api.model.messenger.Message
 import com.padabajka.dating.core.repository.api.model.messenger.MessageDirection
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
-import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.datetime.LocalDateTime
 
 @Immutable
@@ -17,7 +18,7 @@ sealed interface MessageItem : MessengerItem {
     val content: String
     val sentTime: LocalDateTime
     val hasBeenRead: Boolean
-    val reaction: MessageReaction?
+    val reactions: PersistentList<MessageReaction>
     val parentMessage: ParentMessageItem?
 }
 
@@ -27,7 +28,7 @@ data class OutgoingMessageItem(
     override val content: String,
     override val sentTime: LocalDateTime,
     override val hasBeenRead: Boolean,
-    override val reaction: MessageReaction?,
+    override val reactions: PersistentList<MessageReaction>,
     override val parentMessage: ParentMessageItem?
 ) : MessageItem
 
@@ -37,7 +38,7 @@ data class IncomingMessageItem(
     override val content: String,
     override val sentTime: LocalDateTime,
     override val hasBeenRead: Boolean,
-    override val reaction: MessageReaction?,
+    override val reactions: PersistentList<MessageReaction>,
     override val parentMessage: ParentMessageItem?
 ) : MessageItem
 
@@ -47,24 +48,24 @@ fun Message.toMessageItem(): MessageItem {
             id = id,
             content = content,
             sentTime = creationTime,
-            hasBeenRead = status.hasBeenRead(),
-            reaction = reaction,
+            hasBeenRead = hasBeenRead(),
+            reactions = reactions.toPersistentList(),
             parentMessage = parentMessage?.toItem()
         )
         MessageDirection.INCOMING -> IncomingMessageItem(
             id = id,
             content = content,
             sentTime = creationTime,
-            hasBeenRead = status.hasBeenRead(),
-            reaction = reaction,
+            hasBeenRead = hasBeenRead(),
+            reactions = reactions.toPersistentList(),
             parentMessage = parentMessage?.toItem()
         )
     }
 }
 
-private fun MessageStatus.hasBeenRead(): Boolean {
-    return when (this) {
-        MessageStatus.Read -> true
+private fun Message.hasBeenRead(): Boolean {
+    return when {
+        this.readAt != null -> true
         else -> false
     }
 }

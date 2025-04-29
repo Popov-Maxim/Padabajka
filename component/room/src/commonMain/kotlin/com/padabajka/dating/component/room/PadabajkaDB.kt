@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 import com.padabajka.dating.component.room.matches.MatchesDao
 import com.padabajka.dating.component.room.matches.entry.MatchEntry
 import com.padabajka.dating.component.room.messenger.MessageDao
-import com.padabajka.dating.component.room.messenger.converters.MessageReactionConverters
+import com.padabajka.dating.component.room.messenger.converters.MessageReactionEntityConverters
 import com.padabajka.dating.component.room.messenger.converters.MessageStatusConverters
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import com.padabajka.dating.component.room.person.PersonDao
@@ -20,7 +20,7 @@ import com.padabajka.dating.component.room.person.entry.PersonEntry
     version = 1
 )
 @TypeConverters(
-    MessageReactionConverters::class,
+    MessageReactionEntityConverters::class,
     MessageStatusConverters::class,
     LocalDateConverters::class,
     ListStringConverters::class,

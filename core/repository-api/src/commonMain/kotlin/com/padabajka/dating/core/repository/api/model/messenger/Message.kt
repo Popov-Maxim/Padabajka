@@ -9,7 +9,8 @@ data class Message(
     val content: String,
     val creationTime: LocalDateTime,
     val status: MessageStatus,
-    val reaction: MessageReaction?,
+    val readAt: LocalDateTime?,
+    val reactions: List<MessageReaction>,
     val parentMessage: ParentMessage?
 )
 
