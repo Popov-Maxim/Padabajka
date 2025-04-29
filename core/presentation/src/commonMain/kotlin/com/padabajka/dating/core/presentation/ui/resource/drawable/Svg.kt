@@ -35,3 +35,7 @@ internal val CoreRes.svg.arrow_right_icon: String
 @OptIn(ExperimentalResourceApi::class)
 internal val CoreRes.svg.camera_icon: String
     get() = Res.getUri("drawable/camera_icon.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.reaction_like: String
+    get() = Res.getUri("drawable/reaction_like.svg")

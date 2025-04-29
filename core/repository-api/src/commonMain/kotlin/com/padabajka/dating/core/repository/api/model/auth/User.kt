@@ -1,5 +1,6 @@
 package com.padabajka.dating.core.repository.api.model.auth
 
+import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
 data class User(
@@ -8,4 +9,5 @@ data class User(
 )
 
 @JvmInline
+@Serializable
 value class UserId(val raw: String)

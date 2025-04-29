@@ -1,8 +1,8 @@
 package com.padabajka.dating.feature.messenger.presentation.chat.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -11,10 +11,14 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -35,9 +39,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.hourMinutes
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.ProfileAvatar
+import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
+import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessageGotReadEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ReactToMessageEvent
@@ -75,6 +82,21 @@ fun Message(
         modifier = Modifier.fillMaxWidth()
             .swipeToReply {
                 onEvent(SelectParentMessageEvent(message.toParentMessageItem()))
+            }.pointerInput(message.reactions) {
+                detectTapGestures(
+                    onDoubleTap = {
+                        if (message.reactions.isEmpty()) {
+                            onEvent(
+                                ReactToMessageEvent(
+                                    message.id,
+                                    reaction = MessageReaction.Value.Like
+                                )
+                            )
+                        } else {
+                            onEvent(ReactToMessageEvent(message.id, reaction = null))
+                        }
+                    }
+                )
             }
     ) {
         Box(
@@ -82,14 +104,6 @@ fun Message(
                 .shadow(2.dp, shape)
                 .backgroundForMessage(message, shape)
                 .alignForMessage(message, this)
-                .clickable {
-                    // TODO: Add final ui and implementation for reactions
-                    if (message.reaction == null) {
-                        onEvent(ReactToMessageEvent(message.id, reaction = MessageReaction.Like))
-                    } else {
-                        onEvent(ReactToMessageEvent(message.id, reaction = null))
-                    }
-                }
         ) {
             val parentMessage = message.parentMessage
             Column(
@@ -102,7 +116,6 @@ fun Message(
                         bottom = 2.dp,
                     ),
             ) {
-                println("LOG UI: $parentMessage")
                 if (parentMessage != null) {
                     CommonParentMessage(
                         parentMessage = parentMessage,
@@ -115,12 +128,44 @@ fun Message(
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = message.content,
-                        color = textColor,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(vertical = 4.dp).weight(1f),
-                    )
+                    Column(
+                        modifier = Modifier.height(IntrinsicSize.Max).padding(vertical = 4.dp)
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = message.content,
+                            color = textColor,
+                            fontSize = 16.sp,
+                            modifier = Modifier.weight(1f),
+                        )
+
+                        if (message.reactions.isNotEmpty()) {
+                            Box(
+                                modifier = Modifier.background(
+                                    color = Color.White,
+                                    shape = RoundedCornerShape(20.dp)
+                                )
+                            ) {
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                    modifier = Modifier.padding(4.dp),
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.size(20.dp),
+                                        painter = CoreIcons.Reaction.Like,
+                                        tint = Color.Red,
+                                        contentDescription = "reaction like"
+                                    )
+                                    message.reactions.onEach { reaction ->
+                                        ProfileAvatar(
+                                            model = reaction.author.profile.images.first().raw(),
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     Spacer(modifier = Modifier.width(5.dp))
 
@@ -141,13 +186,9 @@ private fun Modifier.backgroundForMessage(
     message: MessageItem,
     shape: Shape
 ): Modifier {
-    val backgroundColor = if (message.reaction == MessageReaction.Like) {
-        Color.Red
-    } else {
-        when (message) {
-            is IncomingMessageItem -> Color.White
-            is OutgoingMessageItem -> CoreColors.Chat.message.mainColor
-        }
+    val backgroundColor = when (message) {
+        is IncomingMessageItem -> Color.White
+        is OutgoingMessageItem -> CoreColors.Chat.message.mainColor
     }
 
     return this.background(backgroundColor, shape)

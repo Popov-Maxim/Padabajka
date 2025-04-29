@@ -1,8 +1,12 @@
 package com.padabajka.dating.feature.messenger.data.message
 
+import com.padabajka.dating.component.room.messenger.entry.MessageEntry
+import com.padabajka.dating.component.room.messenger.entry.MessageReactionEntity
 import com.padabajka.dating.core.data.uuid
+import com.padabajka.dating.core.domain.replaced
 import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.MessageRepository
+import com.padabajka.dating.core.repository.api.PersonRepository
 import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
 import com.padabajka.dating.core.repository.api.model.auth.NoAuthorisedUserException
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
@@ -14,7 +18,11 @@ import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
+import com.padabajka.dating.feature.messenger.data.message.model.toEntity
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
+import com.padabajka.dating.feature.messenger.data.message.source.local.addReaction
+import com.padabajka.dating.feature.messenger.data.message.source.local.removeReaction
+import com.padabajka.dating.feature.messenger.data.message.source.local.toDto
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteMessageDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -27,7 +35,8 @@ import kotlinx.datetime.toLocalDateTime
 internal class MessageRepositoryImpl(
     authRepository: AuthRepository,
     private val localMessageDataSource: LocalMessageDataSource,
-    private val remoteMessageDataSource: RemoteMessageDataSource
+    private val remoteMessageDataSource: RemoteMessageDataSource,
+    private val personRepository: PersonRepository
 ) : MessageRepository {
 
     private val myRawPersonId: String? = authRepository.currentAuthState
@@ -60,13 +69,13 @@ internal class MessageRepositoryImpl(
             content = content,
             creationTime = currentTime,
             messageStatus = MessageStatus.Sending,
+            readAt = null,
             readSynced = true,
-            reaction = null,
-            reactionSynced = true,
+            reactions = listOf(),
             parentMessageId = parentMessageId?.raw
         )
 
-        localMessageDataSource.addMessage(messageDto)
+        localMessageDataSource.addMessage(messageDto.toEntity())
 
         trySendMessageToRemote(messageDto)
     }
@@ -74,7 +83,7 @@ internal class MessageRepositoryImpl(
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override suspend fun readMessage(messageId: MessageId) {
         localMessageDataSource.updateMessage(messageId.raw) {
-            it.copy(messageStatus = MessageStatus.Read, readSynced = false)
+            it.copy(readAt = nowMilliseconds(), readSynced = false)
         }
 
         try {
@@ -91,18 +100,40 @@ internal class MessageRepositoryImpl(
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override suspend fun reactToMessage(
         messageId: MessageId,
-        reaction: MessageReaction?
+        reaction: MessageReaction.Value
     ) {
+        val reaction = MessageReactionEntity(
+            author = myPersonId.raw,
+            value = reaction,
+            time = nowMilliseconds(),
+        )
+
         localMessageDataSource.updateMessage(messageId.raw) {
-            it.copy(reaction = reaction, reactionSynced = false)
+            it.addReaction(reaction)
         }
 
         try {
-            remoteMessageDataSource.sendReaction(messageId.raw, reaction.toString())
+            val updatedReaction =
+                remoteMessageDataSource.sendReaction(messageId.raw, reaction.toDto())
 
             localMessageDataSource.updateMessage(messageId.raw) {
-                it.copy(reactionSynced = true)
+                it.copy(reactions = it.reactions?.replaced(reaction, updatedReaction.toEntity()))
             }
+        } catch (e: Throwable) {
+            // TODO: retry sending reaction
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught", "SwallowedException")
+    override suspend fun removeReactToMessage(
+        messageId: MessageId
+    ) {
+        localMessageDataSource.updateMessage(messageId.raw) { message ->
+            message.removeReaction { it.author == myPersonId.raw }
+        } // TODO(messenger): add safely remove reaction
+
+        try {
+            remoteMessageDataSource.removeReaction(messageId.raw, myPersonId.raw)
         } catch (e: Throwable) {
             // TODO: retry sending reaction
         }
@@ -114,7 +145,7 @@ internal class MessageRepositoryImpl(
             val updatedMessageDto =
                 remoteMessageDataSource.sendMessage(messageDto.chatId, messageDto.content)
 
-            localMessageDataSource.updateMessage(messageDto.id) { updatedMessageDto }
+            localMessageDataSource.updateMessage(messageDto.id) { updatedMessageDto.toEntity() }
         } catch (e: Throwable) {
             // TODO: retry sending
             localMessageDataSource.updateMessage(messageDto.id) {
@@ -123,7 +154,7 @@ internal class MessageRepositoryImpl(
         }
     }
 
-    private suspend fun MessageDto.toDomain(): Message {
+    private suspend fun MessageEntry.toDomain(): Message {
         val parentMessage = parentMessageId?.let { parentId ->
             val parentMessageDto = localMessageDataSource.message(parentId)
             ParentMessage(
@@ -133,13 +164,25 @@ internal class MessageRepositoryImpl(
             )
         }
 
+        val domainReactions = reactions?.map {
+            val personId = PersonId(it.author)
+            val person = personRepository.getPerson(personId)
+            MessageReaction(
+                author = person,
+                value = it.value,
+                time = it.time,
+                reactionSynced = it.reactionSynced
+            )
+        }
+
         return Message(
             id = MessageId(id),
             direction = direction(authorId),
             content = content,
             creationTime = localDateTime(creationTime),
             status = messageStatus,
-            reaction = reaction,
+            readAt = null,
+            reactions = domainReactions ?: listOf(),
             parentMessage = parentMessage
         )
     }

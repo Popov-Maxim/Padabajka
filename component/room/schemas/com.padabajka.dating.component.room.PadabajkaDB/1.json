@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "17b144c52e9df8b48f48dcce065cb9af",
+    "identityHash": "522d766ab1000dfcf222803fa7cbd480",
     "entities": [
       {
         "tableName": "messages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `chatId` TEXT NOT NULL, `authorId` TEXT NOT NULL, `content` TEXT NOT NULL, `creationTime` INTEGER NOT NULL, `reaction` TEXT, `reactionSynced` INTEGER NOT NULL, `messageStatus` TEXT NOT NULL, `readSynced` INTEGER NOT NULL, `parentMessageId` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `chatId` TEXT NOT NULL, `authorId` TEXT NOT NULL, `content` TEXT NOT NULL, `creationTime` INTEGER NOT NULL, `reaction` TEXT, `messageStatus` TEXT NOT NULL, `readAt` INTEGER, `readSynced` INTEGER NOT NULL, `parentMessageId` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -39,21 +39,20 @@
             "notNull": true
           },
           {
-            "fieldPath": "reaction",
+            "fieldPath": "reactions",
             "columnName": "reaction",
             "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "reactionSynced",
-            "columnName": "reactionSynced",
-            "affinity": "INTEGER",
-            "notNull": true
           },
           {
             "fieldPath": "messageStatus",
             "columnName": "messageStatus",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "readAt",
+            "columnName": "readAt",
+            "affinity": "INTEGER"
           },
           {
             "fieldPath": "readSynced",
@@ -161,7 +160,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '17b144c52e9df8b48f48dcce065cb9af')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '522d766ab1000dfcf222803fa7cbd480')"
     ]
   }
 }

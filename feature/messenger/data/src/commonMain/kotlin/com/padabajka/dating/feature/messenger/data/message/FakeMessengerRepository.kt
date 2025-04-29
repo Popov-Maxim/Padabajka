@@ -28,8 +28,9 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
             direction = MessageDirection.INCOMING,
             content = "Hellow!",
             creationTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-            status = MessageStatus.Read,
-            reaction = null,
+            status = MessageStatus.Sent,
+            readAt = null,
+            reactions = listOf(),
             parentMessage = null
         ),
         Message(
@@ -37,8 +38,9 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
             direction = MessageDirection.OUTGOING,
             content = "Hi!",
             creationTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-            status = MessageStatus.Read,
-            reaction = null,
+            status = MessageStatus.Sent,
+            readAt = null,
+            reactions = listOf(),
             parentMessage = null
         ),
         Message(
@@ -46,8 +48,9 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
             direction = MessageDirection.INCOMING,
             content = "How are you?",
             creationTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-            status = MessageStatus.Read,
-            reaction = null,
+            status = MessageStatus.Sent,
+            readAt = null,
+            reactions = listOf(),
             parentMessage = null
         ),
         Message(
@@ -55,8 +58,9 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
             direction = MessageDirection.OUTGOING,
             content = "Fine, thanks!",
             creationTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-            status = MessageStatus.Read,
-            reaction = null,
+            status = MessageStatus.Sent,
+            readAt = null,
+            reactions = listOf(),
             parentMessage = null
         )
     )
@@ -89,9 +93,10 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
             direction = MessageDirection.INCOMING,
             content = content,
             creationTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-            status = MessageStatus.Unread,
+            status = MessageStatus.Sent,
             parentMessage = parentMessage?.toParent(),
-            reaction = null
+            readAt = null,
+            reactions = listOf(),
         )
     }
 
@@ -115,8 +120,9 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
             direction = MessageDirection.OUTGOING,
             content = content,
             creationTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-            status = MessageStatus.Read,
-            reaction = null,
+            status = MessageStatus.Sent,
+            readAt = null,
+            reactions = listOf(),
             parentMessage = messagesList.find { it.id == parentMessageId }?.toParent()
         )
         messagesList = messagesList + message
@@ -125,17 +131,25 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
 
     override suspend fun readMessage(messageId: MessageId) {
         messagesList = messagesList.map {
-            if (it.id == messageId) it.copy(status = MessageStatus.Read) else it
+            if (it.id == messageId) it.copy(status = MessageStatus.Sent) else it
         }
         messagesFlow.emit(messagesList.reversed())
     }
 
     override suspend fun reactToMessage(
         messageId: MessageId,
-        reaction: MessageReaction?
+        reaction: MessageReaction.Value
     ) {
+        val messageReaction: MessageReaction = TODO()
         messagesList = messagesList.map {
-            if (it.id == messageId) it.copy(reaction = reaction) else it
+            if (it.id == messageId) it.copy(reactions = it.reactions + messageReaction) else it
+        }
+        messagesFlow.emit(messagesList.reversed())
+    }
+
+    override suspend fun removeReactToMessage(messageId: MessageId) {
+        messagesList = messagesList.map {
+            if (it.id == messageId) it.copy(reactions = it.reactions) else it
         }
         messagesFlow.emit(messagesList.reversed())
     }

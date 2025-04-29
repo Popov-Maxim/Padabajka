@@ -7,6 +7,7 @@ import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.presentation.event.consumed
 import com.padabajka.dating.core.presentation.event.raised
 import com.padabajka.dating.core.presentation.event.raisedIfNotNull
+import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
@@ -43,6 +44,8 @@ class ChatComponent(
     context: ComponentContext,
     private val chatId: ChatId,
     personItem: PersonItem,
+    @Suppress("UnusedPrivateMember")
+    private val userId: UserId,
     private val navigateBack: () -> Unit,
     chatMessagesUseCaseFactory: Factory<ChatMessagesUseCase>,
     sendMessageUseCaseFactory: Factory<SendMessageUseCase>,
@@ -165,7 +168,7 @@ class ChatComponent(
         }
     )
 
-    private fun reactToMessage(messageId: MessageId, reaction: MessageReaction?) =
+    private fun reactToMessage(messageId: MessageId, reaction: MessageReaction.Value?) =
         mapAndReduceException(
             action = {
                 reactToMessageUseCase(messageId, reaction)

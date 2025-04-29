@@ -3,6 +3,7 @@ package com.padabajka.dating.navigation
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
 import com.padabajka.dating.core.repository.api.model.auth.LoggedOut
+import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.WaitingForEmailValidation
 import com.padabajka.dating.feature.auth.domain.AuthStateProvider
 import com.padabajka.dating.feature.auth.presentation.VerificationComponent
@@ -25,7 +26,7 @@ class AuthStateObserverComponent(
     suspend fun subscribeToAuth() {
         authProvider.authState.collect { authState ->
             when (authState) {
-                is LoggedIn -> navigateNewStack(Configuration.AuthScope)
+                is LoggedIn -> navigateNewStack(Configuration.AuthScope(authState.userId))
                 LoggedOut -> navigateNewStack(Configuration.UnauthScope)
                 is WaitingForEmailValidation -> navigateNewStack(Configuration.VerificationScreen)
             }
@@ -41,8 +42,8 @@ class AuthStateObserverComponent(
             Configuration.UnauthScope -> Child.UnauthScope(
                 component = UnauthScopeNavigateComponent(context)
             )
-            Configuration.AuthScope -> Child.AuthScope(
-                component = AuthScopeNavigateComponent(context)
+            is Configuration.AuthScope -> Child.AuthScope(
+                component = AuthScopeNavigateComponent(context, configuration.userId)
             )
             Configuration.VerificationScreen -> Child.VerificationScreen(
                 component = get {
@@ -71,6 +72,6 @@ class AuthStateObserverComponent(
         data object VerificationScreen : Configuration
 
         @Serializable
-        data object AuthScope : Configuration
+        data class AuthScope(val userId: UserId) : Configuration
     }
 }

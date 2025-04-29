@@ -29,6 +29,7 @@ private val presentationModule = module {
             context = parameters.get(),
             chatId = parameters.get(),
             personItem = parameters.get(),
+            userId = parameters.get(),
             navigateBack = parameters.get(),
             chatMessagesUseCaseFactory = { get() },
             sendMessageUseCaseFactory = { get() },
