@@ -21,12 +21,15 @@ import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.feature.auth.presentation.screen.LoginScreen
 import com.padabajka.dating.feature.auth.presentation.screen.RegisterScreen
 import com.padabajka.dating.feature.auth.presentation.screen.VerificationScreen
+import com.padabajka.dating.feature.push.notification.NotificationService
 import com.padabajka.dating.navigation.AuthStateObserverComponent
 import com.padabajka.dating.navigation.UnauthScopeNavigateComponent
 import com.padabajka.dating.ui.AuthScopeScreen
+import org.koin.compose.koinInject
 
 @Composable
 fun App(rootContext: ComponentContext) {
+    InitApp()
     val rootComponent = remember { AuthStateObserverComponent(rootContext) }
     NavigateApp(rootComponent)
 }
@@ -79,5 +82,14 @@ private fun PadabajkaTheme(content: @Composable () -> Unit) {
             content.invoke()
             FpsMonitor(modifier = Modifier.align(Alignment.TopStart))
         }
+    }
+}
+
+@Composable
+private fun InitApp() {
+    val notificationService: NotificationService = koinInject()
+
+    LaunchedEffect(Unit) {
+        notificationService.initNotificationChannels()
     }
 }

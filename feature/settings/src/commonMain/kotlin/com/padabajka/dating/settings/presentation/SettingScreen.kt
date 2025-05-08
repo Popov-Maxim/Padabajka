@@ -20,13 +20,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.padabajka.dating.core.permission.NotificationPermissionController
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
@@ -39,12 +42,19 @@ import com.padabajka.dating.settings.presentation.model.LogOutEvent
 import com.padabajka.dating.settings.presentation.model.NavigateBackEvent
 import com.padabajka.dating.settings.presentation.model.SettingsEvent
 import com.padabajka.dating.settings.presentation.setting.AppSettingsDialog
+import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import androidx.compose.ui.graphics.painter.Painter as ComposePainter
 
 @Composable
 fun SettingScreen(component: SettingScreenComponent) {
     var showDialog by remember { mutableStateOf(false) }
-
+    val notificationPermissionController: NotificationPermissionController = koinInject()
+    val coroutineScope = rememberCoroutineScope()
+    val initPermissionAllow by produceState<Boolean?>(initialValue = null) {
+        value = notificationPermissionController.hasPermission()
+    }
+    var permissionAllow by remember(initPermissionAllow) { mutableStateOf(initPermissionAllow) }
     CustomScaffold(
         topBar = { TopBar(component::onEvent) }
     ) {
@@ -66,6 +76,18 @@ fun SettingScreen(component: SettingScreenComponent) {
                 text = StaticTextId.UiId.LogOut.translate(),
                 secondText = null,
                 onClick = { component.onEvent(LogOutEvent) }
+            ),
+
+            SettingButtonData(
+                iconData = Icons.AutoMirrored.Filled.ExitToApp.toData(),
+                text = "request permission",
+                secondText = "permissionAllow: $permissionAllow",
+                onClick = {
+                    coroutineScope.launch {
+                        notificationPermissionController.requestPermission()
+                        permissionAllow = notificationPermissionController.hasPermission()
+                    }
+                }
             )
         )
         Column(

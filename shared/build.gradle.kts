@@ -47,6 +47,8 @@ kotlin {
             implementation(projects.feature.messenger)
             implementation(projects.feature.settings)
             implementation(projects.feature.dictionary)
+            implementation(projects.feature.push)
+            implementation(projects.core.permission)
             implementation(projects.core.networking)
             implementation(projects.component.room)
 

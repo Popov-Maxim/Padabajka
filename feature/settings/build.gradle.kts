@@ -31,6 +31,7 @@ kotlin {
             api(projects.core.repositoryApi)
             api(projects.core.data)
             api(projects.core.networking)
+            api(projects.core.permission)
 
             implementation(projects.feature.auth.domain)
         }

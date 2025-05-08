@@ -77,7 +77,8 @@ private val dataModule = module {
     factory<ReactionApi> {
         FakeReactionApi(
             matchRepository = get(),
-            personRepository = get()
+            personRepository = get(),
+            notificationService = get()
         )
     }
 
