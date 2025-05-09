@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -30,7 +31,10 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.core.permission)
+            implementation(projects.core.repositoryApi)
+            implementation(projects.core.networking)
             implementation(libs.koin.core)
+            implementation(libs.gitlive.firebase.messaging)
         }
     }
 }

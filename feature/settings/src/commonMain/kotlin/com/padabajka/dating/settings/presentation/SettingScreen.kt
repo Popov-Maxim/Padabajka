@@ -79,7 +79,7 @@ fun SettingScreen(component: SettingScreenComponent) {
             ),
 
             SettingButtonData(
-                iconData = Icons.AutoMirrored.Filled.ExitToApp.toData(),
+                iconData = IconData.Empty,
                 text = "request permission",
                 secondText = "permissionAllow: $permissionAllow",
                 onClick = {
@@ -120,13 +120,14 @@ fun SettingScreen(component: SettingScreenComponent) {
 private data class SettingButtonData(
     val iconData: IconData,
     val text: String,
-    val secondText: String?,
+    val secondText: String? = null,
     val onClick: () -> Unit
 )
 
 private sealed interface IconData {
     data class Painter(val painter: ComposePainter) : IconData
     data class Vector(val vector: ImageVector) : IconData
+    data object Empty : IconData
 }
 
 private fun ComposePainter.toData() = IconData.Painter(this)
@@ -165,6 +166,10 @@ private fun SettingButton(
                             modifier = Modifier.size(30.dp),
                             contentDescription = null
                         )
+                    }
+
+                    IconData.Empty -> {
+                        Box(modifier = Modifier.size(30.dp))
                     }
                 }
 
