@@ -18,6 +18,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.FpsMonitor
 import com.padabajka.dating.core.presentation.ui.mainColor
+import com.padabajka.dating.datapush.SharedPushHandler
 import com.padabajka.dating.feature.auth.presentation.screen.LoginScreen
 import com.padabajka.dating.feature.auth.presentation.screen.RegisterScreen
 import com.padabajka.dating.feature.auth.presentation.screen.VerificationScreen
@@ -91,5 +92,6 @@ private fun InitApp() {
 
     LaunchedEffect(Unit) {
         notificationService.initNotificationChannels()
+        SharedPushHandler.saveLocalToken()
     }
 }

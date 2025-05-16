@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import com.arkivanov.decompose.defaultComponentContext
-import com.padabajka.dating.datapush.SharedPushHandler
 import com.padabajka.dating.di.addPermissionRequester
 
 class MainActivity : ComponentActivity() {
@@ -18,7 +17,6 @@ class MainActivity : ComponentActivity() {
             ) {}
 
         addPermissionRequester(permissionLauncher)
-        SharedPushHandler.saveLocalToken()
         setContent {
             App(defaultComponentContext())
         }

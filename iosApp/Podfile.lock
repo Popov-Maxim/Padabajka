@@ -54,6 +54,15 @@ PODS:
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - PromisesObjC (~> 2.1)
+  - FirebaseMessaging (10.19.0):
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleDataTransport (~> 9.3)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GoogleUtilities/Reachability (~> 7.8)
+    - GoogleUtilities/UserDefaults (~> 7.8)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
   - FirebasePerformance (10.19.0):
     - FirebaseCore (~> 10.5)
     - FirebaseInstallations (~> 10.0)
@@ -178,6 +187,7 @@ PODS:
 
 DEPENDENCIES:
   - FirebaseAnalytics (= 10.18.0)
+  - FirebaseMessaging (= 10.19.0)
   - FirebasePerformance (= 10.19.0)
   - shared (from `../shared`)
   - YandexMobileAds (= 6.4.1)
@@ -196,6 +206,7 @@ SPEC REPOS:
     - FirebaseCoreExtension
     - FirebaseCoreInternal
     - FirebaseInstallations
+    - FirebaseMessaging
     - FirebasePerformance
     - FirebaseRemoteConfig
     - FirebaseRemoteConfigInterop
@@ -236,6 +247,7 @@ SPEC CHECKSUMS:
   FirebaseCoreExtension: 705ca5b14bf71d2564a0ddc677df1fc86ffa600f
   FirebaseCoreInternal: df84dd300b561c27d5571684f389bf60b0a5c934
   FirebaseInstallations: 913cf60d0400ebd5d6b63a28b290372ab44590dd
+  FirebaseMessaging: d322bd030a0e97398bf134746e087b88e6ba0074
   FirebasePerformance: 634a9b06effc436c991273d90053a2086dd2d427
   FirebaseRemoteConfig: 48ef3f243742a8d72422ccfc9f986e19d7de53fd
   FirebaseRemoteConfigInterop: 6efda51fb5e2f15b16585197e26eaa09574e8a4d
@@ -260,6 +272,6 @@ SPEC CHECKSUMS:
   YandexMobileAds: ed587c669f2deb078f39a070ee2466cc40eca5a9
   YandexMobileMetrica: f5368ee93f286c793d73b58da00929babfc897c1
 
-PODFILE CHECKSUM: b54c4c64e0f183a200182ee34ddbc8e25e0b0630
+PODFILE CHECKSUM: 9239fddec2383ae2b23dfe23a3485e9ebe4b21b1
 
 COCOAPODS: 1.15.2
