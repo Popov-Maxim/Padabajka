@@ -8,7 +8,8 @@ private val presentationModule = module {
         SettingScreenComponent(
             context = parameters.get(),
             navigateBack = parameters.get(),
-            logoutUseCaseFactory = { get() }
+            logoutUseCaseFactory = { get() },
+            saveTokenUseCase = get()
         )
     }
 }

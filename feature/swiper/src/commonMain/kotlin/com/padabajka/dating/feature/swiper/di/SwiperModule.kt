@@ -16,7 +16,7 @@ import com.padabajka.dating.feature.swiper.data.candidate.network.KtorCandidateA
 import com.padabajka.dating.feature.swiper.data.candidate.source.RemoteCandidateDataSource
 import com.padabajka.dating.feature.swiper.data.candidate.source.RemoteCandidateDataSourceImpl
 import com.padabajka.dating.feature.swiper.data.reaction.ReactionRepositoryImpl
-import com.padabajka.dating.feature.swiper.data.reaction.network.FakeReactionApi
+import com.padabajka.dating.feature.swiper.data.reaction.network.KtorReactionApi
 import com.padabajka.dating.feature.swiper.data.reaction.network.ReactionApi
 import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDataSource
 import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDataSourceImpl
@@ -75,11 +75,14 @@ private val dataModule = module {
     }
 
     factory<ReactionApi> {
-        FakeReactionApi(
-            matchRepository = get(),
-            personRepository = get(),
-            notificationService = get()
+        KtorReactionApi(
+            ktorClientProvider = get()
         )
+//        FakeReactionApi(
+//            matchRepository = get(),
+//            personRepository = get(),
+//            notificationService = get()
+//        )
     }
 
     factory<CardSelectorProvider> {

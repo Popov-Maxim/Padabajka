@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.match.data
 import com.padabajka.dating.core.repository.api.MatchRepository
 import com.padabajka.dating.core.repository.api.PersonRepository
 import com.padabajka.dating.core.repository.api.model.match.Match
+import com.padabajka.dating.core.repository.api.model.match.RawMatch
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.match.data.source.local.LocalMatchDataSource
 import com.padabajka.dating.feature.match.data.source.local.toEntry
@@ -24,7 +25,7 @@ class MatchRepositoryImpl(
         }
     }
 
-    override suspend fun saveMatch(match: Match) {
+    override suspend fun saveMatch(match: RawMatch) {
         localMatchDataSource.saveMatch(match.toEntry())
     }
 }
