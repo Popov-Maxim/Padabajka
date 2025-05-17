@@ -33,6 +33,7 @@ kotlin {
             implementation(projects.core.permission)
             implementation(projects.core.repositoryApi)
             implementation(projects.core.networking)
+            implementation(projects.core.data)
             implementation(libs.koin.core)
             implementation(libs.gitlive.firebase.messaging)
         }

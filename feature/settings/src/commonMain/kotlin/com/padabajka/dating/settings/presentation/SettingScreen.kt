@@ -40,6 +40,7 @@ import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.settings.presentation.model.LogOutEvent
 import com.padabajka.dating.settings.presentation.model.NavigateBackEvent
+import com.padabajka.dating.settings.presentation.model.SendPushToken
 import com.padabajka.dating.settings.presentation.model.SettingsEvent
 import com.padabajka.dating.settings.presentation.setting.AppSettingsDialog
 import kotlinx.coroutines.launch
@@ -88,7 +89,12 @@ fun SettingScreen(component: SettingScreenComponent) {
                         permissionAllow = notificationPermissionController.hasPermission()
                     }
                 }
-            )
+            ),
+            SettingButtonData(
+                iconData = IconData.Empty,
+                text = "refresh push token",
+                onClick = { component.onEvent(SendPushToken) }
+            ),
         )
         Column(
             modifier = Modifier.padding(

@@ -34,6 +34,7 @@ kotlin {
             api(projects.core.permission)
 
             implementation(projects.feature.auth.domain)
+            implementation(projects.feature.push)
         }
     }
 }

@@ -6,6 +6,9 @@ import com.padabajka.dating.feature.push.data.data.network.KtorTokenApi
 import com.padabajka.dating.feature.push.data.data.network.TokenApi
 import com.padabajka.dating.feature.push.data.data.source.RemoteDataSource
 import com.padabajka.dating.feature.push.data.data.source.RemoteDataSourceImpl
+import com.padabajka.dating.feature.push.data.domain.DataPushParser
+import com.padabajka.dating.feature.push.data.domain.HandleNewMatchUseCase
+import com.padabajka.dating.feature.push.data.domain.HandlePushUseCase
 import com.padabajka.dating.feature.push.data.domain.SaveTokenUseCase
 import com.padabajka.dating.feature.push.data.domain.UpdateTokenUseCase
 import org.koin.core.module.dsl.factoryOf
@@ -32,4 +35,7 @@ val dataPushDiModule = module {
 
     factoryOf(::UpdateTokenUseCase)
     factoryOf(::SaveTokenUseCase)
+    factoryOf(::HandlePushUseCase)
+    factoryOf(::HandleNewMatchUseCase)
+    factoryOf(::DataPushParser)
 }

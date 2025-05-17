@@ -1,6 +1,7 @@
 package com.padabajka.dating.core.repository.api.model.messenger
 
 import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
 data class Message(
@@ -15,4 +16,5 @@ data class Message(
 )
 
 @JvmInline
+@Serializable
 value class MessageId(val raw: String)

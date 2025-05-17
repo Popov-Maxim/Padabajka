@@ -45,9 +45,17 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         // get push
 //        print("LOG: AppDelefate get push")
 //        let userInfo = notification.request.content.userInfo as! [String: String]
+//        let platformMessagePush = PushUtilsKt.platformMessagePush(notification: notification)
         
-//        SharedPushHandler.shared.handlePush(map: userInfo)
-        completionHandler([.banner, .sound])
+        SharedPushHandler.shared.handlePush(notification: notification)
+        let userInfo = notification.request.content.userInfo
+        let disableNotification = userInfo["disable_notification"] as? Bool ?? false
+    
+        if disableNotification {
+            completionHandler([])
+        } else {
+            completionHandler([.banner, .sound])
+        }
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter,
