@@ -28,7 +28,7 @@ kotlin {
         commonMain.dependencies {
             api(libs.immutable.collections)
             api(libs.coroutines.core)
-            implementation(libs.koin.core)
+            api(libs.koin.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

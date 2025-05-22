@@ -46,6 +46,7 @@ kotlin {
             implementation(projects.feature.match)
             implementation(projects.feature.messenger)
             implementation(projects.feature.settings)
+            implementation(projects.feature.settings.metadata)
             implementation(projects.feature.dictionary)
             implementation(projects.feature.push)
             implementation(projects.core.permission)

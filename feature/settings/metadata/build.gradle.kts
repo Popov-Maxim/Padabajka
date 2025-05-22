@@ -1,4 +1,3 @@
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
@@ -20,29 +19,25 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "push"
+            baseName = "settings.metadata"
             isStatic = true
         }
     }
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.androidx.activity.compose)
-        }
         commonMain.dependencies {
-            implementation(projects.core.permission)
-            implementation(projects.core.repositoryApi)
-            implementation(projects.core.networking)
-            implementation(projects.core.data)
-            implementation(projects.feature.settings.metadata)
+            api(projects.core.domain)
+            api(projects.core.repositoryApi)
+            api(projects.core.data)
+            api(projects.core.networking)
 
-            implementation(libs.gitlive.firebase.messaging)
+            implementation(libs.gitlive.firebase.installations)
         }
     }
 }
 
 android {
-    namespace = "com.padabajka.dating.feature.push"
+    namespace = "com.padabajka.dating.settings.metadata"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()

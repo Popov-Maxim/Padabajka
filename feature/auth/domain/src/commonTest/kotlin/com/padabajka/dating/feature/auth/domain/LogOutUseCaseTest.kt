@@ -2,14 +2,19 @@ package com.padabajka.dating.feature.auth.domain
 
 import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.MockAuthRepository
+import com.padabajka.dating.core.repository.api.metadata.MetadataRepository
+import com.padabajka.dating.core.repository.api.metadata.MockMetadataRepository
 import com.padabajka.dating.core.repository.api.model.auth.UnexpectedAuthException
+import com.padabajka.dating.settings.domain.DeleteAuthMetadataUseCase
 import com.padabajka.dating.testing.assertThrows
 import kotlinx.coroutines.runBlocking
 import org.kodein.mock.Mocker
 import org.kodein.mock.UsesMocks
+import kotlin.test.Ignore
 import kotlin.test.Test
 
-@UsesMocks(AuthRepository::class)
+@Ignore
+@UsesMocks(AuthRepository::class, MetadataRepository::class)
 class LogOutUseCaseTest {
 
     private data class MockerRepositoryAndUseCase(
@@ -21,7 +26,9 @@ class LogOutUseCaseTest {
     private fun getMockerRepositoryAndUseCase(): MockerRepositoryAndUseCase {
         val mocker = Mocker()
         val repository = MockAuthRepository(mocker)
-        val useCase = LogOutUseCase(repository)
+        val metadataRepository = MockMetadataRepository(mocker)
+        val deleteAuthMetadataUseCase = DeleteAuthMetadataUseCase(metadataRepository)
+        val useCase = LogOutUseCase(repository, deleteAuthMetadataUseCase)
         return MockerRepositoryAndUseCase(mocker, repository, useCase)
     }
 

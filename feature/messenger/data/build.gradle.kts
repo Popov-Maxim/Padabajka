@@ -32,7 +32,6 @@ kotlin {
             implementation(projects.component.room)
 
             implementation(libs.room.runtime)
-            implementation(libs.koin.core)
         }
         commonTest.dependencies {
             implementation(projects.testing)

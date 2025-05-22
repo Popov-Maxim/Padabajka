@@ -1,14 +1,19 @@
 package com.padabajka.dating.feature.auth.domain
 
 import com.padabajka.dating.core.repository.api.AuthRepository
+import com.padabajka.dating.settings.domain.DeleteAuthMetadataUseCase
 import kotlin.coroutines.cancellation.CancellationException
 
-class LogOutUseCase(private val authRepository: AuthRepository) {
+class LogOutUseCase(
+    private val authRepository: AuthRepository,
+    private val deleteAuthMetadataUseCase: DeleteAuthMetadataUseCase
+) {
 
     @Suppress("TooGenericExceptionCaught")
     @Throws(UnexpectedLogoutException::class, CancellationException::class)
     suspend operator fun invoke() {
         try {
+            deleteAuthMetadataUseCase.invoke()
             authRepository.logout()
         } catch (ce: CancellationException) {
             throw ce

@@ -27,7 +27,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.repositoryApi)
             implementation(projects.core.domain)
-            implementation(libs.koin.core)
+            api(libs.koin.core)
 
             api(libs.ktor.core)
             implementation(libs.ktor.cio)

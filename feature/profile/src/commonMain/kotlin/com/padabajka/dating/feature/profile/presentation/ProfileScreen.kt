@@ -140,7 +140,7 @@ private fun ProfileScreen(
                     horizontalArrangement = Arrangement.spacedBy(15.dp)
                 ) {
                     ProfileAvatar(
-                        model = profile.images.first().raw(),
+                        model = profile.images.firstOrNull()?.raw(),
                         modifier = Modifier.size(100.dp)
                     )
                     Column(
