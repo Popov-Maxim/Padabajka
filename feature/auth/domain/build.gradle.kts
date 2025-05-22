@@ -29,6 +29,7 @@ kotlin {
         commonMain.dependencies {
             api(projects.core.domain)
             api(projects.core.repositoryApi)
+            api(projects.feature.settings.metadata)
         }
         commonTest.dependencies {
             implementation(projects.testing)

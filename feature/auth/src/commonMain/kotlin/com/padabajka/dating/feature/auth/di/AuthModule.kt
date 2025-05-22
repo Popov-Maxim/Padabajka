@@ -60,7 +60,8 @@ private val authDomainModule = module {
 
     factory {
         LogOutUseCase(
-            authRepository = get()
+            authRepository = get(),
+            deleteAuthMetadataUseCase = get()
         )
     }
     factoryOf(::SendEmailVerificationUseCase)

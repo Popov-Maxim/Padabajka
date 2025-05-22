@@ -14,6 +14,7 @@ import com.padabajka.dating.feature.messenger.di.messengerModules
 import com.padabajka.dating.feature.profile.di.profileModules
 import com.padabajka.dating.feature.push.di.pushDiModules
 import com.padabajka.dating.feature.swiper.di.swiperModules
+import com.padabajka.dating.settings.di.metadataDiModules
 import com.padabajka.dating.settings.di.settingDiModules
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +42,7 @@ fun initKoin(platformModule: Module) {
             *presentationDiModules,
             *imageModules,
             *settingDiModules,
+            *metadataDiModules,
             *dictionaryDiModules,
             *messengerModules,
             *matchDiModules,

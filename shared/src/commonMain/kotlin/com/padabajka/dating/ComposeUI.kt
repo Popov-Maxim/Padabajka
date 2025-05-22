@@ -26,12 +26,16 @@ import com.padabajka.dating.feature.push.notification.NotificationService
 import com.padabajka.dating.navigation.AuthStateObserverComponent
 import com.padabajka.dating.navigation.UnauthScopeNavigateComponent
 import com.padabajka.dating.ui.AuthScopeScreen
+import org.koin.compose.getKoin
 import org.koin.compose.koinInject
 
 @Composable
 fun App(rootContext: ComponentContext) {
     InitApp()
-    val rootComponent = remember { AuthStateObserverComponent(rootContext) }
+    val koin = getKoin()
+    val rootComponent = remember {
+        AuthStateObserverComponent(rootContext, koin.get())
+    }
     NavigateApp(rootComponent)
 }
 

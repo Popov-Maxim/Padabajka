@@ -1,6 +1,6 @@
 package com.padabajka.dating.feature.push.data.di
 
-import com.padabajka.dating.core.repository.api.PushRepository
+import com.padabajka.dating.core.repository.api.metadata.PushRepository
 import com.padabajka.dating.feature.push.data.data.PushRepositoryImpl
 import com.padabajka.dating.feature.push.data.data.network.KtorTokenApi
 import com.padabajka.dating.feature.push.data.data.network.TokenApi
@@ -11,14 +11,22 @@ import com.padabajka.dating.feature.push.data.domain.HandleNewMatchUseCase
 import com.padabajka.dating.feature.push.data.domain.HandlePushUseCase
 import com.padabajka.dating.feature.push.data.domain.SaveTokenUseCase
 import com.padabajka.dating.feature.push.data.domain.UpdateTokenUseCase
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.messaging.FirebaseMessaging
+import dev.gitlive.firebase.messaging.messaging
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val dataPushDiModule = module {
     single<PushRepository> {
         PushRepositoryImpl(
-            remoteDataSource = get()
+            remoteDataSource = get(),
+            firebaseMessaging = get()
         )
+    }
+
+    factory<FirebaseMessaging> {
+        Firebase.messaging
     }
 
     factory<RemoteDataSource> {
