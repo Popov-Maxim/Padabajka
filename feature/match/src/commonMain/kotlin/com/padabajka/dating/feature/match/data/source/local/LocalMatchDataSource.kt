@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 interface LocalMatchDataSource {
     suspend fun matches(): Flow<List<MatchEntry>>
     suspend fun saveMatch(match: MatchEntry)
+    suspend fun replaceMatches(matches: List<MatchEntry>)
 }

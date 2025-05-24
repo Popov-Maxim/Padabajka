@@ -5,6 +5,7 @@ import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
 import com.padabajka.dating.core.repository.api.model.auth.LoggedOut
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.WaitingForEmailValidation
+import com.padabajka.dating.domain.SyncRemoteDataUseCase
 import com.padabajka.dating.feature.auth.domain.AuthStateProvider
 import com.padabajka.dating.feature.auth.presentation.VerificationComponent
 import com.padabajka.dating.settings.domain.NewAuthMetadataUseCase
@@ -15,7 +16,8 @@ import org.koin.core.parameter.parametersOf
 
 class AuthStateObserverComponent(
     context: ComponentContext,
-    private val updateAuthMetadataUseCase: NewAuthMetadataUseCase
+    private val updateAuthMetadataUseCase: NewAuthMetadataUseCase,
+    private val syncRemoteDataUseCase: SyncRemoteDataUseCase
 ) : NavigateComponentContext<AuthStateObserverComponent.Configuration, AuthStateObserverComponent.Child>(
     context,
     Configuration.serializer(),
@@ -32,6 +34,7 @@ class AuthStateObserverComponent(
                 is LoggedIn -> {
                     navigateNewStack(Configuration.AuthScope(authState.userId))
                     updateAuthMetadataUseCase()
+                    syncRemoteDataUseCase()
                 }
 
                 is WaitingForEmailValidation -> {
