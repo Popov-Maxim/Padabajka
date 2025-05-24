@@ -48,6 +48,7 @@ fun initKoin(platformModule: Module) {
             *matchDiModules,
             *pushDiModules,
             *permissionDiModules,
+            sharedDiModule,
             roomModule,
             platformModule,
             applicationScopeModule

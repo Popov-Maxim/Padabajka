@@ -7,4 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface MatchRepository {
     suspend fun matches(): Flow<List<Match>>
     suspend fun saveMatch(match: RawMatch)
+    suspend fun sync()
 }
