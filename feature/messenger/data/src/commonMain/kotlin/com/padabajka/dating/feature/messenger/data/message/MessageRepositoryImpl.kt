@@ -17,8 +17,8 @@ import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
-import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.toEntity
+import com.padabajka.dating.feature.messenger.data.message.model.toSendDto
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.addReaction
 import com.padabajka.dating.feature.messenger.data.message.source.local.removeReaction
@@ -62,7 +62,7 @@ internal class MessageRepositoryImpl(
     ) {
         val currentTime = nowMilliseconds()
 
-        val messageDto = MessageDto(
+        val messageEntry = MessageEntry(
             id = uuid(),
             chatId = chatId.raw,
             authorId = myPersonId.raw,
@@ -75,9 +75,9 @@ internal class MessageRepositoryImpl(
             parentMessageId = parentMessageId?.raw
         )
 
-        localMessageDataSource.addMessage(messageDto.toEntity())
+        localMessageDataSource.addMessage(messageEntry)
 
-        trySendMessageToRemote(messageDto)
+        trySendMessageToRemote(messageEntry)
     }
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
@@ -139,16 +139,22 @@ internal class MessageRepositoryImpl(
         }
     }
 
+    override suspend fun sync(chatId: ChatId, beforeMessageId: MessageId?, count: Int) {
+        val messageDto = remoteMessageDataSource.getMessages(chatId.raw, beforeMessageId?.raw, count)
+        val messageEntities = messageDto.map { it.toEntity() }
+        localMessageDataSource.addMessages(messageEntities)
+    }
+
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
-    private suspend fun trySendMessageToRemote(messageDto: MessageDto) {
+    private suspend fun trySendMessageToRemote(messageEntry: MessageEntry) {
         try {
             val updatedMessageDto =
-                remoteMessageDataSource.sendMessage(messageDto.chatId, messageDto.content)
+                remoteMessageDataSource.sendMessage(messageEntry.chatId, messageEntry.toSendDto())
 
-            localMessageDataSource.updateMessage(messageDto.id) { updatedMessageDto.toEntity() }
+            localMessageDataSource.updateMessage(messageEntry.id) { updatedMessageDto.toEntity() }
         } catch (e: Throwable) {
             // TODO: retry sending
-            localMessageDataSource.updateMessage(messageDto.id) {
+            localMessageDataSource.updateMessage(messageEntry.id) {
                 it.copy(messageStatus = MessageStatus.FailedToSend)
             }
         }

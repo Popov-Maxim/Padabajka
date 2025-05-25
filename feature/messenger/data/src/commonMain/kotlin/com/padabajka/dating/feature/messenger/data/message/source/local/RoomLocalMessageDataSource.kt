@@ -22,6 +22,10 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
         messageDao.insertMessage(message)
     }
 
+    override suspend fun addMessages(messages: List<MessageEntry>) {
+        messageDao.insertMessages(messages)
+    }
+
     override suspend fun updateMessage(
         messageId: String,
         update: (MessageEntry) -> MessageEntry

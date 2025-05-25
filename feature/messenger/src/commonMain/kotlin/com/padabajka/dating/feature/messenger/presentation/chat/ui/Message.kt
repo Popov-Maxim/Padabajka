@@ -18,6 +18,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +47,7 @@ import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
+import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessageGotReadEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
@@ -52,6 +56,7 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.SelectPare
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.IncomingMessageItem
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.MessageItem
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.OutgoingMessageItem
+import com.padabajka.dating.feature.messenger.presentation.chat.model.item.status
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.toParentMessageItem
 import kotlin.math.abs
 import kotlin.math.max
@@ -99,82 +104,105 @@ fun Message(
                 )
             }
     ) {
-        Box(
+        Row(
             modifier = Modifier
-                .shadow(2.dp, shape)
-                .backgroundForMessage(message, shape)
                 .alignForMessage(message, this)
         ) {
-            val parentMessage = message.parentMessage
-            Column(
-                modifier = Modifier.width(IntrinsicSize.Max)
-                    .widthIn(max = 300.dp)
-                    .padding(
-                        start = 10.dp,
-                        end = 10.dp,
-                        top = if (parentMessage == null) 2.dp else 10.dp,
-                        bottom = 2.dp,
-                    ),
-            ) {
-                if (parentMessage != null) {
-                    CommonParentMessage(
-                        parentMessage = parentMessage,
-                        modifier = Modifier.fillMaxWidth().widthIn(min = 100.dp),
-                        colors = parentMessageColor
+            when (message.status()) {
+                MessageStatus.Sending -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(16.dp),
+                        strokeWidth = 2.dp
                     )
                 }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                MessageStatus.FailedToSend -> {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = "Back",
+                    )
+                }
+                MessageStatus.Sent,
+                null -> Unit
+            }
+            Box(
+                modifier = Modifier
+                    .shadow(2.dp, shape)
+                    .backgroundForMessage(message, shape)
+            ) {
+                val parentMessage = message.parentMessage
+                Column(
+                    modifier = Modifier.width(IntrinsicSize.Max)
+                        .widthIn(max = 300.dp)
+                        .padding(
+                            start = 10.dp,
+                            end = 10.dp,
+                            top = if (parentMessage == null) 2.dp else 10.dp,
+                            bottom = 2.dp,
+                        ),
                 ) {
-                    Column(
-                        modifier = Modifier.height(IntrinsicSize.Max).padding(vertical = 4.dp)
-                            .weight(1f)
-                    ) {
-                        Text(
-                            text = message.content,
-                            color = textColor,
-                            fontSize = 16.sp,
-                            modifier = Modifier.weight(1f),
+                    if (parentMessage != null) {
+                        CommonParentMessage(
+                            parentMessage = parentMessage,
+                            modifier = Modifier.fillMaxWidth().widthIn(min = 100.dp),
+                            colors = parentMessageColor
                         )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(
+                            modifier = Modifier.height(IntrinsicSize.Max).padding(vertical = 4.dp)
+                                .weight(1f)
+                        ) {
+                            Text(
+                                text = message.content,
+                                color = textColor,
+                                fontSize = 16.sp,
+                                modifier = Modifier.weight(1f),
+                            )
 
-                        if (message.reactions.isNotEmpty()) {
-                            Box(
-                                modifier = Modifier.background(
-                                    color = Color.White,
-                                    shape = RoundedCornerShape(20.dp)
-                                )
-                            ) {
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                    modifier = Modifier.padding(4.dp),
-                                ) {
-                                    Icon(
-                                        modifier = Modifier.size(20.dp),
-                                        painter = CoreIcons.Reaction.Like,
-                                        tint = Color.Red,
-                                        contentDescription = "reaction like"
+                            if (message.reactions.isNotEmpty()) {
+                                Box(
+                                    modifier = Modifier.background(
+                                        color = Color.White,
+                                        shape = RoundedCornerShape(20.dp)
                                     )
-                                    message.reactions.onEach { reaction ->
-                                        ProfileAvatar(
-                                            model = reaction.author.profile.images.first().raw(),
-                                            modifier = Modifier.size(20.dp)
+                                ) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                        modifier = Modifier.padding(4.dp),
+                                    ) {
+                                        Icon(
+                                            modifier = Modifier.size(20.dp),
+                                            painter = CoreIcons.Reaction.Like,
+                                            tint = Color.Red,
+                                            contentDescription = "reaction like"
                                         )
+                                        message.reactions.onEach { reaction ->
+                                            ProfileAvatar(
+                                                model = reaction.author.profile.images.first()
+                                                    .raw(),
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
+
+                        Spacer(modifier = Modifier.width(5.dp))
+
+                        Text(
+                            text = message.sentTime.hourMinutes,
+                            color = textColor,
+                            fontSize = 10.sp,
+                            maxLines = 1
+                        )
                     }
-
-                    Spacer(modifier = Modifier.width(5.dp))
-
-                    Text(
-                        text = message.sentTime.hourMinutes,
-                        color = textColor,
-                        fontSize = 10.sp,
-                        maxLines = 1
-                    )
                 }
             }
         }
