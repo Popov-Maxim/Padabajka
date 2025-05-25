@@ -13,4 +13,6 @@ interface MessageRepository {
     suspend fun readMessage(messageId: MessageId)
     suspend fun reactToMessage(messageId: MessageId, reaction: MessageReaction.Value)
     suspend fun removeReactToMessage(messageId: MessageId)
+
+    suspend fun sync(chatId: ChatId, beforeMessageId: MessageId? = null, count: Int)
 }

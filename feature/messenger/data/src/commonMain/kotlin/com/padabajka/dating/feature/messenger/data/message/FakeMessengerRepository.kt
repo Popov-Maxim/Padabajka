@@ -153,4 +153,8 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
         }
         messagesFlow.emit(messagesList.reversed())
     }
+
+    override suspend fun sync(chatId: ChatId, beforeMessageId: MessageId?, count: Int) {
+        TODO("Not yet implemented")
+    }
 }

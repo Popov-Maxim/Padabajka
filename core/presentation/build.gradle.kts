@@ -36,6 +36,7 @@ kotlin {
             api(compose.material3)
             api(compose.ui)
             api(compose.components.resources)
+            api(compose.materialIconsExtended)
 
             api(libs.coroutines.core)
             api(libs.decompose)

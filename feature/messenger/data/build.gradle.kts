@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -29,6 +30,7 @@ kotlin {
             api(projects.core.data)
             api(projects.core.domain)
             api(projects.core.repositoryApi)
+            api(projects.core.networking)
             implementation(projects.component.room)
 
             implementation(libs.room.runtime)

@@ -8,5 +8,6 @@ internal interface LocalMessageDataSource {
     fun lastMessage(chatId: String): Flow<MessageEntry?>
     suspend fun message(messageId: String): MessageEntry
     suspend fun addMessage(message: MessageEntry)
+    suspend fun addMessages(messages: List<MessageEntry>)
     suspend fun updateMessage(messageId: String, update: (MessageEntry) -> MessageEntry)
 }

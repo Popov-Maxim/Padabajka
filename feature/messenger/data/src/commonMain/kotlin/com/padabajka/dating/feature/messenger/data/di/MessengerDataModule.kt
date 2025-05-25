@@ -5,6 +5,8 @@ import com.padabajka.dating.core.repository.api.TypingRepository
 import com.padabajka.dating.feature.messenger.data.message.MessageRepositoryImpl
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.RoomLocalMessageDataSource
+import com.padabajka.dating.feature.messenger.data.message.source.remote.KtorMessageApi
+import com.padabajka.dating.feature.messenger.data.message.source.remote.MessageApi
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteMessageDataSourceImpl
 import com.padabajka.dating.feature.messenger.data.typing.TypingRepositoryImpl
@@ -33,7 +35,14 @@ val messengerDataModule = module {
         SocketTypingRemoteDataSource()
     }
     factory<RemoteMessageDataSource> {
-        RemoteMessageDataSourceImpl()
+        RemoteMessageDataSourceImpl(
+            messageApi = get()
+        )
+    }
+    factory<MessageApi> {
+        KtorMessageApi(
+            ktorClientProvider = get()
+        )
     }
     factory<LocalMessageDataSource> {
         RoomLocalMessageDataSource(

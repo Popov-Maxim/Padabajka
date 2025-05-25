@@ -5,6 +5,7 @@ import com.padabajka.dating.core.repository.api.model.messenger.Message
 import com.padabajka.dating.core.repository.api.model.messenger.MessageDirection
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
+import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
@@ -29,7 +30,8 @@ data class OutgoingMessageItem(
     override val sentTime: LocalDateTime,
     override val hasBeenRead: Boolean,
     override val reactions: PersistentList<MessageReaction>,
-    override val parentMessage: ParentMessageItem?
+    override val parentMessage: ParentMessageItem?,
+    val status: MessageStatus
 ) : MessageItem
 
 @Immutable
@@ -50,7 +52,8 @@ fun Message.toMessageItem(): MessageItem {
             sentTime = creationTime,
             hasBeenRead = hasBeenRead(),
             reactions = reactions.toPersistentList(),
-            parentMessage = parentMessage?.toItem()
+            parentMessage = parentMessage?.toItem(),
+            status = status
         )
         MessageDirection.INCOMING -> IncomingMessageItem(
             id = id,
@@ -76,4 +79,11 @@ private fun ParentMessage.toItem(): ParentMessageItem {
         content = content,
         direction = direction
     )
+}
+
+fun MessageItem.status(): MessageStatus? {
+    return when (this) {
+        is IncomingMessageItem -> null
+        is OutgoingMessageItem -> this.status
+    }
 }
