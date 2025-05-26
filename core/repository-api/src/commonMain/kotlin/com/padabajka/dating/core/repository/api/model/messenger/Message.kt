@@ -1,5 +1,6 @@
 package com.padabajka.dating.core.repository.api.model.messenger
 
+import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
@@ -13,6 +14,15 @@ data class Message(
     val readAt: LocalDateTime?,
     val reactions: List<MessageReaction>,
     val parentMessage: ParentMessage?
+)
+
+@Serializable
+data class RawMessage(
+    val id: MessageId,
+    val authorId: PersonId,
+    val content: String,
+    val creationTime: Long,
+    val parentMessageId: MessageId?
 )
 
 @JvmInline

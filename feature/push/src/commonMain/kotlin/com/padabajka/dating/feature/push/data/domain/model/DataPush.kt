@@ -21,12 +21,13 @@ sealed interface DataPush {
     ) : DataPush
 
     @Serializable
+    @SerialName("new_message")
     data class NewMessage(
         val id: MessageId,
         val chatId: String,
         val authorId: String,
         val content: String,
         val creationTime: Long,
-        val parentMessageId: String?
+        val parentMessageId: MessageId?
     ) : DataPush
 }
