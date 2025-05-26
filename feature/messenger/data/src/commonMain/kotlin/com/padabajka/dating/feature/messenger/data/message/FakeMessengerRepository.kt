@@ -8,6 +8,7 @@ import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
+import com.padabajka.dating.core.repository.api.model.messenger.RawMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -155,6 +156,10 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
     }
 
     override suspend fun sync(chatId: ChatId, beforeMessageId: MessageId?, count: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addMessage(chatId: ChatId, message: RawMessage) {
         TODO("Not yet implemented")
     }
 }

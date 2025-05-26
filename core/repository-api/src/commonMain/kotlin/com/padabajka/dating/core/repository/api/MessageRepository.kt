@@ -4,6 +4,7 @@ import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.Message
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
+import com.padabajka.dating.core.repository.api.model.messenger.RawMessage
 import kotlinx.coroutines.flow.Flow
 
 interface MessageRepository {
@@ -15,4 +16,5 @@ interface MessageRepository {
     suspend fun removeReactToMessage(messageId: MessageId)
 
     suspend fun sync(chatId: ChatId, beforeMessageId: MessageId? = null, count: Int)
+    suspend fun addMessage(chatId: ChatId, message: RawMessage)
 }

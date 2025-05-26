@@ -16,6 +16,7 @@ import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
+import com.padabajka.dating.core.repository.api.model.messenger.RawMessage
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.messenger.data.message.model.toEntity
 import com.padabajka.dating.feature.messenger.data.message.model.toSendDto
@@ -143,6 +144,11 @@ internal class MessageRepositoryImpl(
         val messageDto = remoteMessageDataSource.getMessages(chatId.raw, beforeMessageId?.raw, count)
         val messageEntities = messageDto.map { it.toEntity() }
         localMessageDataSource.addMessages(messageEntities)
+    }
+
+    override suspend fun addMessage(chatId: ChatId, message: RawMessage) {
+        val messageEntry = message.toEntity(chatId)
+        localMessageDataSource.addMessage(messageEntry)
     }
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")

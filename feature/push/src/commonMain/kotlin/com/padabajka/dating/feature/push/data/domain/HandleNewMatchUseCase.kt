@@ -11,8 +11,8 @@ class HandleNewMatchUseCase(
     private val notificationService: NotificationService
 ) {
     suspend operator fun invoke(dataPush: DataPush.NewMatch) {
-        val rowMatch = dataPush.toRowMatch()
-        matchRepository.saveMatch(rowMatch)
+        val rawMatch = dataPush.toRawMatch()
+        matchRepository.saveMatch(rawMatch)
         notificationService.showNotification(
             (Int.MIN_VALUE..Int.MAX_VALUE).random(),
             "New match",
@@ -21,7 +21,7 @@ class HandleNewMatchUseCase(
         )
     }
 
-    private fun DataPush.NewMatch.toRowMatch(): RawMatch {
+    private fun DataPush.NewMatch.toRawMatch(): RawMatch {
         return RawMatch(
             id = id,
             personId = personId,
