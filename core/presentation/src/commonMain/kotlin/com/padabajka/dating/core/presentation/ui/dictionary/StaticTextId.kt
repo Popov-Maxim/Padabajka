@@ -39,6 +39,15 @@ sealed interface StaticTextId {
 
         // Chat screen
         EnterMessage(rawId = "enter_message"),
+
+        // Message popup
+        MessagePopupLike(rawId = "message_popup_like"),
+        MessagePopupReply(rawId = "message_popup_reply"),
+        MessagePopupCopy(rawId = "message_popup_copy"),
+        MessagePopupPin(rawId = "message_popup_pin"),
+        MessagePopupEdit(rawId = "message_popup_edit"),
+        MessagePopupDelete(rawId = "message_popup_delete"),
+
         ;
         override val id: String = "${rawId}_ui_id"
     }

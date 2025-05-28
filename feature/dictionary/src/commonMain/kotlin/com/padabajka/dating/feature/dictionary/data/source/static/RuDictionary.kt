@@ -25,6 +25,12 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Filters -> "Фильтр"
             StaticTextId.UiId.LookingFor -> "Ищу..."
             StaticTextId.UiId.EnterMessage -> "Введите сообщение..."
+            StaticTextId.UiId.MessagePopupLike -> "Лайк"
+            StaticTextId.UiId.MessagePopupReply -> "Ответить"
+            StaticTextId.UiId.MessagePopupCopy -> "Копировать"
+            StaticTextId.UiId.MessagePopupPin -> "Закрепить"
+            StaticTextId.UiId.MessagePopupEdit -> "Изменить"
+            StaticTextId.UiId.MessagePopupDelete -> "Удалить"
         }
     }
 

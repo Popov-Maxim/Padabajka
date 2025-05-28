@@ -26,7 +26,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.permission.NotificationPermissionController
@@ -35,6 +34,9 @@ import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
+import com.padabajka.dating.core.presentation.ui.drawable.icon.Icon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.IconData
+import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
@@ -45,7 +47,6 @@ import com.padabajka.dating.settings.presentation.model.SettingsEvent
 import com.padabajka.dating.settings.presentation.setting.AppSettingsDialog
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
-import androidx.compose.ui.graphics.painter.Painter as ComposePainter
 
 @Composable
 fun SettingScreen(component: SettingScreenComponent) {
@@ -130,15 +131,6 @@ private data class SettingButtonData(
     val onClick: () -> Unit
 )
 
-private sealed interface IconData {
-    data class Painter(val painter: ComposePainter) : IconData
-    data class Vector(val vector: ImageVector) : IconData
-    data object Empty : IconData
-}
-
-private fun ComposePainter.toData() = IconData.Painter(this)
-private fun ImageVector.toData() = IconData.Vector(this)
-
 @Composable
 private fun SettingButton(
     iconData: IconData,
@@ -157,27 +149,11 @@ private fun SettingButton(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                when (iconData) {
-                    is IconData.Painter -> {
-                        Icon(
-                            painter = iconData.painter,
-                            modifier = Modifier.size(30.dp),
-                            contentDescription = null
-                        )
-                    }
-
-                    is IconData.Vector -> {
-                        Icon(
-                            imageVector = iconData.vector,
-                            modifier = Modifier.size(30.dp),
-                            contentDescription = null
-                        )
-                    }
-
-                    IconData.Empty -> {
-                        Box(modifier = Modifier.size(30.dp))
-                    }
-                }
+                Icon(
+                    iconData = iconData,
+                    modifier = Modifier.size(30.dp),
+                    contentDescription = null
+                )
 
                 Column {
                     Text(text = text)
