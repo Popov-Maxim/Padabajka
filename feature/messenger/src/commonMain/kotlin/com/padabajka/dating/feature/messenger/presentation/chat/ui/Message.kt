@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.messenger.presentation.chat.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -41,9 +42,16 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.hourMinutes
+import com.padabajka.dating.core.presentation.ui.AnimatedPopup
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.CustomViewConfiguration
 import com.padabajka.dating.core.presentation.ui.ProfileAvatar
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
+import com.padabajka.dating.core.presentation.ui.drawable.icon.Icon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.IconData
+import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
@@ -68,6 +76,8 @@ fun Message(
     message: MessageItem,
     shape: Shape,
     onEvent: (MessengerEvent) -> Unit
+): Unit = CustomViewConfiguration(
+    doubleTapTimeoutMillis = 150
 ) {
     if (message is IncomingMessageItem) {
         SideEffect {
@@ -76,6 +86,8 @@ fun Message(
             }
         }
     }
+
+    var enabledDropdown: Boolean by remember { mutableStateOf(false) }
 
     val textColor = when (message) {
         is IncomingMessageItem -> Color.Black
@@ -89,17 +101,11 @@ fun Message(
                 onEvent(SelectParentMessageEvent(message.toParentMessageItem()))
             }.pointerInput(message.reactions) {
                 detectTapGestures(
+                    onTap = {
+                        enabledDropdown = true
+                    },
                     onDoubleTap = {
-                        if (message.reactions.isEmpty()) {
-                            onEvent(
-                                ReactToMessageEvent(
-                                    message.id,
-                                    reaction = MessageReaction.Value.Like
-                                )
-                            )
-                        } else {
-                            onEvent(ReactToMessageEvent(message.id, reaction = null))
-                        }
+                        onEvent(likeEvent(message))
                     }
                 )
             }
@@ -116,6 +122,7 @@ fun Message(
                         strokeWidth = 2.dp
                     )
                 }
+
                 MessageStatus.FailedToSend -> {
                     Icon(
                         modifier = Modifier.size(24.dp),
@@ -123,6 +130,7 @@ fun Message(
                         contentDescription = "Back",
                     )
                 }
+
                 MessageStatus.Sent,
                 null -> Unit
             }
@@ -205,6 +213,20 @@ fun Message(
                     }
                 }
             }
+        }
+        AnimatedPopup(
+            visible = enabledDropdown,
+            onDismissRequest = {
+                enabledDropdown = false
+            }
+        ) {
+            PopupMessageMenuContent(
+                message = message,
+                onEvent = onEvent,
+                onDismissRequest = {
+                    enabledDropdown = false
+                }
+            )
         }
     }
 }
@@ -294,4 +316,94 @@ private fun getParentMessageColor(message: MessageItem): ParentMessageColors {
     )
 
     return parentMessageColor
+}
+
+@Composable
+private fun PopupMessageMenuContent(
+    message: MessageItem,
+    onEvent: (MessengerEvent) -> Unit,
+    onDismissRequest: () -> Unit,
+) {
+    val popupButtonData = listOf(
+        PopupButtonData(
+            iconData = CoreIcons.Popup.Like.toData(),
+            text = StaticTextId.UiId.MessagePopupLike,
+            onClick = { onEvent(likeEvent(message)) }
+        ),
+        PopupButtonData(
+            iconData = CoreIcons.Popup.Reply.toData(),
+            text = StaticTextId.UiId.MessagePopupReply,
+            onClick = { onEvent(SelectParentMessageEvent(message.toParentMessageItem())) }
+        ),
+        PopupButtonData(
+            iconData = CoreIcons.Popup.Copy.toData(),
+            text = StaticTextId.UiId.MessagePopupCopy,
+            onClick = { }
+        ),
+        PopupButtonData(
+            iconData = CoreIcons.Popup.Pin.toData(),
+            text = StaticTextId.UiId.MessagePopupPin,
+            onClick = { }
+        ),
+        PopupButtonData(
+            iconData = CoreIcons.Popup.Edit.toData(),
+            text = StaticTextId.UiId.MessagePopupEdit,
+            onClick = { }
+        ),
+        PopupButtonData(
+            iconData = CoreIcons.Popup.Trash.toData(),
+            text = StaticTextId.UiId.MessagePopupDelete,
+            onClick = { }
+        )
+    )
+
+    val shape = RoundedCornerShape(10.dp)
+    Column(
+        Modifier.shadow(4.dp, shape).background(Color.White, shape)
+            .width(IntrinsicSize.Max).widthIn(min = 200.dp)
+    ) {
+        popupButtonData.onEach { data ->
+            Box(
+                modifier = Modifier.fillMaxWidth().clickable {
+                    data.onClick()
+                    onDismissRequest()
+                }
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(15.dp),
+                    modifier = Modifier.padding(15.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        iconData = data.iconData,
+                        modifier = Modifier.size(24.dp),
+                        contentDescription = null
+                    )
+                    Text(
+                        text = data.text.translate(),
+                        fontSize = 16.sp,
+                    )
+                }
+            }
+        }
+    }
+}
+
+private data class PopupButtonData(
+    val iconData: IconData,
+    val text: StaticTextId,
+    val onClick: () -> Unit
+)
+
+private fun likeEvent(
+    message: MessageItem
+): ReactToMessageEvent {
+    return if (message.reactions.isEmpty()) {
+        ReactToMessageEvent(
+            message.id,
+            reaction = MessageReaction.Value.Like
+        )
+    } else {
+        ReactToMessageEvent(message.id, reaction = null)
+    }
 }

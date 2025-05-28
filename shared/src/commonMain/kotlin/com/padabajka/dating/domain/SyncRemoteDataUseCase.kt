@@ -9,9 +9,13 @@ class SyncRemoteDataUseCase(
     private val messageRepository: MessageRepository
 ) {
     suspend operator fun invoke() {
-        matchRepository.sync()
-        matchRepository.matches().first().onEach { match ->
-            messageRepository.sync(match.chatId, null, COUNT_MESSAGE_FOR_SYNC)
+        runCatching {
+            matchRepository.sync()
+            matchRepository.matches().first().onEach { match ->
+                messageRepository.sync(match.chatId, null, COUNT_MESSAGE_FOR_SYNC)
+            }
+        }.onFailure {
+            println("TODO: not impl for error SyncRemoteDataUseCase")
         }
     }
 

@@ -7,6 +7,12 @@ import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_right_i
 import com.padabajka.dating.core.presentation.ui.resource.drawable.camera_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.likes_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.message_icon
+import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_copy
+import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_edit
+import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_like
+import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_pin
+import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_reply
+import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_trash
 import com.padabajka.dating.core.presentation.ui.resource.drawable.profile_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.reaction_like
 import com.padabajka.dating.core.presentation.ui.resource.drawable.search_pref_icon
@@ -32,6 +38,7 @@ object CoreIcons {
             @Composable
             get() = painterResource(CoreRes.svg.profile_icon)
     }
+
     val SearchPref
         @Composable
         get() = painterResource(CoreRes.svg.search_pref_icon)
@@ -54,5 +61,26 @@ object CoreIcons {
         val Like
             @Composable
             get() = painterResource(CoreRes.svg.reaction_like)
+    }
+
+    object Popup {
+        val Like
+            @Composable
+            get() = painterResource(CoreRes.svg.message_popup_like)
+        val Reply
+            @Composable
+            get() = painterResource(CoreRes.svg.message_popup_reply)
+        val Copy
+            @Composable
+            get() = painterResource(CoreRes.svg.message_popup_copy)
+        val Pin
+            @Composable
+            get() = painterResource(CoreRes.svg.message_popup_pin)
+        val Edit
+            @Composable
+            get() = painterResource(CoreRes.svg.message_popup_edit)
+        val Trash
+            @Composable
+            get() = painterResource(CoreRes.svg.message_popup_trash)
     }
 }

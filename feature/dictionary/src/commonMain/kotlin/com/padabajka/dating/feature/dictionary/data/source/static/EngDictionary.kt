@@ -25,6 +25,12 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Filters -> "Filters"
             StaticTextId.UiId.LookingFor -> "Looking for..."
             StaticTextId.UiId.EnterMessage -> "Enter message..."
+            StaticTextId.UiId.MessagePopupLike -> "Like"
+            StaticTextId.UiId.MessagePopupReply -> "Reply"
+            StaticTextId.UiId.MessagePopupCopy -> "Copy"
+            StaticTextId.UiId.MessagePopupPin -> "Pin"
+            StaticTextId.UiId.MessagePopupEdit -> "Edit"
+            StaticTextId.UiId.MessagePopupDelete -> "Delete"
         }
     }
 

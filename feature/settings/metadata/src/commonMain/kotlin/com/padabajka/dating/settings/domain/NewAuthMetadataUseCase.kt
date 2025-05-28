@@ -13,6 +13,10 @@ class NewAuthMetadataUseCase(
         val token = pushRepository.getToken()
         val authMetadata = AuthMetadata(deviceUid, token)
 
-        metadataRepository.updateAuthMetadata(authMetadata)
+        runCatching {
+            metadataRepository.updateAuthMetadata(authMetadata)
+        }.onFailure {
+            println("TODO: not impl for error NewAuthMetadataUseCase")
+        }
     }
 }

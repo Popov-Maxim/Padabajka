@@ -39,3 +39,27 @@ internal val CoreRes.svg.camera_icon: String
 @OptIn(ExperimentalResourceApi::class)
 internal val CoreRes.svg.reaction_like: String
     get() = Res.getUri("drawable/reaction_like.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.message_popup_like: String
+    get() = Res.getUri("drawable/message_popup_like.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.message_popup_reply: String
+    get() = Res.getUri("drawable/message_popup_reply.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.message_popup_copy: String
+    get() = Res.getUri("drawable/message_popup_copy.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.message_popup_pin: String
+    get() = Res.getUri("drawable/message_popup_pin.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.message_popup_edit: String
+    get() = Res.getUri("drawable/message_popup_edit.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.message_popup_trash: String
+    get() = Res.getUri("drawable/message_popup_trash.svg")
