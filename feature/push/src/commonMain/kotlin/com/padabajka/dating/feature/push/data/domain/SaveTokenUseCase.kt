@@ -14,6 +14,8 @@ class SaveTokenUseCase(
         println("LOG: push getToken $token")
         runCatching {
             updateTokenUseCase.invoke(token)
+        }.onFailure {
+            println("TODO: not impl for error SaveTokenUseCase")
         }
     }
 }

@@ -44,6 +44,7 @@ import com.padabajka.dating.settings.presentation.model.LogOutEvent
 import com.padabajka.dating.settings.presentation.model.NavigateBackEvent
 import com.padabajka.dating.settings.presentation.model.SendPushToken
 import com.padabajka.dating.settings.presentation.model.SettingsEvent
+import com.padabajka.dating.settings.presentation.model.SyncData
 import com.padabajka.dating.settings.presentation.setting.AppSettingsDialog
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -95,6 +96,11 @@ fun SettingScreen(component: SettingScreenComponent) {
                 iconData = IconData.Empty,
                 text = "refresh push token",
                 onClick = { component.onEvent(SendPushToken) }
+            ),
+            SettingButtonData(
+                iconData = IconData.Empty,
+                text = "sync data",
+                onClick = { component.onEvent(SyncData) }
             ),
         )
         Column(
