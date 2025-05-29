@@ -7,6 +7,7 @@ import com.padabajka.dating.feature.push.data.data.network.TokenApi
 import com.padabajka.dating.feature.push.data.data.source.RemoteDataSource
 import com.padabajka.dating.feature.push.data.data.source.RemoteDataSourceImpl
 import com.padabajka.dating.feature.push.data.domain.DataPushParser
+import com.padabajka.dating.feature.push.data.domain.HandleDeleteMessageUseCase
 import com.padabajka.dating.feature.push.data.domain.HandleNewMatchUseCase
 import com.padabajka.dating.feature.push.data.domain.HandleNewMessageUseCase
 import com.padabajka.dating.feature.push.data.domain.HandlePushUseCase
@@ -48,4 +49,5 @@ val dataPushDiModule = module {
     factoryOf(::HandleNewMatchUseCase)
     factoryOf(::DataPushParser)
     factoryOf(::HandleNewMessageUseCase)
+    factoryOf(::HandleDeleteMessageUseCase)
 }

@@ -1,6 +1,8 @@
 package com.padabajka.dating.settings.di
 
+import com.padabajka.dating.settings.domain.SyncRemoteDataUseCase
 import com.padabajka.dating.settings.presentation.SettingScreenComponent
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 private val presentationModule = module {
@@ -9,9 +11,12 @@ private val presentationModule = module {
             context = parameters.get(),
             navigateBack = parameters.get(),
             logoutUseCaseFactory = { get() },
-            saveTokenUseCase = get()
+            saveTokenUseCase = get(),
+            syncRemoteDataUseCase = get()
         )
     }
+
+    factoryOf(::SyncRemoteDataUseCase)
 }
 
 val settingDiModules = arrayOf(presentationModule)

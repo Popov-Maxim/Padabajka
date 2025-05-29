@@ -30,4 +30,11 @@ sealed interface DataPush {
         val creationTime: Long,
         val parentMessageId: MessageId?
     ) : DataPush
+
+    @Serializable
+    @SerialName("delete_message")
+    data class DeleteMessage(
+        val id: MessageId,
+        val chatId: String,
+    ) : DataPush
 }

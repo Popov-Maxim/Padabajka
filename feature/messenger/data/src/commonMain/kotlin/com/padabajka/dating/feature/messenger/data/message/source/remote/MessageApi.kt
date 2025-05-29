@@ -7,7 +7,9 @@ import com.padabajka.dating.feature.messenger.data.message.model.SendMessageDto
 interface MessageApi {
     suspend fun getMessages(params: GetParams): List<MessageDto>
 
-    suspend fun postMessage(chatId: String, messageDto: SendMessageDto): MessageDto
+    suspend fun postMessage(chatId: String, messageDto: SendMessageDto): MessageDto.Existing
+
+    suspend fun deleteMessage(chatId: String, messageId: String)
 
     data class GetParams(
         val chatId: String,
@@ -32,5 +34,6 @@ interface MessageApi {
     companion object {
         const val PATH_GET = "messages"
         const val PATH_NEW = "new_message"
+        const val PATH_DELETE = "delete_message"
     }
 }

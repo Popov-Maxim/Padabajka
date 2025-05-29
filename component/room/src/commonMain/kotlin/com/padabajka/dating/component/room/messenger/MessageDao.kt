@@ -32,6 +32,9 @@ interface MessageDao {
     @Query("DELETE FROM messages WHERE id = :id")
     suspend fun deleteMessageById(id: String)
 
+    @Query("DELETE FROM messages WHERE id IN (:ids)")
+    suspend fun deleteMessagesByIds(ids: List<String>)
+
     @Query("DELETE FROM messages WHERE chatId = :chatId")
     suspend fun deleteMessagesByChatId(chatId: String)
 
@@ -42,5 +45,14 @@ interface MessageDao {
     suspend fun replaceMessage(old: MessageEntry, new: MessageEntry) {
         deleteMessageById(old.id)
         insertMessage(new)
+    }
+
+    @Transaction
+    suspend fun updateMessages(
+        messagesForAdd: List<MessageEntry>,
+        messageIdsForDelete: List<String>
+    ) {
+        insertMessages(messagesForAdd)
+        deleteMessagesByIds(messageIdsForDelete)
     }
 }

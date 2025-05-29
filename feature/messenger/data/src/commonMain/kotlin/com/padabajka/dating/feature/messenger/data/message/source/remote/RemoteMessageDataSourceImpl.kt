@@ -7,8 +7,12 @@ import com.padabajka.dating.feature.messenger.data.message.model.SendMessageDto
 internal class RemoteMessageDataSourceImpl(
     private val messageApi: MessageApi
 ) : RemoteMessageDataSource {
-    override suspend fun sendMessage(chatId: String, sendMessageDto: SendMessageDto): MessageDto {
+    override suspend fun sendMessage(chatId: String, sendMessageDto: SendMessageDto): MessageDto.Existing {
         return messageApi.postMessage(chatId, sendMessageDto)
+    }
+
+    override suspend fun deleteMessage(chatId: String, messageId: String) {
+        messageApi.deleteMessage(chatId, messageId)
     }
 
     override suspend fun sendReaction(messageId: String, reaction: MessageReactionDto): MessageReactionDto {
