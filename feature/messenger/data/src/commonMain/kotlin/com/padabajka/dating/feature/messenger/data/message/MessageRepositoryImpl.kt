@@ -18,6 +18,7 @@ import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
 import com.padabajka.dating.core.repository.api.model.messenger.RawMessage
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
+import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.toEntity
 import com.padabajka.dating.feature.messenger.data.message.model.toSendDto
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
@@ -81,6 +82,15 @@ internal class MessageRepositoryImpl(
         trySendMessageToRemote(messageEntry)
     }
 
+    override suspend fun deleteMessage(chatId: ChatId, messageId: MessageId) {
+        remoteMessageDataSource.deleteMessage(chatId.raw, messageId.raw)
+        localMessageDataSource.deleteMessage(messageId.raw)
+    }
+
+    override suspend fun deleteLocalMessage(chatId: ChatId, messageId: MessageId) {
+        localMessageDataSource.deleteMessage(messageId.raw)
+    }
+
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override suspend fun readMessage(messageId: MessageId) {
         localMessageDataSource.updateMessage(messageId.raw) {
@@ -142,8 +152,9 @@ internal class MessageRepositoryImpl(
 
     override suspend fun sync(chatId: ChatId, beforeMessageId: MessageId?, count: Int) {
         val messageDto = remoteMessageDataSource.getMessages(chatId.raw, beforeMessageId?.raw, count)
-        val messageEntities = messageDto.map { it.toEntity() }
-        localMessageDataSource.addMessages(messageEntities)
+        val messageEntities = messageDto.filterIsInstance<MessageDto.Existing>().map { it.toEntity() }
+        val messageIdsForDeleted = messageDto.filterIsInstance<MessageDto.Deleted>().map { it.id }
+        localMessageDataSource.updateMessages(messageEntities, messageIdsForDeleted)
     }
 
     override suspend fun addMessage(chatId: ChatId, message: RawMessage) {

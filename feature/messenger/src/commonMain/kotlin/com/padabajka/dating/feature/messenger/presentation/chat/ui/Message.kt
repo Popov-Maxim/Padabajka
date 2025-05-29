@@ -57,6 +57,7 @@ import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.profile.raw
+import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessageGotReadEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ReactToMessageEvent
@@ -324,7 +325,7 @@ private fun PopupMessageMenuContent(
     onEvent: (MessengerEvent) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
-    val popupButtonData = listOf(
+    val popupButtonData = listOfNotNull(
         PopupButtonData(
             iconData = CoreIcons.Popup.Like.toData(),
             text = StaticTextId.UiId.MessagePopupLike,
@@ -353,8 +354,8 @@ private fun PopupMessageMenuContent(
         PopupButtonData(
             iconData = CoreIcons.Popup.Trash.toData(),
             text = StaticTextId.UiId.MessagePopupDelete,
-            onClick = { }
-        )
+            onClick = { onEvent(DeleteMessageEvent(message.id)) }
+        ).takeIf { message is OutgoingMessageItem }
     )
 
     val shape = RoundedCornerShape(10.dp)

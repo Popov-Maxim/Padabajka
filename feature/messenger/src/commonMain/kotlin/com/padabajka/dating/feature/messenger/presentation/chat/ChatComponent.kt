@@ -12,6 +12,7 @@ import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.feature.messenger.domain.chat.ChatMessagesUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.DeleteMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.ReactToMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.ReadMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.SendMessageUseCase
@@ -20,6 +21,7 @@ import com.padabajka.dating.feature.messenger.domain.chat.StopTypingUseCase
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ChatLoadingState
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ChatState
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ConsumeInternalErrorEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.EndOfMessagesListReachedEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.InternalError
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessageGotReadEvent
@@ -52,7 +54,8 @@ class ChatComponent(
     readMessageUseCaseFactory: Factory<ReadMessageUseCase>,
     reactToMessageUseCaseFactory: Factory<ReactToMessageUseCase>,
     startTypingUseCaseFactory: Factory<StartTypingUseCase>,
-    stopTypingUseCaseFactory: Factory<StopTypingUseCase>
+    stopTypingUseCaseFactory: Factory<StopTypingUseCase>,
+    private val deleteMessageUseCase: DeleteMessageUseCase,
 ) : BaseComponent<ChatState>(context, ChatState(personItem)) {
 
     private val chatMessagesUseCase by chatMessagesUseCaseFactory.delegate()
@@ -106,6 +109,7 @@ class ChatComponent(
             EndOfMessagesListReachedEvent -> loadMoreMessages()
             is SendMessageClickEvent -> sendMessage(event.message)
             NavigateBackEvent -> navigateBack()
+            is DeleteMessageEvent -> deleteMessage(event.messageId)
         }
     }
 
@@ -172,6 +176,17 @@ class ChatComponent(
         mapAndReduceException(
             action = {
                 reactToMessageUseCase(messageId, reaction)
+            },
+            mapper = { InternalError },
+            update = { state, internalError ->
+                state.copy(internalErrorStateEvent = raisedIfNotNull(internalError))
+            }
+        )
+
+    private fun deleteMessage(messageId: MessageId) =
+        mapAndReduceException(
+            action = {
+                deleteMessageUseCase(chatId, messageId)
             },
             mapper = { InternalError },
             update = { state, internalError ->

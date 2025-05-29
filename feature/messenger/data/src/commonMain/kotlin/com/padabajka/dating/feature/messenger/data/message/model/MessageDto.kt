@@ -4,19 +4,37 @@ import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.messenger.RawMessage
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MessageDto(
-    val id: String,
-    val chatId: String,
-    val authorId: String,
-    val content: String,
-    val creationTime: Long,
-    val reactions: List<MessageReactionDto>,
-    val readAt: Long?,
-    val parentMessageId: String?
-)
+sealed interface MessageDto {
+    val id: String
+    val chatId: String
+    val creationTime: Long
+
+    @Serializable
+    @SerialName("deleted")
+    data class Deleted(
+        override val id: String,
+        override val chatId: String,
+        override val creationTime: Long
+    ) : MessageDto
+
+    @Serializable
+    @SerialName("existing")
+    data class Existing(
+        override val id: String,
+        override val chatId: String,
+        override val creationTime: Long,
+        val editedAt: Long?,
+        val authorId: String,
+        val content: String,
+        val reactions: List<MessageReactionDto>,
+        val readAt: Long?,
+        val parentMessageId: String?
+    ) : MessageDto
+}
 
 @Serializable
 data class SendMessageDto(
@@ -35,7 +53,7 @@ fun MessageEntry.toSendDto(): SendMessageDto {
     )
 }
 
-fun MessageDto.toEntity(): MessageEntry {
+fun MessageDto.Existing.toEntity(): MessageEntry {
     return MessageEntry(
         id = id,
         chatId = chatId,

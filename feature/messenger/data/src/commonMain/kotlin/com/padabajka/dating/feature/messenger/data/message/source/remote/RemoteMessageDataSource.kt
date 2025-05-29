@@ -5,7 +5,8 @@ import com.padabajka.dating.feature.messenger.data.message.model.MessageReaction
 import com.padabajka.dating.feature.messenger.data.message.model.SendMessageDto
 
 internal interface RemoteMessageDataSource {
-    suspend fun sendMessage(chatId: String, sendMessageDto: SendMessageDto): MessageDto
+    suspend fun sendMessage(chatId: String, sendMessageDto: SendMessageDto): MessageDto.Existing
+    suspend fun deleteMessage(chatId: String, messageId: String)
     suspend fun sendReaction(messageId: String, reaction: MessageReactionDto): MessageReactionDto
     suspend fun removeReaction(messageId: String, author: String)
     suspend fun readMessages(messageId: String)

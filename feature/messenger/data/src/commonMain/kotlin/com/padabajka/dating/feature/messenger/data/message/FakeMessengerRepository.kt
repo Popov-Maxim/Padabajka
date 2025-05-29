@@ -130,6 +130,14 @@ class FakeMessengerRepository(scope: CoroutineScope) : MessageRepository {
         messagesFlow.emit(messagesList.reversed())
     }
 
+    override suspend fun deleteMessage(chatId: ChatId, messageId: MessageId) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteLocalMessage(chatId: ChatId, messageId: MessageId) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun readMessage(messageId: MessageId) {
         messagesList = messagesList.map {
             if (it.id == messageId) it.copy(status = MessageStatus.Sent) else it
