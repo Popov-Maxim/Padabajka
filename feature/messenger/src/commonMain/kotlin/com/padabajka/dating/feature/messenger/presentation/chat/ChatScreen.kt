@@ -22,9 +22,11 @@ import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.ProfileAvatar
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
+import com.padabajka.dating.feature.messenger.presentation.chat.model.Field
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.NavigateBackEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.ui.Chat
+import com.padabajka.dating.feature.messenger.presentation.chat.ui.EditedMessageField
 import com.padabajka.dating.feature.messenger.presentation.chat.ui.MessageField
 import com.padabajka.dating.feature.messenger.presentation.chat.ui.ParentMessageField
 import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
@@ -42,7 +44,14 @@ fun ChatScreen(component: ChatComponent) {
         },
         bottomBar = {
             Column {
-                val parentMessage = state.parentMessage
+                val field = state.field
+                if (field is Field.Editor) {
+                    EditedMessageField(
+                        field = field,
+                        onEvent = component::onEvent
+                    )
+                }
+                val parentMessage = field.parentMessage
                 if (parentMessage != null) {
                     ParentMessageField(
                         parentMessage = parentMessage,
@@ -51,7 +60,7 @@ fun ChatScreen(component: ChatComponent) {
                 }
                 MessageField(
                     modifier = Modifier.fillMaxWidth(),
-                    text = state.nextMessageText,
+                    field = field,
                     followNewItems = followNewItems,
                     onEvent = component::onEvent
                 )

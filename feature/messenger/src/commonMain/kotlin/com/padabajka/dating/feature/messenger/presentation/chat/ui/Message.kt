@@ -57,10 +57,12 @@ import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.profile.raw
+import com.padabajka.dating.core.utils.safeCast
 import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessageGotReadEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ReactToMessageEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.SelectMessageForEditEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.SelectParentMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.IncomingMessageItem
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.MessageItem
@@ -346,16 +348,20 @@ private fun PopupMessageMenuContent(
             text = StaticTextId.UiId.MessagePopupPin,
             onClick = { }
         ),
-        PopupButtonData(
-            iconData = CoreIcons.Popup.Edit.toData(),
-            text = StaticTextId.UiId.MessagePopupEdit,
-            onClick = { }
-        ),
-        PopupButtonData(
-            iconData = CoreIcons.Popup.Trash.toData(),
-            text = StaticTextId.UiId.MessagePopupDelete,
-            onClick = { onEvent(DeleteMessageEvent(message.id)) }
-        ).takeIf { message is OutgoingMessageItem }
+        message.safeCast<OutgoingMessageItem>()?.let {
+            PopupButtonData(
+                iconData = CoreIcons.Popup.Edit.toData(),
+                text = StaticTextId.UiId.MessagePopupEdit,
+                onClick = { onEvent(SelectMessageForEditEvent(it)) }
+            )
+        },
+        message.safeCast<OutgoingMessageItem>()?.let {
+            PopupButtonData(
+                iconData = CoreIcons.Popup.Trash.toData(),
+                text = StaticTextId.UiId.MessagePopupDelete,
+                onClick = { onEvent(DeleteMessageEvent(message.id)) }
+            )
+        }
     )
 
     val shape = RoundedCornerShape(10.dp)

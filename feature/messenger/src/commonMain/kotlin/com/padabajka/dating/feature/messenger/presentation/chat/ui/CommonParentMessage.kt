@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.mainColor
+import com.padabajka.dating.feature.messenger.presentation.chat.model.Field
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.ParentMessageItem
 
 @Composable
@@ -56,6 +57,48 @@ fun CommonParentMessage(
                     )
                 ) {
                     append(parentMessage.content)
+                }
+            },
+            lineHeight = (13 * 1.2).sp,
+            maxLines = 2
+        )
+    }
+}
+
+@Composable
+fun CommonEditedMessage(
+    field: Field.Editor,
+    colors: ParentMessageColors = ParentMessageColors.default(),
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.height(IntrinsicSize.Min)
+            .run {
+                colors.backgroundBrush?.let(::background) ?: this
+            },
+        horizontalArrangement = Arrangement.spacedBy(5.dp)
+    ) {
+        Spacer(
+            modifier = Modifier.fillMaxHeight().width(1.dp)
+                .background(colors.messageHighlightColor),
+        )
+        Text(
+            text = buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(
+                        color = colors.authorColor,
+                        fontSize = 10.sp,
+                    )
+                ) {
+                    append("Редактирование:\n")
+                }
+                withStyle(
+                    style = SpanStyle(
+                        color = colors.textColor,
+                        fontSize = 13.sp,
+                    )
+                ) {
+                    append(field.content)
                 }
             },
             lineHeight = (13 * 1.2).sp,

@@ -13,6 +13,7 @@ import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.feature.messenger.domain.chat.ChatMessagesUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.DeleteMessageUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.EditMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.ReactToMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.ReadMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.SendMessageUseCase
@@ -23,6 +24,7 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.ChatState
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ConsumeInternalErrorEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.EndOfMessagesListReachedEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.Field
 import com.padabajka.dating.feature.messenger.presentation.chat.model.InternalError
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessageGotReadEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
@@ -31,8 +33,10 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.NextMessag
 import com.padabajka.dating.feature.messenger.presentation.chat.model.NextMessageTextUpdateEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ReactToMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.RemoveParentMessageEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.SelectMessageForEditEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.SelectParentMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.SendMessageClickEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.item.OutgoingMessageItem
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.ParentMessageItem
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.addDateItems
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.toMessageItem
@@ -56,6 +60,7 @@ class ChatComponent(
     startTypingUseCaseFactory: Factory<StartTypingUseCase>,
     stopTypingUseCaseFactory: Factory<StopTypingUseCase>,
     private val deleteMessageUseCase: DeleteMessageUseCase,
+    private val editMessageUseCase: EditMessageUseCase
 ) : BaseComponent<ChatState>(context, ChatState(personItem)) {
 
     private val chatMessagesUseCase by chatMessagesUseCaseFactory.delegate()
@@ -107,9 +112,10 @@ class ChatComponent(
             is MessageGotReadEvent -> readMessage(event.messageId)
             is ReactToMessageEvent -> reactToMessage(event.messageId, event.reaction)
             EndOfMessagesListReachedEvent -> loadMoreMessages()
-            is SendMessageClickEvent -> sendMessage(event.message)
+            is SendMessageClickEvent -> sendMessage(event.field)
             NavigateBackEvent -> navigateBack()
             is DeleteMessageEvent -> deleteMessage(event.messageId)
+            is SelectMessageForEditEvent -> selectMessageForEdit(event.message)
         }
     }
 
@@ -149,13 +155,27 @@ class ChatComponent(
 
     private fun updateNextMessageText(text: String) {
         reduce {
-            it.copy(nextMessageText = text)
+            it.copy(field = it.field.changeContent(text))
         }
         notifyTyping()
     }
 
-    private fun updateParentMessage(messageId: ParentMessageItem?) = reduce {
-        it.copy(parentMessage = messageId)
+    private fun Field.changeContent(content: String): Field {
+        return when (this) {
+            is Field.Editor -> copy(content = content)
+            is Field.NewMessage -> copy(content = content)
+        }
+    }
+
+    private fun updateParentMessage(parentMessageItem: ParentMessageItem?) = reduce {
+        it.copy(field = it.field.changeParentMessage(parentMessageItem))
+    }
+
+    private fun Field.changeParentMessage(parentMessageItem: ParentMessageItem?): Field {
+        return when (this) {
+            is Field.Editor -> copy(parentMessage = parentMessageItem)
+            is Field.NewMessage -> copy(parentMessage = parentMessageItem)
+        }
     }
 
     private fun consumeInternalErrorEvent() = reduce {
@@ -194,16 +214,27 @@ class ChatComponent(
             }
         )
 
+    private fun selectMessageForEdit(message: OutgoingMessageItem?) = reduce {
+        if (message == null) {
+            it.copy(field = Field.NewMessage())
+        } else {
+            val field = Field.Editor(message, message.content, message.parentMessage)
+            it.copy(field = field)
+        }
+    }
+
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
-    private fun sendMessage(message: String) {
+    private fun sendMessage(field: Field) {
         componentScope.launch {
-            val parentMessageId = state.value.parentMessage?.id
             reduce { state ->
-                state.copy(nextMessageText = "", parentMessage = null)
+                state.copy(field = Field.NewMessage())
             }
 
             try {
-                sendMessageUseCase(chatId, message, parentMessageId)
+                when (field) {
+                    is Field.Editor -> editMessageUseCase(chatId, field.message.id, field.content)
+                    is Field.NewMessage -> sendMessageUseCase(chatId, field.content, field.parentMessage?.id)
+                }
             } catch (e: Throwable) {
 //                reduce { state ->
 //                    state.copy(

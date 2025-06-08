@@ -19,6 +19,7 @@ import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
 import com.padabajka.dating.core.repository.api.model.messenger.RawMessage
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
+import com.padabajka.dating.feature.messenger.data.message.model.toEditedDto
 import com.padabajka.dating.feature.messenger.data.message.model.toEntity
 import com.padabajka.dating.feature.messenger.data.message.model.toSendDto
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
@@ -74,7 +75,9 @@ internal class MessageRepositoryImpl(
             readAt = null,
             readSynced = true,
             reactions = listOf(),
-            parentMessageId = parentMessageId?.raw
+            parentMessageId = parentMessageId?.raw,
+            editedAt = null,
+            editSynced = true
         )
 
         localMessageDataSource.addMessage(messageEntry)
@@ -89,6 +92,24 @@ internal class MessageRepositoryImpl(
 
     override suspend fun deleteLocalMessage(chatId: ChatId, messageId: MessageId) {
         localMessageDataSource.deleteMessage(messageId.raw)
+    }
+
+    @Suppress("TooGenericExceptionCaught", "SwallowedException")
+    override suspend fun editMessage(chatId: ChatId, messageId: MessageId, content: String) {
+        val updatedMessage = localMessageDataSource.updateMessage(messageId.raw) {
+            it.copy(editedAt = nowMilliseconds(), editSynced = false, content = content)
+        }
+
+        try {
+            val editMessageDto = updatedMessage.toEditedDto()
+            val updatedMessageDto = remoteMessageDataSource.editMessage(editMessageDto)
+
+            localMessageDataSource.updateMessage(messageId.raw) {
+                updatedMessageDto.toEntity()
+            }
+        } catch (e: Throwable) {
+            // TODO: retry read updating
+        }
     }
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
@@ -162,11 +183,23 @@ internal class MessageRepositoryImpl(
         localMessageDataSource.addMessage(messageEntry)
     }
 
+    override suspend fun updateLocalMessage(
+        chatId: ChatId,
+        messageId: MessageId,
+        update: (RawMessage) -> RawMessage
+    ) {
+        localMessageDataSource.updateMessage(messageId.raw) { messageEntry ->
+            val message = messageEntry.toRawMessage()
+            val updatedMessage = update(message)
+            messageEntry.merge(updatedMessage)
+        }
+    }
+
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     private suspend fun trySendMessageToRemote(messageEntry: MessageEntry) {
         try {
             val updatedMessageDto =
-                remoteMessageDataSource.sendMessage(messageEntry.chatId, messageEntry.toSendDto())
+                remoteMessageDataSource.sendMessage(messageEntry.toSendDto())
 
             localMessageDataSource.updateMessage(messageEntry.id) { updatedMessageDto.toEntity() }
         } catch (e: Throwable) {
@@ -206,7 +239,8 @@ internal class MessageRepositoryImpl(
             status = messageStatus,
             readAt = null,
             reactions = domainReactions ?: listOf(),
-            parentMessage = parentMessage
+            parentMessage = parentMessage,
+            editedAt = editedAt
         )
     }
 

@@ -44,8 +44,25 @@ data class SendMessageDto(
     val parentMessageId: String?
 )
 
+@Serializable
+data class EditMessageDto(
+    val id: String,
+    val chatId: String,
+    val content: String?,
+    val parentMessageId: String?
+)
+
 fun MessageEntry.toSendDto(): SendMessageDto {
     return SendMessageDto(
+        id = id,
+        chatId = chatId,
+        content = content,
+        parentMessageId = parentMessageId
+    )
+}
+
+fun MessageEntry.toEditedDto(): EditMessageDto {
+    return EditMessageDto(
         id = id,
         chatId = chatId,
         content = content,
@@ -64,7 +81,9 @@ fun MessageDto.Existing.toEntity(): MessageEntry {
         messageStatus = MessageStatus.Sent,
         readAt = readAt,
         readSynced = true,
-        parentMessageId = parentMessageId
+        parentMessageId = parentMessageId,
+        editedAt = editedAt,
+        editSynced = true
     )
 }
 
@@ -79,6 +98,8 @@ fun RawMessage.toEntity(chatId: ChatId): MessageEntry {
         messageStatus = MessageStatus.Sent,
         readAt = null,
         readSynced = true,
-        parentMessageId = parentMessageId?.raw
+        parentMessageId = parentMessageId?.raw,
+        editedAt = editedAt,
+        editSynced = true
     )
 }

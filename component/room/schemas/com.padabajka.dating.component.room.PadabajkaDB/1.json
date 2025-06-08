@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "522d766ab1000dfcf222803fa7cbd480",
+    "identityHash": "e390f854cfd67183a7cc9c1f24c1ba86",
     "entities": [
       {
         "tableName": "messages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `chatId` TEXT NOT NULL, `authorId` TEXT NOT NULL, `content` TEXT NOT NULL, `creationTime` INTEGER NOT NULL, `reaction` TEXT, `messageStatus` TEXT NOT NULL, `readAt` INTEGER, `readSynced` INTEGER NOT NULL, `parentMessageId` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `chatId` TEXT NOT NULL, `authorId` TEXT NOT NULL, `content` TEXT NOT NULL, `creationTime` INTEGER NOT NULL, `reaction` TEXT, `messageStatus` TEXT NOT NULL, `readAt` INTEGER, `readSynced` INTEGER NOT NULL, `editedAt` INTEGER, `editSynced` INTEGER NOT NULL, `parentMessageId` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -57,6 +57,17 @@
           {
             "fieldPath": "readSynced",
             "columnName": "readSynced",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "editedAt",
+            "columnName": "editedAt",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "editSynced",
+            "columnName": "editSynced",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -160,7 +171,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '522d766ab1000dfcf222803fa7cbd480')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e390f854cfd67183a7cc9c1f24c1ba86')"
     ]
   }
 }

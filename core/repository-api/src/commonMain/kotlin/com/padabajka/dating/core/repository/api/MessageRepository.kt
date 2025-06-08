@@ -13,10 +13,13 @@ interface MessageRepository {
     suspend fun sendMessage(chatId: ChatId, content: String, parentMessageId: MessageId? = null)
     suspend fun deleteMessage(chatId: ChatId, messageId: MessageId)
     suspend fun deleteLocalMessage(chatId: ChatId, messageId: MessageId)
+    suspend fun editMessage(chatId: ChatId, messageId: MessageId, content: String)
+
     suspend fun readMessage(messageId: MessageId)
     suspend fun reactToMessage(messageId: MessageId, reaction: MessageReaction.Value)
     suspend fun removeReactToMessage(messageId: MessageId)
 
     suspend fun sync(chatId: ChatId, beforeMessageId: MessageId? = null, count: Int)
     suspend fun addMessage(chatId: ChatId, message: RawMessage)
+    suspend fun updateLocalMessage(chatId: ChatId, messageId: MessageId, update: (RawMessage) -> RawMessage)
 }

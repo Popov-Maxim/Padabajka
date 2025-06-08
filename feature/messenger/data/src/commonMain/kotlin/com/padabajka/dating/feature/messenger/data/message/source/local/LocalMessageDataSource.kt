@@ -10,5 +10,5 @@ internal interface LocalMessageDataSource {
     suspend fun addMessage(message: MessageEntry)
     suspend fun deleteMessage(messageId: String)
     suspend fun updateMessages(messagesForAdd: List<MessageEntry>, messageIdsForDelete: List<String>)
-    suspend fun updateMessage(messageId: String, update: (MessageEntry) -> MessageEntry)
+    suspend fun updateMessage(messageId: String, update: (MessageEntry) -> MessageEntry): MessageEntry
 }

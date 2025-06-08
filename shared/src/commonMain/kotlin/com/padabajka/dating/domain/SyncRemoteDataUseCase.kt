@@ -15,7 +15,7 @@ class SyncRemoteDataUseCase(
                 messageRepository.sync(match.chatId, null, COUNT_MESSAGE_FOR_SYNC)
             }
         }.onFailure {
-            println("TODO: not impl for error SyncRemoteDataUseCase")
+            println("TODO: not impl for error SyncRemoteDataUseCase\n${it.message}")
         }
     }
 

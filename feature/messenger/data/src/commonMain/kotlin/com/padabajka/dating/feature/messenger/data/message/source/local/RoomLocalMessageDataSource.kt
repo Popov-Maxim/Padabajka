@@ -36,7 +36,7 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
     override suspend fun updateMessage(
         messageId: String,
         update: (MessageEntry) -> MessageEntry
-    ) {
+    ): MessageEntry {
         val old = messageDao.messageById(messageId)
         val updated = update(old)
 
@@ -45,5 +45,6 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
         }
 
         messageDao.updateMessage(updated)
+        return updated
     }
 }
