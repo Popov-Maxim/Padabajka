@@ -21,7 +21,8 @@ class HandleNewMessageUseCase(
             authorId = authorId.run(::PersonId),
             content = content,
             creationTime = creationTime,
-            parentMessageId = parentMessageId
+            parentMessageId = parentMessageId,
+            editedAt = editedAt
         )
     }
 }

@@ -4,6 +4,7 @@ import com.padabajka.dating.feature.messenger.data.di.messengerDataModule
 import com.padabajka.dating.feature.messenger.domain.MatchWithChatUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.ChatMessagesUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.DeleteMessageUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.EditMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.ReactToMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.ReadMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.SendMessageUseCase
@@ -23,6 +24,7 @@ private val domainModule = module {
     factoryOf(::StopTypingUseCase)
     factoryOf(::MatchWithChatUseCase)
     factoryOf(::DeleteMessageUseCase)
+    factoryOf(::EditMessageUseCase)
 }
 
 private val presentationModule = module {
@@ -39,7 +41,8 @@ private val presentationModule = module {
             reactToMessageUseCaseFactory = { get() },
             startTypingUseCaseFactory = { get() },
             stopTypingUseCaseFactory = { get() },
-            deleteMessageUseCase = get()
+            deleteMessageUseCase = get(),
+            editMessageUseCase = get(),
         )
     }
 

@@ -28,7 +28,18 @@ sealed interface DataPush {
         val authorId: String,
         val content: String,
         val creationTime: Long,
-        val parentMessageId: MessageId?
+        val parentMessageId: MessageId? = null,
+        val editedAt: Long? = null
+    ) : DataPush
+
+    @Serializable
+    @SerialName("edited_message")
+    data class EditedMessage(
+        val id: MessageId,
+        val chatId: String,
+        val editedAt: Long,
+        val content: String,
+        val parentMessageId: MessageId? = null,
     ) : DataPush
 
     @Serializable

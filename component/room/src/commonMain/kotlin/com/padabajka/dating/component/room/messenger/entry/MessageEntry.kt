@@ -18,6 +18,8 @@ data class MessageEntry(
     @ColumnInfo("messageStatus") val messageStatus: MessageStatus,
     @ColumnInfo("readAt") val readAt: Long?,
     @ColumnInfo("readSynced") val readSynced: Boolean,
+    @ColumnInfo("editedAt") val editedAt: Long?,
+    @ColumnInfo("editSynced") val editSynced: Boolean,
     @ColumnInfo("parentMessageId") val parentMessageId: String?
 )
 

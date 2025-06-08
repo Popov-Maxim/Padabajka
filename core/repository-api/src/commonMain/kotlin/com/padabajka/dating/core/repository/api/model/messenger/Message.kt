@@ -13,7 +13,8 @@ data class Message(
     val status: MessageStatus,
     val readAt: LocalDateTime?,
     val reactions: List<MessageReaction>,
-    val parentMessage: ParentMessage?
+    val parentMessage: ParentMessage?,
+    val editedAt: Long?,
 )
 
 @Serializable
@@ -22,7 +23,8 @@ data class RawMessage(
     val authorId: PersonId,
     val content: String,
     val creationTime: Long,
-    val parentMessageId: MessageId?
+    val parentMessageId: MessageId?,
+    val editedAt: Long?,
 )
 
 @JvmInline

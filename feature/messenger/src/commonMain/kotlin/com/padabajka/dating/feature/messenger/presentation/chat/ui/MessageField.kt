@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
+import com.padabajka.dating.feature.messenger.presentation.chat.model.Field
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.NextMessageFieldLostFocusEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.NextMessageTextUpdateEvent
@@ -31,9 +32,9 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.SendMessag
 @Composable
 fun MessageField(
     modifier: Modifier = Modifier,
-    text: String,
+    field: Field,
     followNewItems: MutableState<Boolean>,
-    onEvent: (MessengerEvent) -> Unit
+    onEvent: (MessengerEvent) -> Unit,
 ) {
     Row(
         modifier,
@@ -47,7 +48,7 @@ fun MessageField(
                         onEvent(NextMessageFieldLostFocusEvent)
                     }
                 },
-            value = text,
+            value = field.content,
             onValueChange = { onEvent(NextMessageTextUpdateEvent(it)) },
             colors = TextFieldDefaults.transparentColors(),
             placeholder = { Text(StaticTextId.UiId.EnterMessage.translate()) },
@@ -57,7 +58,7 @@ fun MessageField(
             modifier = Modifier.padding(top = 5.dp, bottom = 5.dp, end = 10.dp),
             onClick = {
                 followNewItems.value = true
-                onEvent(SendMessageClickEvent(text))
+                onEvent(SendMessageClickEvent(field))
             }
         ) {
             Icon(

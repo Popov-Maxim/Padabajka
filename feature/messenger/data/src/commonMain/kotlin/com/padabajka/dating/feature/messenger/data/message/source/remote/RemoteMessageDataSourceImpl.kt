@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.messenger.data.message.source.remote
 
+import com.padabajka.dating.feature.messenger.data.message.model.EditMessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.MessageReactionDto
 import com.padabajka.dating.feature.messenger.data.message.model.SendMessageDto
@@ -7,12 +8,18 @@ import com.padabajka.dating.feature.messenger.data.message.model.SendMessageDto
 internal class RemoteMessageDataSourceImpl(
     private val messageApi: MessageApi
 ) : RemoteMessageDataSource {
-    override suspend fun sendMessage(chatId: String, sendMessageDto: SendMessageDto): MessageDto.Existing {
-        return messageApi.postMessage(chatId, sendMessageDto)
+    override suspend fun sendMessage(sendMessageDto: SendMessageDto): MessageDto.Existing {
+        return messageApi.postMessage(sendMessageDto)
     }
 
     override suspend fun deleteMessage(chatId: String, messageId: String) {
         messageApi.deleteMessage(chatId, messageId)
+    }
+
+    override suspend fun editMessage(
+        editMessageDto: EditMessageDto
+    ): MessageDto.Existing {
+        return messageApi.patchMessage(editMessageDto)
     }
 
     override suspend fun sendReaction(messageId: String, reaction: MessageReactionDto): MessageReactionDto {

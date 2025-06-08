@@ -2,8 +2,6 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -21,36 +19,22 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "messenger"
+            baseName = "utils"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            api(projects.core.presentation)
-            api(projects.core.domain)
-            api(projects.core.repositoryApi)
-            api(projects.core.data)
-            api(projects.core.utils)
-            implementation(projects.feature.messenger.data)
-        }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
+            // put your multiplatform dependencies here
         }
     }
 }
 
 android {
-    namespace = "com.padabajka.dating.feature.messenger"
+    namespace = "com.padabajka.dating.core.utils"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
