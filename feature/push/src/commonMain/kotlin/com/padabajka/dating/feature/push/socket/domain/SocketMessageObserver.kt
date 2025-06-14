@@ -15,11 +15,14 @@ class SocketMessageObserver(
 ) {
     fun subscribe() {
         coroutineScope.launch {
-            socketRepository.connectAndGetFlow().collect { value ->
+            socketRepository.message.collect { value ->
                 val json = Json.decodeFromString<JsonObject>(value)
                 val messagePush = MessagePush.Json(json)
                 handlePushUseCase.invoke(messagePush)
             }
+        }
+        coroutineScope.launch {
+            socketRepository.startConnecting()
         }
     }
 
