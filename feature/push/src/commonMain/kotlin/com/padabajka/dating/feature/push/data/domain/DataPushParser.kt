@@ -1,7 +1,7 @@
 package com.padabajka.dating.feature.push.data.domain
 
-import com.padabajka.dating.feature.push.data.domain.model.DataPush
-import com.padabajka.dating.feature.push.data.domain.model.PlatformMessagePush
+import com.padabajka.dating.core.repository.api.model.push.DataPush
+import com.padabajka.dating.feature.push.data.domain.model.MessagePush
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 
@@ -10,8 +10,8 @@ class DataPushParser {
         ignoreUnknownKeys = true
         classDiscriminator = "type"
     }
-    fun parse(platformMessagePush: PlatformMessagePush): DataPush? {
-        val dataPushJson = platformMessagePush.dataJson
+    fun parse(messagePush: MessagePush): DataPush? {
+        val dataPushJson = messagePush.dataJson
         return if (dataPushJson.containsKey("type")) {
             json.decodeFromJsonElement(dataPushJson)
         } else {

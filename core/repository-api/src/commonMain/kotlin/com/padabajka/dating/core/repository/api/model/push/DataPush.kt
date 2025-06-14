@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.push.data.domain.model
+package com.padabajka.dating.core.repository.api.model.push
 
 import com.padabajka.dating.core.repository.api.model.match.Match
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId

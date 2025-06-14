@@ -30,6 +30,7 @@ kotlin {
             api(libs.koin.core)
 
             api(libs.ktor.core)
+            api(libs.ktor.websockets)
             implementation(libs.ktor.cio)
             implementation(libs.ktor.auth)
             implementation(libs.ktor.content.negotiation)
