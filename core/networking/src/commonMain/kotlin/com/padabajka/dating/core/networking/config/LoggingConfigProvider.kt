@@ -6,6 +6,8 @@ import io.ktor.client.plugins.HttpCallValidator
 import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.observer.ResponseObserver
 import io.ktor.client.statement.bodyAsText
+import io.ktor.client.statement.request
+import io.ktor.http.URLProtocol
 
 class LoggingConfigProvider : KtorConfigProvider.Static {
     private val requestLoggingPlugin = createClientPlugin("CustomLoggingPlugin") {
@@ -20,8 +22,14 @@ class LoggingConfigProvider : KtorConfigProvider.Static {
 
             install(ResponseObserver) {
                 onResponse { response ->
-                    val body = response.bodyAsText()
-                    println("Response: ${response.status}, Body: $body")
+                    val request = response.request
+                    val isWebSocket = request.url.protocol in arrayOf(URLProtocol.WS, URLProtocol.WSS)
+                    if (isWebSocket) {
+                        println("Response: ${response.status}, Socket request: ${request.url}")
+                    } else {
+                        val body = response.bodyAsText()
+                        println("Response: ${response.status}, Body: $body")
+                    }
                 }
             }
 

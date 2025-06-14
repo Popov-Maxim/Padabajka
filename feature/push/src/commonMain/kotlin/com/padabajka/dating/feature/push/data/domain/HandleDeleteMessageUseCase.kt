@@ -2,7 +2,7 @@ package com.padabajka.dating.feature.push.data.domain
 
 import com.padabajka.dating.core.repository.api.MessageRepository
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
-import com.padabajka.dating.feature.push.data.domain.model.DataPush
+import com.padabajka.dating.core.repository.api.model.push.DataPush
 
 class HandleDeleteMessageUseCase(
     private val messageRepository: MessageRepository

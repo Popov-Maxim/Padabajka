@@ -2,7 +2,7 @@ package com.padabajka.dating.feature.push.data.domain
 
 import com.padabajka.dating.core.repository.api.MatchRepository
 import com.padabajka.dating.core.repository.api.model.match.RawMatch
-import com.padabajka.dating.feature.push.data.domain.model.DataPush
+import com.padabajka.dating.core.repository.api.model.push.DataPush
 import com.padabajka.dating.feature.push.notification.NotificationService
 import com.padabajka.dating.feature.push.notification.model.NotificationChannel
 

@@ -3,7 +3,7 @@ package com.padabajka.dating.datapush
 import com.padabajka.dating.feature.push.data.domain.HandlePushUseCase
 import com.padabajka.dating.feature.push.data.domain.SaveTokenUseCase
 import com.padabajka.dating.feature.push.data.domain.UpdateTokenUseCase
-import com.padabajka.dating.feature.push.data.domain.model.PlatformMessagePush
+import com.padabajka.dating.feature.push.data.domain.model.PlatformDataPush
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -22,7 +22,7 @@ object SharedPushHandler : KoinComponent {
 
     private val scope: CoroutineScope = get()
 
-    fun handlePush(rawPush: PlatformMessagePush) {
+    fun handlePush(rawPush: PlatformDataPush) {
         scope.launch {
             handlePushUseCase(rawPush)
         }

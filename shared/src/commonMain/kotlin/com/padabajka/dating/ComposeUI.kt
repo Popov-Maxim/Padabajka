@@ -34,7 +34,7 @@ fun App(rootContext: ComponentContext) {
     InitApp()
     val koin = getKoin()
     val rootComponent = remember {
-        AuthStateObserverComponent(rootContext, koin.get(), koin.get())
+        AuthStateObserverComponent(rootContext, koin.get(), koin.get(), koin.get())
     }
     NavigateApp(rootComponent)
 }
