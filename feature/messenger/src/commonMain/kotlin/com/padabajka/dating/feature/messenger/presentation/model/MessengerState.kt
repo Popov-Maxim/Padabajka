@@ -23,7 +23,8 @@ data class EmptyChatItem(
 data class ChatItem(
     val chatId: ChatId,
     val match: MatchItem,
-    val lastMessage: MessageItem
+    val lastMessage: MessageItem,
+    val unreadMessagesCount: Int
 )
 
 data class MatchItem(

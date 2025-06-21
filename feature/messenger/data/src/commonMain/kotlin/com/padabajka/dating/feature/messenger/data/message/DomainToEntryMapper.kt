@@ -12,7 +12,8 @@ fun MessageEntry.toRawMessage(): RawMessage {
         content = content,
         creationTime = creationTime,
         parentMessageId = parentMessageId?.run(::MessageId),
-        editedAt = editedAt
+        editedAt = editedAt,
+        readAt = readAt
     )
 }
 
@@ -21,6 +22,7 @@ fun MessageEntry.merge(message: RawMessage): MessageEntry {
         authorId = message.authorId.raw,
         content = message.content,
         editedAt = message.editedAt,
+        readAt = message.readAt,
         parentMessageId = message.parentMessageId?.raw,
         creationTime = message.creationTime
     )

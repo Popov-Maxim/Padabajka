@@ -1,9 +1,8 @@
 package com.padabajka.dating.feature.messenger.data.message.source.remote
 
 import com.padabajka.dating.core.networking.KtorClientProvider
-import com.padabajka.dating.feature.messenger.data.message.model.EditMessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
-import com.padabajka.dating.feature.messenger.data.message.model.SendMessageDto
+import com.padabajka.dating.feature.messenger.data.message.model.MessageRequest
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ResponseException
 import io.ktor.client.request.delete
@@ -37,7 +36,7 @@ class KtorMessageApi(
     }
 
     override suspend fun postMessage(
-        messageDto: SendMessageDto
+        messageDto: MessageRequest.Send
     ): MessageDto.Existing {
         val client = ktorClientProvider.client()
 
@@ -53,7 +52,7 @@ class KtorMessageApi(
         return response.body()
     }
 
-    override suspend fun patchMessage(messageDto: EditMessageDto): MessageDto.Existing {
+    override suspend fun patchMessage(messageDto: MessageRequest.Edit): MessageDto.Existing {
         val client = ktorClientProvider.client()
 
         val response = client.patch {
@@ -78,6 +77,21 @@ class KtorMessageApi(
         }
 
         return response.throwIfNotSuccessful()
+    }
+
+    override suspend fun markAsRead(messageRequest: MessageRequest.MarkAsRead) {
+        val client = ktorClientProvider.client()
+
+        val response = client.patch {
+            url {
+                path(MessageApi.PATH_MARK_AS_READ)
+            }
+
+            contentType(ContentType.Application.Json)
+            setBody(messageRequest)
+        }
+
+        return response.body()
     }
 
     private fun HttpResponse.throwIfNotSuccessful() {

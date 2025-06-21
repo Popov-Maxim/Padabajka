@@ -25,6 +25,7 @@ data class RawMessage(
     val creationTime: Long,
     val parentMessageId: MessageId?,
     val editedAt: Long?,
+    val readAt: Long?
 )
 
 @JvmInline

@@ -14,6 +14,10 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
         return messageDao.lastMessageByChatId(chatId)
     }
 
+    override suspend fun unreadMessagesCount(chatId: String, currentUserId: String): Int {
+        return messageDao.unreadMessagesCount(chatId, currentUserId)
+    }
+
     override suspend fun message(messageId: String): MessageEntry {
         return messageDao.messageById(messageId)
     }

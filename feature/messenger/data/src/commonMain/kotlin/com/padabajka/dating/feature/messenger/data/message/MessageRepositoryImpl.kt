@@ -19,9 +19,10 @@ import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
 import com.padabajka.dating.core.repository.api.model.messenger.RawMessage
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
-import com.padabajka.dating.feature.messenger.data.message.model.toEditedDto
+import com.padabajka.dating.feature.messenger.data.message.model.toEditRequest
 import com.padabajka.dating.feature.messenger.data.message.model.toEntity
-import com.padabajka.dating.feature.messenger.data.message.model.toSendDto
+import com.padabajka.dating.feature.messenger.data.message.model.toMarkAsReadRequest
+import com.padabajka.dating.feature.messenger.data.message.model.toSendRequest
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.addReaction
 import com.padabajka.dating.feature.messenger.data.message.source.local.removeReaction
@@ -58,6 +59,10 @@ internal class MessageRepositoryImpl(
             .map { it?.toDomain() }
     }
 
+    override suspend fun unreadMessagesCount(chatId: ChatId): Int {
+        return localMessageDataSource.unreadMessagesCount(chatId.raw, myPersonId.raw)
+    }
+
     override suspend fun sendMessage(
         chatId: ChatId,
         content: String,
@@ -86,7 +91,9 @@ internal class MessageRepositoryImpl(
     }
 
     override suspend fun deleteMessage(chatId: ChatId, messageId: MessageId) {
-        remoteMessageDataSource.deleteMessage(chatId.raw, messageId.raw)
+        runCatching {
+            remoteMessageDataSource.deleteMessage(chatId.raw, messageId.raw)
+        } // TODO(message): add exception handling
         localMessageDataSource.deleteMessage(messageId.raw)
     }
 
@@ -101,7 +108,7 @@ internal class MessageRepositoryImpl(
         }
 
         try {
-            val editMessageDto = updatedMessage.toEditedDto()
+            val editMessageDto = updatedMessage.toEditRequest()
             val updatedMessageDto = remoteMessageDataSource.editMessage(editMessageDto)
 
             localMessageDataSource.updateMessage(messageId.raw) {
@@ -114,12 +121,15 @@ internal class MessageRepositoryImpl(
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override suspend fun readMessage(messageId: MessageId) {
-        localMessageDataSource.updateMessage(messageId.raw) {
+        val message = localMessageDataSource.message(messageId.raw)
+        if (message.readAt != null || message.authorId == myRawPersonId) return
+        val updatedMessage = localMessageDataSource.updateMessage(messageId.raw) {
             it.copy(readAt = nowMilliseconds(), readSynced = false)
         }
 
         try {
-            remoteMessageDataSource.readMessages(messageId.raw)
+            val messageRequest = updatedMessage.toMarkAsReadRequest()
+            remoteMessageDataSource.readMessages(messageRequest)
 
             localMessageDataSource.updateMessage(messageId.raw) {
                 it.copy(readSynced = true)
@@ -199,7 +209,7 @@ internal class MessageRepositoryImpl(
     private suspend fun trySendMessageToRemote(messageEntry: MessageEntry) {
         try {
             val updatedMessageDto =
-                remoteMessageDataSource.sendMessage(messageEntry.toSendDto())
+                remoteMessageDataSource.sendMessage(messageEntry.toSendRequest())
 
             localMessageDataSource.updateMessage(messageEntry.id) { updatedMessageDto.toEntity() }
         } catch (e: Throwable) {
@@ -237,7 +247,7 @@ internal class MessageRepositoryImpl(
             content = content,
             creationTime = localDateTime(creationTime),
             status = messageStatus,
-            readAt = null,
+            readAt = readAt?.run(::localDateTime),
             reactions = domainReactions ?: listOf(),
             parentMessage = parentMessage,
             editedAt = editedAt
