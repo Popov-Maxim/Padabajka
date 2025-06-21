@@ -1,18 +1,19 @@
 package com.padabajka.dating.feature.messenger.data.message.source.remote
 
 import com.padabajka.dating.core.domain.mapOfNotNull
-import com.padabajka.dating.feature.messenger.data.message.model.EditMessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
-import com.padabajka.dating.feature.messenger.data.message.model.SendMessageDto
+import com.padabajka.dating.feature.messenger.data.message.model.MessageRequest
 
 interface MessageApi {
     suspend fun getMessages(params: GetParams): List<MessageDto>
 
-    suspend fun postMessage(messageDto: SendMessageDto): MessageDto.Existing
+    suspend fun postMessage(messageDto: MessageRequest.Send): MessageDto.Existing
 
-    suspend fun patchMessage(messageDto: EditMessageDto): MessageDto.Existing
+    suspend fun patchMessage(messageDto: MessageRequest.Edit): MessageDto.Existing
 
     suspend fun deleteMessage(chatId: String, messageId: String)
+
+    suspend fun markAsRead(messageRequest: MessageRequest.MarkAsRead)
 
     data class GetParams(
         val chatId: String,
@@ -39,5 +40,6 @@ interface MessageApi {
         const val PATH_NEW = "new_message"
         const val PATH_PATCH = "patch_message"
         const val PATH_DELETE = "delete_message"
+        const val PATH_MARK_AS_READ = "mark_as_read"
     }
 }

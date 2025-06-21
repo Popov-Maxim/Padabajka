@@ -36,24 +36,32 @@ sealed interface MessageDto {
     ) : MessageDto
 }
 
-@Serializable
-data class SendMessageDto(
-    val id: String,
-    val chatId: String,
-    val content: String,
-    val parentMessageId: String?
-)
+object MessageRequest {
+    @Serializable
+    data class Send(
+        val id: String,
+        val chatId: String,
+        val content: String,
+        val parentMessageId: String?
+    )
 
-@Serializable
-data class EditMessageDto(
-    val id: String,
-    val chatId: String,
-    val content: String?,
-    val parentMessageId: String?
-)
+    @Serializable
+    data class Edit(
+        val id: String,
+        val chatId: String,
+        val content: String?,
+        val parentMessageId: String?
+    )
 
-fun MessageEntry.toSendDto(): SendMessageDto {
-    return SendMessageDto(
+    @Serializable
+    data class MarkAsRead(
+        val id: String,
+        val chatId: String,
+    )
+}
+
+fun MessageEntry.toSendRequest(): MessageRequest.Send {
+    return MessageRequest.Send(
         id = id,
         chatId = chatId,
         content = content,
@@ -61,12 +69,19 @@ fun MessageEntry.toSendDto(): SendMessageDto {
     )
 }
 
-fun MessageEntry.toEditedDto(): EditMessageDto {
-    return EditMessageDto(
+fun MessageEntry.toEditRequest(): MessageRequest.Edit {
+    return MessageRequest.Edit(
         id = id,
         chatId = chatId,
         content = content,
         parentMessageId = parentMessageId
+    )
+}
+
+fun MessageEntry.toMarkAsReadRequest(): MessageRequest.MarkAsRead {
+    return MessageRequest.MarkAsRead(
+        id = id,
+        chatId = chatId,
     )
 }
 
@@ -96,7 +111,7 @@ fun RawMessage.toEntity(chatId: ChatId): MessageEntry {
         creationTime = creationTime,
         reactions = listOf(),
         messageStatus = MessageStatus.Sent,
-        readAt = null,
+        readAt = readAt,
         readSynced = true,
         parentMessageId = parentMessageId?.raw,
         editedAt = editedAt,

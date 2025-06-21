@@ -5,5 +5,6 @@ import com.padabajka.dating.core.repository.api.model.messenger.Message
 
 data class Chat(
     val id: ChatId,
-    val lastMessage: Message?
+    val lastMessage: Message?,
+    val unreadMessagesCount: Int
 )

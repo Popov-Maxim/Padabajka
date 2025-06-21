@@ -23,7 +23,8 @@ class MatchWithChatUseCase(
                 .map { match ->
                     val chatId = match.chatId
                     messageRepository.lastMessage(chatId).map {
-                        Chat(chatId, it)
+                        val unreadMessagesCount = messageRepository.unreadMessagesCount(chatId)
+                        Chat(chatId, it, unreadMessagesCount)
                     }.map {
                         match.toMatchWithChat(it)
                     }

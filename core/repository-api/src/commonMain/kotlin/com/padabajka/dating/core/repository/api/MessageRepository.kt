@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface MessageRepository {
     fun messages(chatId: ChatId): Flow<List<Message>>
     fun lastMessage(chatId: ChatId): Flow<Message?>
+    suspend fun unreadMessagesCount(chatId: ChatId): Int
     suspend fun sendMessage(chatId: ChatId, content: String, parentMessageId: MessageId? = null)
     suspend fun deleteMessage(chatId: ChatId, messageId: MessageId)
     suspend fun deleteLocalMessage(chatId: ChatId, messageId: MessageId)

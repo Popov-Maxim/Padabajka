@@ -37,7 +37,12 @@ class MessengerComponent(
                         if (lastMessage == null) {
                             EmptyChatItem(match.chat.id, matchItem)
                         } else {
-                            ChatItem(match.chat.id, matchItem, lastMessage.toMessageItem())
+                            ChatItem(
+                                chatId = match.chat.id,
+                                match = matchItem,
+                                lastMessage = lastMessage.toMessageItem(),
+                                unreadMessagesCount = match.chat.unreadMessagesCount
+                            )
                         }
                     }
                 }.map { matches ->

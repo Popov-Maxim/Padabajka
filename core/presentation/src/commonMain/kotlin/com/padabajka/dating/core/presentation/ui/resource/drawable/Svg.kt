@@ -63,3 +63,11 @@ internal val CoreRes.svg.message_popup_edit: String
 @OptIn(ExperimentalResourceApi::class)
 internal val CoreRes.svg.message_popup_trash: String
     get() = Res.getUri("drawable/message_popup_trash.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.message_sent: String
+    get() = Res.getUri("drawable/message_sent.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.message_read: String
+    get() = Res.getUri("drawable/message_read.svg")

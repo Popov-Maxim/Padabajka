@@ -22,7 +22,8 @@ class HandleNewMessageUseCase(
             content = content,
             creationTime = creationTime,
             parentMessageId = parentMessageId,
-            editedAt = editedAt
+            editedAt = editedAt,
+            readAt = readAt
         )
     }
 }

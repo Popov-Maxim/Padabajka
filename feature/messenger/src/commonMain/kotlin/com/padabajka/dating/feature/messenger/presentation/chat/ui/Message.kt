@@ -205,14 +205,23 @@ fun Message(
                             }
                         }
 
-                        Spacer(modifier = Modifier.width(5.dp))
+                        Spacer(modifier = Modifier.width(10.dp))
 
-                        Text(
-                            text = message.sentTime.hourMinutes,
-                            color = textColor,
-                            fontSize = 10.sp,
-                            maxLines = 1
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = message.sentTime.hourMinutes,
+                                color = textColor,
+                                fontSize = 12.sp,
+                                maxLines = 1
+                            )
+                            MessageStatus(
+                                modifier = Modifier.size(15.dp),
+                                message = message,
+                                color = textColor
+                            )
+                        }
                     }
                 }
             }
@@ -231,6 +240,47 @@ fun Message(
                 }
             )
         }
+    }
+}
+
+@Composable
+fun MessageStatus(
+    modifier: Modifier,
+    message: MessageItem,
+    color: Color
+) {
+    when (message.status()) {
+        MessageStatus.Sending -> {
+            CircularProgressIndicator(
+                modifier = modifier,
+                strokeWidth = 2.dp,
+                color = color
+            )
+        }
+
+        MessageStatus.FailedToSend -> {
+            Icon(
+                modifier = modifier,
+                imageVector = Icons.Filled.Error,
+                tint = color,
+                contentDescription = "Back",
+            )
+        }
+
+        MessageStatus.Sent -> {
+            val icon = if (message.hasBeenRead) {
+                CoreIcons.Message.Read
+            } else {
+                CoreIcons.Message.Sent
+            }
+            Icon(
+                modifier = modifier,
+                painter = icon,
+                tint = color,
+                contentDescription = "Sent",
+            )
+        }
+        null -> Unit
     }
 }
 
@@ -329,35 +379,35 @@ private fun PopupMessageMenuContent(
 ) {
     val popupButtonData = listOfNotNull(
         PopupButtonData(
-            iconData = CoreIcons.Popup.Like.toData(),
+            iconData = CoreIcons.Message.Popup.Like.toData(),
             text = StaticTextId.UiId.MessagePopupLike,
             onClick = { onEvent(likeEvent(message)) }
         ),
         PopupButtonData(
-            iconData = CoreIcons.Popup.Reply.toData(),
+            iconData = CoreIcons.Message.Popup.Reply.toData(),
             text = StaticTextId.UiId.MessagePopupReply,
             onClick = { onEvent(SelectParentMessageEvent(message.toParentMessageItem())) }
         ),
         PopupButtonData(
-            iconData = CoreIcons.Popup.Copy.toData(),
+            iconData = CoreIcons.Message.Popup.Copy.toData(),
             text = StaticTextId.UiId.MessagePopupCopy,
             onClick = { }
         ),
         PopupButtonData(
-            iconData = CoreIcons.Popup.Pin.toData(),
+            iconData = CoreIcons.Message.Popup.Pin.toData(),
             text = StaticTextId.UiId.MessagePopupPin,
             onClick = { }
         ),
         message.safeCast<OutgoingMessageItem>()?.let {
             PopupButtonData(
-                iconData = CoreIcons.Popup.Edit.toData(),
+                iconData = CoreIcons.Message.Popup.Edit.toData(),
                 text = StaticTextId.UiId.MessagePopupEdit,
                 onClick = { onEvent(SelectMessageForEditEvent(it)) }
             )
         },
         message.safeCast<OutgoingMessageItem>()?.let {
             PopupButtonData(
-                iconData = CoreIcons.Popup.Trash.toData(),
+                iconData = CoreIcons.Message.Popup.Trash.toData(),
                 text = StaticTextId.UiId.MessagePopupDelete,
                 onClick = { onEvent(DeleteMessageEvent(message.id)) }
             )
