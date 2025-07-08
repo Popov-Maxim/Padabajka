@@ -1,6 +1,8 @@
 package com.padabajka.dating.feature.swiper.presentation.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,15 +36,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.mainColor
+import com.padabajka.dating.core.presentation.ui.pager.ImagePager
+import com.padabajka.dating.core.presentation.ui.pager.PagerData
+import com.padabajka.dating.core.presentation.ui.pager.PagerIndicators
+import com.padabajka.dating.feature.profile.presentation.ProfileViewBottomSheet
 import com.padabajka.dating.feature.swiper.presentation.model.CardItem
 import com.padabajka.dating.feature.swiper.presentation.model.EmptyCardItem
 import com.padabajka.dating.feature.swiper.presentation.model.LoadingItem
 import com.padabajka.dating.feature.swiper.presentation.model.NativeAdItem
 import com.padabajka.dating.feature.swiper.presentation.model.PersonItem
+import com.padabajka.dating.feature.swiper.presentation.model.toPersonView
 import com.padabajka.dating.feature.swiper.presentation.screen.card.CardReaction
-import com.padabajka.dating.feature.swiper.presentation.screen.pager.ImagePager
-import com.padabajka.dating.feature.swiper.presentation.screen.pager.PagerData
-import com.padabajka.dating.feature.swiper.presentation.screen.pager.PagerIndicators
 
 @Composable
 fun Card(
@@ -114,14 +118,27 @@ private fun PersonCard(
                     fontSize = 26.sp,
                     color = textColor
                 )
+                var showViewProfile by remember { mutableStateOf(false) }
                 Text(
                     text = personItem.aboutMe,
                     fontSize = 16.sp,
-                    color = textColor
+                    color = textColor,
+                    modifier = Modifier.clickable {
+                        showViewProfile = true
+                    }
                 )
+                if (showViewProfile) {
+                    ProfileViewBottomSheet(
+                        profileViewUIItem = personItem.toPersonView(),
+                        onDismissRequest = { showViewProfile = false }
+                    )
+                }
                 Spacer(Modifier.height(15.dp))
 
-                Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Row(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    horizontalArrangement = Arrangement.spacedBy(15.dp)
+                ) {
                     val buttonModifier = Modifier.align(Alignment.CenterVertically)
                         .background(CoreColors.background.mainColor, CircleShape)
 
@@ -138,7 +155,6 @@ private fun PersonCard(
                             contentDescription = "Return",
                         )
                     }
-                    Spacer(Modifier.width(15.dp))
 
                     IconButton(
                         modifier = buttonModifier
@@ -152,8 +168,6 @@ private fun PersonCard(
                         )
                     }
 
-                    Spacer(Modifier.width(15.dp))
-
                     IconButton(
                         modifier = buttonModifier
                             .size(64.dp),
@@ -166,8 +180,6 @@ private fun PersonCard(
                             contentDescription = "Like",
                         )
                     }
-
-                    Spacer(Modifier.width(15.dp))
 
                     IconButton(
                         modifier = buttonModifier

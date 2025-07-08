@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.swiper.presentation.screen.pager
+package com.padabajka.dating.core.presentation.ui.pager
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing

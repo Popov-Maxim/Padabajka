@@ -35,7 +35,8 @@ fun PersonEntry.toProfile(): Profile {
         images = images.map { Image.Url(it) }.toPersistentList(),
         aboutMe = aboutMe,
         lookingFor = lookingFor.toLookingForData(),
-        details = persistentListOf(),
+        details = listOf(),
+        lifestyles = listOf(),
         mainAchievement = null,
         achievements = persistentListOf()
     )

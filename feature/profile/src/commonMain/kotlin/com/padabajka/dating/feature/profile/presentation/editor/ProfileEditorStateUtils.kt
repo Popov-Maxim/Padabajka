@@ -2,6 +2,7 @@ package com.padabajka.dating.feature.profile.presentation.editor
 
 import com.padabajka.dating.core.domain.replaced
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
+import com.padabajka.dating.core.repository.api.model.profile.Detail
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorState
@@ -53,4 +54,13 @@ fun ProfileEditorState.deleteImage(image: Image): ProfileEditorState {
 
 fun ProfileEditorState.updateLookingForData(data: LookingForData): ProfileEditorState {
     return this.copy(lookingFor = this.lookingFor.updatedValue(data))
+}
+
+fun ProfileEditorState.updateDetails(detail: Detail): ProfileEditorState {
+    return this.copy(
+        details = this.details.updatedValue { details ->
+            details.removeAll { it.type == detail.type }
+                .add(detail)
+        },
+    )
 }

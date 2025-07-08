@@ -35,6 +35,7 @@ kotlin {
             api(projects.core.data)
             api(projects.core.networking)
             api(projects.feature.push)
+            api(projects.feature.profile)
         }
         commonTest.dependencies {
             implementation(projects.testing)

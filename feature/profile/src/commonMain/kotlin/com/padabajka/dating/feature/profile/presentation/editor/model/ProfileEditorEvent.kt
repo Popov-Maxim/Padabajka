@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.profile.presentation.editor.model
 
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
+import com.padabajka.dating.core.repository.api.model.profile.Detail
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 
@@ -22,6 +23,8 @@ data class HideAchievementClickEvent(val achievement: Achievement) : ProfileEdit
 data class MakeAchievementVisibleClickEvent(val achievement: Achievement) : ProfileEditorEvent
 data class MakeAchievementMainClickEvent(val achievement: Achievement) : ProfileEditorEvent
 data object RemoveMainAchievementClickEvent : ProfileEditorEvent
+
+data class DetailUpdateEvent(val detail: Detail) : ProfileEditorEvent
 
 data object NavigateBackEvent : ProfileEditorEvent
 

@@ -1,5 +1,6 @@
 package com.padabajka.dating.core.presentation.ui
 
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
@@ -36,6 +37,7 @@ fun TextInputField(
             }
             wasFocused.value = it.isFocused
         },
+        placeholder = { Text(hint) },
         colors = colors
     )
 }

@@ -24,6 +24,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.OpenProfileEditor -> "Открыть редактор профиля"
             StaticTextId.UiId.Filters -> "Фильтр"
             StaticTextId.UiId.LookingFor -> "Ищу..."
+            StaticTextId.UiId.BasicInfo -> "Основное"
             StaticTextId.UiId.EnterMessage -> "Введите сообщение..."
             StaticTextId.UiId.MessagePopupLike -> "Лайк"
             StaticTextId.UiId.MessagePopupReply -> "Ответить"
@@ -31,6 +32,14 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.MessagePopupPin -> "Закрепить"
             StaticTextId.UiId.MessagePopupEdit -> "Изменить"
             StaticTextId.UiId.MessagePopupDelete -> "Удалить"
+            StaticTextId.UiId.City -> "Город"
+            StaticTextId.UiId.SexualOrientation -> "Ориентация"
+            StaticTextId.UiId.Education -> "Образование"
+            StaticTextId.UiId.Profession -> "Профессия"
+            StaticTextId.UiId.Height -> "Рост"
+            StaticTextId.UiId.Character -> "Характер"
+            StaticTextId.UiId.Language -> "Язык"
+            StaticTextId.UiId.Preview -> "просмотр"
         }
     }
 

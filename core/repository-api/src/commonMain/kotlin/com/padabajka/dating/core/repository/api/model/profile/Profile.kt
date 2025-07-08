@@ -13,8 +13,8 @@ data class Profile(
     val images: PersistentList<Image>,
     val aboutMe: String,
     val lookingFor: LookingForData,
-    val details: PersistentList<Detail>,
-    // val attitudes: List<> TODO(Response): add attitudes
+    val details: List<Detail>,
+    val lifestyles: List<Lifestyle>,
     val mainAchievement: Achievement?,
     val achievements: PersistentList<Achievement>
 ) {

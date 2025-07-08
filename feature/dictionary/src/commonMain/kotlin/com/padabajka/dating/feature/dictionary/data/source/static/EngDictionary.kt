@@ -22,8 +22,10 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Km -> "km"
             StaticTextId.UiId.Bio -> "Bio"
             StaticTextId.UiId.OpenProfileEditor -> "Open profile editor"
+            StaticTextId.UiId.Preview -> "preview"
             StaticTextId.UiId.Filters -> "Filters"
             StaticTextId.UiId.LookingFor -> "Looking for..."
+            StaticTextId.UiId.BasicInfo -> "Basic info"
             StaticTextId.UiId.EnterMessage -> "Enter message..."
             StaticTextId.UiId.MessagePopupLike -> "Like"
             StaticTextId.UiId.MessagePopupReply -> "Reply"
@@ -31,6 +33,13 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.MessagePopupPin -> "Pin"
             StaticTextId.UiId.MessagePopupEdit -> "Edit"
             StaticTextId.UiId.MessagePopupDelete -> "Delete"
+            StaticTextId.UiId.City -> "City"
+            StaticTextId.UiId.SexualOrientation -> "Sexual Orientation"
+            StaticTextId.UiId.Education -> "Education"
+            StaticTextId.UiId.Profession -> "Profession"
+            StaticTextId.UiId.Height -> "Height"
+            StaticTextId.UiId.Character -> "Character"
+            StaticTextId.UiId.Language -> "Language"
         }
     }
 
