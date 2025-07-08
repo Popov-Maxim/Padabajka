@@ -16,7 +16,9 @@ data class PersonResponse(
     val birthday: String,
     val aboutMe: String,
     val lookingFor: LookingForDataDto? = null,
-    val images: List<ImageDto>
+    val images: List<ImageDto> = listOf(),
+    val lifestyles: List<LifestyleDto> = listOf(),
+    val details: List<DetailDto> = listOf()
 )
 
 fun PersonResponse.toPerson(): Person {
@@ -33,8 +35,9 @@ fun PersonResponse.toProfile(): Profile {
         images = images.map { it.toImage() }.toPersistentList(),
         aboutMe = aboutMe,
         lookingFor = lookingFor?.toLookingForData() ?: LookingForData.default,
-        details = persistentListOf(),
+        details = details.map { it.toDomain() },
+        lifestyles = lifestyles.map { it.toDomain() },
         mainAchievement = null,
-        achievements = persistentListOf()
+        achievements = persistentListOf(),
     )
 }

@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.padabajka.dating.core.repository.api.model.profile.Age
+import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.swiper.presentation.model.PersonItem
 import kotlinx.collections.immutable.persistentListOf
@@ -101,7 +102,9 @@ private fun createPersonItem(index: Int): PersonItem {
         aboutMe = "aboutMe $index",
         details = persistentListOf(),
         mainAchievement = null,
-        achievements = persistentListOf()
+        achievements = persistentListOf(),
+        lookingFor = LookingForData.default,
+        lifestyles = persistentListOf()
     )
 }
 

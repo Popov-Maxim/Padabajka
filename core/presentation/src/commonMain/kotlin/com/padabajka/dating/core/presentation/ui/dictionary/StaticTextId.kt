@@ -3,7 +3,7 @@ package com.padabajka.dating.core.presentation.ui.dictionary
 sealed interface StaticTextId {
     val id: String
 
-    enum class UiId(val rawId: String) : StaticTextId {
+    enum class UiId(val rawId: String, prefix: String? = null) : StaticTextId {
 
         // Headers
         Settings(rawId = "settings"),
@@ -18,17 +18,27 @@ sealed interface StaticTextId {
         General(rawId = "general_error"),
 
         // Total for Profile
-        Male(rawId = "male"),
-        Female(rawId = "female"),
-        Everyone(rawId = "everyone"),
-        Age(rawId = "age"),
-        Distance(rawId = "distance"),
-        Km(rawId = "km"),
-        Bio(rawId = "bio"),
-        LookingFor(rawId = "looking_for"),
+        Male(rawId = "male", prefix = PROFILE_PREFIX),
+        Female(rawId = "female", prefix = PROFILE_PREFIX),
+        Everyone(rawId = "everyone", prefix = PROFILE_PREFIX),
+        Age(rawId = "age", prefix = PROFILE_PREFIX),
+        Distance(rawId = "distance", prefix = PROFILE_PREFIX),
+        Km(rawId = "km", prefix = PROFILE_PREFIX),
+        Bio(rawId = "bio", prefix = PROFILE_PREFIX),
+        LookingFor(rawId = "looking_for", prefix = PROFILE_PREFIX),
+        BasicInfo(rawId = "basic_info", prefix = PROFILE_PREFIX),
+
+        City(rawId = "city", prefix = PROFILE_PREFIX),
+        SexualOrientation(rawId = "sexual_orientation", prefix = PROFILE_PREFIX),
+        Education(rawId = "education", prefix = PROFILE_PREFIX),
+        Profession(rawId = "profession", prefix = PROFILE_PREFIX),
+        Height(rawId = "height", prefix = PROFILE_PREFIX),
+        Character(rawId = "character", prefix = PROFILE_PREFIX),
+        Language(rawId = "language", prefix = PROFILE_PREFIX),
 
         // Profile screen
         OpenProfileEditor(rawId = "open_profile_editor"),
+        Preview(rawId = "preview"),
 
         // Search Pref screen
         Filters(rawId = "filters"),
@@ -49,7 +59,8 @@ sealed interface StaticTextId {
         MessagePopupDelete(rawId = "message_popup_delete"),
 
         ;
-        override val id: String = "${rawId}_ui_id"
+        override val id: String = listOfNotNull(prefix, rawId, "ui_id")
+            .joinToString(separator = "_")
     }
 
     enum class AssetId(override val id: String) : StaticTextId {
@@ -71,6 +82,8 @@ sealed interface StaticTextId {
     }
 
     companion object {
+
+        private const val PROFILE_PREFIX = "profile"
 
         private val mapUiId = UiId.entries.associateBy(StaticTextId::id)
         private val mapAssetId = AssetId.entries.associateBy(StaticTextId::id)

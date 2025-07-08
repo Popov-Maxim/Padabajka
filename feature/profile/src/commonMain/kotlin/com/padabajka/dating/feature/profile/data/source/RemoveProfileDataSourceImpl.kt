@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.profile.data.source
 
+import com.padabajka.dating.core.data.network.model.toDto
 import com.padabajka.dating.core.data.network.model.toImageDto
 import com.padabajka.dating.core.data.network.model.toLookingForDataDto
 import com.padabajka.dating.core.data.network.model.toProfile
@@ -31,12 +32,15 @@ class RemoveProfileDataSourceImpl(
             ?.map { it.toImageDto() }
         val lookingFor = fieldForUpdate(current, newProfile, Profile::lookingFor)
             ?.toLookingForDataDto()
+        val details = fieldForUpdate(current, newProfile, Profile::details)
+            ?.map { it.toDto() }
         val parameters = mapOfNotNull(
             ProfileApi.PatchParams.Key.Name to name,
             ProfileApi.PatchParams.Key.Birthday to birthday,
             ProfileApi.PatchParams.Key.AboutMe to aboutMe,
             ProfileApi.PatchParams.Key.Images to images?.serializeToString(),
-            ProfileApi.PatchParams.Key.LookingFor to lookingFor?.serializeToString()
+            ProfileApi.PatchParams.Key.LookingFor to lookingFor?.serializeToString(),
+            ProfileApi.PatchParams.Key.Details to details?.serializeToString()
         )
         profileApi.patch(ProfileApi.PatchParams(parameters))
     }

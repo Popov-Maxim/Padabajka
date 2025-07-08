@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -21,7 +22,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,7 +40,6 @@ import coil3.compose.AsyncImage
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
-import com.padabajka.dating.core.presentation.ui.TextInputField
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
@@ -49,10 +48,14 @@ import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.presentation.ui.utils.rememberImageLoader
+import com.padabajka.dating.core.repository.api.model.profile.Detail
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.image.rememberImagePicker
+import com.padabajka.dating.feature.profile.presentation.ProfileViewBottomSheet
+import com.padabajka.dating.feature.profile.presentation.editor.asset.DetailsBlock
+import com.padabajka.dating.feature.profile.presentation.editor.asset.TextEditField
 import com.padabajka.dating.feature.profile.presentation.editor.dialog.EditImageDialog
 import com.padabajka.dating.feature.profile.presentation.editor.dialog.EditLookingForDialog
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldUpdateEvent
@@ -62,15 +65,17 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.ImageAddEv
 import com.padabajka.dating.feature.profile.presentation.editor.model.LookingForUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.NavigateBackEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorState
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileField
 import com.padabajka.dating.feature.profile.presentation.editor.model.SaveProfileUpdatesClickEvent
+import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
     val state by component.state.subscribeAsState()
     CustomScaffold(
-        topBar = { TopBar(component::onEvent) }
+        topBar = { TopBar(state, component::onEvent) }
     ) {
         val scrollState = rememberScrollState()
         Column(
@@ -80,23 +85,41 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
                 ImageFields(images = state.images.value, component = component)
             }
 
-            val aboutMe = state.aboutMe.value
-            TextEditField(
-                modifier = Modifier.padding(20.dp),
-                text = aboutMe,
+            TotalDataBlock(
                 label = StaticTextId.UiId.Bio.translate(),
-                onChange = {
-                    component.onEvent(AboutMeFieldUpdateEvent(it))
-                },
-            )
+                modifier = Modifier.padding(20.dp)
+            ) {
+                val aboutMe = state.aboutMe.value
+                TextEditField(
+                    text = aboutMe,
+                    modifier = Modifier.height(125.dp).fillMaxWidth(),
+                    onChange = {
+                        component.onEvent(AboutMeFieldUpdateEvent(it))
+                    }
+                )
+            }
 
-            LookingForField(
-                modifier = Modifier.padding(20.dp),
-                field = state.lookingFor,
-                onChange = {
-                    component.onEvent(LookingForUpdateEvent(it))
-                }
-            )
+            TotalDataBlock(
+                label = StaticTextId.UiId.LookingFor.translate(),
+                modifier = Modifier.padding(20.dp)
+            ) {
+                LookingForField(
+                    field = state.lookingFor,
+                    onChange = {
+                        component.onEvent(LookingForUpdateEvent(it))
+                    }
+                )
+            }
+
+            TotalDataBlock(
+                label = StaticTextId.UiId.BasicInfo.translate(),
+                modifier = Modifier.padding(20.dp)
+            ) {
+                BasicInfoBlock(
+                    field = state.details,
+                    onEvent = component::onEvent
+                )
+            }
 
             Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                 Button(
@@ -220,11 +243,66 @@ private fun ImageField(
 }
 
 @Composable
-private fun TextEditField(
-    text: String,
-    label: String,
-    onChange: (String) -> Unit,
+private fun LookingForField(
+    field: ProfileField<LookingForData>,
+    onChange: (LookingForData) -> Unit,
     modifier: Modifier = Modifier
+) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    val shape = RoundedCornerShape(20.dp)
+    Box(
+        modifier = modifier
+            .shadow(5.dp, shape)
+            .clip(shape)
+            .background(Color.White)
+            .clickable { showDialog = true }
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+                .padding(vertical = 20.dp, horizontal = 10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.padding(10.dp),
+                verticalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                val value = field.value
+                Text(text = value.type.translate(), fontSize = 15.sp)
+                val detail = value.detail
+                if (detail != null) {
+                    Text(text = detail.translate(), fontSize = 12.sp)
+                }
+            }
+            Icon(
+                painter = CoreIcons.RightArrow,
+                contentDescription = "Right arrow",
+                modifier = Modifier.size(24.dp)
+            )
+        }
+    }
+    if (showDialog) {
+        EditLookingForDialog(
+            apply = onChange,
+            onDismissRequest = { showDialog = false }
+        )
+    }
+}
+
+@Composable
+private fun BasicInfoBlock(
+    field: ProfileField<PersistentList<Detail>>,
+    onEvent: (ProfileEditorEvent) -> Unit
+) {
+    DetailsBlock(field, onEvent)
+}
+
+@Composable
+private fun TotalDataBlock(
+    label: String,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -235,99 +313,19 @@ private fun TextEditField(
             fontSize = 20.sp,
             modifier = Modifier.wrapContentSize().align(Alignment.Start)
         )
-        val shape = RoundedCornerShape(20.dp)
-        TextInputField(
-            text = text,
-            hint = "",
-            onChange = onChange,
-            singleLine = false,
-            shape = shape,
-            modifier = Modifier.height(125.dp).fillMaxWidth()
-                .innerShadow(
-                    color = Color(color = 0xFFA1A1A1),
-                    shape = shape
-                ),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
-            )
-        )
+        content()
     }
 }
 
 @Composable
-private fun LookingForField(
-    field: ProfileField<LookingForData>,
-    onChange: (LookingForData) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var showDialog by remember { mutableStateOf(false) }
-
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(15.dp)
-    ) {
-        Text(
-            text = StaticTextId.UiId.LookingFor.translate(),
-            fontSize = 20.sp,
-            modifier = Modifier.wrapContentSize().align(Alignment.Start)
-        )
-
-        val shape = RoundedCornerShape(20.dp)
-        Box(
-            modifier = Modifier
-                .shadow(5.dp, shape)
-                .clip(shape)
-                .background(Color.White)
-                .clickable { showDialog = true }
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(vertical = 20.dp, horizontal = 10.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    modifier = Modifier.padding(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
-                    val value = field.value
-                    Text(text = value.type.translate(), fontSize = 15.sp)
-                    val detail = value.detail
-                    if (detail != null) {
-                        Text(text = detail.translate(), fontSize = 12.sp)
-                    }
-                }
-                Icon(
-                    painter = CoreIcons.RightArrow,
-                    contentDescription = "Right arrow",
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-    }
-
-    if (showDialog) {
-        EditLookingForDialog(
-            apply = onChange,
-            onDismissRequest = { showDialog = false }
-        )
-    }
-}
-
-@Composable
-private fun TopBar(onEvent: (ProfileEditorEvent) -> Unit) {
-    Box(
-        modifier = Modifier.background(CoreColors.background.mainColor)
-            .padding(vertical = 10.dp, horizontal = 10.dp)
+private fun TopBar(state: ProfileEditorState, onEvent: (ProfileEditorEvent) -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth().background(CoreColors.background.mainColor)
+            .padding(vertical = 10.dp, horizontal = 10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            modifier = Modifier.align(Alignment.CenterStart),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
@@ -347,6 +345,31 @@ private fun TopBar(onEvent: (ProfileEditorEvent) -> Unit) {
                 fontFamily = PlayfairDisplay
             )
         }
+        PreviewButton(
+            modifier = Modifier
+                .padding(vertical = 10.dp, horizontal = 10.dp),
+            state = state
+        )
+    }
+}
+
+@Composable
+private fun PreviewButton(modifier: Modifier = Modifier, state: ProfileEditorState) {
+    var showViewProfile by remember { mutableStateOf(false) }
+
+    Text(
+        modifier = Modifier.clickable {
+            showViewProfile = true
+        }.then(modifier),
+        text = StaticTextId.UiId.Preview.translate(),
+    )
+
+    if (showViewProfile) {
+        val profileEditorState = state.profileForPreview
+        ProfileViewBottomSheet(
+            profileViewUIItem = profileEditorState,
+            onDismissRequest = { showViewProfile = false }
+        )
     }
 }
 

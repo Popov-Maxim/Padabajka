@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.swiper.presentation.screen.pager
+package com.padabajka.dating.core.presentation.ui.pager
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,8 +26,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ImagePager(
-    modifier: Modifier,
     images: PersistentList<Image>,
+    modifier: Modifier = Modifier,
     onPageChanged: (PagerData) -> Unit
 ) {
     val imageLoader = rememberImageLoader()
@@ -59,7 +59,7 @@ fun ImagePager(
             Box(
                 modifier = Modifier.fillMaxSize().weight(1f)
 //                    .background(Color.Red.copy(alpha = 0.1f))
-                    .clickableInvisiable {
+                    .clickableInvisible {
                         coroutineScope.launch {
                             pagerState.scrollBack()
                         }
@@ -69,7 +69,7 @@ fun ImagePager(
             Box(
                 modifier = Modifier.fillMaxSize().weight(1f)
 //                    .background(Color.Green.copy(alpha = 0.1f))
-                    .clickableInvisiable {
+                    .clickableInvisible {
                         coroutineScope.launch {
                             pagerState.scrollToNext()
                         }
@@ -92,7 +92,7 @@ private suspend fun PagerState.scrollToNext() {
 }
 
 @Composable
-private fun Modifier.clickableInvisiable(
+private fun Modifier.clickableInvisible(
     enabled: Boolean = true,
     onClickLabel: String? = null,
     role: Role? = null,

@@ -7,6 +7,7 @@ import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.profile.Profile
 import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.datetime.LocalDate
 
 data class ProfileState(
@@ -35,7 +36,7 @@ fun Profile.toUIProfileValue(): ProfileValue.Loaded {
         images,
         aboutMe,
         lookingFor,
-        details,
+        details.toPersistentList(),
         mainAchievement,
         achievements
     )
