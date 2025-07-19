@@ -8,7 +8,6 @@ import com.padabajka.dating.core.presentation.event.consumed
 import com.padabajka.dating.core.presentation.event.raisedIfNotNull
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
-import com.padabajka.dating.core.repository.api.model.profile.Detail
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.feature.image.domain.GetLocalImageUseCase
@@ -31,6 +30,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEdi
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorState
 import com.padabajka.dating.feature.profile.presentation.editor.model.RemoveMainAchievementClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.SaveProfileUpdatesClickEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.SupportedDetails
 import com.padabajka.dating.feature.profile.presentation.editor.model.toEditorState
 import com.padabajka.dating.feature.profile.presentation.editor.model.updated
 import com.padabajka.dating.feature.profile.presentation.model.InternalError
@@ -68,7 +68,7 @@ class ProfileEditorScreenComponent(
             NavigateBackEvent -> navigateBack()
             is DeleteImageEvent -> deleteImage(event.image)
             is LookingForUpdateEvent -> updateLoockingForData(event.data)
-            is DetailUpdateEvent -> updateDetails(event.detail)
+            is DetailUpdateEvent -> updateDetails(event.supportedDetails)
         }
     }
 
@@ -144,9 +144,9 @@ class ProfileEditorScreenComponent(
         }
     }
 
-    private fun updateDetails(detail: Detail) {
+    private fun updateDetails(supportedDetails: SupportedDetails) {
         reduce {
-            it.updateDetails(detail)
+            it.updateDetails(supportedDetails)
         }
     }
 

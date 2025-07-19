@@ -1,5 +1,6 @@
 package com.padabajka.dating.core.presentation.ui
 
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
@@ -11,18 +12,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Shape
 
-@Suppress("UnusedParameter")
 @Composable
 fun TextInputField(
     text: String,
     hint: String,
     onChange: (String) -> Unit,
+    enabled: Boolean = true,
     onFocusLost: () -> Unit = {},
     isError: Boolean = false,
     singleLine: Boolean = true,
     shape: Shape = TextFieldDefaults.shape,
     modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextFieldDefaults.colors()
+    colors: TextFieldColors = TextFieldDefaults.colors(),
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     val wasFocused = remember { mutableStateOf(false) }
     TextField(
@@ -31,6 +33,7 @@ fun TextInputField(
         singleLine = singleLine,
         shape = shape,
         isError = isError,
+        enabled = enabled,
         modifier = modifier.onFocusChanged {
             if (!it.isFocused && wasFocused.value) {
                 onFocusLost()
@@ -38,6 +41,7 @@ fun TextInputField(
             wasFocused.value = it.isFocused
         },
         placeholder = { Text(hint) },
-        colors = colors
+        colors = colors,
+        keyboardOptions = keyboardOptions
     )
 }
