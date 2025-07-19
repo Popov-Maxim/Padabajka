@@ -3,214 +3,161 @@ package com.padabajka.dating.feature.profile.presentation.editor.asset
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
-import com.padabajka.dating.core.repository.api.model.profile.Detail
-import com.padabajka.dating.core.repository.api.model.profile.DetailType
-import com.padabajka.dating.feature.profile.presentation.editor.model.DetailUpdateEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.DetailFields
+import com.padabajka.dating.feature.profile.presentation.editor.model.DetailUIItem
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileField
-import kotlinx.collections.immutable.PersistentList
 
 @Composable
+@Suppress("UnusedParameter")
 fun DetailsBlock(
-    field: ProfileField<PersistentList<Detail>>,
+    field: ProfileField<DetailFields>,
     onEvent: (ProfileEditorEvent) -> Unit
 ) {
-    val supportedDetails = field.value.getSupportedDetails()
+    val supportedDetails = field.value.supportedDetails
+    var bottomSheetTabState: DetailTab? by remember { mutableStateOf(null) }
     Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
-        City(supportedDetails.city, onEvent)
-        SexualOrientation(supportedDetails.sexualOrientation, onEvent)
-        Education(supportedDetails.education, onEvent)
-        Profession(supportedDetails.profession, onEvent)
-        Height(supportedDetails.height, onEvent)
-        Character(supportedDetails.character, onEvent)
-        Language(supportedDetails.language, onEvent)
+        City(supportedDetails.city) { bottomSheetTabState = DetailTab.City }
+        SexualOrientation(supportedDetails.sexualOrientation) { bottomSheetTabState = DetailTab.SexualOrientation }
+        Education(supportedDetails.education) { bottomSheetTabState = DetailTab.Education }
+        Profession(supportedDetails.profession) { bottomSheetTabState = DetailTab.Profession }
+        Height(supportedDetails.height) { bottomSheetTabState = DetailTab.Height }
+        Character(supportedDetails.character) { bottomSheetTabState = DetailTab.Character }
+        Language(supportedDetails.language) { bottomSheetTabState = DetailTab.Language }
+    }
+
+    bottomSheetTabState?.let { state ->
+        DetailsEditorBottomSheet(
+            tabsState = state,
+            supportedDetails = supportedDetails,
+            onTabSelected = {
+                bottomSheetTabState = it
+            },
+            onDismissRequest = {
+                bottomSheetTabState = null
+            }
+        )
     }
 }
 
 @Composable
 private fun City(
-    detail: Detail?,
-    onEvent: (ProfileEditorEvent) -> Unit
+    detail: DetailUIItem.AssetFromDb,
+    onClick: () -> Unit
 ) {
-    val valueText = detail?.value?.toText() ?: ""
+    val valueText = detail.getRawValue() ?: ""
 
-    SmallEditField(
+    SmallOnlyDataField(
         label = StaticTextId.UiId.City.translate(),
         value = valueText,
         hint = "lol",
-        onChange = { fieldValue ->
-            onChange(fieldValue, DetailType.City, detail, onEvent)
-        }
+        onClick = onClick
     )
 }
 
 @Composable
 private fun SexualOrientation(
-    detail: Detail?,
-    onEvent: (ProfileEditorEvent) -> Unit
+    detail: DetailUIItem.Asset,
+    onClick: () -> Unit
 ) {
-    val valueText = detail?.value?.toText() ?: ""
+    val valueText = detail.getRawValue() ?: ""
 
-    SmallEditField(
+    SmallOnlyDataField(
         label = StaticTextId.UiId.SexualOrientation.translate(),
         value = valueText,
         hint = "lol",
-        onChange = { fieldValue ->
-            onChange(fieldValue, DetailType.SexualOrientation, detail, onEvent)
-        }
+        onClick = onClick
     )
 }
 
 @Composable
 private fun Education(
-    detail: Detail?,
-    onEvent: (ProfileEditorEvent) -> Unit
+    detail: DetailUIItem.Asset,
+    onClick: () -> Unit
 ) {
-    val valueText = detail?.value?.toText() ?: ""
+    val valueText = detail.getRawValue() ?: ""
 
-    SmallEditField(
+    SmallOnlyDataField(
         label = StaticTextId.UiId.Education.translate(),
         value = valueText,
         hint = "lol",
-        onChange = { fieldValue ->
-            onChange(fieldValue, DetailType.Education, detail, onEvent)
-        }
+        onClick = onClick
     )
 }
 
 @Composable
 private fun Profession(
-    detail: Detail?,
-    onEvent: (ProfileEditorEvent) -> Unit
+    detail: DetailUIItem.TextField,
+    onClick: () -> Unit
 ) {
-    val valueText = detail?.value?.toText() ?: ""
+    val valueText = detail.getRawValue() ?: ""
 
-    SmallEditField(
+    SmallOnlyDataField(
         label = StaticTextId.UiId.Profession.translate(),
         value = valueText,
         hint = "lol",
-        onChange = { fieldValue ->
-            onChange(fieldValue, DetailType.Profession, detail, onEvent)
-        }
+        onClick = onClick
     )
 }
 
 @Composable
 private fun Height(
-    detail: Detail?,
-    onEvent: (ProfileEditorEvent) -> Unit
+    detail: DetailUIItem.Int,
+    onClick: () -> Unit
 ) {
-    val valueText = detail?.value?.toText() ?: ""
+    val valueText = detail.getRawValue() ?: ""
 
-    SmallEditField(
+    SmallOnlyDataField(
         label = StaticTextId.UiId.Height.translate(),
         value = valueText,
         hint = "lol",
-        onChange = { fieldValue ->
-            onChange(fieldValue, DetailType.Height, detail, onEvent)
-        }
+        onClick = onClick
     )
 }
 
 @Composable
 private fun Character(
-    detail: Detail?,
-    onEvent: (ProfileEditorEvent) -> Unit
+    detail: DetailUIItem.Asset,
+    onClick: () -> Unit
 ) {
-    val valueText = detail?.value?.toText() ?: ""
+    val valueText = detail.getRawValue() ?: ""
 
-    SmallEditField(
+    SmallOnlyDataField(
         label = StaticTextId.UiId.Character.translate(),
         value = valueText,
         hint = "lol",
-        onChange = { fieldValue ->
-            onChange(fieldValue, DetailType.Character, detail, onEvent)
-        }
+        onClick = onClick
     )
 }
 
 @Composable
 private fun Language(
-    detail: Detail?,
-    onEvent: (ProfileEditorEvent) -> Unit
+    detail: DetailUIItem.Asset,
+    onClick: () -> Unit
 ) {
-    val valueText = detail?.value?.toText() ?: ""
+    val valueText = detail.getRawValue() ?: ""
 
-    SmallEditField(
+    SmallOnlyDataField(
         label = StaticTextId.UiId.Language.translate(),
         value = valueText,
         hint = "lol",
-        onChange = { fieldValue ->
-            onChange(fieldValue, DetailType.Language, detail, onEvent)
-        }
+        onClick = onClick
     )
 }
 
 @Composable
-private fun Detail.Value.toText(): String {
+private fun DetailUIItem.getRawValue(): String? {
     return when (this) {
-        is Detail.Value.Centimeter -> raw.toString()
-        is Detail.Value.String -> raw
-        is Detail.Value.Asset -> raw.translate()
+        is DetailUIItem.Asset -> value?.translate()
+        is DetailUIItem.AssetFromDb -> value?.translate()
+        is DetailUIItem.Int -> value?.toString()
+        is DetailUIItem.TextField -> value
     }
 }
-
-@Stable
-fun PersistentList<Detail>.getSupportedDetails(): SupportedDetails {
-    var city: Detail? = null
-    var sexualOrientation: Detail? = null
-    var education: Detail? = null
-    var profession: Detail? = null
-    var height: Detail? = null
-    var character: Detail? = null
-    var language: Detail? = null
-
-    onEach { detail ->
-        when (detail.type) {
-            DetailType.City -> city = detail
-            DetailType.SexualOrientation -> sexualOrientation = detail
-            DetailType.Education -> education = detail
-            DetailType.Profession -> profession = detail
-            DetailType.Height -> height = detail
-            DetailType.Character -> character = detail
-            DetailType.Language -> language = detail
-            else -> Unit // Handle other types or ignore
-        }
-    }
-
-    return SupportedDetails(
-        city = city,
-        sexualOrientation = sexualOrientation,
-        education = education,
-        profession = profession,
-        height = height,
-        character = character,
-        language = language,
-    )
-}
-
-private fun onChange(
-    fieldValue: String,
-    detailType: String,
-    detail: Detail?,
-    onEvent: (ProfileEditorEvent) -> Unit
-) {
-    val newValue = Detail.Value.String(fieldValue)
-    val newDetail = detail?.copy(value = newValue)
-        ?: Detail(detailType, newValue, null)
-    onEvent(DetailUpdateEvent(newDetail))
-}
-
-data class SupportedDetails(
-    val city: Detail?,
-    val sexualOrientation: Detail?,
-    val education: Detail?,
-    val profession: Detail?,
-    val height: Detail?,
-    val character: Detail?,
-    val language: Detail?
-)
