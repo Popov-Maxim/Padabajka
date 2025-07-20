@@ -48,7 +48,6 @@ import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.presentation.ui.utils.rememberImageLoader
-import com.padabajka.dating.core.repository.api.model.profile.Detail
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.profile.raw
@@ -60,6 +59,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.dialog.EditImage
 import com.padabajka.dating.feature.profile.presentation.editor.dialog.EditLookingForDialog
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.DeleteImageEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.DetailFields
 import com.padabajka.dating.feature.profile.presentation.editor.model.DiscardProfileUpdatesClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ImageAddEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.LookingForUpdateEvent
@@ -68,7 +68,6 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEdi
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorState
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileField
 import com.padabajka.dating.feature.profile.presentation.editor.model.SaveProfileUpdatesClickEvent
-import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.launch
 
 @Composable
@@ -292,7 +291,7 @@ private fun LookingForField(
 
 @Composable
 private fun BasicInfoBlock(
-    field: ProfileField<PersistentList<Detail>>,
+    field: ProfileField<DetailFields>,
     onEvent: (ProfileEditorEvent) -> Unit
 ) {
     DetailsBlock(field, onEvent)
