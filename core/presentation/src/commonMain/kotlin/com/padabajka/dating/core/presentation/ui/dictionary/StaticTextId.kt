@@ -36,6 +36,8 @@ sealed interface StaticTextId {
         Character(rawId = "character", prefix = PROFILE_PREFIX),
         Language(rawId = "language", prefix = PROFILE_PREFIX),
 
+        CitySearch(rawId = "city_search", prefix = PROFILE_PREFIX),
+
         // Profile screen
         OpenProfileEditor(rawId = "open_profile_editor"),
         Preview(rawId = "preview"),

@@ -40,6 +40,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Character -> "Характер"
             StaticTextId.UiId.Language -> "Язык"
             StaticTextId.UiId.Preview -> "просмотр"
+            StaticTextId.UiId.CitySearch -> "Поиск города"
         }
     }
 

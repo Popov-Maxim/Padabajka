@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 fun Modifier.innerShadow(
-    color: Color = Color.Black,
+    color: Color = Color(color = 0xFFA1A1A1),
     blur: Dp = 16.dp,
     x: Dp = 0.dp,
     y: Dp = 0.dp,

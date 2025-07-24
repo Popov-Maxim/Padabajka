@@ -2,6 +2,7 @@ package com.padabajka.dating.component.room.di
 
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.padabajka.dating.component.room.PadabajkaDB
+import com.padabajka.dating.component.room.asset.city.CityDao
 import com.padabajka.dating.component.room.matches.MatchesDao
 import com.padabajka.dating.component.room.messenger.MessageDao
 import com.padabajka.dating.component.room.person.PersonDao
@@ -28,5 +29,10 @@ val roomModule = module {
     factory<MatchesDao> {
         val db: PadabajkaDB = get()
         db.matchesDao()
+    }
+
+    factory<CityDao> {
+        val db: PadabajkaDB = get()
+        db.cityDao()
     }
 }

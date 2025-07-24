@@ -12,12 +12,15 @@ import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.feature.image.domain.GetLocalImageUseCase
 import com.padabajka.dating.feature.profile.domain.SaveProfileUseCase
+import com.padabajka.dating.feature.profile.domain.asset.FindCitiesUseCase
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldLoosFocusEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldUpdateEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.CitySearchQueryChangedEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ConsumeInternalErrorEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.DeleteImageEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.DetailUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.DiscardProfileUpdatesClickEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.FoundedAssets
 import com.padabajka.dating.feature.profile.presentation.editor.model.HideAchievementClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ImageAddEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.LookingForUpdateEvent
@@ -31,16 +34,19 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEdi
 import com.padabajka.dating.feature.profile.presentation.editor.model.RemoveMainAchievementClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.SaveProfileUpdatesClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.SupportedDetails
+import com.padabajka.dating.feature.profile.presentation.editor.model.UpdateCitySearchEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.toEditorState
 import com.padabajka.dating.feature.profile.presentation.editor.model.updated
 import com.padabajka.dating.feature.profile.presentation.model.InternalError
+import kotlinx.collections.immutable.toPersistentList
 
 class ProfileEditorScreenComponent(
     context: ComponentContext,
     private val navigateBack: () -> Unit,
     private val profileRepository: ProfileRepository,
     saveProfileUseCaseFactory: Factory<SaveProfileUseCase>,
-    getLocalImageUseCaseFactory: Factory<GetLocalImageUseCase>
+    getLocalImageUseCaseFactory: Factory<GetLocalImageUseCase>,
+    private val findCitiesUseCase: FindCitiesUseCase
 ) : BaseComponent<ProfileEditorState>(
     context,
     initProfileState(profileRepository)
@@ -69,6 +75,9 @@ class ProfileEditorScreenComponent(
             is DeleteImageEvent -> deleteImage(event.image)
             is LookingForUpdateEvent -> updateLoockingForData(event.data)
             is DetailUpdateEvent -> updateDetails(event.supportedDetails)
+            is CitySearchQueryChangedEvent -> searchCity(event.query)
+            UpdateCitySearchEvent ->
+                searchCity(state.value.details.value.supportedDetails.city.searchItem.value)
         }
     }
 
@@ -159,6 +168,29 @@ class ProfileEditorScreenComponent(
             }
             reduce {
                 it.addImage(uiImage)
+            }
+        },
+        mapper = { TODO(it.toString()) },
+        update = { state, _ -> state }
+    )
+
+    private fun searchCity(query: String) = mapAndReduceException(
+        action = {
+            reduce {
+                it.updateDetailCity {
+                    copy(
+                        foundedAssets = FoundedAssets.Searching,
+                        searchItem = searchItem.copy(value = query)
+                    )
+                }
+            }
+            val cities = findCitiesUseCase(query)
+                .map { it.name }
+                .toPersistentList()
+            reduce {
+                it.updateDetailCity {
+                    copy(foundedAssets = FoundedAssets.Success(cities))
+                }
             }
         },
         mapper = { TODO(it.toString()) },
