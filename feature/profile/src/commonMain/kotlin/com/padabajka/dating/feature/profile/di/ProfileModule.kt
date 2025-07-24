@@ -1,10 +1,17 @@
 package com.padabajka.dating.feature.profile.di
 
 import com.padabajka.dating.core.data.utils.DataStoreUtils
+import com.padabajka.dating.core.repository.api.CityRepository
 import com.padabajka.dating.core.repository.api.DraftProfileRepository
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.feature.profile.data.DraftProfileRepositoryImpl
 import com.padabajka.dating.feature.profile.data.ProfileRepositoryImpl
+import com.padabajka.dating.feature.profile.data.asset.CityRepositoryImpl
+import com.padabajka.dating.feature.profile.data.asset.network.CityApi
+import com.padabajka.dating.feature.profile.data.asset.source.LocalCityDataSource
+import com.padabajka.dating.feature.profile.data.asset.source.LocalCityDataSourceImpl
+import com.padabajka.dating.feature.profile.data.asset.source.RemoteCityDataSource
+import com.padabajka.dating.feature.profile.data.asset.source.RemoteCityDataSourceImpl
 import com.padabajka.dating.feature.profile.data.network.KtorProfileApi
 import com.padabajka.dating.feature.profile.data.network.ProfileApi
 import com.padabajka.dating.feature.profile.data.source.DataStoreLocalDraftProfileDataSource
@@ -14,6 +21,7 @@ import com.padabajka.dating.feature.profile.data.source.RemoveProfileDataSourceI
 import com.padabajka.dating.feature.profile.domain.DiscardUpdateUseCase
 import com.padabajka.dating.feature.profile.domain.DraftProfileProvider
 import com.padabajka.dating.feature.profile.domain.SaveProfileUseCase
+import com.padabajka.dating.feature.profile.domain.asset.FindCitiesUseCase
 import com.padabajka.dating.feature.profile.domain.update.AboutMeUpdateUseCase
 import com.padabajka.dating.feature.profile.domain.update.FirstNameUpdateUseCase
 import com.padabajka.dating.feature.profile.domain.update.HideAchievementUseCase
@@ -53,6 +61,27 @@ private val dataModule = module {
     factory<LocalDraftProfileDataSource> {
         DataStoreLocalDraftProfileDataSource(
             dataStore = DataStoreUtils.createFake(null)
+        )
+    }
+
+    single<CityRepository> {
+        CityRepositoryImpl(
+            remoteCityDataSource = get(),
+            localCityDataSource = get()
+        )
+    }
+
+    factory<RemoteCityDataSource> {
+        RemoteCityDataSourceImpl(
+            cityApi = get()
+        )
+    }
+
+    factoryOf(::CityApi)
+
+    factory<LocalCityDataSource> {
+        LocalCityDataSourceImpl(
+            cityDao = get()
         )
     }
 }
@@ -102,6 +131,8 @@ private val domainModule = module {
             repository = get()
         )
     }
+
+    factoryOf(::FindCitiesUseCase)
 }
 
 private val presentationModule = module {
@@ -120,7 +151,8 @@ private val presentationModule = module {
             navigateBack = parameters.get(),
             profileRepository = get(),
             saveProfileUseCaseFactory = { get() },
-            getLocalImageUseCaseFactory = { get() }
+            getLocalImageUseCaseFactory = { get() },
+            findCitiesUseCase = get()
         )
     }
 }

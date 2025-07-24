@@ -65,7 +65,7 @@ fun DetailUIItem.toDetail(type: String): Detail? {
 
 sealed interface FoundedAssets {
     data object Searching : FoundedAssets
-    data class Success(val possibleAssets: PersistentList<Text>) : FoundedAssets
+    data class Success(val possibleAssets: PersistentList<String>) : FoundedAssets
 }
 
 data class SearchItem(

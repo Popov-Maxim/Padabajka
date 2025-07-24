@@ -27,4 +27,7 @@ data class DetailUpdateEvent(val supportedDetails: SupportedDetails) : ProfileEd
 
 data object NavigateBackEvent : ProfileEditorEvent
 
+data class CitySearchQueryChangedEvent(val query: String) : ProfileEditorEvent
+data object UpdateCitySearchEvent : ProfileEditorEvent
+
 data object ConsumeInternalErrorEvent : ProfileEditorEvent

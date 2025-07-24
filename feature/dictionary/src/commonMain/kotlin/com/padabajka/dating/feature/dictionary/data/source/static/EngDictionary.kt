@@ -40,6 +40,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Height -> "Height"
             StaticTextId.UiId.Character -> "Character"
             StaticTextId.UiId.Language -> "Language"
+            StaticTextId.UiId.CitySearch -> "City search"
         }
     }
 

@@ -37,6 +37,7 @@ fun DetailsBlock(
         DetailsEditorBottomSheet(
             tabsState = state,
             supportedDetails = supportedDetails,
+            onEvent = onEvent,
             onTabSelected = {
                 bottomSheetTabState = it
             },

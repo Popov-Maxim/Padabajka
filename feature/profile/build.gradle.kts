@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -34,6 +35,7 @@ kotlin {
             api(projects.core.networking)
             api(projects.feature.image)
             api(projects.feature.auth.domain)
+            api(projects.component.room)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

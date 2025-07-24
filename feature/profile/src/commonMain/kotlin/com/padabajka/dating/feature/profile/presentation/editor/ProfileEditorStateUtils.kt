@@ -4,6 +4,7 @@ import com.padabajka.dating.core.domain.replaced
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
+import com.padabajka.dating.feature.profile.presentation.editor.model.DetailUIItem
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorState
 import com.padabajka.dating.feature.profile.presentation.editor.model.SupportedDetails
 
@@ -62,4 +63,20 @@ fun ProfileEditorState.updateDetails(supportedDetails: SupportedDetails): Profil
             details.copy(supportedDetails = supportedDetails)
         },
     )
+}
+
+fun ProfileEditorState.updateDetails(updated: SupportedDetails.() -> SupportedDetails): ProfileEditorState {
+    return this.copy(
+        details = this.details.updatedValue { details ->
+            details.copy(supportedDetails = details.supportedDetails.updated())
+        },
+    )
+}
+
+fun ProfileEditorState.updateDetailCity(
+    updated: DetailUIItem.AssetFromDb.() -> DetailUIItem.AssetFromDb
+): ProfileEditorState {
+    return updateDetails {
+        copy(city = city.updated())
+    }
 }
