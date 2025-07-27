@@ -28,7 +28,7 @@ fun DetailsBlock(
         SexualOrientation(supportedDetails.sexualOrientation) { bottomSheetTabState = DetailTab.SexualOrientation }
         Education(supportedDetails.education) { bottomSheetTabState = DetailTab.Education }
         Profession(supportedDetails.profession) { bottomSheetTabState = DetailTab.Profession }
-        Height(supportedDetails.height) { bottomSheetTabState = DetailTab.Height }
+        HeightField(supportedDetails.height) { bottomSheetTabState = DetailTab.Height }
         Character(supportedDetails.character) { bottomSheetTabState = DetailTab.Character }
         Language(supportedDetails.language) { bottomSheetTabState = DetailTab.Language }
     }
@@ -109,7 +109,7 @@ private fun Profession(
 }
 
 @Composable
-private fun Height(
+private fun HeightField(
     detail: DetailUIItem.Int,
     onClick: () -> Unit
 ) {

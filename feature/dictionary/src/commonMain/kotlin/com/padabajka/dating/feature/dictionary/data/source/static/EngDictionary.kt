@@ -41,6 +41,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Character -> "Character"
             StaticTextId.UiId.Language -> "Language"
             StaticTextId.UiId.CitySearch -> "City search"
+            StaticTextId.UiId.Apply -> "Apply"
         }
     }
 
@@ -59,6 +60,14 @@ class EngDictionary : Dictionary() {
 
             StaticTextId.AssetId.SeriousRelationship -> "Serious relationship"
             StaticTextId.AssetId.BuildingFamily -> "Building family"
+
+            StaticTextId.AssetId.Heterosexual -> "Heterosexual"
+            StaticTextId.AssetId.Homosexual -> "Homosexual"
+            StaticTextId.AssetId.Bisexual -> "Bisexual"
+
+            StaticTextId.AssetId.Extrovert -> "Extrovert"
+            StaticTextId.AssetId.Introvert -> "Introvert"
+            StaticTextId.AssetId.Ambidextrous -> "Ambidextrous"
         }
     }
 }
