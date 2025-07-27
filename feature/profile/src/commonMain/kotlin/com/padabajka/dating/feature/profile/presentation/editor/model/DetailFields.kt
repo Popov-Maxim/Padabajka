@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.profile.presentation.editor.model
 
 import androidx.compose.runtime.Stable
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.repository.api.model.profile.Detail
 import com.padabajka.dating.core.repository.api.model.profile.DetailType
 import com.padabajka.dating.core.repository.api.model.profile.Text
@@ -38,14 +39,45 @@ data class SupportedDetails(
     ).toPersistentList()
 }
 
+fun SupportedDetails.updatedCity(update: DetailUIItem.AssetFromDb.() -> DetailUIItem.AssetFromDb): SupportedDetails {
+    return copy(city = city.update())
+}
+
+fun SupportedDetails.updatedSexualOrientation(update: DetailUIItem.Asset.() -> DetailUIItem.Asset): SupportedDetails {
+    return copy(sexualOrientation = sexualOrientation.update())
+}
+
+fun SupportedDetails.updatedEducation(update: DetailUIItem.Asset.() -> DetailUIItem.Asset): SupportedDetails {
+    return copy(education = education.update())
+}
+
+fun SupportedDetails.updatedProfession(update: DetailUIItem.TextField.() -> DetailUIItem.TextField): SupportedDetails {
+    return copy(profession = profession.update())
+}
+
+fun SupportedDetails.updatedCharacter(update: DetailUIItem.Asset.() -> DetailUIItem.Asset): SupportedDetails {
+    return copy(character = character.update())
+}
+
+fun SupportedDetails.updatedLanguage(update: DetailUIItem.Asset.() -> DetailUIItem.Asset): SupportedDetails {
+    return copy(language = language.update())
+}
+
+fun SupportedDetails.updatedHeight(update: DetailUIItem.Int.() -> DetailUIItem.Int): SupportedDetails {
+    return copy(height = height.update())
+}
+
 sealed interface DetailUIItem {
     data class TextField(val value: String?) : DetailUIItem
-    data class Asset(val value: Text?, val possibleAssets: PersistentList<Text>) : DetailUIItem
+    data class Asset(val value: Text?, val possibleAssets: PersistentList<StaticTextId>) :
+        DetailUIItem
+
     data class AssetFromDb(
         val value: Text?,
         val foundedAssets: FoundedAssets,
         val searchItem: SearchItem
     ) : DetailUIItem
+
     data class Int(val value: kotlin.Int?) : DetailUIItem
 }
 
@@ -65,7 +97,7 @@ fun DetailUIItem.toDetail(type: String): Detail? {
 
 sealed interface FoundedAssets {
     data object Searching : FoundedAssets
-    data class Success(val possibleAssets: PersistentList<String>) : FoundedAssets
+    data class Success(val possibleAssets: PersistentList<Text>) : FoundedAssets
 }
 
 data class SearchItem(
@@ -136,7 +168,11 @@ private val defaultCityField = DetailUIItem.AssetFromDb(null, FoundedAssets.Sear
 
 private val defaultSexualOrientationField = DetailUIItem.Asset(
     value = null,
-    possibleAssets = persistentListOf(), // TODO fill
+    possibleAssets = persistentListOf(
+        StaticTextId.AssetId.Heterosexual,
+        StaticTextId.AssetId.Homosexual,
+        StaticTextId.AssetId.Bisexual,
+    ),
 )
 
 private val defaultEducationField = DetailUIItem.Asset(
@@ -154,7 +190,11 @@ private val defaultHeightField = DetailUIItem.Int(
 
 private val defaultCharacterField = DetailUIItem.Asset(
     value = null,
-    possibleAssets = persistentListOf(), // TODO fill
+    possibleAssets = persistentListOf(
+        StaticTextId.AssetId.Extrovert,
+        StaticTextId.AssetId.Introvert,
+        StaticTextId.AssetId.Ambidextrous,
+    ), // TODO fill
 )
 
 private val defaultLanguageField = DetailUIItem.Asset(

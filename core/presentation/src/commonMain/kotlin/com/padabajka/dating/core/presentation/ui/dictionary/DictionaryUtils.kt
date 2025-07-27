@@ -35,4 +35,8 @@ private fun DictionaryRepository.stableGetText(id: String, lang: Language): Stri
     return getText(id, lang)
 }
 
+fun StaticTextId.toText(): Text {
+    return Text(Text.Id(this.id))
+}
+
 private val defaultLanguage = Language.Static.EN

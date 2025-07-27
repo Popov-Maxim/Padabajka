@@ -60,27 +60,45 @@ sealed interface StaticTextId {
         MessagePopupEdit(rawId = "message_popup_edit"),
         MessagePopupDelete(rawId = "message_popup_delete"),
 
+        // General
+        Apply(rawId = "apply"),
+
         ;
         override val id: String = listOfNotNull(prefix, rawId, "ui_id")
             .joinToString(separator = "_")
     }
 
-    enum class AssetId(override val id: String) : StaticTextId {
+    enum class AssetId(val rawId: String) : StaticTextId {
         // looking_for
-        NonRomantic(id = "non_romantic"),
-        LookingForFriends(id = "looking_for_friends"),
-        PeopleToGoOutWith(id = "people_to_go_out_with"),
-        LanguageExchange(id = "language_exchange"),
-        Networking(id = "networking"),
+        NonRomantic(rawId = "non_romantic"),
+        LookingForFriends(rawId = "looking_for_friends"),
+        PeopleToGoOutWith(rawId = "people_to_go_out_with"),
+        LanguageExchange(rawId = "language_exchange"),
+        Networking(rawId = "networking"),
 
-        CasualRelationship(id = "casual_relationship"),
-        Dating(id = "dating"),
-        Flirt(id = "flirt"),
-        JustForFun(id = "just_for_fun"),
+        CasualRelationship(rawId = "casual_relationship"),
+        Dating(rawId = "dating"),
+        Flirt(rawId = "flirt"),
+        JustForFun(rawId = "just_for_fun"),
 
-        SeriousRelationship(id = "serious_relationship"),
-        BuildingFamily(id = "building_family"),
+        SeriousRelationship(rawId = "serious_relationship"),
+        BuildingFamily(rawId = "building_family"),
         // ------------------ looking_for
+
+        // Sexual Orientation
+        Heterosexual(rawId = "heterosexual"),
+        Homosexual(rawId = "homosexual"),
+        Bisexual(rawId = "bisexual"),
+        // ------------------ Sexual Orientation
+
+        // Character
+        Extrovert(rawId = "extrovert"),
+        Introvert(rawId = "introvert"),
+        Ambidextrous(rawId = "ambidextrous"),
+        // ------------------ Character
+
+        ;
+        override val id: String = rawId
     }
 
     companion object {

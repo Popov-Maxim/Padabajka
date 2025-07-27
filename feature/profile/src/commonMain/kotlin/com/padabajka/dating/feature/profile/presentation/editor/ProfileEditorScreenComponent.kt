@@ -10,6 +10,7 @@ import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
+import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.feature.image.domain.GetLocalImageUseCase
 import com.padabajka.dating.feature.profile.domain.SaveProfileUseCase
 import com.padabajka.dating.feature.profile.domain.asset.FindCitiesUseCase
@@ -185,7 +186,7 @@ class ProfileEditorScreenComponent(
                 }
             }
             val cities = findCitiesUseCase(query)
-                .map { it.name }
+                .map { Text(id = Text.Id(it.id), default = it.name) } // TODO add mapper
                 .toPersistentList()
             reduce {
                 it.updateDetailCity {

@@ -41,6 +41,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Language -> "Язык"
             StaticTextId.UiId.Preview -> "просмотр"
             StaticTextId.UiId.CitySearch -> "Поиск города"
+            StaticTextId.UiId.Apply -> "Применить"
         }
     }
 
@@ -59,6 +60,14 @@ class RuDictionary : Dictionary() {
 
             StaticTextId.AssetId.SeriousRelationship -> "Серьезные отношения"
             StaticTextId.AssetId.BuildingFamily -> "Создания семьи"
+
+            StaticTextId.AssetId.Heterosexual -> "Гетеросексуал"
+            StaticTextId.AssetId.Homosexual -> "Гомосексуал"
+            StaticTextId.AssetId.Bisexual -> "Бисексуал"
+
+            StaticTextId.AssetId.Extrovert -> "Экстраверт"
+            StaticTextId.AssetId.Introvert -> "Интроверт"
+            StaticTextId.AssetId.Ambidextrous -> "Амбидекстр"
         }
     }
 }
