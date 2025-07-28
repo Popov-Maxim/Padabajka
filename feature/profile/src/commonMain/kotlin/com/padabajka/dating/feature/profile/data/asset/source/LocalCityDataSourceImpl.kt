@@ -26,4 +26,8 @@ class LocalCityDataSourceImpl(
             city.toDomain(currentTranslation.name)
         }.distinct()
     }
+
+    override suspend fun getCityTranslation(id: String, language: Language): CityTranslation? {
+        return cityDao.getCityTranslation(id, language.id)
+    }
 }

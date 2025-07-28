@@ -11,7 +11,8 @@ import org.koin.dsl.module
 private val dataModule = module {
     single<DictionaryRepository> {
         DictionaryRepositoryImpl(
-            staticWordDataSource = get()
+            staticWordDataSource = get(),
+            cityRepository = get()
         )
     }
 

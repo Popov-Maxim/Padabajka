@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.toText
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.mainColor
@@ -207,8 +208,8 @@ private fun DialogButton(
 }
 
 private fun createLookingForData(type: StaticTextId, detail: StaticTextId): LookingForData {
-    val toText: StaticTextId.() -> Text = { Text(Text.Id(this.id)) }
-    return LookingForData(type.toText(), detail.toText())
+    val textType = Text.Type.Default
+    return LookingForData(type.toText(textType), detail.toText(textType))
 }
 
 private sealed interface Screen {

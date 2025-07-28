@@ -5,6 +5,11 @@ data class LookingForData(
     val detail: Text? = null
 ) {
     companion object {
-        val default = LookingForData(type = Text(Text.Id("non_romantic")))
+        val default = LookingForData(
+            type = Text(
+                Text.Id("non_romantic"),
+                Text.Type.UI
+            )
+        )
     }
 }
