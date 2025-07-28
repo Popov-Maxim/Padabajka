@@ -186,7 +186,7 @@ class ProfileEditorScreenComponent(
                 }
             }
             val cities = findCitiesUseCase(query)
-                .map { Text(id = Text.Id(it.id), default = it.name) } // TODO add mapper
+                .map { Text(id = Text.Id(it.id), type = Text.Type.City, default = it.name) } // TODO add mapper
                 .toPersistentList()
             reduce {
                 it.updateDetailCity {

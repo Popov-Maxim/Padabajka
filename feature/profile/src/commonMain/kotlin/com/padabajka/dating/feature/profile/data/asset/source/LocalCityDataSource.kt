@@ -9,4 +9,5 @@ interface LocalCityDataSource {
     suspend fun setCities(cities: List<CityEntry>)
     suspend fun setCityTranslations(cities: List<CityTranslation>)
     suspend fun findCities(query: String, language: Language): List<CityDB>
+    suspend fun getCityTranslation(id: String, language: Language): CityTranslation?
 }

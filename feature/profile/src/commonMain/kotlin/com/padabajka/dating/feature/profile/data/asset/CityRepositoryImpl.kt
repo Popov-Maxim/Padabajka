@@ -25,4 +25,8 @@ class CityRepositoryImpl(
         val cityEntries = localCityDataSource.findCities(query, Language.Static.EN)
         return cityEntries.map { it.toDomain() }
     }
+
+    override suspend fun getTranslation(id: String, lang: Language): String? {
+        return localCityDataSource.getCityTranslation(id, lang)?.name
+    }
 }

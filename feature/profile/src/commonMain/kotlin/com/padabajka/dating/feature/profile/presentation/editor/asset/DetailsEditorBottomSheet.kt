@@ -389,7 +389,7 @@ private fun SmallAssetsSelection(
         modifier = modifier
     ) { asset ->
         val value = if (asset.id != detailUIItem.value?.id?.raw || allowDelete.not()) {
-            asset.toText()
+            asset.toText(type = Text.Type.Default)
         } else {
             null
         }

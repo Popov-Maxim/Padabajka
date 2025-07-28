@@ -4,5 +4,6 @@ import com.padabajka.dating.core.repository.api.model.dictionary.Language
 
 interface DictionaryRepository {
     suspend fun loadDictionaries(selectedLang: String)
-    fun getText(id: String, lang: Language): String?
+    suspend fun getText(id: String, type: String, lang: Language): String?
+    fun getFastText(id: String, lang: Language): String?
 }
