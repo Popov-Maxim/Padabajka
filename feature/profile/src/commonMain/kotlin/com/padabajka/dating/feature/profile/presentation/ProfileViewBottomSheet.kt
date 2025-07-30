@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -37,6 +38,7 @@ import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.pager.ImagePager
 import com.padabajka.dating.core.presentation.ui.pager.PagerData
 import com.padabajka.dating.core.presentation.ui.pager.PagerIndicators
+import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.profile.Detail
 import com.padabajka.dating.core.repository.api.model.profile.ServerIcon
 import com.padabajka.dating.feature.profile.presentation.model.ProfileViewUIItem
@@ -88,7 +90,7 @@ private fun ProfileViewContent(
 private fun BlockWithImagePager(profileViewUIItem: ProfileViewUIItem) {
     val images = profileViewUIItem.images
     var pagerData by remember { mutableStateOf(PagerData(0, images.size)) }
-    Box(Modifier) {
+    Box {
         ImagePager(
             modifier = Modifier.fillMaxWidth().aspectRatio(RATIO_FOR_IMAGE),
             images = images
@@ -154,7 +156,10 @@ private fun Details(
         modifier = modifier,
         label = StaticTextId.UiId.BasicInfo
     ) {
-        FlowRow {
+        FlowRow(
+//            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
             details.onEach { detail ->
                 val text = when (val value = detail.value) {
                     is Detail.Value.Centimeter -> value.raw.toString()
@@ -197,11 +202,16 @@ private fun ChipItem(
         },
         modifier = modifier,
         leadingIcon = { LeadingIcon(icon) },
-        onClick = {}
-//        shape = TODO(),
-//        colors = TODO(),
+        onClick = {},
+//        enabled = false,
+        shape = RoundedCornerShape(20.dp),
+        colors = AssistChipDefaults.assistChipColors(
+            containerColor = CoreColors.secondary.mainColor,
+            labelColor = CoreColors.secondary.textColor,
+            leadingIconContentColor = CoreColors.secondary.textColor
+        ),
 //        elevation = TODO(),
-//        border = TODO(),
+        border = null,
 //        interactionSource = TODO()
     )
 }

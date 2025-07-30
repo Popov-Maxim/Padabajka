@@ -83,7 +83,7 @@ private fun MatchesBlock(matches: List<EmptyChatItem>, onEvent: (MessengerEvent)
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(matches) { match ->
-                ProfileAvatar(match.match.person.image.raw()) {
+                ProfileAvatar(match.match.person.images.firstOrNull()?.raw()) {
                     onEvent(OpenChatEvent(match.chatId, match.match.person))
                 }
             }
@@ -115,7 +115,7 @@ private fun ChatsBlock(chats: List<ChatItem>, onEvent: (MessengerEvent) -> Unit)
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(modifier = Modifier.padding(10.dp)) {
-                    ProfileAvatar(chat.match.person.image.raw())
+                    ProfileAvatar(chat.match.person.images.firstOrNull()?.raw())
                 }
                 Column {
                     Text(

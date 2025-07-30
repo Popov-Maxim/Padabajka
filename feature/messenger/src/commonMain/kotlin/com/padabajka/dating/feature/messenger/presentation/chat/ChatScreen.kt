@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.messenger.presentation.chat
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -22,6 +24,7 @@ import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.ProfileAvatar
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
+import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.messenger.presentation.chat.model.Field
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.NavigateBackEvent
@@ -30,6 +33,8 @@ import com.padabajka.dating.feature.messenger.presentation.chat.ui.EditedMessage
 import com.padabajka.dating.feature.messenger.presentation.chat.ui.MessageField
 import com.padabajka.dating.feature.messenger.presentation.chat.ui.ParentMessageField
 import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
+import com.padabajka.dating.feature.messenger.presentation.model.toPersonView
+import com.padabajka.dating.feature.profile.presentation.ProfileViewBottomSheet
 
 @Composable
 fun ChatScreen(component: ChatComponent) {
@@ -82,6 +87,8 @@ fun ChatScreen(component: ChatComponent) {
 
 @Composable
 private fun TopBar(person: PersonItem, onEvent: (MessengerEvent) -> Unit) {
+    var showViewProfile by remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier.padding(9.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -94,20 +101,35 @@ private fun TopBar(person: PersonItem, onEvent: (MessengerEvent) -> Unit) {
             )
         }
 
-        ProfileAvatar(
-            model = person.image.value,
-            modifier = Modifier.size(48.dp)
-        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.clickable {
+                showViewProfile = true
+            }
+        ) {
+            ProfileAvatar(
+                model = person.images.firstOrNull()?.raw(),
+                modifier = Modifier.size(48.dp)
+            )
 
-        Column {
-            Text(
-                text = person.name,
-                fontSize = 16.sp,
-            )
-            Text(
-                text = "online",
-                fontSize = 10.sp
-            )
+            Column {
+                Text(
+                    text = person.name,
+                    fontSize = 16.sp,
+                )
+                Text(
+                    text = "online",
+                    fontSize = 10.sp
+                )
+            }
         }
+    }
+
+    if (showViewProfile) {
+        val profileViewUIItem = person.toPersonView()
+        ProfileViewBottomSheet(
+            profileViewUIItem = profileViewUIItem,
+            onDismissRequest = { showViewProfile = false }
+        )
     }
 }

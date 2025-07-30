@@ -195,8 +195,8 @@ fun Message(
                                         )
                                         message.reactions.onEach { reaction ->
                                             ProfileAvatar(
-                                                model = reaction.author.profile.images.first()
-                                                    .raw(),
+                                                model = reaction.author.profile.images.firstOrNull()
+                                                    ?.raw(),
                                                 modifier = Modifier.size(20.dp)
                                             )
                                         }
