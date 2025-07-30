@@ -34,6 +34,7 @@ kotlin {
             api(projects.core.data)
             api(projects.core.utils)
             implementation(projects.feature.messenger.data)
+            implementation(projects.feature.profile)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

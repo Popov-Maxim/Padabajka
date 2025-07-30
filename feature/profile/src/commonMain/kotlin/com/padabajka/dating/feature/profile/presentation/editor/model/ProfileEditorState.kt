@@ -13,6 +13,7 @@ import com.padabajka.dating.core.repository.api.model.profile.age
 import com.padabajka.dating.feature.profile.presentation.model.ProfileViewUIItem
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.datetime.LocalDate
 
 @Immutable
@@ -56,12 +57,12 @@ fun Profile.toEditorState(): ProfileEditorState {
     return ProfileEditorState(
         name = name.toField(),
         birthday = birthday.toField(),
-        images = images.toField(),
+        images = images.toPersistentList().toField(),
         aboutMe = aboutMe.toField(),
         lookingFor = lookingFor.toField(),
         details = details.toDetailFields().toField(),
         mainAchievement = mainAchievement.toField(),
-        achievements = achievements.toField(),
+        achievements = achievements.toPersistentList().toField(),
     )
 }
 

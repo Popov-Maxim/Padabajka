@@ -33,11 +33,11 @@ fun Profile.toUIProfileValue(): ProfileValue.Loaded {
     return ProfileValue.Loaded(
         name,
         birthday,
-        images,
+        images.toPersistentList(),
         aboutMe,
         lookingFor,
         details.toPersistentList(),
         mainAchievement,
-        achievements
+        achievements.toPersistentList()
     )
 }

@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.swiper.presentation.model
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import com.padabajka.dating.core.presentation.State
 import com.padabajka.dating.core.repository.api.model.ads.PlatformNativeAd
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
@@ -81,13 +82,13 @@ fun Person.toUIPerson(): PersonItem {
             id,
             profile.name,
             profile.age,
-            profile.images,
+            profile.images.toPersistentList(),
             profile.aboutMe,
             profile.lookingFor,
             profile.details.toPersistentList(),
             profile.lifestyles.toPersistentList(),
             profile.mainAchievement,
-            profile.achievements
+            profile.achievements.toPersistentList()
         )
     }
 }
@@ -123,6 +124,7 @@ fun SearchPreferencesItem.Success.toSearchPreferences(): SearchPreferences {
     }
 }
 
+@Stable
 fun PersonItem.toPersonView(): ProfileViewUIItem {
     return ProfileViewUIItem(
         name = name,
