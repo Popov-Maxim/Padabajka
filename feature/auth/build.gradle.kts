@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.mockmp)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
