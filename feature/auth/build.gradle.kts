@@ -1,8 +1,11 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.mockmp)
     alias(libs.plugins.google.services)
     alias(libs.plugins.compose.compiler)
@@ -11,8 +14,8 @@ plugins {
 kotlin {
     androidTarget {
         compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
+            compilerOptions.configure {
+                jvmTarget.set(JvmTarget.JVM_1_8)
             }
         }
     }
@@ -52,8 +55,9 @@ kotlin {
 }
 
 mockmp {
-    usesHelper = true
-    installWorkaround()
+    onTest {
+        withHelper()
+    }
 }
 
 android {
