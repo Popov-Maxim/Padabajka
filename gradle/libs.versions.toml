@@ -20,7 +20,6 @@ firebase-perf = "1.4.2"
 gitlive-firebase = "1.13.0"
 datastore = "1.1.2"
 immutable-collections = "0.3.7"
-mockmp = "2.0.2"
 espresso-core = "3.5.1"
 firebaseAuth = "22.3.1"
 yandex-ads = "6.4.1"
@@ -86,7 +85,6 @@ kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", versio
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-mockmp = { id = "org.kodein.mock.mockmp", version.ref = "mockmp" }
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebase-perf" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }

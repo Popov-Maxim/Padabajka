@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.ksp)
-//    alias(libs.plugins.mockmp)
     alias(libs.plugins.google.services)
     alias(libs.plugins.compose.compiler)
 }
@@ -53,12 +52,6 @@ kotlin {
         }
     }
 }
-
-/*mockmp {
-    onTest {
-        withHelper()
-    }
-}*/
 
 android {
     namespace = "com.padabajka.dating.feature.auth"

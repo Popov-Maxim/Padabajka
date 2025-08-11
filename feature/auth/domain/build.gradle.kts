@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.mockmp)
 }
 
 kotlin {
@@ -36,12 +35,6 @@ kotlin {
             implementation(projects.testing)
             implementation(libs.kotlin.test)
         }
-    }
-}
-
-mockmp {
-    onTest {
-        withHelper()
     }
 }
 
