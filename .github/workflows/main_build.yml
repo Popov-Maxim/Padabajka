@@ -35,6 +35,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: all-build-files
+        retention-days: 1
         path: |
           **/build/**
           !**/build/intermediates/**
