@@ -30,6 +30,15 @@ jobs:
 
     - name: Android Build with Gradle
       run: ./gradlew build --exclude-task :androidApp:processDebugGoogleServices --exclude-task :androidApp:processReleaseGoogleServices
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: all-build-files
+        retention-days: 1
+        path: |
+          **/build/**
+          !**/build/intermediates/**
 #    - name: IOS build TODO
 
 #    - name: Run test
