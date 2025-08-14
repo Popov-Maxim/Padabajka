@@ -1,7 +1,9 @@
 package com.padabajka.dating.component.room
 
+import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import com.padabajka.dating.component.room.asset.city.CityDao
 import com.padabajka.dating.component.room.asset.city.entry.CityEntry
@@ -29,6 +31,7 @@ import com.padabajka.dating.component.room.person.entry.PersonEntry
     ListStringConverters::class,
     LookingForDataConverter::class
 )
+@ConstructedBy(PadabajkaDBConstructor::class)
 abstract class PadabajkaDB : RoomDatabase() {
     abstract fun messageDao(): MessageDao
     abstract fun personDao(): PersonDao
@@ -37,3 +40,9 @@ abstract class PadabajkaDB : RoomDatabase() {
 }
 
 internal const val DB_NAME = "padabajka.db"
+
+// TODO(): improve
+@Suppress("NO_ACTUAL_FOR_EXPECT")
+expect object PadabajkaDBConstructor : RoomDatabaseConstructor<PadabajkaDB> {
+    override fun initialize(): PadabajkaDB
+}

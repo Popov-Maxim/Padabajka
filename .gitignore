@@ -11,3 +11,4 @@ xcuserdata
 iosApp/Pods
 GoogleService-Info.plist
 google-services.json
+/.kotlin/

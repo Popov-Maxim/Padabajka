@@ -1,6 +1,6 @@
 [versions]
-agp = "8.9.0"
-kotlin = "1.9.23"
+agp = "8.11.1"
+kotlin = "2.2.0"
 kotlinx-datetime = "0.6.0"
 kotlinx-serialization = "1.6.3"
 google-services = "4.4.1"
@@ -9,7 +9,7 @@ compose-compiler = "1.5.15"
 androidx-activityCompose = "1.8.2"
 androidx-core = "1.13.1"
 androidx-test-ext-junit = "1.1.5"
-compose-plugin = "1.7.3"
+compose-plugin = "1.8.0"
 decompose = "2.2.2"
 decompose-extention = "2.2.2-compose-experimental"
 org-jetbrains-kotlin-jvm = "1.9.22"
@@ -20,15 +20,14 @@ firebase-perf = "1.4.2"
 gitlive-firebase = "1.13.0"
 datastore = "1.1.2"
 immutable-collections = "0.3.7"
-mockmp = "1.17.0"
 espresso-core = "3.5.1"
 firebaseAuth = "22.3.1"
 yandex-ads = "6.4.1"
-room = "2.7.0-alpha01"
-ksp = "1.9.23-1.0.20"
-sqlite = "2.5.0-SNAPSHOT"
+room = "2.7.2"
+ksp = "2.2.0-2.0.2"
+sqlite = "2.5.2"
 projectConfig-minSdk = "24"
-projectConfig-compileSdk = "34"
+projectConfig-compileSdk = "35"
 projectConfig-targetSdk = "34"
 ktor = "2.3.12"
 coil = "3.0.0"
@@ -39,7 +38,6 @@ kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotl
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
-androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext-junit" }
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
@@ -87,7 +85,7 @@ kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", versio
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-mockmp = { id = "org.kodein.mock.mockmp", version.ref = "mockmp" }
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebase-perf" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

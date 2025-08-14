@@ -19,6 +19,7 @@ fun TextInputField(
     onChange: (String) -> Unit,
     enabled: Boolean = true,
     onFocusLost: () -> Unit = {},
+    onFocus: () -> Unit = {},
     isError: Boolean = false,
     singleLine: Boolean = true,
     shape: Shape = TextFieldDefaults.shape,
@@ -37,6 +38,8 @@ fun TextInputField(
         modifier = modifier.onFocusChanged {
             if (!it.isFocused && wasFocused.value) {
                 onFocusLost()
+            } else if (it.isFocused && !wasFocused.value) {
+                onFocus()
             }
             wasFocused.value = it.isFocused
         },

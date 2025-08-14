@@ -7,7 +7,5 @@ interface ImagePicker {
     suspend fun pickImage()
 }
 
-expect class ImagePickerImpl : ImagePicker
-
 @Composable
 expect fun rememberImagePicker(onResult: (Image?) -> Unit): ImagePicker

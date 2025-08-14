@@ -14,7 +14,7 @@ import platform.UIKit.UIImagePickerControllerSourceType
 import platform.UIKit.UINavigationControllerDelegateProtocol
 import platform.darwin.NSObject
 
-actual class ImagePickerImpl(
+class ImagePickerImpl(
     private val onLaunch: () -> Unit
 ) : ImagePicker {
     override suspend fun pickImage() {

@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.ImageData
 
-actual class ImagePickerImpl(
+class ImagePickerImpl(
     private val launcher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>
 ) : ImagePicker {
     override suspend fun pickImage() {

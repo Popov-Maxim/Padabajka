@@ -5,5 +5,5 @@ target 'iosApp' do
   pod 'FirebaseAnalytics', '10.18.0'
   pod 'FirebasePerformance', '10.19.0'
   pod 'FirebaseMessaging', '10.19.0'
-  pod 'YandexMobileAds', '6.4.1'
+#   pod 'YandexMobileAds', '6.4.1'
 end
