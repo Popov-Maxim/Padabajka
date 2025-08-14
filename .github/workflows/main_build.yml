@@ -30,6 +30,12 @@ jobs:
 
     - name: Android Build with Gradle
       run: ./gradlew build --exclude-task :androidApp:processDebugGoogleServices --exclude-task :androidApp:processReleaseGoogleServices
+
+    - name: Upload Gradle problems report
+      uses: actions/upload-artifact@v4
+      with:
+        name: gradle-problems-report
+        path: build/reports/problems/problems-report.html
 #    - name: IOS build TODO
 
 #    - name: Run test
