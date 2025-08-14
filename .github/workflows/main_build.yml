@@ -35,7 +35,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: all-build-files
-        path: **/build/**
+        path: '**/build/**'
 #    - name: IOS build TODO
 
 #    - name: Run test
