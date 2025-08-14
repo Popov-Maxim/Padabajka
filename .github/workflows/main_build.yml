@@ -29,13 +29,13 @@ jobs:
       run: ./gradlew detekt
 
     - name: Android Build with Gradle
-      run: ./gradlew clean build --exclude-task :androidApp:processDebugGoogleServices --exclude-task :androidApp:processReleaseGoogleServices
+      run: ./gradlew build --exclude-task :androidApp:processDebugGoogleServices --exclude-task :androidApp:processReleaseGoogleServices
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
       with:
         name: all-build-files
-        path: build/**
+        path: **/build/**
 #    - name: IOS build TODO
 
 #    - name: Run test
