@@ -2,6 +2,7 @@ package com.padabajka.dating.core.presentation.ui.drawable.icon
 
 import androidx.compose.runtime.Composable
 import com.padabajka.dating.core.presentation.ui.resource.CoreRes
+import com.padabajka.dating.core.presentation.ui.resource.drawable.app_logo
 import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_left_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_right_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.camera_icon
@@ -95,4 +96,8 @@ object CoreIcons {
             @Composable
             get() = painterResource(CoreRes.svg.message_read)
     }
+
+    val AppLogo
+        @Composable
+        get() = painterResource(CoreRes.svg.app_logo)
 }
