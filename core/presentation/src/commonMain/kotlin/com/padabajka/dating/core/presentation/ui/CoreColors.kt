@@ -31,6 +31,10 @@ object CoreColors {
 
         val message = secondary
     }
+
+    object Login {
+        val appNameColor = Color(0xFF5E1E80)
+    }
 }
 
 data class ColorGroup(

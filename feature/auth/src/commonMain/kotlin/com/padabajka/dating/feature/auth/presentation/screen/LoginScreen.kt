@@ -1,16 +1,34 @@
 package com.padabajka.dating.feature.auth.presentation.screen
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.semantics.contentType
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.TextInputField
+import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
+import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
+import com.padabajka.dating.core.presentation.ui.mainColor
+import com.padabajka.dating.core.presentation.ui.modifier.BottomWaveShape
+import com.padabajka.dating.core.presentation.ui.modifier.Gradient
 import com.padabajka.dating.feature.auth.presentation.LoginComponent
 import com.padabajka.dating.feature.auth.presentation.element.AuthButton
 import com.padabajka.dating.feature.auth.presentation.model.EmailFieldLoosFocus
@@ -23,34 +41,77 @@ import com.padabajka.dating.feature.auth.presentation.model.PasswordFieldUpdate
 fun LoginScreen(component: LoginComponent) {
     val state = component.state.subscribeAsState()
 
-    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        val autofillManager = LocalAutofillManager.current
-        TextInputField(
-            modifier = Modifier
-                .semantics {
-                    contentType = ContentType.Username
+    Column(modifier = Modifier.fillMaxWidth().background(CoreColors.background.mainColor)) {
+        Column(
+            modifier = Modifier.fillMaxWidth().weight(1f)
+                .shadow(
+                    elevation = 10.dp,
+                    ambientColor = Color.Black,
+                    spotColor = Color.Black,
+                    shape = BottomWaveShape
+                )
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = Gradient.colorsForLoginScreen,
+                        start = Gradient.rightTopOffset,
+                        end = Gradient.leftBottomOffset,
+                    ),
+                    shape = BottomWaveShape
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
+        ) {
+            Image(
+                modifier = Modifier.width(200.dp),
+                painter = CoreIcons.AppLogo,
+                contentDescription = "App logo",
+                contentScale = ContentScale.FillWidth
+            )
+            Text(
+                text = "PADABAJKA",
+                letterSpacing = 50.sp / 10,
+                fontSize = 50.sp,
+                fontFamily = PlayfairDisplay,
+                fontWeight = FontWeight.Bold,
+                color = CoreColors.Login.appNameColor,
+            )
+        }
+        Column(
+            modifier = Modifier.fillMaxWidth().weight(weight = 1.618f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            val autofillManager = LocalAutofillManager.current
+            TextInputField(
+                modifier = Modifier
+                    .semantics {
+                        contentType = ContentType.Username
+                    },
+                text = state.value.email,
+                hint = "Email",
+                isError = state.value.emailValidationIssue != null,
+                onChange = { component.onEvent(EmailFieldUpdate(it)) },
+                onFocusLost = { component.onEvent(EmailFieldLoosFocus) }
+            )
+            TextInputField(
+                modifier = Modifier.semantics {
+                    contentType = ContentType.Password
                 },
-            text = state.value.email,
-            hint = "Email",
-            isError = state.value.emailValidationIssue != null,
-            onChange = { component.onEvent(EmailFieldUpdate(it)) },
-            onFocusLost = { component.onEvent(EmailFieldLoosFocus) }
-        )
-        TextInputField(
-            modifier = Modifier.semantics {
-                contentType = ContentType.Password
-            },
-            text = state.value.password,
-            hint = "Password",
-            onChange = { component.onEvent(PasswordFieldUpdate(it)) }
-        )
-        AuthButton(
-            text = "Login",
-            onClick = {
-                autofillManager?.commit()
-                component.onEvent(LoginClick)
-            }
-        )
-        AuthButton(text = "To registration", onClick = { component.onEvent(GoToRegistrationClick) })
+                text = state.value.password,
+                hint = "Password",
+                onChange = { component.onEvent(PasswordFieldUpdate(it)) }
+            )
+            AuthButton(
+                text = "Login",
+                onClick = {
+                    autofillManager?.commit()
+                    component.onEvent(LoginClick)
+                }
+            )
+            AuthButton(
+                text = "To registration",
+                onClick = { component.onEvent(GoToRegistrationClick) }
+            )
+        }
     }
 }
