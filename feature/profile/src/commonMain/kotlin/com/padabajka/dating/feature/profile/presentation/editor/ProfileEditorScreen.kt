@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.CoreTextEditField
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
@@ -54,7 +55,6 @@ import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.image.rememberImagePicker
 import com.padabajka.dating.feature.profile.presentation.ProfileViewBottomSheet
 import com.padabajka.dating.feature.profile.presentation.editor.asset.DetailsBlock
-import com.padabajka.dating.feature.profile.presentation.editor.asset.TextEditField
 import com.padabajka.dating.feature.profile.presentation.editor.dialog.EditImageDialog
 import com.padabajka.dating.feature.profile.presentation.editor.dialog.EditLookingForDialog
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldUpdateEvent
@@ -89,7 +89,7 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
                 modifier = Modifier.padding(20.dp)
             ) {
                 val aboutMe = state.aboutMe.value
-                TextEditField(
+                CoreTextEditField(
                     text = aboutMe,
                     modifier = Modifier.height(125.dp).fillMaxWidth(),
                     onChange = {

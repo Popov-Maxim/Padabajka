@@ -73,5 +73,5 @@ internal val CoreRes.svg.message_read: String
     get() = Res.getUri("drawable/message_read.svg")
 
 @OptIn(ExperimentalResourceApi::class)
-internal val CoreRes.svg.app_logo: String
+internal val CoreRes.img.app_logo: String
     get() = Res.getUri("drawable/app_logo.png")

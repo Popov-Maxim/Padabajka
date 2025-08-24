@@ -7,13 +7,14 @@ import com.padabajka.dating.feature.auth.data.remote.RemoteAuthDataSource
 import com.padabajka.dating.feature.auth.domain.AuthStateProvider
 import com.padabajka.dating.feature.auth.domain.LogInWithEmailAndPasswordUseCase
 import com.padabajka.dating.feature.auth.domain.LogOutUseCase
+import com.padabajka.dating.feature.auth.domain.LoginEmailOnlyUseCase
 import com.padabajka.dating.feature.auth.domain.RegisterWithEmailAndPasswordUseCase
 import com.padabajka.dating.feature.auth.domain.ReloadUserUseCase
 import com.padabajka.dating.feature.auth.domain.SendEmailVerificationUseCase
 import com.padabajka.dating.feature.auth.domain.ValidateEmailUseCase
 import com.padabajka.dating.feature.auth.domain.ValidatePasswordsUseCase
-import com.padabajka.dating.feature.auth.presentation.LoginComponent
-import com.padabajka.dating.feature.auth.presentation.RegisterComponent
+import com.padabajka.dating.feature.auth.presentation.EmailLoginMethodComponent
+import com.padabajka.dating.feature.auth.presentation.LoginMethodsComponent
 import com.padabajka.dating.feature.auth.presentation.VerificationComponent
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
@@ -36,6 +37,7 @@ private val authDomainModule = module {
     factory {
         ValidateEmailUseCase()
     }
+
     factory {
         ValidatePasswordsUseCase()
     }
@@ -66,24 +68,22 @@ private val authDomainModule = module {
     }
     factoryOf(::SendEmailVerificationUseCase)
     factoryOf(::ReloadUserUseCase)
+    factoryOf(::LoginEmailOnlyUseCase)
 }
 
 private val authPresentationModule = module {
-    factory<LoginComponent> { parameters ->
-        LoginComponent(
+    factory<LoginMethodsComponent> { parameters ->
+        LoginMethodsComponent(
             context = parameters.get(),
-            goToRegister = parameters.get(),
-            logInWithEmailAndPasswordUseCaseFactory = { get() },
-            validateEmailUseCaseFactory = { get() }
+            goToEmailMethodScreen = parameters.get(),
         )
     }
-    factory<RegisterComponent> { parameters ->
-        RegisterComponent(
+    factory<EmailLoginMethodComponent> { parameters ->
+        EmailLoginMethodComponent(
             context = parameters.get(),
-            goToLogin = parameters.get(),
-            registerWithEmailAndPasswordUseCaseFactory = { get() },
-            validateEmailUseCaseFactory = { get() },
-            validatePasswordsUseCaseFactory = { get() },
+            goToLoginMethodScreen = parameters.get(),
+            validateEmailUseCase = get(),
+            loginEmailOnlyUseCase = get(),
         )
     }
     factory<VerificationComponent> { parameters ->

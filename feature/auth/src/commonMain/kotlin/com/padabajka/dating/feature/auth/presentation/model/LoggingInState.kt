@@ -8,7 +8,6 @@ import com.padabajka.dating.core.presentation.event.consumed
 @Immutable
 data class LoggingInState(
     val email: String = "",
-    val password: String = "",
     val emailValidationIssue: EmailValidationIssue? = null,
     val loggingInProgress: Boolean = false,
     val loginFailedStateEvent: StateEventWithContent<LoginFailureReason> = consumed()

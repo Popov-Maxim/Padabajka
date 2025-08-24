@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.CoreTextEditField
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.toText
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
@@ -241,7 +242,7 @@ private fun Height(
                     onChange(heightItem.copy(value = it))
                 }
             )
-            TextEditField(
+            CoreTextEditField(
                 modifier = Modifier.width(100.dp),
                 text = height?.toString() ?: "",
                 onChange = {
@@ -269,7 +270,7 @@ private fun City(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        TextEditField(
+        CoreTextEditField(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
             text = cityItem.searchItem.value,
             onChange = {

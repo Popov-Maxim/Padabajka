@@ -6,6 +6,7 @@ import com.padabajka.dating.core.presentation.ui.utils.rememberImageLoader
 
 object CoreRes {
     object svg
+    object img
 }
 
 @Composable

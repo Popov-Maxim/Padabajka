@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.auth.data.remote
 import com.padabajka.dating.core.repository.api.model.auth.InvalidCredentialsAuthException
 import com.padabajka.dating.core.repository.api.model.auth.UnexpectedAuthException
 import com.padabajka.dating.feature.auth.data.model.UserDto
+import dev.gitlive.firebase.auth.ActionCodeSettings
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseAuthException
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -32,6 +33,10 @@ internal class FirebaseRemoteAuthDataSource(private val firebaseAuth: FirebaseAu
 
     override suspend fun login(email: String, password: String) = mapFirebaseAuthExceptions {
         firebaseAuth.signInWithEmailAndPassword(email = email, password = password)
+    }
+
+    override suspend fun loginWithoutPassword(email: String, actionCodeSettings: ActionCodeSettings) {
+        _loginWithoutPassword(email, actionCodeSettings)
     }
 
     override suspend fun login(token: String) = mapFirebaseAuthExceptions {
@@ -76,3 +81,7 @@ internal class FirebaseRemoteAuthDataSource(private val firebaseAuth: FirebaseAu
         )
     }
 }
+
+// TODO: delete after updating gitlive firebase
+@Suppress("FunctionName")
+expect suspend fun _loginWithoutPassword(email: String, actionCodeSettings: ActionCodeSettings)

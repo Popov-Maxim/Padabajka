@@ -40,6 +40,13 @@ kotlin {
 
             implementation(libs.gitlive.firebase.auth)
         }
+        // TODO: delete after updating gitlive firebase
+        androidMain.dependencies {
+            implementation("com.google.firebase:firebase-bom:33.9.0")
+            implementation("com.google.firebase:firebase-auth-ktx:23.2.1")
+            implementation("com.google.firebase:firebase-auth:23.2.1")
+            implementation("com.google.android.gms:play-services-auth:21.4.0")
+        }
         commonTest.dependencies {
             implementation(projects.testing)
             implementation(libs.kotlin.test)
