@@ -30,11 +30,6 @@ kotlin {
             baseName = "shared"
             isStatic = true
         }
-
-        pod("FirebaseAuth") {
-            version = "10.19.0"
-            linkOnly = true
-        }
     }
 
     sourceSets {

@@ -8,6 +8,8 @@ import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.WaitingForEmailValidation
 import com.padabajka.dating.feature.auth.data.model.UserDto
 import com.padabajka.dating.feature.auth.data.remote.RemoteAuthDataSource
+import dev.gitlive.firebase.auth.ActionCodeSettings
+import dev.gitlive.firebase.auth.AndroidPackageName
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -32,6 +34,16 @@ internal class AuthRepositoryImpl(
 
     override suspend fun login(email: String, password: String) {
         remoteAuthDataSource.login(email, password)
+    }
+
+    override suspend fun loginWithoutPassword(email: String) {
+        val actionCodeSettings = ActionCodeSettings(
+            url = "https://padabajka-96c95.firebaseapp.com", // TODO: change url after updating gitlive firebase
+            androidPackageName = AndroidPackageName("com.padabajka.dating", installIfNotAvailable = false),
+            canHandleCodeInApp = true,
+            iOSBundleId = "com.padabajka.dating.ios"
+        )
+        remoteAuthDataSource.loginWithoutPassword(email, actionCodeSettings)
     }
 
     override suspend fun register(email: String, password: String) {

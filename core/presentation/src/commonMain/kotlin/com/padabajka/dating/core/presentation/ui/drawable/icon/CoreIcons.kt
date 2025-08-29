@@ -99,5 +99,5 @@ object CoreIcons {
 
     val AppLogo
         @Composable
-        get() = painterResource(CoreRes.svg.app_logo)
+        get() = painterResource(CoreRes.img.app_logo)
 }

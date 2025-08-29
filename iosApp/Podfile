@@ -2,8 +2,10 @@ target 'iosApp' do
   use_frameworks!
   platform :ios, '16.0'
   pod 'shared', :path => '../shared'
-  pod 'FirebaseAnalytics', '10.18.0'
-  pod 'FirebasePerformance', '10.19.0'
-  pod 'FirebaseMessaging', '10.19.0'
+# TODO: chech version after updating gitlive firebase
+  pod 'FirebaseAnalytics', '11.8.0'
+  pod 'FirebasePerformance', '11.8.0'
+  pod 'FirebaseMessaging', '11.8.0'
+  pod 'FirebaseAuth', '11.8.0'
 #   pod 'YandexMobileAds', '6.4.1'
 end

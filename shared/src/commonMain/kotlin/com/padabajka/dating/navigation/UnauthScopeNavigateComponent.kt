@@ -1,8 +1,8 @@
 package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
-import com.padabajka.dating.feature.auth.presentation.LoginComponent
-import com.padabajka.dating.feature.auth.presentation.RegisterComponent
+import com.padabajka.dating.feature.auth.presentation.EmailLoginMethodComponent
+import com.padabajka.dating.feature.auth.presentation.LoginMethodsComponent
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -13,7 +13,7 @@ class UnauthScopeNavigateComponent(
 ) : NavigateComponentContext<UnauthScopeNavigateComponent.Configuration, UnauthScopeNavigateComponent.Child>(
     context,
     Configuration.serializer(),
-    Configuration.LoginScreen
+    Configuration.LoginMethodsScreen
 ),
     KoinComponent {
 
@@ -22,20 +22,20 @@ class UnauthScopeNavigateComponent(
         context: ComponentContext
     ): Child {
         return when (configuration) {
-            Configuration.LoginScreen -> Child.LoginScreen(
+            Configuration.LoginMethodsScreen -> Child.LoginMethodsScreen(
                 component = get {
                     parametersOf(
                         context,
-                        { navigate(Configuration.RegisterScreen) }
+                        { navigate(Configuration.EmailLoginMethodScreen) }
                     )
                 }
             )
 
-            Configuration.RegisterScreen -> Child.RegisterScreen(
+            Configuration.EmailLoginMethodScreen -> Child.EmailLoginMethodScreen(
                 component = get {
                     parametersOf(
                         context,
-                        { navigate(Configuration.LoginScreen) }
+                        { navigateBack() }
                     )
                 }
             )
@@ -43,17 +43,17 @@ class UnauthScopeNavigateComponent(
     }
 
     sealed interface Child {
-        data class LoginScreen(val component: LoginComponent) : Child
-        data class RegisterScreen(val component: RegisterComponent) : Child
+        data class LoginMethodsScreen(val component: LoginMethodsComponent) : Child
+        data class EmailLoginMethodScreen(val component: EmailLoginMethodComponent) : Child
     }
 
     @Serializable
     sealed interface Configuration {
 
         @Serializable
-        data object LoginScreen : Configuration
+        data object LoginMethodsScreen : Configuration
 
         @Serializable
-        data object RegisterScreen : Configuration
+        data object EmailLoginMethodScreen : Configuration
     }
 }
