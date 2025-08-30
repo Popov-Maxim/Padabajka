@@ -54,8 +54,9 @@ kotlin {
     }
 }
 private val localProps = Properties() // TODO: optimize config and add flavor release
-rootProject.file("androidApp/config/debug.properties").inputStream().use { localProps.load(it) }
-
+runCatching {
+    rootProject.file("androidApp/config/debug.properties").inputStream().use { localProps.load(it) }
+}
 android {
 
     namespace = "com.padabajka.dating.feature.auth.domain"
