@@ -7,5 +7,6 @@ target 'iosApp' do
   pod 'FirebasePerformance', '11.8.0'
   pod 'FirebaseMessaging', '11.8.0'
   pod 'FirebaseAuth', '11.8.0'
+  pod 'GoogleSignIn', '7.0.0'
 #   pod 'YandexMobileAds', '6.4.1'
 end

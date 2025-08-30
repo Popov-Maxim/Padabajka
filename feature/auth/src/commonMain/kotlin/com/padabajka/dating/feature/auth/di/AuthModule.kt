@@ -13,11 +13,13 @@ import com.padabajka.dating.feature.auth.domain.ReloadUserUseCase
 import com.padabajka.dating.feature.auth.domain.SendEmailVerificationUseCase
 import com.padabajka.dating.feature.auth.domain.ValidateEmailUseCase
 import com.padabajka.dating.feature.auth.domain.ValidatePasswordsUseCase
+import com.padabajka.dating.feature.auth.domain.method.GoogleLoginUseCase
 import com.padabajka.dating.feature.auth.presentation.EmailLoginMethodComponent
 import com.padabajka.dating.feature.auth.presentation.LoginMethodsComponent
 import com.padabajka.dating.feature.auth.presentation.VerificationComponent
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -69,13 +71,17 @@ private val authDomainModule = module {
     factoryOf(::SendEmailVerificationUseCase)
     factoryOf(::ReloadUserUseCase)
     factoryOf(::LoginEmailOnlyUseCase)
+    factoryOf(::GoogleLoginUseCase)
 }
+
+expect val platformAuthDomainModule: Module
 
 private val authPresentationModule = module {
     factory<LoginMethodsComponent> { parameters ->
         LoginMethodsComponent(
             context = parameters.get(),
             goToEmailMethodScreen = parameters.get(),
+            googleLoginUseCase = get(),
         )
     }
     factory<EmailLoginMethodComponent> { parameters ->
@@ -95,4 +101,4 @@ private val authPresentationModule = module {
     }
 }
 
-val authModules = arrayOf(authDataModule, authDomainModule, authPresentationModule)
+val authModules = arrayOf(authDataModule, authDomainModule, platformAuthDomainModule, authPresentationModule)
