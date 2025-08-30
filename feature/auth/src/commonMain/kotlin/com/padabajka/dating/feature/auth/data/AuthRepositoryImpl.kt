@@ -10,6 +10,7 @@ import com.padabajka.dating.feature.auth.data.model.UserDto
 import com.padabajka.dating.feature.auth.data.remote.RemoteAuthDataSource
 import dev.gitlive.firebase.auth.ActionCodeSettings
 import dev.gitlive.firebase.auth.AndroidPackageName
+import dev.gitlive.firebase.auth.AuthCredential
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -44,6 +45,10 @@ internal class AuthRepositoryImpl(
             iOSBundleId = "com.padabajka.dating.ios"
         )
         remoteAuthDataSource.loginWithoutPassword(email, actionCodeSettings)
+    }
+
+    override suspend fun loginInWithCredential(credential: AuthCredential) {
+        remoteAuthDataSource.loginInWithCredential(credential)
     }
 
     override suspend fun register(email: String, password: String) {

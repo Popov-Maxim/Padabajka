@@ -12,10 +12,8 @@ plugins {
 
 kotlin {
     androidTarget {
-        compilations.all {
-            compilerOptions.configure {
-                jvmTarget.set(JvmTarget.JVM_1_8)
-            }
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
         }
     }
 

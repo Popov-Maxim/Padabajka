@@ -12,3 +12,5 @@ iosApp/Pods
 GoogleService-Info.plist
 google-services.json
 /.kotlin/
+iosApp/iosApp/Config/
+androidApp/config/
