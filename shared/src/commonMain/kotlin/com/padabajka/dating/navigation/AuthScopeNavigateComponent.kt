@@ -1,44 +1,50 @@
 package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
+import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.auth.UserId
-import com.padabajka.dating.core.repository.api.model.messenger.ChatId
-import com.padabajka.dating.feature.messenger.presentation.MessengerComponent
-import com.padabajka.dating.feature.messenger.presentation.chat.ChatComponent
-import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
-import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
-import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
-import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
-import com.padabajka.dating.settings.presentation.SettingScreenComponent
+import com.padabajka.dating.core.repository.api.model.profile.ProfileState
+import com.padabajka.dating.domain.SyncRemoteDataUseCase
+import com.padabajka.dating.feature.push.socket.domain.SocketMessageObserver
+import com.padabajka.dating.settings.domain.NewAuthMetadataUseCase
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import org.koin.core.parameter.parametersOf
 
 class AuthScopeNavigateComponent(
     context: ComponentContext,
-    private val userId: UserId
+    private val userId: UserId,
+    private val updateAuthMetadataUseCase: NewAuthMetadataUseCase,
+    private val syncRemoteDataUseCase: SyncRemoteDataUseCase,
+    private val socketMessageObserver: SocketMessageObserver,
+    private val profileRepository: ProfileRepository
 ) : NavigateComponentContext<AuthScopeNavigateComponent.Configuration, AuthScopeNavigateComponent.Child>(
     context,
     Configuration.serializer(),
-    Configuration.SwiperScreen
+    Configuration.LoginScreen
 ),
     KoinComponent {
 
-    fun openSwiper() {
-        navigate(Configuration.SwiperScreen)
-    }
+    init {
+        backgroundScope.launch {
+            profileRepository.profileState.collect { profileState ->
+                when (profileState) {
+                    ProfileState.Idle -> Unit
+                    is ProfileState.Existing -> {
+                        updateAuthMetadataUseCase()
+                        socketMessageObserver.subscribe()
+                        syncRemoteDataUseCase()
 
-    fun openProfile() {
-        navigate(Configuration.ProfileScreen)
-    }
+                        navigateNewStack(Configuration.MainAuthScope)
+                    }
 
-    fun openSettings() {
-        navigate(Configuration.SettingScreen)
-    }
-
-    fun openMessenger() {
-        navigate(Configuration.MessengerScreen)
+                    ProfileState.NotCreated -> navigateNewStack(Configuration.CreateProfileScope)
+                }
+            }
+        }
+        backgroundScope.launch {
+            profileRepository.updateProfile()
+        }
     }
 
     override fun createChild(
@@ -46,93 +52,33 @@ class AuthScopeNavigateComponent(
         context: ComponentContext
     ): Child {
         return when (configuration) {
-            Configuration.SwiperScreen -> Child.SwiperScreen(
-                component = get { parametersOf(context) }
+            Configuration.LoginScreen -> Child.LoginScreen
+            is Configuration.CreateProfileScope -> Child.CreateProfileScope(
+                component = CreateProfileScopeNavigateComponent(context)
             )
 
-            Configuration.ProfileScreen -> Child.ProfileScreen(
-                component = get {
-                    parametersOf(
-                        context,
-                        { navigate(Configuration.ProfileEditorScreen) }
-                    )
-                }
-            )
-
-            Configuration.ProfileEditorScreen -> Child.ProfileEditorScreen(
-                component = get {
-                    parametersOf(
-                        context,
-                        ::navigateBack
-                    )
-                }
-            )
-
-            Configuration.SettingScreen -> Child.SettingScreen(
-                component = get {
-                    parametersOf(
-                        context,
-                        ::navigateBack
-                    )
-                }
-            )
-
-            is Configuration.ChatScreen -> Child.ChatScreen(
-                component = get {
-                    parametersOf(
-                        context,
-                        configuration.chatId,
-                        configuration.personItem,
-                        userId,
-                        ::navigateBack
-                    )
-                }
-            )
-
-            Configuration.MessengerScreen -> Child.MessengerScreen(
-                component = get {
-                    parametersOf(
-                        context,
-                        { chatId: ChatId, personItem: PersonItem ->
-                            navigate(Configuration.ChatScreen(chatId, personItem))
-                        }
-                    )
-                }
+            is Configuration.MainAuthScope -> Child.MainAuthScope(
+                component = MainAuthScopeNavigateComponent(context, userId)
             )
         }
     }
 
     sealed interface Child {
-        data class ProfileEditorScreen(val component: ProfileEditorScreenComponent) : Child
-        data class SettingScreen(val component: SettingScreenComponent) : Child
-
-        data class SwiperScreen(val component: SwiperScreenComponent) : Child
-        data class ProfileScreen(val component: ProfileScreenComponent) : Child
-        data class ChatScreen(val component: ChatComponent) : Child
-        data class MessengerScreen(val component: MessengerComponent) : Child
+        data object LoginScreen : Child
+        data class CreateProfileScope(val component: CreateProfileScopeNavigateComponent) : Child
+        data class MainAuthScope(val component: MainAuthScopeNavigateComponent) : Child
     }
 
     @Serializable
     sealed interface Configuration {
-        @Serializable
-        data object SwiperScreen : Configuration
 
         @Serializable
-        data object ProfileScreen : Configuration
+        data object LoginScreen : Configuration
 
         @Serializable
-        data object ProfileEditorScreen : Configuration
+        data object CreateProfileScope : Configuration
 
         @Serializable
-        data object SettingScreen : Configuration
-
-        @Serializable
-        data object MessengerScreen : Configuration
-
-        @Serializable
-        data class ChatScreen(
-            val chatId: ChatId,
-            val personItem: PersonItem
-        ) : Configuration
+        data object MainAuthScope : Configuration
     }
 }

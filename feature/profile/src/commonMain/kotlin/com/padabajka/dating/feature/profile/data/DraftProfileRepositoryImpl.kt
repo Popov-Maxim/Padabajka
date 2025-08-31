@@ -1,46 +1,31 @@
 package com.padabajka.dating.feature.profile.data
 
 import com.padabajka.dating.core.repository.api.DraftProfileRepository
-import com.padabajka.dating.core.repository.api.ProfileRepository
-import com.padabajka.dating.core.repository.api.exception.ProfileException
-import com.padabajka.dating.core.repository.api.model.profile.Profile
+import com.padabajka.dating.core.repository.api.model.profile.DraftProfile
 import com.padabajka.dating.feature.profile.data.source.LocalDraftProfileDataSource
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.onEach
-import kotlin.coroutines.cancellation.CancellationException
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.stateIn
 
 class DraftProfileRepositoryImpl(
-    private val profileRepository: ProfileRepository,
+    coroutineScope: CoroutineScope,
     private val localDraftProfileDataSource: LocalDraftProfileDataSource,
 ) : DraftProfileRepository {
 
-    override val profile: Flow<Profile>
-        get() = localDraftProfileDataSource.profile.flatMapLatest {
-            if (it == null) {
-                profileRepository.profile.onEach { profile ->
-                    localDraftProfileDataSource.replace(profile)
-                }
-            } else {
-                flowOf(it)
-            }
-        }.distinctUntilChanged()
+    private val _profileState = localDraftProfileDataSource.profile
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null
+        )
+    override val profile: Flow<DraftProfile>
+        get() = _profileState.filterNotNull()
+    override val profileValue: DraftProfile?
+        get() = _profileState.value
 
-    @Throws(ProfileException::class, CancellationException::class)
-    override suspend fun update(action: (Profile) -> Profile) {
-        localDraftProfileDataSource.update(action) // TODO: Optimization
-    }
-
-    @Throws(ProfileException::class, CancellationException::class)
-    override suspend fun saveUpdates() {
-        val profile = localDraftProfileDataSource.profile.first() ?: throw ProfileIsNullException
-        profileRepository.replace(profile)
-    }
-
-    override suspend fun discardUpdates() {
-        localDraftProfileDataSource.replace(null)
+    override suspend fun update(action: (DraftProfile) -> DraftProfile) {
+        localDraftProfileDataSource.update(action)
     }
 }

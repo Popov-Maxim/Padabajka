@@ -14,8 +14,8 @@ import kotlinx.serialization.json.Json
 class RemoveProfileDataSourceImpl(
     private val profileApi: ProfileApi
 ) : RemoveProfileDataSource {
-    override suspend fun getProfile(): Profile {
-        return profileApi.get().toProfile()
+    override suspend fun getProfile(): Profile? {
+        return profileApi.get()?.toProfile()
     }
 
     override suspend fun getProfile(userId: String): Profile {

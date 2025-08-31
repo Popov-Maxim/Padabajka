@@ -47,6 +47,8 @@ data class ProfileField<T>(
 ) {
     fun updatedValue(value: T) = copy(value = value)
     fun updatedValue(action: (T) -> T) = copy(value = action(value))
+
+    fun updatedIssues(action: (Map<T, Issue>) -> Map<T, Issue>) = copy(issues = action(issues))
 }
 
 data class Issue(

@@ -63,6 +63,18 @@ sealed interface StaticTextId {
         // General
         Apply(rawId = "apply"),
 
+        // Profile creating
+
+        WelcomeText(rawId = "welcome_text"),
+        CreateProfileBtn(rawId = "create_profile_btn"),
+        ContinueBtn(rawId = "continue_btn"),
+
+        HowNameTitle(rawId = "how_name_title"),
+        HowNameBody(rawId = "how_name_body"),
+        HintForName(rawId = "hint_for_name"),
+
+        // -------------- Profile creating
+
         ;
         override val id: String = listOfNotNull(prefix, rawId, "ui_id")
             .joinToString(separator = "_")

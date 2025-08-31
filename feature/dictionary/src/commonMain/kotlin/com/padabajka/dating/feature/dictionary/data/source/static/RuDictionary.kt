@@ -42,6 +42,16 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Preview -> "просмотр"
             StaticTextId.UiId.CitySearch -> "Поиск города"
             StaticTextId.UiId.Apply -> "Применить"
+            StaticTextId.UiId.WelcomeText ->
+                "Добро пожаловать в Padabajka " +
+                    "мы рады, что вы пресоеденились к нам, давайте познакомимся\n\n" +
+                    "Вы можете рассказать о себе создав профиль или сделать это позже и начать пользоваться приложением"
+
+            StaticTextId.UiId.CreateProfileBtn -> "Создать профиль"
+            StaticTextId.UiId.ContinueBtn -> "Продолжить"
+            StaticTextId.UiId.HowNameTitle -> "Как тебя зовут?"
+            StaticTextId.UiId.HowNameBody -> "Лучше указать настоящее имя"
+            StaticTextId.UiId.HintForName -> "Имя"
         }
     }
 

@@ -33,3 +33,9 @@ val LocalDate.age: Age
 
         return this.periodUntil(now).years.toAge()
     }
+
+sealed interface ProfileState {
+    data object Idle : ProfileState
+    data object NotCreated : ProfileState
+    data class Existing(val profile: Profile) : ProfileState
+}

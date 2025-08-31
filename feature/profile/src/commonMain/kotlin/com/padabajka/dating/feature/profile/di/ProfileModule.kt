@@ -4,6 +4,7 @@ import com.padabajka.dating.core.data.utils.DataStoreUtils
 import com.padabajka.dating.core.repository.api.CityRepository
 import com.padabajka.dating.core.repository.api.DraftProfileRepository
 import com.padabajka.dating.core.repository.api.ProfileRepository
+import com.padabajka.dating.core.repository.api.model.profile.DraftProfile
 import com.padabajka.dating.feature.profile.data.DraftProfileRepositoryImpl
 import com.padabajka.dating.feature.profile.data.ProfileRepositoryImpl
 import com.padabajka.dating.feature.profile.data.asset.CityRepositoryImpl
@@ -18,15 +19,12 @@ import com.padabajka.dating.feature.profile.data.source.DataStoreLocalDraftProfi
 import com.padabajka.dating.feature.profile.data.source.LocalDraftProfileDataSource
 import com.padabajka.dating.feature.profile.data.source.RemoveProfileDataSource
 import com.padabajka.dating.feature.profile.data.source.RemoveProfileDataSourceImpl
-import com.padabajka.dating.feature.profile.domain.DiscardUpdateUseCase
-import com.padabajka.dating.feature.profile.domain.DraftProfileProvider
 import com.padabajka.dating.feature.profile.domain.SaveProfileUseCase
 import com.padabajka.dating.feature.profile.domain.asset.FindCitiesUseCase
+import com.padabajka.dating.feature.profile.domain.creator.DraftProfileProvider
+import com.padabajka.dating.feature.profile.domain.creator.NameValidator
 import com.padabajka.dating.feature.profile.domain.update.AboutMeUpdateUseCase
 import com.padabajka.dating.feature.profile.domain.update.FirstNameUpdateUseCase
-import com.padabajka.dating.feature.profile.domain.update.HideAchievementUseCase
-import com.padabajka.dating.feature.profile.domain.update.MainAchievementUpdateUseCase
-import com.padabajka.dating.feature.profile.domain.update.MakeAchievementVisibleUseCase
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
 import org.koin.core.module.dsl.factoryOf
@@ -41,7 +39,7 @@ private val dataModule = module {
 
     single<DraftProfileRepository> {
         DraftProfileRepositoryImpl(
-            profileRepository = get(),
+            coroutineScope = get(),
             localDraftProfileDataSource = get()
         )
     }
@@ -60,7 +58,7 @@ private val dataModule = module {
 
     factory<LocalDraftProfileDataSource> {
         DataStoreLocalDraftProfileDataSource(
-            dataStore = DataStoreUtils.createFake(null)
+            dataStore = DataStoreUtils.createFake(DraftProfile())
         )
     }
 
@@ -88,18 +86,6 @@ private val dataModule = module {
 
 private val domainModule = module {
 
-    factory<DraftProfileProvider> {
-        DraftProfileProvider(
-            draftProfileRepository = get()
-        )
-    }
-
-    factory<DiscardUpdateUseCase> {
-        DiscardUpdateUseCase(
-            repository = get()
-        )
-    }
-
     factoryOf(::SaveProfileUseCase)
 
     factory<FirstNameUpdateUseCase> {
@@ -114,25 +100,9 @@ private val domainModule = module {
         )
     }
 
-    factory<HideAchievementUseCase> {
-        HideAchievementUseCase(
-            repository = get()
-        )
-    }
-
-    factory<MakeAchievementVisibleUseCase> {
-        MakeAchievementVisibleUseCase(
-            repository = get()
-        )
-    }
-
-    factory<MainAchievementUpdateUseCase> {
-        MainAchievementUpdateUseCase(
-            repository = get()
-        )
-    }
-
     factoryOf(::FindCitiesUseCase)
+    factoryOf(::NameValidator)
+    factoryOf(::DraftProfileProvider)
 }
 
 private val presentationModule = module {

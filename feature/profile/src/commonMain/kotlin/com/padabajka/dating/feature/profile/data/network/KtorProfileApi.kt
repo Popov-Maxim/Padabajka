@@ -15,7 +15,7 @@ class KtorProfileApi(
 ) : ProfileApi {
 
     @Suppress("TooGenericExceptionCaught")
-    override suspend fun get(): PersonResponse {
+    override suspend fun get(): PersonResponse? {
         val client = ktorClientProvider.client()
 
         val response = client.get {
@@ -24,7 +24,8 @@ class KtorProfileApi(
             }
         }
 
-        return response.body()
+        return response.takeIf { it.status != HttpStatusCode.NoContent }
+            ?.body()
     }
 
     override suspend fun get(userId: String): PersonResponse {

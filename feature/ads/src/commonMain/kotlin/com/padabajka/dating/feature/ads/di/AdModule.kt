@@ -11,7 +11,6 @@ import org.koin.dsl.module
 private val dataModule = module {
     single<NativeAdRepository> {
         NativeAdRepositoryImpl(
-            scope = get(),
             profileRepository = get(),
             adRemoteDataSource = get()
         )
