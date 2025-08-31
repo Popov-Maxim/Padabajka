@@ -42,6 +42,17 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Language -> "Language"
             StaticTextId.UiId.CitySearch -> "City search"
             StaticTextId.UiId.Apply -> "Apply"
+            StaticTextId.UiId.WelcomeText ->
+                "Welcome to Padabajka! " +
+                    "We’re glad to have you here. Let’s get to know each other.\n\n" +
+                    "You can create your profile now to tell us more about yourself, " +
+                    "or skip this step and start using the app right away."
+
+            StaticTextId.UiId.CreateProfileBtn -> "Create profile"
+            StaticTextId.UiId.ContinueBtn -> "Continue"
+            StaticTextId.UiId.HowNameTitle -> "What’s your name?"
+            StaticTextId.UiId.HowNameBody -> "It’s best to use your real one"
+            StaticTextId.UiId.HintForName -> "Name"
         }
     }
 

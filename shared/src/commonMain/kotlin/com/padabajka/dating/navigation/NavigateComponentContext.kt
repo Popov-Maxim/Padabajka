@@ -5,10 +5,14 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
 import org.koin.core.component.KoinComponent
 
-abstract class NavigateComponentContext<Config : Any, Child : Any> (
+abstract class NavigateComponentContext<Config : Any, Child : Any>(
     context: ComponentContext,
     serializable: KSerializer<Config>,
     initialConfiguration: Config,
@@ -24,20 +28,32 @@ abstract class NavigateComponentContext<Config : Any, Child : Any> (
         childFactory = ::createChild
     )
 
+    protected val navigateScope: CoroutineScope =
+        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
+    protected val backgroundScope: CoroutineScope =
+        CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
     protected fun navigate(configuration: Config) {
-        navigation.navigate { stack ->
-            (splash?.let { stack - it } ?: stack) - configuration + configuration
+        navigateScope.launch {
+            navigation.navigate { stack ->
+                (splash?.let { stack - it } ?: stack) - configuration + configuration
+            }
         }
     }
 
     protected fun navigateNewStack(configuration: Config) {
-        navigation.navigate {
-            listOf(configuration)
+        navigateScope.launch {
+            navigation.navigate {
+                listOf(configuration)
+            }
         }
     }
 
     protected fun navigateBack() {
-        navigation.pop()
+        navigateScope.launch {
+            navigation.pop()
+        }
     }
 
     protected abstract fun createChild(

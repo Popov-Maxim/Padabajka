@@ -5,14 +5,10 @@ import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
 import com.padabajka.dating.core.repository.api.model.auth.LoggedOut
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.WaitingForEmailValidation
-import com.padabajka.dating.domain.SyncRemoteDataUseCase
 import com.padabajka.dating.feature.auth.domain.AuthStateProvider
 import com.padabajka.dating.feature.auth.presentation.VerificationComponent
 import com.padabajka.dating.feature.push.socket.domain.SocketMessageObserver
 import com.padabajka.dating.settings.domain.NewAuthMetadataUseCase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
@@ -22,7 +18,6 @@ import org.koin.core.parameter.parametersOf
 class AuthStateObserverComponent(
     context: ComponentContext,
     private val updateAuthMetadataUseCase: NewAuthMetadataUseCase,
-    private val syncRemoteDataUseCase: SyncRemoteDataUseCase,
     private val socketMessageObserver: SocketMessageObserver,
 ) : NavigateComponentContext<AuthStateObserverComponent.Configuration, AuthStateObserverComponent.Child>(
     context,
@@ -32,32 +27,28 @@ class AuthStateObserverComponent(
     KoinComponent {
 
     private val authProvider: AuthStateProvider = get()
-    private val componentScope: CoroutineScope =
-        CoroutineScope(SupervisorJob() + Dispatchers.Default) // TODO
 
     suspend fun subscribeToAuth() {
         authProvider.authState.collect { authState ->
             when (authState) {
                 LoggedOut -> {
                     navigateNewStack(Configuration.UnauthScope)
-                    componentScope.launch {
+                    backgroundScope.launch {
                         socketMessageObserver.unsubscribe()
                     }
                 }
+
                 is LoggedIn -> {
                     navigateNewStack(Configuration.AuthScope(authState.userId))
-                    componentScope.launch {
+                    backgroundScope.launch {
                         updateAuthMetadataUseCase()
-                        socketMessageObserver.subscribe()
-                        syncRemoteDataUseCase()
                     }
                 }
 
                 is WaitingForEmailValidation -> {
                     navigateNewStack(Configuration.VerificationScreen)
-                    componentScope.launch {
+                    backgroundScope.launch {
                         updateAuthMetadataUseCase()
-                        socketMessageObserver.subscribe()
                     }
                 }
             }
@@ -75,7 +66,14 @@ class AuthStateObserverComponent(
             )
 
             is Configuration.AuthScope -> Child.AuthScope(
-                component = AuthScopeNavigateComponent(context, configuration.userId)
+                component = AuthScopeNavigateComponent(
+                    context = context,
+                    userId = configuration.userId,
+                    updateAuthMetadataUseCase = get(),
+                    syncRemoteDataUseCase = get(),
+                    socketMessageObserver = get(),
+                    profileRepository = get()
+                )
             )
 
             Configuration.VerificationScreen -> Child.VerificationScreen(

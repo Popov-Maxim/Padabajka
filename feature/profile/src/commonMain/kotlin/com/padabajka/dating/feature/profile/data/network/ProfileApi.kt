@@ -4,7 +4,7 @@ import com.padabajka.dating.core.data.network.model.PersonResponse
 import kotlin.jvm.JvmInline
 
 interface ProfileApi {
-    suspend fun get(): PersonResponse
+    suspend fun get(): PersonResponse?
     suspend fun get(userId: String): PersonResponse
     suspend fun patch(params: PatchParams)
 
