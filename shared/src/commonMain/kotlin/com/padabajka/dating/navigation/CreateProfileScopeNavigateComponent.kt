@@ -1,6 +1,7 @@
 package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
+import com.padabajka.dating.feature.profile.presentation.creator.birthday.CreateProfileBirthdayScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.name.CreateProfileNameScreenComponent
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
@@ -37,7 +38,15 @@ class CreateProfileScopeNavigateComponent(
                 )
             )
 
-            Configuration.BirthdayScreen -> Child.BirthdayScreen
+            Configuration.BirthdayScreen -> Child.BirthdayScreen(
+                component = CreateProfileBirthdayScreenComponent(
+                    context = context,
+                    birthdayUpdateUseCase = get(),
+                    birthdayValidator = get(),
+                    draftProfileProvider = get(),
+                    toNext = { navigate(Configuration.SexAndPreferencesScreen) },
+                )
+            )
             Configuration.LookingForScreen -> Child.LookingForScreen
             Configuration.SexAndPreferencesScreen -> Child.SexAndPreferencesScreen
             Configuration.ImageScreen -> Child.ImageScreen
@@ -49,7 +58,7 @@ class CreateProfileScopeNavigateComponent(
 
         data class NameScreen(val component: CreateProfileNameScreenComponent) : Child
 
-        data object BirthdayScreen : Child
+        data class BirthdayScreen(val component: CreateProfileBirthdayScreenComponent) : Child
 
         data object SexAndPreferencesScreen : Child
 

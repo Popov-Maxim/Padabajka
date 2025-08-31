@@ -1,9 +1,11 @@
 package com.padabajka.dating.core.repository.api.model.profile
 
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.periodUntil
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
 
 data class Profile(
@@ -33,6 +35,9 @@ val LocalDate.age: Age
 
         return this.periodUntil(now).years.toAge()
     }
+
+fun LocalDate.Companion.fromMillis(millis: Long): LocalDate =
+    Instant.fromEpochMilliseconds(millis).toLocalDateTime(TimeZone.currentSystemDefault()).date
 
 sealed interface ProfileState {
     data object Idle : ProfileState

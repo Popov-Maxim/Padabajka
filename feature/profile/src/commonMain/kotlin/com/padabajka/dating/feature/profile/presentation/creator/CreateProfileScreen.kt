@@ -21,11 +21,13 @@ fun CreateProfileScreen(context: @Composable () -> Unit) {
 @Composable
 fun CreateProfileButton(
     text: String,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     CoreCallToActionButton(
         text = text,
+        enabled = enabled,
         modifier = modifier.padding(horizontal = 35.dp, vertical = 10.dp),
         onClick = onClick
     )

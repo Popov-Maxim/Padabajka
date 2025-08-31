@@ -17,15 +17,21 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CoreCallToActionButton(
     text: String,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     val shape = RoundedCornerShape(20.dp)
+    val optionalClickable: Modifier.() -> Modifier =
+        { if (enabled) clickable(onClick = onClick) else this }
+    val buttonColor = CoreColors.secondary.mainColor.copy(
+        alpha = if (enabled) 1f else 0.5f
+    )
     Box(
         modifier = modifier.fillMaxWidth()
             .clip(shape)
-            .background(CoreColors.secondary.mainColor)
-            .clickable(onClick = onClick)
+            .background(buttonColor)
+            .optionalClickable()
             .padding(vertical = 20.dp),
         contentAlignment = Alignment.Center
     ) {

@@ -53,6 +53,12 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.HowNameTitle -> "What’s your name?"
             StaticTextId.UiId.HowNameBody -> "It’s best to use your real one"
             StaticTextId.UiId.HintForName -> "Name"
+            StaticTextId.UiId.WhenBirthdayTitle -> "When’s your birthday?"
+            StaticTextId.UiId.WhenBirthdayBody -> "Only your age is visible on your profile"
+            StaticTextId.UiId.HintForBirthday -> "Your birthday"
+            StaticTextId.UiId.MessageForTooYoung -> "Sorry, registration is only available for users 18 and older"
+            StaticTextId.UiId.MessageForTooOld ->
+                "Please check your date of birth — it looks like the age might be incorrect"
         }
     }
 

@@ -21,9 +21,11 @@ import com.padabajka.dating.feature.profile.data.source.RemoveProfileDataSource
 import com.padabajka.dating.feature.profile.data.source.RemoveProfileDataSourceImpl
 import com.padabajka.dating.feature.profile.domain.SaveProfileUseCase
 import com.padabajka.dating.feature.profile.domain.asset.FindCitiesUseCase
+import com.padabajka.dating.feature.profile.domain.creator.BirthdayValidator
 import com.padabajka.dating.feature.profile.domain.creator.DraftProfileProvider
 import com.padabajka.dating.feature.profile.domain.creator.NameValidator
 import com.padabajka.dating.feature.profile.domain.update.AboutMeUpdateUseCase
+import com.padabajka.dating.feature.profile.domain.update.BirthdayUpdateUseCase
 import com.padabajka.dating.feature.profile.domain.update.FirstNameUpdateUseCase
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
@@ -100,9 +102,12 @@ private val domainModule = module {
         )
     }
 
+    factoryOf(::BirthdayUpdateUseCase)
+
     factoryOf(::FindCitiesUseCase)
     factoryOf(::NameValidator)
     factoryOf(::DraftProfileProvider)
+    factoryOf(::BirthdayValidator)
 }
 
 private val presentationModule = module {
