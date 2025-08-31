@@ -52,6 +52,11 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.HowNameTitle -> "Как тебя зовут?"
             StaticTextId.UiId.HowNameBody -> "Лучше указать настоящее имя"
             StaticTextId.UiId.HintForName -> "Имя"
+            StaticTextId.UiId.WhenBirthdayTitle -> "Когда ты родился?"
+            StaticTextId.UiId.WhenBirthdayBody -> "В профиле будет виден только возраст"
+            StaticTextId.UiId.HintForBirthday -> "Твой день рождения"
+            StaticTextId.UiId.MessageForTooYoung -> "Извини, регистрация доступна только с 18 лет"
+            StaticTextId.UiId.MessageForTooOld -> "Проверьте дату рождения — похоже, вы указали неверный возраст"
         }
     }
 

@@ -73,6 +73,12 @@ sealed interface StaticTextId {
         HowNameBody(rawId = "how_name_body"),
         HintForName(rawId = "hint_for_name"),
 
+        WhenBirthdayTitle(rawId = "when_birthday_title"),
+        WhenBirthdayBody(rawId = "when_birthday_body"),
+        HintForBirthday(rawId = "hint_for_birthday"),
+        MessageForTooYoung(rawId = "message_for_too_young"),
+        MessageForTooOld(rawId = "message_for_too_old")
+
         // -------------- Profile creating
 
         ;

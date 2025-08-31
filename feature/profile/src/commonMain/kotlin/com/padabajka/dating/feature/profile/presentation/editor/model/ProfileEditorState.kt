@@ -1,10 +1,13 @@
 package com.padabajka.dating.feature.profile.presentation.editor.model
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.padabajka.dating.core.presentation.State
 import com.padabajka.dating.core.presentation.event.StateEvent
 import com.padabajka.dating.core.presentation.event.consumed
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
@@ -45,15 +48,33 @@ data class ProfileField<T>(
     val value: T,
     val issues: Map<T, Issue> = emptyMap()
 ) {
+
+    @Stable
+    val currentIssue: Issue? = issues[value]
+
     fun updatedValue(value: T) = copy(value = value)
     fun updatedValue(action: (T) -> T) = copy(value = action(value))
 
     fun updatedIssues(action: (Map<T, Issue>) -> Map<T, Issue>) = copy(issues = action(issues))
 }
 
-data class Issue(
-    val message: String
-)
+sealed interface Issue {
+    data class StringValue(
+        val message: String
+    ) : Issue
+
+    data class Text(
+        val message: StaticTextId
+    ) : Issue
+
+    @Composable
+    fun toMessage(): String {
+        return when (this) {
+            is StringValue -> message
+            is Text -> message.translate()
+        }
+    }
+}
 
 fun Profile.toEditorState(): ProfileEditorState {
     return ProfileEditorState(

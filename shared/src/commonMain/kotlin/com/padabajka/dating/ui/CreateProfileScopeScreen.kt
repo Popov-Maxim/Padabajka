@@ -6,6 +6,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.feature.profile.presentation.creator.birthday.CreateProfileBirthdayScreen
 import com.padabajka.dating.feature.profile.presentation.creator.name.CreateProfileNameScreen
 import com.padabajka.dating.feature.profile.presentation.creator.welcome.WelcomeScreen
 import com.padabajka.dating.navigation.CreateProfileScopeNavigateComponent
@@ -21,10 +22,11 @@ fun CreateProfileScopeScreen(component: CreateProfileScopeNavigateComponent) {
         when (instance) {
             is CreateProfileScopeNavigateComponent.Child.WelcomeScreen -> WelcomeScreen(instance.toNext)
             is CreateProfileScopeNavigateComponent.Child.NameScreen -> CreateProfileNameScreen(instance.component)
-            CreateProfileScopeNavigateComponent.Child.BirthdayScreen -> Unit
-            CreateProfileScopeNavigateComponent.Child.SexAndPreferencesScreen -> TODO()
-            CreateProfileScopeNavigateComponent.Child.LookingForScreen -> TODO()
-            CreateProfileScopeNavigateComponent.Child.ImageScreen -> TODO()
+            is CreateProfileScopeNavigateComponent.Child.BirthdayScreen ->
+                CreateProfileBirthdayScreen(instance.component)
+            CreateProfileScopeNavigateComponent.Child.SexAndPreferencesScreen -> Unit
+            CreateProfileScopeNavigateComponent.Child.LookingForScreen -> Unit
+            CreateProfileScopeNavigateComponent.Child.ImageScreen -> Unit
         }
     }
 }

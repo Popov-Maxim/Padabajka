@@ -8,11 +8,6 @@ data class AgeRange(val start: Age, val endInclusive: Age)
 @JvmInline
 @Serializable
 value class Age(val raw: Int) {
-    init {
-        require(raw in MIN_AGE_VALUE..MAX_AGE_VALUE) {
-            "$raw years old is not included [$MIN_AGE_VALUE, $MAX_AGE_VALUE]"
-        }
-    }
 
     companion object {
         private const val MIN_AGE_VALUE = 18
@@ -27,3 +22,8 @@ fun ageOf(value: Int): Age = Age(value)
 fun Int.toAge(): Age = Age(this)
 
 operator fun Age.rangeTo(that: Age): AgeRange = AgeRange(this, that)
+operator fun AgeRange.contains(age: Age): Boolean {
+    return age.raw in this.start.raw..this.endInclusive.raw
+}
+
+operator fun Age.compareTo(other: Age): Int = this.raw.compareTo(other.raw)
