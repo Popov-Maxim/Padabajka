@@ -77,7 +77,12 @@ sealed interface StaticTextId {
         WhenBirthdayBody(rawId = "when_birthday_body"),
         HintForBirthday(rawId = "hint_for_birthday"),
         MessageForTooYoung(rawId = "message_for_too_young"),
-        MessageForTooOld(rawId = "message_for_too_old")
+        MessageForTooOld(rawId = "message_for_too_old"),
+
+        WhatBiologicalSexTitle(rawId = "what_bio_logical_sex_title"),
+        WhatBiologicalSexBody(rawId = "what_bio_logical_sex_body"),
+        WhatPreferenceTitle(rawId = "what_preference_title"),
+        WhatPreferenceBody(rawId = "what_preference_body"),
 
         // -------------- Profile creating
 

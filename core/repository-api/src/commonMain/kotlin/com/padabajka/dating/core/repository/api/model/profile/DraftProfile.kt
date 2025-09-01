@@ -5,6 +5,7 @@ import kotlinx.datetime.LocalDate
 data class DraftProfile(
     val name: String? = null,
     val birthday: LocalDate? = null,
+    val gender: Gender? = null,
     val images: List<Image> = listOf(),
     val aboutMe: String? = null,
     val lookingFor: LookingForData? = null,

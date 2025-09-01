@@ -27,6 +27,7 @@ import com.padabajka.dating.feature.profile.domain.creator.NameValidator
 import com.padabajka.dating.feature.profile.domain.update.AboutMeUpdateUseCase
 import com.padabajka.dating.feature.profile.domain.update.BirthdayUpdateUseCase
 import com.padabajka.dating.feature.profile.domain.update.FirstNameUpdateUseCase
+import com.padabajka.dating.feature.profile.domain.update.UpdateUserGenderUseCase
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
 import org.koin.core.module.dsl.factoryOf
@@ -108,6 +109,7 @@ private val domainModule = module {
     factoryOf(::NameValidator)
     factoryOf(::DraftProfileProvider)
     factoryOf(::BirthdayValidator)
+    factoryOf(::UpdateUserGenderUseCase)
 }
 
 private val presentationModule = module {

@@ -4,6 +4,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.periodUntil
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
@@ -38,6 +39,8 @@ val LocalDate.age: Age
 
 fun LocalDate.Companion.fromMillis(millis: Long): LocalDate =
     Instant.fromEpochMilliseconds(millis).toLocalDateTime(TimeZone.currentSystemDefault()).date
+fun LocalDate.toMillis(): Long =
+    atStartOfDayIn(TimeZone.UTC).toEpochMilliseconds()
 
 sealed interface ProfileState {
     data object Idle : ProfileState
