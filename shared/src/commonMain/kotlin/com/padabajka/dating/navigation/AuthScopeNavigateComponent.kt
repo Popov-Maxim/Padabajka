@@ -30,6 +30,7 @@ class AuthScopeNavigateComponent(
             profileRepository.profileState.collect { profileState ->
                 when (profileState) {
                     ProfileState.Idle -> Unit
+                    ProfileState.NotCreated -> navigateNewStack(Configuration.CreateProfileScope)
                     is ProfileState.Existing -> {
                         updateAuthMetadataUseCase()
                         socketMessageObserver.subscribe()
@@ -37,8 +38,6 @@ class AuthScopeNavigateComponent(
 
                         navigateNewStack(Configuration.MainAuthScope)
                     }
-
-                    ProfileState.NotCreated -> navigateNewStack(Configuration.CreateProfileScope)
                 }
             }
         }

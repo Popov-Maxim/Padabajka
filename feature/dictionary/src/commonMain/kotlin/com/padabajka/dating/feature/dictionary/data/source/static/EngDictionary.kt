@@ -4,6 +4,7 @@ import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 
 @Suppress("CyclomaticComplexMethod")
 class EngDictionary : Dictionary() {
+    @Suppress("LongMethod")
     override fun getUiWord(uiId: StaticTextId.UiId): String {
         return when (uiId) {
             StaticTextId.UiId.Settings -> "Settings"
@@ -59,6 +60,10 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.MessageForTooYoung -> "Sorry, registration is only available for users 18 and older"
             StaticTextId.UiId.MessageForTooOld ->
                 "Please check your date of birth — it looks like the age might be incorrect"
+            StaticTextId.UiId.WhatBiologicalSexTitle -> "What’s your gender?"
+            StaticTextId.UiId.WhatBiologicalSexBody -> "You won’t be able to change this later"
+            StaticTextId.UiId.WhatPreferenceTitle -> "Who would you like to meet?"
+            StaticTextId.UiId.WhatPreferenceBody -> "You can change this anytime"
         }
     }
 

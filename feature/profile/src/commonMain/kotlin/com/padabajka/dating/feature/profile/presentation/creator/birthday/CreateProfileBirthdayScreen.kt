@@ -30,8 +30,10 @@ import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
+import com.padabajka.dating.core.repository.api.model.profile.toMillis
 import com.padabajka.dating.feature.profile.presentation.creator.CreateProfileButton
 import com.padabajka.dating.feature.profile.presentation.creator.CreateProfileScreen
+import com.padabajka.dating.feature.profile.presentation.creator.birthday.model.BirthdayItem
 import com.padabajka.dating.feature.profile.presentation.creator.birthday.model.CreateProfileBirthdayEvent
 import com.padabajka.dating.feature.profile.presentation.creator.birthday.model.CreateProfileBirthdayState
 import com.padabajka.dating.feature.profile.presentation.creator.name.TextAsset
@@ -128,6 +130,7 @@ private fun BirthDayField(
 
     if (showDatePicker) {
         DatePickerModal(
+            birthday = state.birthdayField.value,
             onDateSelected = { date ->
                 onEvent(CreateProfileBirthdayEvent.BirthdayFieldUpdate(date))
             },
@@ -141,10 +144,13 @@ private fun BirthDayField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DatePickerModal(
+    birthday: BirthdayItem?,
     onDateSelected: (Long) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val datePickerState = rememberDatePickerState()
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = birthday?.date?.toMillis(),
+    )
 
     DatePickerDialog(
         onDismissRequest = onDismiss,

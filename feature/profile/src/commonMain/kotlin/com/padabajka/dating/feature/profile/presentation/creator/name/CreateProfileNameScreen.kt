@@ -83,6 +83,7 @@ fun TextAsset(
         Text(
             text = title,
             fontSize = 30.sp,
+            lineHeight = 30.sp * 1.2,
             textAlign = TextAlign.Center,
         ) // TODO(font): standardize font in all project, may be monospace?
 

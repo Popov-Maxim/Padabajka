@@ -57,6 +57,10 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.HintForBirthday -> "Твой день рождения"
             StaticTextId.UiId.MessageForTooYoung -> "Извини, регистрация доступна только с 18 лет"
             StaticTextId.UiId.MessageForTooOld -> "Проверьте дату рождения — похоже, вы указали неверный возраст"
+            StaticTextId.UiId.WhatBiologicalSexTitle -> "Какой у тебя пол?"
+            StaticTextId.UiId.WhatBiologicalSexBody -> "Ты не сможешь поменять его"
+            StaticTextId.UiId.WhatPreferenceTitle -> "Кого ты ищешь?"
+            StaticTextId.UiId.WhatPreferenceBody -> "Ты сможешь поменять это в любое время"
         }
     }
 
