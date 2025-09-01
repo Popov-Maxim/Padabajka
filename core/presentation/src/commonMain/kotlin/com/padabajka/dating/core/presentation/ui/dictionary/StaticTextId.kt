@@ -84,6 +84,9 @@ sealed interface StaticTextId {
         WhatPreferenceTitle(rawId = "what_preference_title"),
         WhatPreferenceBody(rawId = "what_preference_body"),
 
+        WhatLookingForTitle(rawId = "what_looking_for_title"),
+        WhatLookingForBody(rawId = "what_looking_for_body"),
+
         // -------------- Profile creating
 
         ;

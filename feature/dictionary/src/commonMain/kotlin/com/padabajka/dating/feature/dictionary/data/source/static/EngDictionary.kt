@@ -64,6 +64,8 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.WhatBiologicalSexBody -> "You won’t be able to change this later"
             StaticTextId.UiId.WhatPreferenceTitle -> "Who would you like to meet?"
             StaticTextId.UiId.WhatPreferenceBody -> "You can change this anytime"
+            StaticTextId.UiId.WhatLookingForTitle -> "What are you looking for?"
+            StaticTextId.UiId.WhatLookingForBody -> "You can change this anytime"
         }
     }
 

@@ -1,8 +1,10 @@
 package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.feature.profile.presentation.creator.birthday.CreateProfileBirthdayScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.gender.CreateProfileSexScreenComponent
+import com.padabajka.dating.feature.profile.presentation.creator.lookingfor.CreateProfileLookingForScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.name.CreateProfileNameScreenComponent
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
@@ -54,10 +56,22 @@ class CreateProfileScopeNavigateComponent(
                     draftProfileProvider = get(),
                     updateUserGenderUseCase = get(),
                     searchPreferencesRepository = get(),
-                    toNext = { navigate(Configuration.LookingForScreen) },
+                    toNext = { navigate(Configuration.TypeLookingForScreen) },
                 )
             )
-            Configuration.LookingForScreen -> Child.LookingForScreen
+            Configuration.TypeLookingForScreen -> Child.TypeLookingForScreen(
+                onTypeSelected = { type ->
+                    navigate(Configuration.DetailLookingForScreen(type))
+                }
+            )
+            is Configuration.DetailLookingForScreen -> Child.DetailLookingForScreen(
+                component = CreateProfileLookingForScreenComponent(
+                    context = context,
+                    selectedType = configuration.type,
+                    updateLookingForUseCase = get(),
+                    toNext = { navigate(Configuration.ImageScreen) }
+                )
+            )
             Configuration.ImageScreen -> Child.ImageScreen
         }
     }
@@ -71,7 +85,9 @@ class CreateProfileScopeNavigateComponent(
 
         data class SexAndPreferencesScreen(val component: CreateProfileSexScreenComponent) : Child
 
-        data object LookingForScreen : Child
+        data class TypeLookingForScreen(val onTypeSelected: (StaticTextId) -> Unit) : Child
+
+        data class DetailLookingForScreen(val component: CreateProfileLookingForScreenComponent) : Child
 
         data object ImageScreen : Child
     }
@@ -91,7 +107,10 @@ class CreateProfileScopeNavigateComponent(
         data object SexAndPreferencesScreen : Configuration
 
         @Serializable
-        data object LookingForScreen : Configuration
+        data object TypeLookingForScreen : Configuration
+
+        @Serializable
+        data class DetailLookingForScreen(val type: StaticTextId) : Configuration
 
         @Serializable
         data object ImageScreen : Configuration

@@ -27,6 +27,7 @@ import com.padabajka.dating.feature.profile.domain.creator.NameValidator
 import com.padabajka.dating.feature.profile.domain.update.AboutMeUpdateUseCase
 import com.padabajka.dating.feature.profile.domain.update.BirthdayUpdateUseCase
 import com.padabajka.dating.feature.profile.domain.update.FirstNameUpdateUseCase
+import com.padabajka.dating.feature.profile.domain.update.UpdateLookingForUseCase
 import com.padabajka.dating.feature.profile.domain.update.UpdateUserGenderUseCase
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
@@ -110,6 +111,7 @@ private val domainModule = module {
     factoryOf(::DraftProfileProvider)
     factoryOf(::BirthdayValidator)
     factoryOf(::UpdateUserGenderUseCase)
+    factoryOf(::UpdateLookingForUseCase)
 }
 
 private val presentationModule = module {
