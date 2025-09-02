@@ -4,6 +4,7 @@ import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 
 @Suppress("CyclomaticComplexMethod")
 class RuDictionary : Dictionary() {
+    @Suppress("LongMethod")
     override fun getUiWord(uiId: StaticTextId.UiId): String {
         return when (uiId) {
             StaticTextId.UiId.Settings -> "Настройки"
@@ -61,6 +62,8 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.WhatBiologicalSexBody -> "Ты не сможешь поменять его"
             StaticTextId.UiId.WhatPreferenceTitle -> "Кого ты ищешь?"
             StaticTextId.UiId.WhatPreferenceBody -> "Ты сможешь поменять это в любое время"
+            StaticTextId.UiId.WhatLookingForTitle -> "Что ты ищешь?"
+            StaticTextId.UiId.WhatLookingForBody -> "Ты сможешь поменять это в любое время"
         }
     }
 

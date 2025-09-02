@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreColors
@@ -130,19 +131,23 @@ private fun DialogContent(
 }
 
 @Composable
-private fun TypeScreen(
+fun TypeScreen(
     types: List<StaticTextId> = lookingForAssets.keys.toList(),
+    modifier: Modifier = Modifier,
     onTypeClick: (StaticTextId) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .padding(horizontal = 10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         types.onEach { type ->
+            val description = lookingForAssets[type]
+                ?.map { it.translate() }
+                ?.joinToString(", ")
             DialogButton(
                 text = type.translate(),
-                description = null,
+                description = description,
                 onClick = { onTypeClick(type) }
             )
         }
@@ -150,12 +155,13 @@ private fun TypeScreen(
 }
 
 @Composable
-private fun DetailsScreen(
+fun DetailsScreen(
     details: List<StaticTextId>,
+    modifier: Modifier = Modifier,
     onDetailsClick: (StaticTextId) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .padding(horizontal = 10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -190,12 +196,17 @@ private fun DialogButton(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
-                modifier = Modifier.padding(10.dp),
+                modifier = Modifier.padding(10.dp).weight(1f),
                 verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
                 Text(text = text, fontSize = 15.sp)
                 if (description != null) {
-                    Text(text = description, fontSize = 12.sp)
+                    Text(
+                        text = description,
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             }
             Icon(
@@ -217,7 +228,7 @@ private sealed interface Screen {
     data class Detail(val type: StaticTextId) : Screen
 }
 
-private val lookingForAssets: Map<StaticTextId, List<StaticTextId>> = linkedMapOf(
+val lookingForAssets: Map<StaticTextId, List<StaticTextId>> = linkedMapOf(
     StaticTextId.AssetId.NonRomantic to listOf(
         StaticTextId.AssetId.LookingForFriends,
         StaticTextId.AssetId.PeopleToGoOutWith,
