@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -163,19 +164,18 @@ private fun ImageFields(
 
                     val fieldModifier = Modifier.weight(1f).aspectRatio(ratio = 2.0f / 3)
                         .clip(RoundedCornerShape(10.dp))
-                    if (image != null) {
-                        ProfileImage(fieldModifier, image, component::onEvent)
-                    } else {
-                        ImageField(
-                            modifier = fieldModifier.background(Color(color = 0xFFD9D9D9))
-                                .innerShadow(
-                                    color = Color(color = 0xFFA1A1A1),
-                                    shape = RoundedCornerShape(10.dp)
-                                ),
-                        ) {
+                    ImageField(
+                        image = image,
+                        modifier = fieldModifier,
+                        onChange = {
                             component.onEvent(ImageAddEvent(it))
+                        },
+                        delete = {
+                            if (image != null) {
+                                component.onEvent(DeleteImageEvent(image))
+                            }
                         }
-                    }
+                    )
                 }
             }
         }
@@ -183,7 +183,41 @@ private fun ImageFields(
 }
 
 @Composable
-private fun ProfileImage(modifier: Modifier, image: Image, onEvent: (ProfileEditorEvent) -> Unit) {
+fun ImageField(
+    image: Image?,
+    modifier: Modifier = Modifier,
+    iconSize: Dp = 50.dp,
+    onChange: (Image) -> Unit,
+    delete: () -> Unit
+) {
+    val fieldModifier = modifier.aspectRatio(ratio = 2.0f / 3)
+
+    if (image != null) {
+        ProfileImage(
+            modifier = fieldModifier,
+            image = image,
+            delete = delete
+        )
+    } else {
+        ImageField(
+            modifier = fieldModifier.background(Color(color = 0xFFD9D9D9))
+                .innerShadow(
+                    color = Color(color = 0xFFA1A1A1),
+                    shape = RoundedCornerShape(10.dp)
+                ),
+            iconSize = iconSize
+        ) {
+            onChange(it)
+        }
+    }
+}
+
+@Composable
+private fun ProfileImage(
+    modifier: Modifier,
+    image: Image,
+    delete: () -> Unit
+) {
     val imageLoader = rememberImageLoader()
 
     var showDialog by remember { mutableStateOf(false) }
@@ -205,7 +239,7 @@ private fun ProfileImage(modifier: Modifier, image: Image, onEvent: (ProfileEdit
     if (showDialog) {
         EditImageDialog(
             delete = {
-                onEvent(DeleteImageEvent(image))
+                delete()
             },
             onDismissRequest = {
                 showDialog = false
@@ -217,6 +251,7 @@ private fun ProfileImage(modifier: Modifier, image: Image, onEvent: (ProfileEdit
 @Composable
 private fun ImageField(
     modifier: Modifier = Modifier,
+    iconSize: Dp = 50.dp, // TODO: change on padding for icon size
     onChange: (Image) -> Unit
 ) {
     val imagePicker = rememberImagePicker { uri ->
@@ -233,7 +268,7 @@ private fun ImageField(
         }
     ) {
         Icon(
-            modifier = Modifier.size(50.dp).align(Alignment.Center),
+            modifier = Modifier.size(iconSize).align(Alignment.Center),
             tint = CoreColors.background.mainColor,
             painter = CoreIcons.Editor.Camera,
             contentDescription = "Add camera",
