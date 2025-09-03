@@ -66,6 +66,8 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.WhatPreferenceBody -> "You can change this anytime"
             StaticTextId.UiId.WhatLookingForTitle -> "What are you looking for?"
             StaticTextId.UiId.WhatLookingForBody -> "You can change this anytime"
+            StaticTextId.UiId.WhatAvatarTitle -> "What do you look like?"
+            StaticTextId.UiId.WhatAvatarBody -> "You can change the photo at any time"
         }
     }
 

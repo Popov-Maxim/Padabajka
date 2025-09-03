@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.feature.profile.presentation.creator.birthday.CreateProfileBirthdayScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.gender.CreateProfileSexScreenComponent
+import com.padabajka.dating.feature.profile.presentation.creator.image.CreateProfileImageScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.lookingfor.CreateProfileLookingForScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.name.CreateProfileNameScreenComponent
 import kotlinx.serialization.Serializable
@@ -72,7 +73,16 @@ class CreateProfileScopeNavigateComponent(
                     toNext = { navigate(Configuration.ImageScreen) }
                 )
             )
-            Configuration.ImageScreen -> Child.ImageScreen
+            Configuration.ImageScreen -> Child.ImageScreen(
+                component = CreateProfileImageScreenComponent(
+                    context = context,
+                    draftProfileProvider = get(),
+                    updateMainImageUseCase = get(),
+                    getLocalImageUseCase = get(),
+                    toNext = { navigate(Configuration.FinishScreen) }
+                )
+            )
+            Configuration.FinishScreen -> Child.FinishScreen
         }
     }
 
@@ -89,7 +99,9 @@ class CreateProfileScopeNavigateComponent(
 
         data class DetailLookingForScreen(val component: CreateProfileLookingForScreenComponent) : Child
 
-        data object ImageScreen : Child
+        data class ImageScreen(val component: CreateProfileImageScreenComponent) : Child
+
+        data object FinishScreen : Child
     }
 
     @Serializable
@@ -114,5 +126,8 @@ class CreateProfileScopeNavigateComponent(
 
         @Serializable
         data object ImageScreen : Configuration
+
+        @Serializable
+        data object FinishScreen : Configuration
     }
 }

@@ -87,6 +87,9 @@ sealed interface StaticTextId {
         WhatLookingForTitle(rawId = "what_looking_for_title"),
         WhatLookingForBody(rawId = "what_looking_for_body"),
 
+        WhatAvatarTitle(rawId = "what_avatar_title"),
+        WhatAvatarBody(rawId = "what_avatar_body"),
+
         // -------------- Profile creating
 
         ;
