@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.profile.data
 
 import com.padabajka.dating.core.repository.api.ProfileRepository
+import com.padabajka.dating.core.repository.api.model.profile.Gender
 import com.padabajka.dating.core.repository.api.model.profile.Profile
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
@@ -32,6 +33,12 @@ class ProfileRepositoryImpl(
     override suspend fun replace(profile: Profile) {
         removeProfileDataSource.replace(_profile.value, profile)
         _profile.value = profile
+    }
+
+    override suspend fun create(profile: Profile, gender: Gender) {
+        removeProfileDataSource.create(profile, gender)
+        _profile.value = profile
+        _profileState.value = ProfileState.Existing(profile)
     }
 
     override suspend fun profile(userId: PersonId): Profile {

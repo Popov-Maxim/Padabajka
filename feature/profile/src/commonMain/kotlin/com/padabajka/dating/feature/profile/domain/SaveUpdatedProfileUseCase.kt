@@ -1,17 +1,15 @@
 package com.padabajka.dating.feature.profile.domain
 
-import com.padabajka.dating.core.repository.api.ImageRepository
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.exception.ProfileException
-import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.Profile
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.first
 import kotlin.coroutines.cancellation.CancellationException
 
-class SaveProfileUseCase(
+class SaveUpdatedProfileUseCase(
     private val profileRepository: ProfileRepository,
-    private val imageRepository: ImageRepository,
+    private val loadImageUseCase: LoadImageUseCase,
 ) {
 
     @Throws(ProfileException::class, CancellationException::class)
@@ -24,16 +22,7 @@ class SaveProfileUseCase(
     }
 
     private suspend fun Profile.loadedImage(): Profile {
-        val newImages = this.images.map {
-            when (it) {
-                is Image.ByteArray -> imageRepository.uploadImage(it)
-                is Image.Local -> {
-                    val image = imageRepository.getLocalImage(it)
-                    imageRepository.uploadImage(image)
-                }
-                is Image.Url -> it
-            }
-        }.toPersistentList()
+        val newImages = loadImageUseCase(images).toPersistentList()
 
         return copy(images = newImages)
     }

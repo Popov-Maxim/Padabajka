@@ -3,6 +3,7 @@ package com.padabajka.dating.navigation
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.feature.profile.presentation.creator.birthday.CreateProfileBirthdayScreenComponent
+import com.padabajka.dating.feature.profile.presentation.creator.finish.CreateProfileFinishScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.gender.CreateProfileSexScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.image.CreateProfileImageScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.lookingfor.CreateProfileLookingForScreenComponent
@@ -23,6 +24,7 @@ class CreateProfileScopeNavigateComponent(
 ),
     KoinComponent {
 
+    @Suppress("LongMethod")
     override fun createChild(
         configuration: Configuration,
         context: ComponentContext
@@ -51,6 +53,7 @@ class CreateProfileScopeNavigateComponent(
                     toNext = { navigate(Configuration.SexAndPreferencesScreen) },
                 )
             )
+
             Configuration.SexAndPreferencesScreen -> Child.SexAndPreferencesScreen(
                 component = CreateProfileSexScreenComponent(
                     context = context,
@@ -60,11 +63,13 @@ class CreateProfileScopeNavigateComponent(
                     toNext = { navigate(Configuration.TypeLookingForScreen) },
                 )
             )
+
             Configuration.TypeLookingForScreen -> Child.TypeLookingForScreen(
                 onTypeSelected = { type ->
                     navigate(Configuration.DetailLookingForScreen(type))
                 }
             )
+
             is Configuration.DetailLookingForScreen -> Child.DetailLookingForScreen(
                 component = CreateProfileLookingForScreenComponent(
                     context = context,
@@ -73,6 +78,7 @@ class CreateProfileScopeNavigateComponent(
                     toNext = { navigate(Configuration.ImageScreen) }
                 )
             )
+
             Configuration.ImageScreen -> Child.ImageScreen(
                 component = CreateProfileImageScreenComponent(
                     context = context,
@@ -82,7 +88,13 @@ class CreateProfileScopeNavigateComponent(
                     toNext = { navigate(Configuration.FinishScreen) }
                 )
             )
-            Configuration.FinishScreen -> Child.FinishScreen
+
+            Configuration.FinishScreen -> Child.FinishScreen(
+                component = CreateProfileFinishScreenComponent(
+                    context = context,
+                    createProfileFromDraftUseCase = get()
+                )
+            )
         }
     }
 
@@ -97,11 +109,12 @@ class CreateProfileScopeNavigateComponent(
 
         data class TypeLookingForScreen(val onTypeSelected: (StaticTextId) -> Unit) : Child
 
-        data class DetailLookingForScreen(val component: CreateProfileLookingForScreenComponent) : Child
+        data class DetailLookingForScreen(val component: CreateProfileLookingForScreenComponent) :
+            Child
 
         data class ImageScreen(val component: CreateProfileImageScreenComponent) : Child
 
-        data object FinishScreen : Child
+        data class FinishScreen(val component: CreateProfileFinishScreenComponent) : Child
     }
 
     @Serializable

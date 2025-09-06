@@ -19,7 +19,9 @@ import com.padabajka.dating.feature.profile.data.source.DataStoreLocalDraftProfi
 import com.padabajka.dating.feature.profile.data.source.LocalDraftProfileDataSource
 import com.padabajka.dating.feature.profile.data.source.RemoveProfileDataSource
 import com.padabajka.dating.feature.profile.data.source.RemoveProfileDataSourceImpl
-import com.padabajka.dating.feature.profile.domain.SaveProfileUseCase
+import com.padabajka.dating.feature.profile.domain.CreateProfileFromDraftUseCase
+import com.padabajka.dating.feature.profile.domain.LoadImageUseCase
+import com.padabajka.dating.feature.profile.domain.SaveUpdatedProfileUseCase
 import com.padabajka.dating.feature.profile.domain.asset.FindCitiesUseCase
 import com.padabajka.dating.feature.profile.domain.creator.BirthdayValidator
 import com.padabajka.dating.feature.profile.domain.creator.DraftProfileProvider
@@ -91,7 +93,7 @@ private val dataModule = module {
 
 private val domainModule = module {
 
-    factoryOf(::SaveProfileUseCase)
+    factoryOf(::SaveUpdatedProfileUseCase)
 
     factory<FirstNameUpdateUseCase> {
         FirstNameUpdateUseCase(
@@ -114,6 +116,8 @@ private val domainModule = module {
     factoryOf(::UpdateUserGenderUseCase)
     factoryOf(::UpdateLookingForUseCase)
     factoryOf(::UpdateMainImageUseCase)
+    factoryOf(::CreateProfileFromDraftUseCase)
+    factoryOf(::LoadImageUseCase)
 }
 
 private val presentationModule = module {
@@ -131,7 +135,7 @@ private val presentationModule = module {
             context = parameters.get(),
             navigateBack = parameters.get(),
             profileRepository = get(),
-            saveProfileUseCaseFactory = { get() },
+            saveUpdatedProfileUseCaseFactory = { get() },
             getLocalImageUseCaseFactory = { get() },
             findCitiesUseCase = get()
         )

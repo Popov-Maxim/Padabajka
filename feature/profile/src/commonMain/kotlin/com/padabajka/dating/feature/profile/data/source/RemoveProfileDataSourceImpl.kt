@@ -5,9 +5,11 @@ import com.padabajka.dating.core.data.network.model.toImageDto
 import com.padabajka.dating.core.data.network.model.toLookingForDataDto
 import com.padabajka.dating.core.data.network.model.toProfile
 import com.padabajka.dating.core.domain.mapOfNotNull
+import com.padabajka.dating.core.repository.api.model.profile.Gender
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.Profile
 import com.padabajka.dating.feature.profile.data.network.ProfileApi
+import com.padabajka.dating.feature.profile.data.network.toDto
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -43,6 +45,10 @@ class RemoveProfileDataSourceImpl(
             ProfileApi.PatchParams.Key.Details to details?.serializeToString()
         )
         profileApi.patch(ProfileApi.PatchParams(parameters))
+    }
+
+    override suspend fun create(profile: Profile, gender: Gender) {
+        profileApi.create(profile.toDto(gender))
     }
 
     private fun <T> fieldForUpdate(current: Profile?, newProfile: Profile, field: Profile.() -> T): T? {

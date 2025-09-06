@@ -7,6 +7,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slid
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.feature.profile.presentation.creator.birthday.CreateProfileBirthdayScreen
+import com.padabajka.dating.feature.profile.presentation.creator.finish.CreateProfileFinishScreen
 import com.padabajka.dating.feature.profile.presentation.creator.gender.CreateProfileSexScreen
 import com.padabajka.dating.feature.profile.presentation.creator.image.CreateProfileImageScreen
 import com.padabajka.dating.feature.profile.presentation.creator.lookingfor.CreateProfileLookingForDetailSelectorScreen
@@ -38,7 +39,8 @@ fun CreateProfileScopeScreen(component: CreateProfileScopeNavigateComponent) {
             is CreateProfileScopeNavigateComponent.Child.ImageScreen ->
                 CreateProfileImageScreen(instance.component)
 
-            CreateProfileScopeNavigateComponent.Child.FinishScreen -> Unit
+            is CreateProfileScopeNavigateComponent.Child.FinishScreen ->
+                CreateProfileFinishScreen(instance.component)
         }
     }
 }
