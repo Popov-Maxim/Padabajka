@@ -12,7 +12,7 @@ import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.feature.image.domain.GetLocalImageUseCase
-import com.padabajka.dating.feature.profile.domain.SaveProfileUseCase
+import com.padabajka.dating.feature.profile.domain.SaveUpdatedProfileUseCase
 import com.padabajka.dating.feature.profile.domain.asset.FindCitiesUseCase
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldLoosFocusEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldUpdateEvent
@@ -45,7 +45,7 @@ class ProfileEditorScreenComponent(
     context: ComponentContext,
     private val navigateBack: () -> Unit,
     private val profileRepository: ProfileRepository,
-    saveProfileUseCaseFactory: Factory<SaveProfileUseCase>,
+    saveUpdatedProfileUseCaseFactory: Factory<SaveUpdatedProfileUseCase>,
     getLocalImageUseCaseFactory: Factory<GetLocalImageUseCase>,
     private val findCitiesUseCase: FindCitiesUseCase
 ) : BaseComponent<ProfileEditorState>(
@@ -53,7 +53,7 @@ class ProfileEditorScreenComponent(
     initProfileState(profileRepository)
 ) {
 
-    private val saveProfileUseCase by saveProfileUseCaseFactory.delegate()
+    private val saveProfileUseCase by saveUpdatedProfileUseCaseFactory.delegate()
     private val getLocalImageUseCase by getLocalImageUseCaseFactory.delegate()
 
     @Suppress("CyclomaticComplexMethod")

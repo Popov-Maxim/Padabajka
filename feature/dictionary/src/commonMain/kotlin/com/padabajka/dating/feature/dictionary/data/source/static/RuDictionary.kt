@@ -66,6 +66,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.WhatLookingForBody -> "Ты сможешь поменять это в любое время"
             StaticTextId.UiId.WhatAvatarTitle -> "Как ты выглядишь?"
             StaticTextId.UiId.WhatAvatarBody -> "фото ты сможешь поменять в любое время"
+            StaticTextId.UiId.CreateProfileText -> "Мы создаем профиль, пожалуйста подождите..."
         }
     }
 

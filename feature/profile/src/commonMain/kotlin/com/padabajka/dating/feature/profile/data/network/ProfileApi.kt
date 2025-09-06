@@ -7,6 +7,7 @@ interface ProfileApi {
     suspend fun get(): PersonResponse?
     suspend fun get(userId: String): PersonResponse
     suspend fun patch(params: PatchParams)
+    suspend fun create(profile: ProfileDto)
 
     @JvmInline
     value class PatchParams(val raw: Map<Key, String>) {
@@ -23,5 +24,6 @@ interface ProfileApi {
     companion object {
         const val PATH_FOR_GET = "profile"
         const val PATH_FOR_PATCH = "update_profile"
+        const val PATH_FOR_CREATE_API = "create_profile"
     }
 }

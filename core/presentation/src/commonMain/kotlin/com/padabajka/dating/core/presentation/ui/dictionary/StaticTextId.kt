@@ -90,6 +90,8 @@ sealed interface StaticTextId {
         WhatAvatarTitle(rawId = "what_avatar_title"),
         WhatAvatarBody(rawId = "what_avatar_body"),
 
+        CreateProfileText(rawId = "create_profile_text"),
+
         // -------------- Profile creating
 
         ;
