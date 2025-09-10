@@ -115,12 +115,14 @@ class ProfileEditorScreenComponent(
             }
         )
 
-    private fun saveUpdates() =
+    private fun saveUpdates() {
+        reduce { it.copy(saveState = ProfileEditorState.SaveState.Loading) }
         mapAndReduceException(
             action = {
                 saveProfileUseCase {
                     it.updated(state.value)
                 }
+                reduce { it.copy(saveState = ProfileEditorState.SaveState.Idle) }
             },
             mapper = {
                 it // TODO
@@ -129,6 +131,7 @@ class ProfileEditorScreenComponent(
                 profileState
             }
         )
+    }
 
     private fun updateName(name: String) {
         reduce {

@@ -72,6 +72,7 @@ sealed interface StaticTextId {
 
         // General
         Apply(rawId = "apply"),
+        Reset(rawId = "reset"),
 
         // Profile creating
 

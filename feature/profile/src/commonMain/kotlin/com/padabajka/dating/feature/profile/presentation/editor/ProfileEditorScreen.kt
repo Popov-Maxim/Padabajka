@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,7 +19,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -33,15 +34,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.core.presentation.ui.CoreCallToActionButton
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CoreTextEditField
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
+import com.padabajka.dating.core.presentation.ui.GhostButton
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
@@ -78,72 +82,77 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
         topBar = { TopBar(state, component::onEvent) }
     ) {
         val scrollState = rememberScrollState()
-        Column(
-            modifier = Modifier.verticalScroll(scrollState)
-        ) {
-            Box(modifier = Modifier.padding(10.dp)) {
-                ImageFields(images = state.images.value, component = component)
-            }
-
-            TotalDataBlock(
-                label = StaticTextId.UiId.Bio.translate(),
-                modifier = Modifier.padding(20.dp)
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier.verticalScroll(scrollState),
+                verticalArrangement = Arrangement.spacedBy(40.dp)
             ) {
-                val aboutMe = state.aboutMe.value
-                CoreTextEditField(
-                    text = aboutMe,
-                    modifier = Modifier.height(125.dp).fillMaxWidth(),
-                    onChange = {
-                        component.onEvent(AboutMeFieldUpdateEvent(it))
+                Column {
+                    Box(modifier = Modifier.padding(10.dp)) {
+                        ImageFields(images = state.images.value, component = component)
                     }
-                )
-            }
 
-            TotalDataBlock(
-                label = StaticTextId.UiId.LookingFor.translate(),
-                modifier = Modifier.padding(20.dp)
-            ) {
-                LookingForField(
-                    field = state.lookingFor,
-                    onChange = {
-                        component.onEvent(LookingForUpdateEvent(it))
+                    TotalDataBlock(
+                        label = StaticTextId.UiId.Bio.translate(),
+                        modifier = Modifier.padding(20.dp)
+                    ) {
+                        val aboutMe = state.aboutMe.value
+                        CoreTextEditField(
+                            text = aboutMe,
+                            modifier = Modifier.height(125.dp).fillMaxWidth(),
+                            onChange = {
+                                component.onEvent(AboutMeFieldUpdateEvent(it))
+                            }
+                        )
                     }
-                )
-            }
 
-            TotalDataBlock(
-                label = StaticTextId.UiId.BasicInfo.translate(),
-                modifier = Modifier.padding(20.dp)
-            ) {
-                BasicInfoBlock(
-                    field = state.details,
-                    onEvent = component::onEvent
-                )
-            }
-
-            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                Button(
-                    modifier = Modifier.padding(10.dp),
-                    onClick = {
-                        component.onEvent(DiscardProfileUpdatesClickEvent)
+                    TotalDataBlock(
+                        label = StaticTextId.UiId.LookingFor.translate(),
+                        modifier = Modifier.padding(20.dp)
+                    ) {
+                        LookingForField(
+                            field = state.lookingFor,
+                            onChange = {
+                                component.onEvent(LookingForUpdateEvent(it))
+                            }
+                        )
                     }
-                ) {
-                    Text(
-                        text = "Сбросить"
-                    )
+
+                    TotalDataBlock(
+                        label = StaticTextId.UiId.BasicInfo.translate(),
+                        modifier = Modifier.padding(20.dp)
+                    ) {
+                        BasicInfoBlock(
+                            field = state.details,
+                            onEvent = component::onEvent
+                        )
+                    }
                 }
 
-                Button(
-                    modifier = Modifier.padding(10.dp),
-                    onClick = {
-                        component.onEvent(SaveProfileUpdatesClickEvent)
-                    }
+                Column(
+                    modifier = Modifier.padding(horizontal = 30.dp, vertical = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(15.dp),
                 ) {
-                    Text(
-                        text = "Принять"
+                    GhostButton(
+                        text = StaticTextId.UiId.Reset.translate(),
+                        onClick = {
+                            component.onEvent(DiscardProfileUpdatesClickEvent)
+                        }
+                    )
+
+                    CoreCallToActionButton(
+                        text = StaticTextId.UiId.Apply.translate(),
+                        onClick = {
+                            component.onEvent(SaveProfileUpdatesClickEvent)
+                        }
                     )
                 }
             }
+        }
+        if (state.saveState == ProfileEditorState.SaveState.Loading) {
+            OverlayLoader(
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }
@@ -403,6 +412,25 @@ private fun PreviewButton(modifier: Modifier = Modifier, state: ProfileEditorSta
         ProfileViewBottomSheet(
             profileViewUIItem = profileEditorState,
             onDismissRequest = { showViewProfile = false }
+        )
+    }
+}
+
+@Composable
+fun OverlayLoader(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .background(CoreColors.background.mainColor.copy(alpha = 0.6f))
+            .clickable(enabled = false) {},
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.size(40.dp),
+            strokeWidth = 20.dp,
+            color = CoreColors.secondary.mainColor,
+            strokeCap = StrokeCap.Round
         )
     }
 }

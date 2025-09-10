@@ -53,6 +53,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.LanguageHint -> "Which languages do you speak?"
             StaticTextId.UiId.CitySearch -> "City search"
             StaticTextId.UiId.Apply -> "Apply"
+            StaticTextId.UiId.Reset -> "Reset"
             StaticTextId.UiId.WelcomeText ->
                 "Welcome to Padabajka! " +
                     "We’re glad to have you here. Let’s get to know each other.\n\n" +
