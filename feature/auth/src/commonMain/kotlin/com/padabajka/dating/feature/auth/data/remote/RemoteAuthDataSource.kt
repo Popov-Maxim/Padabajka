@@ -12,6 +12,7 @@ internal interface RemoteAuthDataSource {
     suspend fun authToken(): String?
     suspend fun login(email: String, password: String)
     suspend fun loginWithoutPassword(email: String, actionCodeSettings: ActionCodeSettings)
+    suspend fun signInWithEmailLink(email: String, link: String)
     suspend fun login(token: String)
     suspend fun loginInWithCredential(credential: AuthCredential)
     suspend fun register(email: String, password: String)

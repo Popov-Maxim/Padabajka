@@ -6,16 +6,19 @@ import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
 import com.padabajka.dating.core.repository.api.model.auth.LoggedOut
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.WaitingForEmailValidation
+import com.padabajka.dating.feature.auth.data.local.LocalAuthDataSource
 import com.padabajka.dating.feature.auth.data.model.UserDto
 import com.padabajka.dating.feature.auth.data.remote.RemoteAuthDataSource
 import dev.gitlive.firebase.auth.ActionCodeSettings
 import dev.gitlive.firebase.auth.AndroidPackageName
 import dev.gitlive.firebase.auth.AuthCredential
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
 internal class AuthRepositoryImpl(
-    private val remoteAuthDataSource: RemoteAuthDataSource
+    private val remoteAuthDataSource: RemoteAuthDataSource,
+    private val localAuthDataSource: LocalAuthDataSource
 ) : AuthRepository {
 
     override val authState: Flow<AuthState> = remoteAuthDataSource.user.map { userDto ->
@@ -45,6 +48,13 @@ internal class AuthRepositoryImpl(
             iOSBundleId = "com.padabajka.dating.ios"
         )
         remoteAuthDataSource.loginWithoutPassword(email, actionCodeSettings)
+        localAuthDataSource.saveEmail(email)
+    }
+
+    override suspend fun signInWithEmailLink(link: String) {
+        val email = localAuthDataSource.authPreferences.firstOrNull()?.email ?: TODO()
+
+        remoteAuthDataSource.signInWithEmailLink(email, link)
     }
 
     override suspend fun loginInWithCredential(credential: AuthCredential) {

@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun TextInputField(
@@ -43,7 +44,20 @@ fun TextInputField(
             }
             wasFocused.value = it.isFocused
         },
-        placeholder = { Text(hint) },
+        placeholder = {
+            if (singleLine) {
+                Text(
+                    text = hint,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    softWrap = false
+                )
+            } else {
+                Text(
+                    text = hint
+                )
+            }
+        },
         colors = colors,
         keyboardOptions = keyboardOptions
     )

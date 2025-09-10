@@ -1,7 +1,10 @@
 package com.padabajka.dating.feature.auth.di
 
+import com.padabajka.dating.core.data.utils.DataStoreUtils
 import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.feature.auth.data.AuthRepositoryImpl
+import com.padabajka.dating.feature.auth.data.local.LocalAuthDataSource
+import com.padabajka.dating.feature.auth.data.model.AuthPreferences
 import com.padabajka.dating.feature.auth.data.remote.FirebaseRemoteAuthDataSource
 import com.padabajka.dating.feature.auth.data.remote.RemoteAuthDataSource
 import com.padabajka.dating.feature.auth.domain.AuthStateProvider
@@ -28,10 +31,24 @@ private val authDataModule = module {
         Firebase.auth
     }
     factory<RemoteAuthDataSource> {
-        FirebaseRemoteAuthDataSource(get())
+        FirebaseRemoteAuthDataSource(
+            firebaseAuth = get()
+        )
     }
     single<AuthRepository> {
-        AuthRepositoryImpl(get())
+        AuthRepositoryImpl(
+            remoteAuthDataSource = get(),
+            localAuthDataSource = get()
+        )
+    }
+    factory {
+        LocalAuthDataSource(
+            dataStore = DataStoreUtils.create(
+                "auth_storage",
+                AuthPreferences.serializer(),
+                AuthPreferences()
+            )
+        )
     }
 }
 
@@ -101,4 +118,5 @@ private val authPresentationModule = module {
     }
 }
 
-val authModules = arrayOf(authDataModule, authDomainModule, platformAuthDomainModule, authPresentationModule)
+val authModules =
+    arrayOf(authDataModule, authDomainModule, platformAuthDomainModule, authPresentationModule)
