@@ -46,6 +46,7 @@ import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.presentation.ui.utils.rememberUpdatedMutableState
 import com.padabajka.dating.core.repository.api.model.profile.Text
+import com.padabajka.dating.feature.profile.presentation.creator.name.TextAsset
 import com.padabajka.dating.feature.profile.presentation.editor.asset.picker.TickWheelPicker
 import com.padabajka.dating.feature.profile.presentation.editor.model.CitySearchQueryChangedEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.DetailUIItem
@@ -57,6 +58,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.UpdateCity
 import com.padabajka.dating.feature.profile.presentation.editor.model.updatedCharacter
 import com.padabajka.dating.feature.profile.presentation.editor.model.updatedCity
 import com.padabajka.dating.feature.profile.presentation.editor.model.updatedHeight
+import com.padabajka.dating.feature.profile.presentation.editor.model.updatedProfession
 import com.padabajka.dating.feature.profile.presentation.editor.model.updatedSexualOrientation
 import kotlinx.collections.immutable.PersistentList
 
@@ -216,6 +218,14 @@ private fun Content(
             }
         )
 
+        DetailTab.Profession -> ProfessionSelector(
+            modifier = modifier,
+            value = supportedDetails.profession.value ?: "",
+            onSelected = {
+                onChange(supportedDetails.updatedProfession { copy(value = it) })
+            }
+        )
+
         else -> Box(modifier)
     }
 }
@@ -322,6 +332,36 @@ private fun CitiesList(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ProfessionSelector(
+    value: String,
+    onSelected: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(
+            space = 30.dp,
+            alignment = Alignment.CenterVertically
+        )
+    ) {
+        TextAsset(
+            title = StaticTextId.UiId.ProfessionSelectorTitle.translate(),
+            body = StaticTextId.UiId.ProfessionSelectorBody.translate(),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        CoreTextEditField(
+            text = value,
+            singleLine = true,
+            hint = StaticTextId.UiId.ProfessionSelectorHint.translate(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 45.dp),
+            onChange = { onSelected(it) }
+        )
     }
 }
 

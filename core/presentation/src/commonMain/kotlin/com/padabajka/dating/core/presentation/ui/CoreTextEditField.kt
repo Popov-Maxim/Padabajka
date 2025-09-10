@@ -16,6 +16,7 @@ fun CoreTextEditField(
     text: String,
     hint: String = "",
     enabled: Boolean = true,
+    singleLine: Boolean = false,
     onChange: (String) -> Unit,
     onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
@@ -29,7 +30,7 @@ fun CoreTextEditField(
         text = text,
         hint = hint,
         onChange = onChange,
-        singleLine = false,
+        singleLine = singleLine,
         shape = shape,
         enabled = enabled,
         modifier = modifier

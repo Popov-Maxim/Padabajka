@@ -40,6 +40,14 @@ internal class FirebaseRemoteAuthDataSource(private val firebaseAuth: FirebaseAu
         _loginWithoutPassword(email, actionCodeSettings)
     }
 
+    override suspend fun signInWithEmailLink(email: String, link: String) {
+        if (firebaseAuth.isSignInWithEmailLink(link)) {
+            firebaseAuth.signInWithEmailLink(email, link)
+        } else {
+            TODO()
+        }
+    }
+
     override suspend fun login(token: String) = mapFirebaseAuthExceptions {
         firebaseAuth.signInWithCustomToken(token)
     }

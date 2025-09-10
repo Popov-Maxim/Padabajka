@@ -12,6 +12,7 @@ interface AuthRepository {
     suspend fun login(token: String)
     suspend fun login(email: String, password: String)
     suspend fun loginWithoutPassword(email: String)
+    suspend fun signInWithEmailLink(link: String)
     suspend fun loginInWithCredential(credential: AuthCredential)
     suspend fun register(email: String, password: String)
     suspend fun logout()
