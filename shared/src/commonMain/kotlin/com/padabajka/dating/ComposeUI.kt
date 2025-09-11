@@ -56,7 +56,7 @@ private fun NavigateApp(rootContext: AuthStateObserverComponent) {
             val instance = child.instance
             when (instance) {
                 is AuthStateObserverComponent.Child.AuthScope -> AuthScopeScreen(instance.component)
-                AuthStateObserverComponent.Child.SplashScreen -> SplashScreen()
+                AuthStateObserverComponent.Child.SplashScreen -> SplashScreen("Auth State")
                 is AuthStateObserverComponent.Child.UnauthScope -> UnauthScopeScreen(instance.component)
                 is AuthStateObserverComponent.Child.VerificationScreen -> VerificationScreen(instance.component)
             }
