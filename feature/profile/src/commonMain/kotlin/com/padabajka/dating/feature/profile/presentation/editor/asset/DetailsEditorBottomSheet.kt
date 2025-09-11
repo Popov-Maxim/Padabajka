@@ -125,9 +125,9 @@ fun SaveButton(
         val shape = RoundedCornerShape(20.dp)
         Box(
             modifier = Modifier.background(CoreColors.secondary.mainColor, shape)
-                .padding(vertical = 15.dp).fillMaxWidth()
                 .clip(shape)
                 .clickable { onClick() }
+                .padding(vertical = 15.dp).fillMaxWidth()
         ) {
             Text(
                 text = StaticTextId.UiId.Apply.translate(),
@@ -441,7 +441,6 @@ private fun SmallAssetsSelection(
 enum class DetailTab(val staticId: StaticTextId) {
     City(StaticTextId.UiId.City),
     SexualOrientation(StaticTextId.UiId.SexualOrientation),
-    Education(StaticTextId.UiId.Education),
     Profession(StaticTextId.UiId.Profession),
     Height(StaticTextId.UiId.Height),
     Character(StaticTextId.UiId.Character),

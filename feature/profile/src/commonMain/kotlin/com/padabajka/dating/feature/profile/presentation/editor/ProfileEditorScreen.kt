@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -34,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -42,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreCallToActionButton
+import com.padabajka.dating.core.presentation.ui.CoreCircularProgressIndicator
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CoreTextEditField
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
@@ -98,6 +97,7 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
                     ) {
                         val aboutMe = state.aboutMe.value
                         CoreTextEditField(
+                            singleLine = false,
                             text = aboutMe,
                             modifier = Modifier.height(125.dp).fillMaxWidth(),
                             onChange = {
@@ -426,12 +426,7 @@ fun OverlayLoader(
             .clickable(enabled = false) {},
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(
-            modifier = Modifier.size(40.dp),
-            strokeWidth = 20.dp,
-            color = CoreColors.secondary.mainColor,
-            strokeCap = StrokeCap.Round
-        )
+        CoreCircularProgressIndicator()
     }
 }
 

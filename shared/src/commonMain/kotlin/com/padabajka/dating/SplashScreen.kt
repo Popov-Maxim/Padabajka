@@ -1,25 +1,30 @@
 package com.padabajka.dating
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.padabajka.dating.core.presentation.ui.CoreCircularProgressIndicator
 
 @Composable
-fun SplashScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+fun SplashScreen(
+    loadingMessage: String
+) {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(45.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(50.dp, alignment = Alignment.CenterVertically)
     ) {
+        CoreCircularProgressIndicator()
         Text(
-            modifier = Modifier.background(Color.White),
-            text = "SplashScreen",
-            fontSize = 50.sp
+            text = loadingMessage,
+            fontSize = 20.sp
         )
     }
 }

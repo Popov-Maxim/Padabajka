@@ -18,7 +18,7 @@ fun AuthScopeScreen(component: AuthScopeNavigateComponent) {
     ) { child ->
         val instance = child.instance
         when (instance) {
-            AuthScopeNavigateComponent.Child.LoginScreen -> SplashScreen()
+            AuthScopeNavigateComponent.Child.LoginScreen -> SplashScreen("Login Data for user")
             is AuthScopeNavigateComponent.Child.CreateProfileScope -> CreateProfileScopeScreen(instance.component)
             is AuthScopeNavigateComponent.Child.MainAuthScope -> MainAuthScopeScreen(instance.component)
         }

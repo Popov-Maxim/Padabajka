@@ -178,28 +178,36 @@ class ProfileEditorScreenComponent(
         update = { state, _ -> state }
     )
 
-    private fun searchCity(query: String) = mapAndReduceException(
-        action = {
-            reduce {
-                it.updateDetailCity {
-                    copy(
-                        foundedAssets = FoundedAssets.Searching,
-                        searchItem = searchItem.copy(value = query)
-                    )
-                }
+    private fun searchCity(query: String) {
+        reduce {
+            it.updateDetailCity {
+                copy(
+                    foundedAssets = FoundedAssets.Searching,
+                    searchItem = searchItem.copy(value = query)
+                )
             }
-            val cities = findCitiesUseCase(query)
-                .map { Text(id = Text.Id(it.id), type = Text.Type.City, default = it.name) } // TODO add mapper
-                .toPersistentList()
-            reduce {
-                it.updateDetailCity {
-                    copy(foundedAssets = FoundedAssets.Success(cities))
+        }
+        mapAndReduceException(
+            action = {
+                val cities = findCitiesUseCase(query)
+                    .map {
+                        Text(
+                            id = Text.Id(it.id),
+                            type = Text.Type.City,
+                            default = it.name
+                        )
+                    } // TODO add mapper
+                    .toPersistentList()
+                reduce {
+                    it.updateDetailCity {
+                        copy(foundedAssets = FoundedAssets.Success(cities))
+                    }
                 }
-            }
-        },
-        mapper = { TODO(it.toString()) },
-        update = { state, _ -> state }
-    )
+            },
+            mapper = { TODO(it.toString()) },
+            update = { state, _ -> state }
+        )
+    }
 
     private fun deleteImage(image: Image) = reduce {
         it.deleteImage(image)

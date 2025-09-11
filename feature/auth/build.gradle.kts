@@ -36,6 +36,7 @@ kotlin {
             api(projects.core.repositoryApi)
             api(projects.core.data)
             api(projects.feature.auth.domain)
+            api(projects.feature.settings)
 
             implementation(libs.gitlive.firebase.auth)
         }

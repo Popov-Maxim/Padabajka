@@ -5,20 +5,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.padabajka.dating.core.presentation.ui.CoreCircularProgressIndicator
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
-import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.feature.profile.presentation.creator.CreateProfileScreen
 
@@ -37,9 +34,7 @@ fun CreateProfileFinishScreen(component: CreateProfileFinishScreenComponent) {
             ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CreateProfileProgressBar(
-                modifier = Modifier.size(40.dp)
-            )
+            CoreCircularProgressIndicator()
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -50,16 +45,4 @@ fun CreateProfileFinishScreen(component: CreateProfileFinishScreenComponent) {
             )
         }
     }
-}
-
-@Composable
-private fun CreateProfileProgressBar(
-    modifier: Modifier = Modifier
-) {
-    CircularProgressIndicator(
-        modifier = modifier,
-        strokeWidth = 20.dp,
-        color = CoreColors.secondary.mainColor,
-        strokeCap = StrokeCap.Round
-    )
 }
