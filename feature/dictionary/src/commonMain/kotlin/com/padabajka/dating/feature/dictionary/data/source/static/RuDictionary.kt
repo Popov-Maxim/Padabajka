@@ -53,6 +53,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Preview -> "просмотр"
             StaticTextId.UiId.CitySearch -> "Поиск города"
             StaticTextId.UiId.Apply -> "Применить"
+            StaticTextId.UiId.Reset -> "Сбросить"
             StaticTextId.UiId.WelcomeText ->
                 "Добро пожаловать в Padabajka " +
                     "мы рады, что вы пресоеденились к нам, давайте познакомимся\n\n" +

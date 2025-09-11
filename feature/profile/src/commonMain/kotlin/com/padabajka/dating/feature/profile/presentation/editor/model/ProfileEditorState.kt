@@ -29,6 +29,7 @@ data class ProfileEditorState(
     val details: ProfileField<DetailFields>,
     val mainAchievement: ProfileField<Achievement?>,
     val achievements: ProfileField<PersistentList<Achievement>>,
+    val saveState: SaveState = SaveState.Idle,
     val internalErrorStateEvent: StateEvent = consumed
 ) : State {
 
@@ -42,6 +43,12 @@ data class ProfileEditorState(
         details = details.value.allDetails,
         lifestyle = persistentListOf(),
     )
+
+    sealed interface SaveState {
+        object Idle : SaveState
+        object Loading : SaveState
+        object Error : SaveState
+    }
 }
 
 data class ProfileField<T>(
