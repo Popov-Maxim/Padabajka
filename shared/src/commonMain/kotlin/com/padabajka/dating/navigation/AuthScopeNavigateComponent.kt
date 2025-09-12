@@ -21,7 +21,7 @@ class AuthScopeNavigateComponent(
 ) : NavigateComponentContext<AuthScopeNavigateComponent.Configuration, AuthScopeNavigateComponent.Child>(
     context,
     Configuration.serializer(),
-    Configuration.LoginScreen
+    Configuration.LoadingProfileScreen
 ),
     KoinComponent {
 
@@ -42,7 +42,11 @@ class AuthScopeNavigateComponent(
             }
         }
         backgroundScope.launch {
-            profileRepository.updateProfile()
+            runCatching {
+                profileRepository.updateProfile()
+            }.onFailure { throwable ->
+                navigateNewStack(Configuration.LoadingErrorScreen(throwable.message ?: throwable.toString()))
+            }
         }
     }
 
@@ -51,7 +55,7 @@ class AuthScopeNavigateComponent(
         context: ComponentContext
     ): Child {
         return when (configuration) {
-            Configuration.LoginScreen -> Child.LoginScreen
+            Configuration.LoadingProfileScreen -> Child.LoadingProfileScreen
             is Configuration.CreateProfileScope -> Child.CreateProfileScope(
                 component = CreateProfileScopeNavigateComponent(context)
             )
@@ -59,11 +63,14 @@ class AuthScopeNavigateComponent(
             is Configuration.MainAuthScope -> Child.MainAuthScope(
                 component = MainAuthScopeNavigateComponent(context, userId)
             )
+
+            is Configuration.LoadingErrorScreen -> Child.LoadingErrorScreen(configuration.message)
         }
     }
 
     sealed interface Child {
-        data object LoginScreen : Child
+        data object LoadingProfileScreen : Child
+        data class LoadingErrorScreen(val message: String) : Child
         data class CreateProfileScope(val component: CreateProfileScopeNavigateComponent) : Child
         data class MainAuthScope(val component: MainAuthScopeNavigateComponent) : Child
     }
@@ -72,7 +79,10 @@ class AuthScopeNavigateComponent(
     sealed interface Configuration {
 
         @Serializable
-        data object LoginScreen : Configuration
+        data object LoadingProfileScreen : Configuration
+
+        @Serializable
+        data class LoadingErrorScreen(val message: String) : Configuration
 
         @Serializable
         data object CreateProfileScope : Configuration

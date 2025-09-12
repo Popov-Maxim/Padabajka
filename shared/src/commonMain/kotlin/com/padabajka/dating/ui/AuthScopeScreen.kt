@@ -6,6 +6,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.ErrorScreen
 import com.padabajka.dating.SplashScreen
 import com.padabajka.dating.navigation.AuthScopeNavigateComponent
 
@@ -18,9 +19,10 @@ fun AuthScopeScreen(component: AuthScopeNavigateComponent) {
     ) { child ->
         val instance = child.instance
         when (instance) {
-            AuthScopeNavigateComponent.Child.LoginScreen -> SplashScreen("Login Data for user")
+            AuthScopeNavigateComponent.Child.LoadingProfileScreen -> SplashScreen("Login Data for user")
             is AuthScopeNavigateComponent.Child.CreateProfileScope -> CreateProfileScopeScreen(instance.component)
             is AuthScopeNavigateComponent.Child.MainAuthScope -> MainAuthScopeScreen(instance.component)
+            is AuthScopeNavigateComponent.Child.LoadingErrorScreen -> ErrorScreen(instance.message)
         }
     }
 }

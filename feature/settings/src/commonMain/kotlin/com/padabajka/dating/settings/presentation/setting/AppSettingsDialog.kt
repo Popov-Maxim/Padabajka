@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,33 +26,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.padabajka.dating.core.domain.Host
 import com.padabajka.dating.core.domain.IpAddressProvider
-import com.padabajka.dating.core.domain.MutableAppSettings
 import com.padabajka.dating.core.networking.localHost
+import com.padabajka.dating.core.repository.api.AppSettingsRepository
+import com.padabajka.dating.core.repository.api.model.settings.Host
+import com.padabajka.dating.core.repository.api.model.settings.raw
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Composable
 fun AppSettingsDialog(
-    settings: MutableAppSettings = koinInject(),
+    appSettingsRepository: AppSettingsRepository = koinInject(),
     ipAddressProvider: IpAddressProvider = koinInject(),
     onDismiss: () -> Unit
 ) {
-    var ipAddress by remember {
-        val host = settings.hostData.run { this as? Host.Custom }?.host
+    val debugAppSettings by appSettingsRepository.debugAppSettings.collectAsState()
+    var ipAddress by remember(debugAppSettings) {
+        val host = debugAppSettings.host.raw()
         mutableStateOf(host ?: ipAddressProvider.getIpAddress() ?: "")
     }
-    var selectedHost by remember { mutableStateOf(settings.hostData.toSelectedHost()) }
-    val currentShowFps by settings.showFps.collectAsState()
-    var showFps by remember(currentShowFps) { mutableStateOf(currentShowFps) }
-    LaunchedEffect(settings.hostData) {
-        selectedHost = settings.hostData.toSelectedHost()
-        if (settings.hostData !is Host.Custom) {
-            ipAddressProvider.getIpAddress()?.let {
-                ipAddress = it
-            }
-        }
+    var selectedHost by remember(debugAppSettings) {
+        mutableStateOf(debugAppSettings.host.toSelectedHost())
     }
+    val currentShowFps = debugAppSettings.showFps
+    var showFps by remember(currentShowFps) { mutableStateOf(currentShowFps) }
+    val coroutineScope: CoroutineScope = koinInject() // TODO: move to use case
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
@@ -124,8 +122,14 @@ fun AppSettingsDialog(
                     Spacer(modifier = Modifier.width(8.dp))
                     TextButton(
                         onClick = {
-                            settings.hostData = selectedHost.toHost(ipAddress)
-                            settings.showFps.value = showFps
+                            coroutineScope.launch {
+                                appSettingsRepository.updateDebugAppSettings {
+                                    copy(
+                                        host = selectedHost.toHost(ipAddress),
+                                        showFps = showFps
+                                    )
+                                }
+                            }
                             onDismiss()
                         }
                     ) {

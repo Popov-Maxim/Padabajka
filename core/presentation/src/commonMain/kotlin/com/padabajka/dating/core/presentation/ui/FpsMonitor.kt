@@ -16,7 +16,8 @@ import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.padabajka.dating.core.domain.MutableAppSettings
+import com.padabajka.dating.core.repository.api.AppSettingsRepository
+import com.padabajka.dating.core.repository.api.model.settings.DebugAppSettings
 import org.koin.compose.koinInject
 import kotlin.math.min
 
@@ -26,8 +27,9 @@ fun FpsMonitor(
     updateIntervalMs: Int = 1000,
     updateMinFpsMs: Int = 10000,
 ) {
-    val settings: MutableAppSettings = koinInject()
-    val showFps by settings.showFps.collectAsState()
+    val settings: AppSettingsRepository = koinInject()
+    val debugAppSettings by settings.debugAppSettings.collectAsState(initial = DebugAppSettings())
+    val showFps = debugAppSettings.showFps
     if (showFps.not()) return
 
     var fps: Int? by remember { mutableStateOf(null) }

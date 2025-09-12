@@ -18,11 +18,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
@@ -117,15 +119,18 @@ private fun ChatsBlock(chats: List<ChatItem>, onEvent: (MessengerEvent) -> Unit)
                 Box(modifier = Modifier.padding(10.dp)) {
                     ProfileAvatar(chat.match.person.images.firstOrNull()?.raw())
                 }
-                Column {
+                Column(modifier = Modifier.padding(end = 20.dp)) {
                     Text(
                         text = chat.match.person.name,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = chat.lastMessage.content,
-                        fontSize = 16.sp
+                        text = chat.lastMessage.content.oneLine(),
+                        fontSize = 16.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        softWrap = false
                     )
                 }
                 if (chat.unreadMessagesCount > 0) {
@@ -156,3 +161,7 @@ private fun ChatsBlock(chats: List<ChatItem>, onEvent: (MessengerEvent) -> Unit)
         }
     }
 }
+
+@Stable
+private fun String.oneLine(): String =
+    this.replace("\n", " ")
