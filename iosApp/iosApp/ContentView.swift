@@ -14,5 +14,8 @@ struct ContentView: View {
     var body: some View {
         ComposeView()
                 .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
+                .onOpenURL { url in
+                    SharedDeeplinkHandler.shared.handle(uri: url.absoluteString)
+                }
     }
 }
