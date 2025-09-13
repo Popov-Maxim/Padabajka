@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
+import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
 import com.padabajka.dating.feature.auth.presentation.LoginMethodsComponent
 import com.padabajka.dating.feature.auth.presentation.model.LoginMethodEvent
 
@@ -19,11 +21,13 @@ fun LoginMethodsScreen(component: LoginMethodsComponent) {
     ) {
         AuthMethodButton(
             text = "Email",
+            icon = CoreIcons.Login.MailLogo.toData(),
             onClick = { component.onEvent(LoginMethodEvent.SelectEmailMethod) }
         )
 
         AuthMethodButton(
             text = "Google",
+            icon = CoreIcons.Login.GoogleLogo.toData(),
             onClick = { component.onEvent(LoginMethodEvent.SelectGoogleMethod) }
         )
     }
