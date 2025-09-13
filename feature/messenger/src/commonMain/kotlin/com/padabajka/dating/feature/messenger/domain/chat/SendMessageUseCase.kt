@@ -11,6 +11,9 @@ class SendMessageUseCase(private val messageRepository: MessageRepository) {
         parentMessageId: MessageId?
     ) {
         // TODO Add error handling
-        messageRepository.sendMessage(chatId, messageText, parentMessageId)
+        val trimmedMessageText = messageText.trim()
+        if (trimmedMessageText.isNotBlank()) {
+            messageRepository.sendMessage(chatId, trimmedMessageText, parentMessageId)
+        }
     }
 }
