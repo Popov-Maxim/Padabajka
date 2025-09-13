@@ -6,7 +6,9 @@ import com.padabajka.dating.core.presentation.ui.resource.drawable.app_logo
 import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_left_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_right_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.camera_icon
+import com.padabajka.dating.core.presentation.ui.resource.drawable.google_logo
 import com.padabajka.dating.core.presentation.ui.resource.drawable.likes_icon
+import com.padabajka.dating.core.presentation.ui.resource.drawable.mail_logo
 import com.padabajka.dating.core.presentation.ui.resource.drawable.message_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_copy
 import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_edit
@@ -95,6 +97,16 @@ object CoreIcons {
         val Read
             @Composable
             get() = painterResource(CoreRes.svg.message_read)
+    }
+
+    object Login {
+        val MailLogo
+            @Composable
+            get() = painterResource(CoreRes.img.mail_logo)
+
+        val GoogleLogo
+            @Composable
+            get() = painterResource(CoreRes.img.google_logo)
     }
 
     val AppLogo
