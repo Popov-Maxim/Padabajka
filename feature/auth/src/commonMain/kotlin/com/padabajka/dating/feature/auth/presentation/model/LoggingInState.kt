@@ -7,8 +7,22 @@ import com.padabajka.dating.core.presentation.event.consumed
 
 @Immutable
 data class LoggingInState(
-    val email: String = "",
-    val emailValidationIssue: EmailValidationIssue? = null,
-    val loggingInProgress: Boolean = false,
+    val emailFieldState: FieldState = FieldState.Editor(),
     val loginFailedStateEvent: StateEventWithContent<LoginFailureReason> = consumed()
-) : State
+) : State {
+    sealed interface FieldState {
+        data class Editor(
+            val email: String = "",
+            val emailValidationIssue: EmailValidationIssue? = null,
+        ) : FieldState
+
+        data class WaitSignFromEmail(
+            val email: String
+        ) : FieldState
+    }
+}
+
+fun LoggingInState.FieldState.email() = when (this) {
+    is LoggingInState.FieldState.Editor -> email
+    is LoggingInState.FieldState.WaitSignFromEmail -> email
+}

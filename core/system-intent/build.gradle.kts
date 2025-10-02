@@ -19,25 +19,20 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "permission"
+            baseName = "system-intent"
             isStatic = true
         }
     }
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.androidx.activity.compose)
-        }
         commonMain.dependencies {
-            implementation(projects.core.domain)
             api(libs.koin.core)
-            implementation(libs.coroutines.core)
         }
     }
 }
 
 android {
-    namespace = "com.padabajka.dating.core.permission"
+    namespace = "com.padabajka.dating.core.system.intent"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()

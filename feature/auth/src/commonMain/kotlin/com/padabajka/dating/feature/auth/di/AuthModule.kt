@@ -11,6 +11,7 @@ import com.padabajka.dating.feature.auth.domain.AuthStateProvider
 import com.padabajka.dating.feature.auth.domain.LogInWithEmailAndPasswordUseCase
 import com.padabajka.dating.feature.auth.domain.LogOutUseCase
 import com.padabajka.dating.feature.auth.domain.LoginEmailOnlyUseCase
+import com.padabajka.dating.feature.auth.domain.OpenMailAppUseCase
 import com.padabajka.dating.feature.auth.domain.RegisterWithEmailAndPasswordUseCase
 import com.padabajka.dating.feature.auth.domain.ReloadUserUseCase
 import com.padabajka.dating.feature.auth.domain.SendEmailVerificationUseCase
@@ -89,6 +90,7 @@ private val authDomainModule = module {
     factoryOf(::ReloadUserUseCase)
     factoryOf(::LoginEmailOnlyUseCase)
     factoryOf(::GoogleLoginUseCase)
+    factoryOf(::OpenMailAppUseCase)
 }
 
 expect val platformAuthDomainModule: Module
@@ -107,6 +109,7 @@ private val authPresentationModule = module {
             goToLoginMethodScreen = parameters.get(),
             validateEmailUseCase = get(),
             loginEmailOnlyUseCase = get(),
+            openMailAppUseCase = get()
         )
     }
     factory<VerificationComponent> { parameters ->

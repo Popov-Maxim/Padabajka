@@ -48,6 +48,7 @@ kotlin {
             implementation(projects.core.permission)
             implementation(projects.core.networking)
             implementation(projects.component.room)
+            implementation(projects.core.systemIntent)
 
             implementation(libs.gitlive.firebase.auth)
             implementation(libs.gitlive.firebase.perf)
