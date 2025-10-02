@@ -40,6 +40,7 @@ kotlin {
             api(projects.core.domain)
             api(projects.core.repositoryApi)
             api(projects.feature.settings.metadata)
+            api(projects.core.systemIntent)
             implementation(libs.gitlive.firebase.auth)
         }
         androidMain.dependencies {

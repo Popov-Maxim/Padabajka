@@ -7,8 +7,11 @@ sealed interface LoginMethodEvent {
 
 sealed interface EmailLoginMethodEvent {
     data class EmailChanged(val email: String) : EmailLoginMethodEvent
+    data object ChangeEmail : EmailLoginMethodEvent
 
 //    data object EmailFieldLoosFocus : EmailLoginMethodEvent
     data object LoginClick : EmailLoginMethodEvent
     data object BackToLoginMethods : EmailLoginMethodEvent
+
+    data object OpenEmailApp : EmailLoginMethodEvent
 }
