@@ -105,6 +105,12 @@ sealed interface StaticTextId {
 
         // -------------- Profile creating
 
+        // Permission Screen
+        GeoPermissionScreenTitle(rawId = "geo_permission_screen_title"),
+        NotificationPermissionScreenTitle(rawId = "notification_permission_screen_title"),
+        FinishScreenTitle(rawId = "finish_screen_title"),
+
+        // -------------- Permission Screen
         ;
         override val id: String = listOfNotNull(rawId, "ui_id")
             .joinToString(separator = "_")

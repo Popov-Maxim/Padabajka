@@ -8,6 +8,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stac
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.feature.messenger.presentation.MessengerScreen
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatScreen
+import com.padabajka.dating.feature.permission.flow.presentation.PermissionFlowScreen
 import com.padabajka.dating.feature.profile.presentation.ProfileScreen
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreen
 import com.padabajka.dating.feature.swiper.presentation.screen.SwiperScreen
@@ -50,6 +51,9 @@ fun MainAuthScopeScreen(component: MainAuthScopeNavigateComponent) {
 
             is MainAuthScopeNavigateComponent.Child.MessengerScreen ->
                 MessengerScreen(instance.component, navigateBar)
+
+            is MainAuthScopeNavigateComponent.Child.PermissionFlowScreen ->
+                PermissionFlowScreen(instance.component)
         }
     }
 }

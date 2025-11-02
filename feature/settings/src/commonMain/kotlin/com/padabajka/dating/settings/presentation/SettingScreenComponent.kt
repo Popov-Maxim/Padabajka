@@ -10,6 +10,7 @@ import com.padabajka.dating.feature.push.data.domain.SaveTokenUseCase
 import com.padabajka.dating.settings.domain.SyncRemoteDataUseCase
 import com.padabajka.dating.settings.presentation.model.LogOutEvent
 import com.padabajka.dating.settings.presentation.model.NavigateBackEvent
+import com.padabajka.dating.settings.presentation.model.RequestPermissionEvent
 import com.padabajka.dating.settings.presentation.model.SendPushToken
 import com.padabajka.dating.settings.presentation.model.SettingsEvent
 import com.padabajka.dating.settings.presentation.model.SyncData
@@ -17,6 +18,7 @@ import com.padabajka.dating.settings.presentation.model.SyncData
 class SettingScreenComponent(
     context: ComponentContext,
     private val navigateBack: () -> Unit,
+    private val openPermissionFlow: () -> Unit,
     logoutUseCaseFactory: Factory<LogOutUseCase>,
     private val saveTokenUseCase: SaveTokenUseCase,
     private val syncRemoteDataUseCase: SyncRemoteDataUseCase
@@ -33,6 +35,7 @@ class SettingScreenComponent(
             NavigateBackEvent -> navigateBack()
             SendPushToken -> sendPushToken()
             SyncData -> syncRemoteData()
+            RequestPermissionEvent -> openPermissionFlow()
         }
     }
 

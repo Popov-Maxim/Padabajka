@@ -1,7 +1,9 @@
-package com.padabajka.dating.core.permission
+package com.padabajka.dating.core.permission.notification
 
 import android.Manifest
 import android.os.Build
+import com.padabajka.dating.core.permission.NotificationPermissionController
+import com.padabajka.dating.core.permission.PermissionHandler
 
 class AndroidNotificationPermissionController(
     private val permissionHandler: PermissionHandler,
@@ -14,9 +16,11 @@ class AndroidNotificationPermissionController(
         }
     }
 
-    override suspend fun requestPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    override suspend fun requestPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissionHandler.requestPermission(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            true
         }
     }
 }

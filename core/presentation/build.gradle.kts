@@ -65,9 +65,11 @@ android {
     }
 }
 
+/*
 compose {
     resources {
         generateResClass = always
         publicResClass = true
     }
 }
+*/

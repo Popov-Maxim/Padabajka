@@ -1,6 +1,7 @@
 package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
+import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState

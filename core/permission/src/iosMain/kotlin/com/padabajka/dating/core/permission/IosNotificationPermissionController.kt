@@ -16,11 +16,11 @@ class IosNotificationPermissionController : NotificationPermissionController {
             }
     }
 
-    override suspend fun requestPermission() = suspendCancellableCoroutine { cont ->
+    override suspend fun requestPermission(): Boolean = suspendCancellableCoroutine { cont ->
         val options = UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge
         UNUserNotificationCenter.currentNotificationCenter()
             .requestAuthorizationWithOptions(options) { granted, _ ->
-                cont.resume(Unit)
+                cont.resume(granted)
             }
     }
 }

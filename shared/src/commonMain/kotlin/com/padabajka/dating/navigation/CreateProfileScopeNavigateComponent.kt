@@ -1,6 +1,7 @@
 package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
+import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.feature.profile.presentation.creator.birthday.CreateProfileBirthdayScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.finish.CreateProfileFinishScreenComponent

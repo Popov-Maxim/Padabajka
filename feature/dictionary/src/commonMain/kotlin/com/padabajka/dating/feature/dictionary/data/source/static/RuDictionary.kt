@@ -78,6 +78,13 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.WhatAvatarTitle -> "Как ты выглядишь?"
             StaticTextId.UiId.WhatAvatarBody -> "фото ты сможешь поменять в любое время"
             StaticTextId.UiId.CreateProfileText -> "Мы создаем профиль, пожалуйста подождите..."
+            StaticTextId.UiId.GeoPermissionScreenTitle -> "Чтобы искать людей поблизости поделитель своей локацией"
+            StaticTextId.UiId.NotificationPermissionScreenTitle ->
+                "Включите уведомления, чтобы не пропустить важное сообщение"
+
+            StaticTextId.UiId.FinishScreenTitle ->
+                "Все нужные разрешения уже включены \uD83C\uDF89\n\n" +
+                    "Можно пользоваться приложением на полную"
         }
     }
 

@@ -1,6 +1,7 @@
 package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
+import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.feature.auth.presentation.EmailLoginMethodComponent
 import com.padabajka.dating.feature.auth.presentation.LoginMethodsComponent
 import kotlinx.serialization.Serializable

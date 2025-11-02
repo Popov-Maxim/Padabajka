@@ -12,6 +12,7 @@ import com.padabajka.dating.feature.dictionary.di.dictionaryDiModules
 import com.padabajka.dating.feature.image.di.imageModules
 import com.padabajka.dating.feature.match.di.matchDiModules
 import com.padabajka.dating.feature.messenger.di.messengerModules
+import com.padabajka.dating.feature.permission.flow.di.permissionFlowDIModule
 import com.padabajka.dating.feature.profile.di.profileModules
 import com.padabajka.dating.feature.push.di.pushDiModules
 import com.padabajka.dating.feature.swiper.di.swiperModules
@@ -50,6 +51,7 @@ fun initKoin(platformModule: Module) {
             *matchDiModules,
             *pushDiModules,
             *permissionDiModules,
+            permissionFlowDIModule,
             sharedDiModule,
             roomModule,
             platformModule,

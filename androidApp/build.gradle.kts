@@ -44,6 +44,7 @@ android {
 
 dependencies {
     implementation(projects.shared)
+    implementation(projects.core.permission)
     implementation(compose.ui)
     implementation(libs.androidx.activity.compose)
     implementation(libs.decompose)

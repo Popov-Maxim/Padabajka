@@ -1,11 +1,13 @@
 package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
+import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.feature.messenger.presentation.MessengerComponent
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatComponent
 import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
+import com.padabajka.dating.feature.permission.flow.presentation.PermissionFlowComponent
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
 import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
@@ -41,6 +43,7 @@ class MainAuthScopeNavigateComponent(
         navigate(Configuration.MessengerScreen)
     }
 
+    @Suppress("LongMethod")
     override fun createChild(
         configuration: Configuration,
         context: ComponentContext
@@ -72,7 +75,8 @@ class MainAuthScopeNavigateComponent(
                 component = get {
                     parametersOf(
                         context,
-                        ::navigateBack
+                        ::navigateBack,
+                        { navigate(Configuration.PermissionFlowScreen) }
                     )
                 }
             )
@@ -99,6 +103,15 @@ class MainAuthScopeNavigateComponent(
                     )
                 }
             )
+
+            Configuration.PermissionFlowScreen -> Child.PermissionFlowScreen(
+                component = get {
+                    parametersOf(
+                        context,
+                        ::navigateBack
+                    )
+                }
+            )
         }
     }
 
@@ -110,6 +123,8 @@ class MainAuthScopeNavigateComponent(
         data class ProfileScreen(val component: ProfileScreenComponent) : Child
         data class ChatScreen(val component: ChatComponent) : Child
         data class MessengerScreen(val component: MessengerComponent) : Child
+
+        data class PermissionFlowScreen(val component: PermissionFlowComponent) : Child
     }
 
     @Serializable
@@ -134,5 +149,8 @@ class MainAuthScopeNavigateComponent(
             val chatId: ChatId,
             val personItem: PersonItem
         ) : Configuration
+
+        @Serializable
+        data object PermissionFlowScreen : Configuration
     }
 }

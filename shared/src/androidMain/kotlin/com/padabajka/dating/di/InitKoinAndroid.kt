@@ -3,7 +3,7 @@ package com.padabajka.dating.di
 import android.app.Activity
 import android.app.Application
 import android.content.Context
-import androidx.activity.result.ActivityResultLauncher
+import com.padabajka.dating.core.permission.PermissionRequestHandler
 import org.koin.core.context.GlobalContext.loadKoinModules
 import org.koin.dsl.module
 
@@ -21,7 +21,7 @@ fun addActivity(activity: Activity) {
 }
 
 fun addPermissionRequester(
-    permissionRequester: ActivityResultLauncher<String>
+    permissionRequestHandler: PermissionRequestHandler
 ) {
-    loadKoinModules(module { factory { permissionRequester } })
+    loadKoinModules(module { factory { permissionRequestHandler } })
 }
