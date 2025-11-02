@@ -48,6 +48,7 @@ private val presentationModule = module {
         SettingScreenComponent(
             context = parameters.get(),
             navigateBack = parameters.get(),
+            openPermissionFlow = parameters.get(),
             logoutUseCaseFactory = { get() },
             saveTokenUseCase = get(),
             syncRemoteDataUseCase = get()

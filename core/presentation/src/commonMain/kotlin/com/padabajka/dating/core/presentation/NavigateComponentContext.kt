@@ -1,4 +1,4 @@
-package com.padabajka.dating.navigation
+package com.padabajka.dating.core.presentation
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation

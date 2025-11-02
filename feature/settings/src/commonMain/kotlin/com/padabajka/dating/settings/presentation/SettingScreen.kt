@@ -42,6 +42,7 @@ import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.settings.presentation.model.LogOutEvent
 import com.padabajka.dating.settings.presentation.model.NavigateBackEvent
+import com.padabajka.dating.settings.presentation.model.RequestPermissionEvent
 import com.padabajka.dating.settings.presentation.model.SendPushToken
 import com.padabajka.dating.settings.presentation.model.SettingsEvent
 import com.padabajka.dating.settings.presentation.model.SyncData
@@ -87,8 +88,7 @@ fun SettingScreen(component: SettingScreenComponent) {
                 secondText = "permissionAllow: $permissionAllow",
                 onClick = {
                     coroutineScope.launch {
-                        notificationPermissionController.requestPermission()
-                        permissionAllow = notificationPermissionController.hasPermission()
+                        component.onEvent(RequestPermissionEvent)
                     }
                 }
             ),

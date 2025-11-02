@@ -3,8 +3,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -20,7 +21,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "settings"
+            baseName = "dictionary"
             isStatic = true
         }
     }
@@ -33,16 +34,12 @@ kotlin {
             api(projects.core.data)
             api(projects.core.networking)
             api(projects.core.permission)
-
-            implementation(projects.feature.auth.domain)
-            implementation(projects.feature.push)
-            implementation(projects.feature.permissionFlow)
         }
     }
 }
 
 android {
-    namespace = "com.padabajka.dating.settings"
+    namespace = "com.padabajka.dating.feature.dictionary"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()

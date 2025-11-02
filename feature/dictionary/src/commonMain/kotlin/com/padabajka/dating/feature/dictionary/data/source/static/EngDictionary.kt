@@ -71,6 +71,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.MessageForTooYoung -> "Sorry, registration is only available for users 18 and older"
             StaticTextId.UiId.MessageForTooOld ->
                 "Please check your date of birth — it looks like the age might be incorrect"
+
             StaticTextId.UiId.WhatBiologicalSexTitle -> "What’s your gender?"
             StaticTextId.UiId.WhatBiologicalSexBody -> "You won’t be able to change this later"
             StaticTextId.UiId.WhatPreferenceTitle -> "Who would you like to meet?"
@@ -80,6 +81,13 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.WhatAvatarTitle -> "What do you look like?"
             StaticTextId.UiId.WhatAvatarBody -> "You can change the photo at any time"
             StaticTextId.UiId.CreateProfileText -> "We’re setting up your profile, please wait..."
+            StaticTextId.UiId.GeoPermissionScreenTitle -> "Share your location to find people nearby"
+            StaticTextId.UiId.NotificationPermissionScreenTitle ->
+                "Enable notifications so you don’t miss important messages"
+
+            StaticTextId.UiId.FinishScreenTitle ->
+                "All required permissions are already enabled \uD83C\uDF89\n\n" +
+                    "You can now use the app to its full potential"
         }
     }
 

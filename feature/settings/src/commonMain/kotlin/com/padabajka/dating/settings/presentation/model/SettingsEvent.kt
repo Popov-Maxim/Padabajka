@@ -6,3 +6,4 @@ data object LogOutEvent : SettingsEvent
 data object NavigateBackEvent : SettingsEvent
 data object SendPushToken : SettingsEvent
 data object SyncData : SettingsEvent
+data object RequestPermissionEvent : SettingsEvent
