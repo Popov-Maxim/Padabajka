@@ -73,6 +73,7 @@ sealed interface StaticTextId {
         // General
         Apply(rawId = "apply"),
         Reset(rawId = "reset"),
+        Send(rawId = "send"),
 
         // Profile creating
 
@@ -111,6 +112,16 @@ sealed interface StaticTextId {
         FinishScreenTitle(rawId = "finish_screen_title"),
 
         // -------------- Permission Screen
+
+        // Super Like Dialog
+        SuperLikeTitle(rawId = "super_like_title"),
+        SuperLikeBody(rawId = "super_like_body"),
+        HintSuperLikeMessage(rawId = "hint_super_like_message"),
+
+        MessageTitle(rawId = "message_title"),
+        SuperLikeCountTitle(rawId = "super_like_count_title"),
+
+        // -------------- Super Like Dialog
         ;
         override val id: String = listOfNotNull(rawId, "ui_id")
             .joinToString(separator = "_")

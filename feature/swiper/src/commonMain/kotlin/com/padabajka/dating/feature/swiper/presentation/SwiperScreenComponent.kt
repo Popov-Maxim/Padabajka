@@ -14,8 +14,10 @@ import com.padabajka.dating.feature.swiper.presentation.model.ApplySearchPrefEve
 import com.padabajka.dating.feature.swiper.presentation.model.CardItem
 import com.padabajka.dating.feature.swiper.presentation.model.DislikeEvent
 import com.padabajka.dating.feature.swiper.presentation.model.EndOfCardAnimationEvent
+import com.padabajka.dating.feature.swiper.presentation.model.EndReturnLastCardEvent
 import com.padabajka.dating.feature.swiper.presentation.model.LikeEvent
 import com.padabajka.dating.feature.swiper.presentation.model.PersonItem
+import com.padabajka.dating.feature.swiper.presentation.model.ReturnEvent
 import com.padabajka.dating.feature.swiper.presentation.model.SearchPreferencesItem
 import com.padabajka.dating.feature.swiper.presentation.model.SuperLikeEvent
 import com.padabajka.dating.feature.swiper.presentation.model.SwiperEvent
@@ -63,9 +65,11 @@ class SwiperScreenComponent(
         when (event) {
             is DislikeEvent -> dislikeCard(event.cardItem)
             is LikeEvent -> likeCard(event.cardItem)
-            is SuperLikeEvent -> superLikeCard(event.cardItem)
+            is SuperLikeEvent -> superLikeCard(event.cardItem, event.message)
             is EndOfCardAnimationEvent -> removeCardFromDeck(event.cardItem)
             is ApplySearchPrefEvent -> applySearchPref(event.searchPreferencesItem)
+            ReturnEvent -> returnLastCard()
+            EndReturnLastCardEvent -> finishReturnLastCard()
         }
     }
 
@@ -109,9 +113,9 @@ class SwiperScreenComponent(
         }
     }
 
-    private fun superLikeCard(cardItem: CardItem) {
+    private fun superLikeCard(cardItem: CardItem, message: String) {
         if (cardItem is PersonItem) {
-            reactPersonAndUpdateCardDeck(PersonReaction.SuperLike(cardItem.id))
+            reactPersonAndUpdateCardDeck(PersonReaction.SuperLike(cardItem.id, message))
         } else {
             updateCardDeck()
         }
@@ -147,5 +151,27 @@ class SwiperScreenComponent(
                 swiperState
             }
         )
+    }
+
+    private fun returnLastCard() {
+        mapAndReduceException(
+            action = {
+                reduce { state ->
+                    state.run { copy(cardDeck = cardDeck.returnLast()) }
+                }
+            },
+            mapper = {
+                it // TODO
+            },
+            update = { swiperState, _ ->
+                swiperState
+            }
+        )
+    }
+
+    private fun finishReturnLastCard() {
+        reduce { state ->
+            state.run { copy(cardDeck = cardDeck.makeStatic()) }
+        }
     }
 }

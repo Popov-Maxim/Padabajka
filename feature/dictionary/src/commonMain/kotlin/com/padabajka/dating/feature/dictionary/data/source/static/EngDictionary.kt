@@ -54,6 +54,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.CitySearch -> "City search"
             StaticTextId.UiId.Apply -> "Apply"
             StaticTextId.UiId.Reset -> "Reset"
+            StaticTextId.UiId.Send -> "Send"
             StaticTextId.UiId.WelcomeText ->
                 "Welcome to Padabajka! " +
                     "We’re glad to have you here. Let’s get to know each other.\n\n" +
@@ -88,6 +89,12 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.FinishScreenTitle ->
                 "All required permissions are already enabled \uD83C\uDF89\n\n" +
                     "You can now use the app to its full potential"
+
+            StaticTextId.UiId.SuperLikeTitle -> "Super like"
+            StaticTextId.UiId.SuperLikeBody -> "Write an interesting message, {name} will see it!"
+            StaticTextId.UiId.HintSuperLikeMessage -> "How about starting with a compliment?"
+            StaticTextId.UiId.MessageTitle -> "message:"
+            StaticTextId.UiId.SuperLikeCountTitle -> "you have available:"
         }
     }
 
