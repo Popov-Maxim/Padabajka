@@ -60,7 +60,7 @@ class MessengerComponent(
                     }
                 }
             },
-            mapper = {},
+            mapper = { TODO(it.toString()) },
             update = { state, _ -> state }
         )
     }

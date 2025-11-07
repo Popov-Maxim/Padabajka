@@ -37,14 +37,15 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 internal class MessageRepositoryImpl(
-    authRepository: AuthRepository,
+    private val authRepository: AuthRepository,
     private val localMessageDataSource: LocalMessageDataSource,
     private val remoteMessageDataSource: RemoteMessageDataSource,
     private val personRepository: PersonRepository
 ) : MessageRepository {
 
-    private val myRawPersonId: String? = authRepository.currentAuthState
-        .let { (it as? LoggedIn)?.userId?.raw }
+    private val myRawPersonId: String?
+        get() = authRepository.currentAuthState
+            .let { (it as? LoggedIn)?.userId?.raw }
 
     private val myPersonId: PersonId
         get() = PersonId(myRawPersonId ?: throw NoAuthorisedUserException)
