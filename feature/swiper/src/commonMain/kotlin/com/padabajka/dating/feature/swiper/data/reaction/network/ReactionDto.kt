@@ -7,7 +7,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ReactionDto(
     val reactedPersonId: PersonId,
-    val reaction: ReactionType
+    val reaction: ReactionType,
+    val message: String? = null
 )
 
 @Serializable
@@ -24,6 +25,7 @@ fun PersonReaction.toReactionDto(): ReactionDto {
             is PersonReaction.SuperLike -> ReactionType.SuperLike
             is PersonReaction.Like -> ReactionType.Like
             is PersonReaction.Dislike -> ReactionType.Dislike
-        }
+        },
+        message = (this as? PersonReaction.SuperLike)?.message
     )
 }

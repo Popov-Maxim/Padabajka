@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,10 +36,17 @@ fun AnimationCard(
     swipeVerticalThreshold: Float = 400f,
     onSwipe: (Swipe) -> Unit,
     onEndSwipeAnimation: () -> Unit,
+    resetPosition: Boolean = false,
+    onResetSuccess: () -> Unit = {},
     content: @Composable (CardController) -> Unit
 ) {
     val screenSize = ScreenSizeProvider.getPxScreenSize()
     var offset by remember { mutableStateOf(AnimationOffset.Zero) }
+    LaunchedEffect(resetPosition) {
+        if (resetPosition) {
+            offset = AnimationOffset.Zero.copy(finishedListener = { onResetSuccess() })
+        }
+    }
     val animationOffset by animateOffsetAsState(
         targetValue = offset.offset,
     ) {

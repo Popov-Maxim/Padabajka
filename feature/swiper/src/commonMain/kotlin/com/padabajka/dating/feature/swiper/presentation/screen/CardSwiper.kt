@@ -146,7 +146,7 @@ private fun PersonCard(
                         modifier = buttonModifier
                             .size(48.dp),
                         onClick = {
-//                            onReaction(CardReaction.Return)
+                            onReaction(CardReaction.Return)
                         }
                     ) {
                         Icon(
@@ -185,7 +185,7 @@ private fun PersonCard(
                         modifier = buttonModifier
                             .size(48.dp),
                         onClick = {
-                            onReaction(CardReaction.SupperLike)
+                            onReaction(CardReaction.SuperLike)
                         }
                     ) {
                         Icon(

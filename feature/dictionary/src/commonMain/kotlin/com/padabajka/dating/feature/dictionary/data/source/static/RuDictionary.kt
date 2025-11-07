@@ -54,6 +54,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.CitySearch -> "Поиск города"
             StaticTextId.UiId.Apply -> "Применить"
             StaticTextId.UiId.Reset -> "Сбросить"
+            StaticTextId.UiId.Send -> "Отправить"
             StaticTextId.UiId.WelcomeText ->
                 "Добро пожаловать в Padabajka " +
                     "мы рады, что вы пресоеденились к нам, давайте познакомимся\n\n" +
@@ -85,6 +86,12 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.FinishScreenTitle ->
                 "Все нужные разрешения уже включены \uD83C\uDF89\n\n" +
                     "Можно пользоваться приложением на полную"
+
+            StaticTextId.UiId.SuperLikeTitle -> "Суперлайк"
+            StaticTextId.UiId.SuperLikeBody -> "Напиши интересное сообщение, {name} его увидит!"
+            StaticTextId.UiId.HintSuperLikeMessage -> "Может, начать с комплимента?"
+            StaticTextId.UiId.MessageTitle -> "сообщение:"
+            StaticTextId.UiId.SuperLikeCountTitle -> "вам доступно:"
         }
     }
 
