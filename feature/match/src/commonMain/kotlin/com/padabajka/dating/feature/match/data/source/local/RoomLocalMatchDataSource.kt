@@ -6,7 +6,7 @@ import com.padabajka.dating.core.repository.api.model.auth.UserId
 import kotlinx.coroutines.flow.Flow
 
 class RoomLocalMatchDataSource(private val matchesDao: MatchesDao) : LocalMatchDataSource {
-    override suspend fun matches(): Flow<List<MatchEntry>> {
+    override fun matches(): Flow<List<MatchEntry>> {
         return matchesDao.matches()
     }
 
