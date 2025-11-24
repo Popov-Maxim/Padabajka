@@ -12,6 +12,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Editor -> "Editor"
             StaticTextId.UiId.Matches -> "Matches"
             StaticTextId.UiId.Chats -> "Chats"
+            StaticTextId.UiId.Likes -> "Likes"
             StaticTextId.UiId.Name -> "Name"
             StaticTextId.UiId.LogOut -> "Logout"
             StaticTextId.UiId.General -> "General"
@@ -95,6 +96,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.HintSuperLikeMessage -> "How about starting with a compliment?"
             StaticTextId.UiId.MessageTitle -> "message:"
             StaticTextId.UiId.SuperLikeCountTitle -> "you have available:"
+            StaticTextId.UiId.EmptyReactionsScreen -> "No reactions yet, be the first!"
         }
     }
 

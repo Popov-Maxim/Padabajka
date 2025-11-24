@@ -10,6 +10,7 @@ import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
 import com.padabajka.dating.feature.permission.flow.presentation.PermissionFlowComponent
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
+import com.padabajka.dating.feature.reaction.screen.presentation.LikesMeScreenComponent
 import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
 import com.padabajka.dating.settings.presentation.SettingScreenComponent
 import kotlinx.serialization.Serializable
@@ -43,6 +44,10 @@ class MainAuthScopeNavigateComponent(
         navigate(Configuration.MessengerScreen)
     }
 
+    fun openLikes() {
+        navigate(Configuration.LikesMeScreen)
+    }
+
     @Suppress("LongMethod")
     override fun createChild(
         configuration: Configuration,
@@ -57,7 +62,8 @@ class MainAuthScopeNavigateComponent(
                 component = get {
                     parametersOf(
                         context,
-                        { navigate(Configuration.ProfileEditorScreen) }
+                        { navigate(Configuration.ProfileEditorScreen) },
+                        { navigate(Configuration.LikesMeScreen) }
                     )
                 }
             )
@@ -112,6 +118,14 @@ class MainAuthScopeNavigateComponent(
                     )
                 }
             )
+
+            Configuration.LikesMeScreen -> Child.LikesMeScreen(
+                component = LikesMeScreenComponent(
+                    context = context,
+                    reactionsToMeUseCase = get(),
+                    reactionRepository = get()
+                )
+            )
         }
     }
 
@@ -123,6 +137,7 @@ class MainAuthScopeNavigateComponent(
         data class ProfileScreen(val component: ProfileScreenComponent) : Child
         data class ChatScreen(val component: ChatComponent) : Child
         data class MessengerScreen(val component: MessengerComponent) : Child
+        data class LikesMeScreen(val component: LikesMeScreenComponent) : Child
 
         data class PermissionFlowScreen(val component: PermissionFlowComponent) : Child
     }
@@ -149,6 +164,9 @@ class MainAuthScopeNavigateComponent(
             val chatId: ChatId,
             val personItem: PersonItem
         ) : Configuration
+
+        @Serializable
+        data object LikesMeScreen : Configuration
 
         @Serializable
         data object PermissionFlowScreen : Configuration

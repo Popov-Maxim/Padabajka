@@ -1,13 +1,10 @@
 package com.padabajka.dating.feature.profile.presentation
 
 import com.arkivanov.decompose.ComponentContext
-import com.padabajka.dating.core.domain.Factory
-import com.padabajka.dating.core.domain.delegate
 import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.repository.api.ProfileRepository
-import com.padabajka.dating.feature.auth.domain.LogOutUseCase
-import com.padabajka.dating.feature.profile.presentation.model.LogoutEvent
 import com.padabajka.dating.feature.profile.presentation.model.OpenEditorEvent
+import com.padabajka.dating.feature.profile.presentation.model.OpenLikesMeEvent
 import com.padabajka.dating.feature.profile.presentation.model.ProfileEvent
 import com.padabajka.dating.feature.profile.presentation.model.ProfileState
 import com.padabajka.dating.feature.profile.presentation.model.ProfileValue
@@ -18,14 +15,12 @@ import kotlinx.coroutines.launch
 class ProfileScreenComponent(
     context: ComponentContext,
     private val openEditor: () -> Unit,
-    private val profileRepository: ProfileRepository,
-    logoutUseCaseFactory: Factory<LogOutUseCase>
+    private val openLikesMeScreen: () -> Unit,
+    private val profileRepository: ProfileRepository
 ) : BaseComponent<ProfileState>(
     context,
     ProfileState(value = initProfileState(profileRepository))
 ) {
-
-    private val logoutUseCase by logoutUseCaseFactory.delegate()
 
     init {
         componentScope.launch {
@@ -43,19 +38,9 @@ class ProfileScreenComponent(
         when (event) {
             OpenEditorEvent -> openEditor()
             UpdateProfileEvent -> updateProfile()
-            LogoutEvent -> logout()
+            OpenLikesMeEvent -> openLikesMeScreen()
         }
     }
-
-    private fun logout() = mapAndReduceException(
-        action = {
-            logoutUseCase()
-        },
-        mapper = { it },
-        update = { state, m ->
-            state
-        }
-    )
 
     private fun updateProfile() = mapAndReduceException(
         action = {

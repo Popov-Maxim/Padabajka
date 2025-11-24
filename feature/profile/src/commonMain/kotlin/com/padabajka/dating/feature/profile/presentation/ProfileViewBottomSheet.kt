@@ -1,22 +1,31 @@
 package com.padabajka.dating.feature.profile.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -48,7 +57,9 @@ import kotlinx.collections.immutable.PersistentList
 @Composable
 fun ProfileViewBottomSheet(
     profileViewUIItem: ProfileViewUIItem,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    onLike: () -> Unit = {},
+    onDislike: () -> Unit = {},
 ) {
     val bottomSheetState = rememberModalBottomSheetState(true)
     ModalBottomSheet(
@@ -59,9 +70,10 @@ fun ProfileViewBottomSheet(
         onDismissRequest = onDismissRequest,
         dragHandle = null
     ) {
-        ProfileViewContent(
-            profileViewUIItem,
-            Modifier.fillMaxSize()
+        Box {
+            ProfileViewContent(
+                profileViewUIItem,
+                Modifier.fillMaxSize()
 //                .padding(
 //                    WindowInsets.systemBars
 //                        .asPaddingValues()
@@ -70,7 +82,52 @@ fun ProfileViewBottomSheet(
 //                    CoreColors.background.mainColor,
 //                    RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
 //                )
-        )
+            )
+
+            // TODO: fix ui
+            ReactionsButtons(Modifier.align(Alignment.BottomCenter), onLike, onDislike)
+        }
+    }
+}
+
+@Composable
+private fun ReactionsButtons(
+    modifier: Modifier = Modifier,
+    onLike: () -> Unit = {},
+    onDislike: () -> Unit = {},
+) {
+    Row(
+        modifier = modifier.padding(horizontal = 30.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        val buttonModifier = Modifier.align(Alignment.CenterVertically)
+            .background(CoreColors.background.mainColor, CircleShape)
+            .border(width = 1.dp, color = Color.Black)
+
+        IconButton(
+            modifier = buttonModifier
+                .size(64.dp).weight(1f),
+            onClick = { onDislike() }
+        ) {
+            Icon(
+                modifier = Modifier.size(34.dp),
+                imageVector = Icons.Default.Close,
+                contentDescription = "Dislike",
+            )
+        }
+
+        IconButton(
+            modifier = buttonModifier
+                .height(64.dp).weight(2f),
+            onClick = { onLike() }
+        ) {
+            Icon(
+                modifier = Modifier.size(34.dp),
+                imageVector = Icons.Default.Favorite,
+                tint = Color(color = 0xFF47C04C),
+                contentDescription = "Like",
+            )
+        }
     }
 }
 

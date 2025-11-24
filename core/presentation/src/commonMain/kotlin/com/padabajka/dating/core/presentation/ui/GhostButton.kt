@@ -1,6 +1,5 @@
 package com.padabajka.dating.core.presentation.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
+import com.padabajka.dating.core.presentation.ui.modifier.optionalClickable
 
 @Composable
 fun GhostButton(
@@ -22,13 +22,11 @@ fun GhostButton(
     onClick: () -> Unit
 ) {
     val shape = RoundedCornerShape(20.dp)
-    val optionalClickable: Modifier.() -> Modifier =
-        { if (enabled) clickable(onClick = onClick) else this }
     Box(
         modifier = modifier.fillMaxWidth()
             .clip(shape)
             .innerShadow()
-            .optionalClickable()
+            .optionalClickable(onClick, enabled)
             .padding(vertical = 20.dp),
         contentAlignment = Alignment.Center
     ) {

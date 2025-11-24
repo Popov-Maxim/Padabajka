@@ -125,8 +125,8 @@ private val presentationModule = module {
         ProfileScreenComponent(
             context = parameters.get(),
             openEditor = parameters.get(),
-            profileRepository = get(),
-            logoutUseCaseFactory = { get() }
+            openLikesMeScreen = parameters.get(),
+            profileRepository = get()
         )
     }
 
