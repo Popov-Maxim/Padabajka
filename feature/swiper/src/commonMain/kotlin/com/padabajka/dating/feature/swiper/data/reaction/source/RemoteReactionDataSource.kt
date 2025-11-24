@@ -4,4 +4,5 @@ import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
 
 interface RemoteReactionDataSource {
     suspend fun sendReaction(personReaction: PersonReaction)
+    suspend fun reactionsToMe(): List<PersonReaction>
 }

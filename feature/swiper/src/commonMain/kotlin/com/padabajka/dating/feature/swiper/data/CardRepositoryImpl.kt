@@ -39,8 +39,8 @@ class CardRepositoryImpl(
     override suspend fun react(reaction: Reaction) {
         if (reaction is PersonReaction) {
             candidateRepository.setUsed(reaction.id)
+            reactionRepository.react(reaction)
         }
-        reactionRepository.react(reaction)
     }
 
     private suspend fun getAdCard(searchPreferences: SearchPreferences): Card {

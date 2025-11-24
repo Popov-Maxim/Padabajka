@@ -4,6 +4,7 @@ import com.padabajka.dating.core.data.Atomic
 import com.padabajka.dating.core.data.atomic
 import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
 import com.padabajka.dating.feature.swiper.data.reaction.network.ReactionApi
+import com.padabajka.dating.feature.swiper.data.reaction.network.toDomain
 import com.padabajka.dating.feature.swiper.data.reaction.network.toReactionDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -26,6 +27,10 @@ class RemoteReactionDataSourceImpl(
         if (reactionsPostRequired()) {
             postReactions()
         }
+    }
+
+    override suspend fun reactionsToMe(): List<PersonReaction> {
+        return reactionApi.getReactions().map { it.toDomain() }
     }
 
     private suspend fun reactionsPostRequired(): Boolean {

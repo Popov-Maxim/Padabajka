@@ -12,6 +12,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Editor -> "Редактор"
             StaticTextId.UiId.Matches -> "Метчи"
             StaticTextId.UiId.Chats -> "Чаты"
+            StaticTextId.UiId.Likes -> "Лайки"
             StaticTextId.UiId.Name -> "Имя"
             StaticTextId.UiId.LogOut -> "Выйти"
             StaticTextId.UiId.General -> "Общее"
@@ -92,6 +93,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.HintSuperLikeMessage -> "Может, начать с комплимента?"
             StaticTextId.UiId.MessageTitle -> "сообщение:"
             StaticTextId.UiId.SuperLikeCountTitle -> "вам доступно:"
+            StaticTextId.UiId.EmptyReactionsScreen -> "Пока тут пусто"
         }
     }
 

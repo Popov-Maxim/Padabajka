@@ -11,6 +11,7 @@ sealed interface StaticTextId {
         Editor(rawId = "editor"),
         Matches(rawId = "matches"),
         Chats(rawId = "chats"),
+        Likes(rawId = "likes"),
 
         // Setting screen
         Name(rawId = "name"),
@@ -122,6 +123,10 @@ sealed interface StaticTextId {
         SuperLikeCountTitle(rawId = "super_like_count_title"),
 
         // -------------- Super Like Dialog
+
+        // LikesMe
+        EmptyReactionsScreen(rawId = "empty_reactions_screen"),
+        // -------------- LikesMe
         ;
         override val id: String = listOfNotNull(rawId, "ui_id")
             .joinToString(separator = "_")

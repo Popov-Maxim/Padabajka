@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.core.presentation.ui.CoreCallToActionButton
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.ProfileAvatar
@@ -39,6 +40,7 @@ import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.profile.age
 import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.profile.presentation.model.OpenEditorEvent
+import com.padabajka.dating.feature.profile.presentation.model.OpenLikesMeEvent
 import com.padabajka.dating.feature.profile.presentation.model.ProfileValue
 import com.padabajka.dating.feature.profile.presentation.model.UpdateProfileEvent
 
@@ -122,7 +124,10 @@ private fun ProfileScreen(
     component: ProfileScreenComponent,
     profile: ProfileValue.Loaded
 ) {
-    Column(modifier = Modifier.padding(horizontal = 15.dp)) {
+    Column(
+        modifier = Modifier.padding(horizontal = 15.dp),
+        verticalArrangement = Arrangement.spacedBy(40.dp)
+    ) {
         Box(
             modifier = Modifier
                 .innerShadow(
@@ -165,13 +170,18 @@ private fun ProfileScreen(
                         }
                     }
                 }
-                Button(
+                CoreCallToActionButton(
+                    text = StaticTextId.UiId.OpenProfileEditor.translate(),
                     onClick = { component.onEvent(OpenEditorEvent) },
                     modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(StaticTextId.UiId.OpenProfileEditor.translate())
-                }
+                )
             }
         }
+
+        CoreCallToActionButton( // TODO: need delete
+            text = "LikesMe",
+            onClick = { component.onEvent(OpenLikesMeEvent) },
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }

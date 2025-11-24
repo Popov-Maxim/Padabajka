@@ -1,6 +1,5 @@
 package com.padabajka.dating.core.presentation.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.TextFieldDefaults
@@ -10,6 +9,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
+import com.padabajka.dating.core.presentation.ui.modifier.optionalClickable
 
 @Composable
 fun CoreTextEditField(
@@ -24,8 +24,6 @@ fun CoreTextEditField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     val shape = RoundedCornerShape(20.dp)
-    val optionalClickable: Modifier.() -> Modifier =
-        { if (onClick != null) clickable(onClick = onClick) else this }
     TextInputField(
         text = text,
         hint = hint,
@@ -37,7 +35,7 @@ fun CoreTextEditField(
             .innerShadow(
                 color = Color(color = 0xFFA1A1A1),
                 shape = shape
-            ).clip(shape).optionalClickable()
+            ).clip(shape).optionalClickable(onClick)
             .then(modifierAfter),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,

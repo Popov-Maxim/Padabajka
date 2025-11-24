@@ -29,3 +29,11 @@ fun PersonReaction.toReactionDto(): ReactionDto {
         message = (this as? PersonReaction.SuperLike)?.message
     )
 }
+
+fun ReactionDto.toDomain(): PersonReaction {
+    return when (reaction) {
+        ReactionType.SuperLike -> PersonReaction.SuperLike(reactedPersonId, message ?: "")
+        ReactionType.Like -> PersonReaction.Like(reactedPersonId)
+        ReactionType.Dislike -> TODO("bad reaction format")
+    }
+}

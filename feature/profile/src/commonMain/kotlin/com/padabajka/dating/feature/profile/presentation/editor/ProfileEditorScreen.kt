@@ -196,8 +196,8 @@ fun ImageField(
     image: Image?,
     modifier: Modifier = Modifier,
     iconSize: Dp = 50.dp,
-    onChange: (Image) -> Unit,
-    delete: () -> Unit
+    onChange: (Image) -> Unit = {},
+    delete: () -> Unit = {}
 ) {
     val fieldModifier = modifier.aspectRatio(ratio = 2.0f / 3)
 
