@@ -11,10 +11,14 @@ interface KtorClientProvider {
     suspend fun client(): HttpClient
 }
 
+interface UnauthKtorClientProvider { // TODO: delete for prod
+    suspend fun client(): HttpClient
+}
+
 internal class KtorClientProviderImpl(
     private val configProviders: List<KtorConfigProvider>,
     private val engineFactory: HttpClientEngineFactory<*> = CIO,
-) : KtorClientProvider {
+) : KtorClientProvider, UnauthKtorClientProvider {
 
     private val dynamicConfigProviders: List<KtorConfigProvider.Dynamic> by lazy {
         configProviders.filterIsInstance<KtorConfigProvider.Dynamic>()

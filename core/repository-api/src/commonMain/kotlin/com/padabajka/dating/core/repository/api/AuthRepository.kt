@@ -17,6 +17,8 @@ interface AuthRepository {
     suspend fun register(email: String, password: String)
     suspend fun logout()
 
+    suspend fun loginDebug(uuid: String)
+
     suspend fun sendEmailVerification()
     suspend fun reloadUser()
 }

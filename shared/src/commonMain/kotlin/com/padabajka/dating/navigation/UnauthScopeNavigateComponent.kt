@@ -2,6 +2,7 @@ package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.NavigateComponentContext
+import com.padabajka.dating.feature.auth.presentation.DebugLoginMethodComponent
 import com.padabajka.dating.feature.auth.presentation.EmailLoginMethodComponent
 import com.padabajka.dating.feature.auth.presentation.LoginMethodsComponent
 import kotlinx.serialization.Serializable
@@ -27,7 +28,8 @@ class UnauthScopeNavigateComponent(
                 component = get {
                     parametersOf(
                         context,
-                        { navigate(Configuration.EmailLoginMethodScreen) }
+                        { navigate(Configuration.EmailLoginMethodScreen) },
+                        { navigate(Configuration.DebugLoginMethodScreen) }
                     )
                 }
             )
@@ -40,12 +42,21 @@ class UnauthScopeNavigateComponent(
                     )
                 }
             )
+
+            Configuration.DebugLoginMethodScreen -> Child.DebugLoginMethodScreen(
+                component = DebugLoginMethodComponent(
+                    context = context,
+                    goToLoginMethodScreen = { navigateBack() },
+                    authRepository = get()
+                )
+            )
         }
     }
 
     sealed interface Child {
         data class LoginMethodsScreen(val component: LoginMethodsComponent) : Child
         data class EmailLoginMethodScreen(val component: EmailLoginMethodComponent) : Child
+        data class DebugLoginMethodScreen(val component: DebugLoginMethodComponent) : Child
     }
 
     @Serializable
@@ -56,5 +67,8 @@ class UnauthScopeNavigateComponent(
 
         @Serializable
         data object EmailLoginMethodScreen : Configuration
+
+        @Serializable
+        data object DebugLoginMethodScreen : Configuration
     }
 }

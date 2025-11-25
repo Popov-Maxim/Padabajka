@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.auth.presentation.model
 sealed interface LoginMethodEvent {
     data object SelectEmailMethod : LoginMethodEvent
     data object SelectGoogleMethod : LoginMethodEvent
+    data object SelectDebugMethod : LoginMethodEvent
 }
 
 sealed interface EmailLoginMethodEvent {
@@ -14,4 +15,10 @@ sealed interface EmailLoginMethodEvent {
     data object BackToLoginMethods : EmailLoginMethodEvent
 
     data object OpenEmailApp : EmailLoginMethodEvent
+}
+
+sealed interface DebugLoginMethodEvent {
+    data class UUIDChanged(val uuid: String) : DebugLoginMethodEvent
+    data object LoginClick : DebugLoginMethodEvent
+    data object BackToLoginMethods : DebugLoginMethodEvent
 }

@@ -5,6 +5,7 @@ import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.feature.auth.data.AuthRepositoryImpl
 import com.padabajka.dating.feature.auth.data.local.LocalAuthDataSource
 import com.padabajka.dating.feature.auth.data.model.AuthPreferences
+import com.padabajka.dating.feature.auth.data.remote.DebugAuthApi
 import com.padabajka.dating.feature.auth.data.remote.FirebaseRemoteAuthDataSource
 import com.padabajka.dating.feature.auth.data.remote.RemoteAuthDataSource
 import com.padabajka.dating.feature.auth.domain.AuthStateProvider
@@ -33,7 +34,8 @@ private val authDataModule = module {
     }
     factory<RemoteAuthDataSource> {
         FirebaseRemoteAuthDataSource(
-            firebaseAuth = get()
+            firebaseAuth = get(),
+            debugAuthApi = get()
         )
     }
     single<AuthRepository> {
@@ -51,6 +53,8 @@ private val authDataModule = module {
             )
         )
     }
+
+    factoryOf(::DebugAuthApi)
 }
 
 private val authDomainModule = module {
@@ -100,6 +104,7 @@ private val authPresentationModule = module {
         LoginMethodsComponent(
             context = parameters.get(),
             goToEmailMethodScreen = parameters.get(),
+            goToDebugMethodScreen = parameters.get(),
             googleLoginUseCase = get(),
         )
     }
