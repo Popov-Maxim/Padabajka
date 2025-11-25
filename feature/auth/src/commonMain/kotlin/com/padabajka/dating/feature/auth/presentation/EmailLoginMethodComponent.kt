@@ -74,7 +74,6 @@ class EmailLoginMethodComponent(
             }
         },
         mapper = {
-            println("EmailLoginMethodComponent: ${it.message}")
             it
         },
         update = { state, _ -> state }

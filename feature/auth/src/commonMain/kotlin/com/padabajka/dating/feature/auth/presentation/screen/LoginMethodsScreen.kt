@@ -30,5 +30,10 @@ fun LoginMethodsScreen(component: LoginMethodsComponent) {
             icon = CoreIcons.Login.GoogleLogo.toData(),
             onClick = { component.onEvent(LoginMethodEvent.SelectGoogleMethod) }
         )
+
+        AuthMethodButton(
+            text = "Debug Login",
+            onClick = { component.onEvent(LoginMethodEvent.SelectDebugMethod) }
+        )
     }
 }

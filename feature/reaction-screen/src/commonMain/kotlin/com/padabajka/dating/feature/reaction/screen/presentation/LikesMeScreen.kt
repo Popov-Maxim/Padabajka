@@ -132,8 +132,6 @@ private fun HasLikesMeScreen(
     BoxWithConstraints {
         val width = maxWidth - horizontalSpace * 2 - horizontalPadding * 2
         val cardWidth = width / GridSpan.MAX
-        println("LOG UI: width $width")
-        println("LOG UI: cardWidth $cardWidth")
 
         LikesGrid(
             items = state.likes,

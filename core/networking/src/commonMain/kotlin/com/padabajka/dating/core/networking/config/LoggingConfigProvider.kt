@@ -28,7 +28,7 @@ class LoggingConfigProvider : KtorConfigProvider.Static {
                         println("Response: ${response.status}, Socket request: ${request.url}")
                     } else {
                         val body = response.bodyAsText()
-                        println("Response: ${response.status}, Body: $body")
+                        println("Response: ${response.status}, Body: $body | ${request.url}")
                     }
                 }
             }

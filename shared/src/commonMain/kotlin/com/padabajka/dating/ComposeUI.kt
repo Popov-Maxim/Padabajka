@@ -19,6 +19,7 @@ import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.FpsMonitor
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.datapush.SharedPushHandler
+import com.padabajka.dating.feature.auth.presentation.screen.DebugLoginMethodScreen
 import com.padabajka.dating.feature.auth.presentation.screen.EmailLoginMethodScreen
 import com.padabajka.dating.feature.auth.presentation.screen.LoginMethodsScreen
 import com.padabajka.dating.feature.auth.presentation.screen.LoginScreen
@@ -80,6 +81,9 @@ private fun UnauthScopeScreen(component: UnauthScopeNavigateComponent) {
                     LoginMethodsScreen(instance.component)
                 is UnauthScopeNavigateComponent.Child.EmailLoginMethodScreen ->
                     EmailLoginMethodScreen(instance.component)
+
+                is UnauthScopeNavigateComponent.Child.DebugLoginMethodScreen ->
+                    DebugLoginMethodScreen(instance.component)
             }
         }
     }

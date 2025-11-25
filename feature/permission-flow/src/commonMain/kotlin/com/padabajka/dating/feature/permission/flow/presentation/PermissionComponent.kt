@@ -30,7 +30,6 @@ class PermissionComponent(
             }
         },
         mapper = {
-            println("PermissionComponent: ${it.message}")
             it
         },
         update = { state, _ -> state }

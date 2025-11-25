@@ -58,10 +58,12 @@ fun AuthMethodButton(
 @Composable
 fun CallToActionButton(
     text: String,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     CoreCallToActionButton(
         text = text,
+        enabled = enabled,
         onClick = onClick
     )
 }

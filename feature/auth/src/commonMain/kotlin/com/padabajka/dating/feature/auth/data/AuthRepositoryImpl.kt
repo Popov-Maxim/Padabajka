@@ -70,6 +70,10 @@ internal class AuthRepositoryImpl(
         remoteAuthDataSource.logout()
     }
 
+    override suspend fun loginDebug(uuid: String) {
+        remoteAuthDataSource.loginDebug(uuid)
+    }
+
     override suspend fun sendEmailVerification() {
         remoteAuthDataSource.sendEmailVerification()
     }
@@ -81,7 +85,7 @@ internal class AuthRepositoryImpl(
     private fun UserDto?.toAuthState(): AuthState {
         return when {
             this == null -> LoggedOut
-            email != null && isEmailVerified.not() ->
+            email != null && email != "" && isEmailVerified.not() ->
                 WaitingForEmailValidation(getUserId()) // TODO: Implement email verification
             else -> LoggedIn(getUserId())
         }

@@ -9,12 +9,14 @@ import com.padabajka.dating.feature.auth.presentation.model.LoginMethodEvent
 class LoginMethodsComponent(
     context: ComponentContext,
     private val goToEmailMethodScreen: () -> Unit,
+    private val goToDebugMethodScreen: () -> Unit,
     private val googleLoginUseCase: GoogleLoginUseCase,
 ) : BaseComponent<EmptyState>(context, EmptyState) {
     fun onEvent(event: LoginMethodEvent) {
         when (event) {
             LoginMethodEvent.SelectEmailMethod -> goToEmailMethodScreen()
             LoginMethodEvent.SelectGoogleMethod -> loginGoogle()
+            LoginMethodEvent.SelectDebugMethod -> goToDebugMethodScreen()
         }
     }
 
@@ -23,7 +25,6 @@ class LoginMethodsComponent(
             googleLoginUseCase.login()
         },
         mapper = {
-            println("LoginMethodsComponent: ${it.message}")
             it
         },
         update = { state, _ -> state }

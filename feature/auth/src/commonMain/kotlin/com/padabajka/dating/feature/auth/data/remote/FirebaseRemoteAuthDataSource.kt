@@ -15,7 +15,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlin.coroutines.cancellation.CancellationException
 
-internal class FirebaseRemoteAuthDataSource(private val firebaseAuth: FirebaseAuth) : RemoteAuthDataSource {
+internal class FirebaseRemoteAuthDataSource(
+    private val firebaseAuth: FirebaseAuth,
+    private val debugAuthApi: DebugAuthApi
+) : RemoteAuthDataSource {
 
     private val localUser = MutableSharedFlow<FirebaseUser?>()
     private val mergedUser = merge(firebaseAuth.authStateChanged, localUser)
@@ -64,6 +67,11 @@ internal class FirebaseRemoteAuthDataSource(private val firebaseAuth: FirebaseAu
         firebaseAuth.signOut()
     }
 
+    override suspend fun loginDebug(uuid: String) {
+        val token = debugAuthApi.login(uuid)
+        firebaseAuth.signInWithCustomToken(token)
+    }
+
     override suspend fun sendEmailVerification() {
         firebaseAuth.currentUser?.sendEmailVerification()
     }
@@ -90,7 +98,7 @@ internal class FirebaseRemoteAuthDataSource(private val firebaseAuth: FirebaseAu
         return UserDto(
             id = uid,
             email = email,
-            isEmailVerified = isEmailVerified || email == "validtest@email.com"
+            isEmailVerified = isEmailVerified
         )
     }
 }
