@@ -43,6 +43,7 @@ fun SwiperScreen(
     val state by swiperScreenComponent.state.subscribeAsState()
 
     CustomScaffold(
+        useIme = false,
         topBar = {
             TopBar {
                 scope.launch {
