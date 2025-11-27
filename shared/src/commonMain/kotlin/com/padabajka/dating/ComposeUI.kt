@@ -18,6 +18,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.FpsMonitor
 import com.padabajka.dating.core.presentation.ui.mainColor
+import com.padabajka.dating.core.presentation.ui.modifier.hideKeyboardOnTap
 import com.padabajka.dating.datapush.SharedPushHandler
 import com.padabajka.dating.feature.auth.presentation.screen.DebugLoginMethodScreen
 import com.padabajka.dating.feature.auth.presentation.screen.EmailLoginMethodScreen
@@ -92,7 +93,12 @@ private fun UnauthScopeScreen(component: UnauthScopeNavigateComponent) {
 @Composable
 private fun PadabajkaTheme(content: @Composable () -> Unit) {
     MaterialTheme {
-        Box(Modifier.background(CoreColors.background.mainColor).fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .background(CoreColors.background.mainColor)
+                .fillMaxSize()
+                .hideKeyboardOnTap()
+        ) {
             content.invoke()
             FpsMonitor(modifier = Modifier.align(Alignment.TopStart))
         }

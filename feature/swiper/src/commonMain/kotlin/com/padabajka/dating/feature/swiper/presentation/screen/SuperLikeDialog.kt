@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -30,6 +32,7 @@ import com.padabajka.dating.core.presentation.ui.ProfileAvatar
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
+import com.padabajka.dating.core.presentation.ui.modifier.hideKeyboardOnTap
 import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.swiper.presentation.model.PersonItem
 
@@ -53,6 +56,7 @@ fun SuperLikeDialog(
         dragHandle = null // TODO add dragHandle
     ) {
         DialogContent(
+            modifier = Modifier.hideKeyboardOnTap(),
             cardItem = cardItem,
             apply = {
                 apply(it)
@@ -65,14 +69,19 @@ fun SuperLikeDialog(
 @Composable
 private fun DialogContent(
     cardItem: PersonItem,
-    apply: (String) -> Unit
+    apply: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var message by remember { mutableStateOf("") }
 
     Column(
-        modifier = Modifier.padding(horizontal = 20.dp).padding(top = 40.dp),
+        modifier = modifier.verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp).padding(top = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(32.dp)
+        verticalArrangement = Arrangement.spacedBy(
+            space = 32.dp,
+            alignment = Alignment.Bottom
+        ),
     ) {
         ProfileAvatar(
             model = cardItem.images.firstOrNull()?.raw(),
