@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -29,11 +30,16 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreColors
@@ -44,7 +50,7 @@ import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
 import com.padabajka.dating.core.presentation.ui.textColor
-import com.padabajka.dating.core.presentation.ui.utils.rememberUpdatedMutableState
+import com.padabajka.dating.core.presentation.ui.toPx
 import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.feature.profile.presentation.creator.name.TextAsset
 import com.padabajka.dating.feature.profile.presentation.editor.asset.picker.TickWheelPicker
@@ -61,6 +67,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.updatedHei
 import com.padabajka.dating.feature.profile.presentation.editor.model.updatedProfession
 import com.padabajka.dating.feature.profile.presentation.editor.model.updatedSexualOrientation
 import kotlinx.collections.immutable.PersistentList
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,10 +86,9 @@ fun DetailsEditorBottomSheet(
         onDismissRequest = onDismissRequest,
         dragHandle = null // TODO add dragHandle
     ) {
-        var supportedDetailsState by rememberUpdatedMutableState(
-            key = tabsState,
-            newValue = supportedDetails
-        )
+        var supportedDetailsState by remember(key1 = tabsState, key2 = supportedDetails) {
+            mutableStateOf(supportedDetails)
+        }
 
         Column(
             modifier = Modifier.fillMaxHeight(fraction = 2f / 3).padding(top = 25.dp),
@@ -140,30 +146,58 @@ fun SaveButton(
 }
 
 @Composable
-private fun NavigateTabs(tabsState: DetailTab, changeState: (DetailTab) -> Unit) {
+private fun NavigateTabs(
+    tabsState: DetailTab,
+    changeState: (DetailTab) -> Unit
+) {
     val shape = RoundedCornerShape(12.dp)
     val scrollState = rememberScrollState()
+
+    data class TabInfo(val left: Int, val width: Int)
+
+    val tabPositions = remember { mutableStateMapOf<DetailTab, TabInfo>() }
+
+    var viewportWidth by remember { mutableStateOf(0) }
+    val horizontalPadding = 20.dp
+    val contentRowSize = viewportWidth - horizontalPadding.toPx() * 2
+
+    LaunchedEffect(tabsState, tabPositions, contentRowSize) {
+        tabPositions[tabsState]?.let { info ->
+            val tabCenter = info.left + info.width / 2
+            val target = tabCenter - contentRowSize / 2
+            val targetInt = target.coerceIn(0, scrollState.maxValue)
+            scrollState.animateScrollTo(targetInt)
+        }
+    }
+
     Row(
         modifier = Modifier
-            .horizontalScroll(scrollState).fillMaxWidth()
-            .background(
-                color = Color(color = 0xFFD9D9D9),
-                shape = shape
-            )
-    ) {
-        DetailTab.entries.onEach { tab ->
-            val isSelected = tab == tabsState
-            val withBackground: Modifier.() -> Modifier = {
-                if (isSelected) background(CoreColors.secondary.mainColor) else this
+            .onGloballyPositioned { coords ->
+                viewportWidth = coords.size.width
             }
+            .horizontalScroll(scrollState)
+            .fillMaxWidth()
+            .wrapContentWidth(unbounded = true)
+            .padding(horizontal = horizontalPadding)
+            .background(Color(color = 0xFFD9D9D9), shape),
+    ) {
+        DetailTab.entries.forEach { tab ->
+            val isSelected = tab == tabsState
             val contentColor = if (isSelected) Color.White else Color.Black
 
             Box(
                 modifier = Modifier
                     .clip(shape)
-                    .clickable { changeState(tab) }
-                    .withBackground()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .clickable {
+                        changeState(tab)
+                    }
+                    .background(if (isSelected) CoreColors.secondary.mainColor else Color.Transparent)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .onGloballyPositioned { coords ->
+                        val pos = coords.positionInParent()
+                        tabPositions[tab] =
+                            TabInfo(left = pos.x.roundToInt(), width = coords.size.width)
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
