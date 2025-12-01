@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
@@ -73,6 +74,8 @@ private fun MainContent(
 fun TextAsset(
     title: String,
     body: String,
+    titleFontSize: TextUnit = 30.sp,
+    bodyFontSize: TextUnit = 20.sp,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -82,14 +85,14 @@ fun TextAsset(
     ) {
         Text(
             text = title,
-            fontSize = 30.sp,
-            lineHeight = 30.sp * 1.2,
+            fontSize = titleFontSize,
+            lineHeight = titleFontSize * 1.2,
             textAlign = TextAlign.Center,
         ) // TODO(font): standardize font in all project, may be monospace?
 
         Text(
             text = body,
-            fontSize = 20.sp,
+            fontSize = bodyFontSize,
             textAlign = TextAlign.Center,
             color = Color.Black.copy(alpha = 0.6f)
         )

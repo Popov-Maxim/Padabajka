@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -29,11 +31,16 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreColors
@@ -44,7 +51,7 @@ import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
 import com.padabajka.dating.core.presentation.ui.textColor
-import com.padabajka.dating.core.presentation.ui.utils.rememberUpdatedMutableState
+import com.padabajka.dating.core.presentation.ui.toPx
 import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.feature.profile.presentation.creator.name.TextAsset
 import com.padabajka.dating.feature.profile.presentation.editor.asset.picker.TickWheelPicker
@@ -61,6 +68,9 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.updatedHei
 import com.padabajka.dating.feature.profile.presentation.editor.model.updatedProfession
 import com.padabajka.dating.feature.profile.presentation.editor.model.updatedSexualOrientation
 import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.collections.immutable.toPersistentList
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,10 +89,9 @@ fun DetailsEditorBottomSheet(
         onDismissRequest = onDismissRequest,
         dragHandle = null // TODO add dragHandle
     ) {
-        var supportedDetailsState by rememberUpdatedMutableState(
-            key = tabsState,
-            newValue = supportedDetails
-        )
+        var supportedDetailsState by remember(key1 = tabsState, key2 = supportedDetails) {
+            mutableStateOf(supportedDetails)
+        }
 
         Column(
             modifier = Modifier.fillMaxHeight(fraction = 2f / 3).padding(top = 25.dp),
@@ -140,30 +149,58 @@ fun SaveButton(
 }
 
 @Composable
-private fun NavigateTabs(tabsState: DetailTab, changeState: (DetailTab) -> Unit) {
+private fun NavigateTabs(
+    tabsState: DetailTab,
+    changeState: (DetailTab) -> Unit
+) {
     val shape = RoundedCornerShape(12.dp)
     val scrollState = rememberScrollState()
+
+    data class TabInfo(val left: Int, val width: Int)
+
+    val tabPositions = remember { mutableStateMapOf<DetailTab, TabInfo>() }
+
+    var viewportWidth by remember { mutableStateOf(0) }
+    val horizontalPadding = 20.dp
+    val contentRowSize = viewportWidth - horizontalPadding.toPx() * 2
+
+    LaunchedEffect(tabsState, tabPositions, contentRowSize) {
+        tabPositions[tabsState]?.let { info ->
+            val tabCenter = info.left + info.width / 2
+            val target = tabCenter - contentRowSize / 2
+            val targetInt = target.coerceIn(0, scrollState.maxValue)
+            scrollState.animateScrollTo(targetInt)
+        }
+    }
+
     Row(
         modifier = Modifier
-            .horizontalScroll(scrollState).fillMaxWidth()
-            .background(
-                color = Color(color = 0xFFD9D9D9),
-                shape = shape
-            )
-    ) {
-        DetailTab.entries.onEach { tab ->
-            val isSelected = tab == tabsState
-            val withBackground: Modifier.() -> Modifier = {
-                if (isSelected) background(CoreColors.secondary.mainColor) else this
+            .onGloballyPositioned { coords ->
+                viewportWidth = coords.size.width
             }
+            .horizontalScroll(scrollState)
+            .fillMaxWidth()
+            .wrapContentWidth(unbounded = true)
+            .padding(horizontal = horizontalPadding)
+            .background(Color(color = 0xFFD9D9D9), shape),
+    ) {
+        DetailTab.entries.forEach { tab ->
+            val isSelected = tab == tabsState
             val contentColor = if (isSelected) Color.White else Color.Black
 
             Box(
                 modifier = Modifier
                     .clip(shape)
-                    .clickable { changeState(tab) }
-                    .withBackground()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .clickable {
+                        changeState(tab)
+                    }
+                    .background(if (isSelected) CoreColors.secondary.mainColor else Color.Transparent)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .onGloballyPositioned { coords ->
+                        val pos = coords.positionInParent()
+                        tabPositions[tab] =
+                            TabInfo(left = pos.x.roundToInt(), width = coords.size.width)
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -368,50 +405,46 @@ private fun ProfessionSelector(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CoreSmallAssetsSelection(
-    selectedAsset: Text?,
+    selectedAssets: PersistentList<Text>,
     possibleAssets: PersistentList<StaticTextId>,
+    horizontalArrangement: Arrangement.Horizontal,
+    verticalArrangement: Arrangement.Vertical,
+    paddingForItem: PaddingValues,
     modifier: Modifier = Modifier,
     onClick: (asset: StaticTextId) -> Unit
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
-        val shape = RoundedCornerShape(20.dp)
-        FlowRow(
-            modifier = Modifier.fillMaxSize().padding(15.dp),
-            horizontalArrangement = Arrangement.spacedBy(
-                space = 20.dp,
-                alignment = Alignment.CenterHorizontally
-            ),
-            verticalArrangement = Arrangement.spacedBy(
-                space = 20.dp,
-                alignment = Alignment.CenterVertically
-            ),
-        ) {
-            possibleAssets.onEach { asset ->
-                val isSelected = asset.id == selectedAsset?.id?.raw
-                val withBackground: Modifier.() -> Modifier = {
-                    if (isSelected) background(CoreColors.secondary.mainColor) else this
-                }
-                val withBorder: Modifier.() -> Modifier = {
-                    if (isSelected.not()) border(0.5.dp, Color.Black, shape) else this
-                }
-                val contentColor = if (isSelected) {
-                    CoreColors.secondary.textColor
-                } else {
-                    CoreColors.background.textColor
-                }
-                Box(
-                    modifier = Modifier
-                        .withBorder()
-                        .clip(shape)
-                        .clickable { onClick(asset) }
-                        .withBackground()
-                        .padding(horizontal = 20.dp, vertical = 10.dp)
-                ) {
-                    Text(
-                        text = asset.translate(),
-                        color = contentColor
-                    )
-                }
+    val selectedAssetIds = selectedAssets.map { it.id.raw }.toImmutableSet()
+    val shape = RoundedCornerShape(20.dp)
+    FlowRow(
+        modifier = modifier,
+        horizontalArrangement = horizontalArrangement,
+        verticalArrangement = verticalArrangement,
+    ) {
+        possibleAssets.onEach { asset ->
+            val isSelected = asset.id in selectedAssetIds
+            val withBackground: Modifier.() -> Modifier = {
+                if (isSelected) background(CoreColors.secondary.mainColor) else this
+            }
+            val withBorder: Modifier.() -> Modifier = {
+                if (isSelected.not()) border(0.5.dp, Color.Black, shape) else this
+            }
+            val contentColor = if (isSelected) {
+                CoreColors.secondary.textColor
+            } else {
+                CoreColors.background.textColor
+            }
+            Box(
+                modifier = Modifier
+                    .withBorder()
+                    .clip(shape)
+                    .clickable { onClick(asset) }
+                    .withBackground()
+                    .padding(paddingForItem)
+            ) {
+                Text(
+                    text = asset.translate(),
+                    color = contentColor
+                )
             }
         }
     }
@@ -424,17 +457,79 @@ private fun SmallAssetsSelection(
     modifier: Modifier = Modifier,
     onChange: (DetailUIItem.Asset) -> Unit
 ) {
-    CoreSmallAssetsSelection(
+    CoreSingleSmallAssetsSelection(
         selectedAsset = detailUIItem.value,
         possibleAssets = detailUIItem.possibleAssets,
-        modifier = modifier
+        allowDelete = allowDelete,
+        modifier = modifier.fillMaxSize().padding(15.dp),
+        horizontalArrangement = Arrangement.spacedBy(
+            space = 20.dp,
+            alignment = Alignment.CenterHorizontally
+        ),
+        verticalArrangement = Arrangement.spacedBy(
+            space = 20.dp,
+            alignment = Alignment.CenterVertically
+        ),
+    ) { text ->
+        onChange(detailUIItem.copy(value = text))
+    }
+}
+
+@Composable
+fun CoreSingleSmallAssetsSelection(
+    selectedAsset: Text?,
+    possibleAssets: PersistentList<StaticTextId>,
+    horizontalArrangement: Arrangement.Horizontal,
+    verticalArrangement: Arrangement.Vertical,
+    paddingForItem: PaddingValues = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
+    allowDelete: Boolean = true,
+    modifier: Modifier = Modifier,
+    onChange: (asset: Text?) -> Unit
+) {
+    CoreSmallAssetsSelection(
+        selectedAssets = listOfNotNull(selectedAsset).toPersistentList(),
+        possibleAssets = possibleAssets,
+        modifier = modifier,
+        horizontalArrangement = horizontalArrangement,
+        verticalArrangement = verticalArrangement,
+        paddingForItem = paddingForItem
     ) { asset ->
-        val value = if (asset.id != detailUIItem.value?.id?.raw || allowDelete.not()) {
+        val value = if (asset.id != selectedAsset?.id?.raw || allowDelete.not()) {
             asset.toText(type = Text.Type.Default)
         } else {
             null
         }
-        onChange(detailUIItem.copy(value = value))
+        onChange(value)
+    }
+}
+
+@Composable
+fun CoreMultiSmallAssetsSelection(
+    selectedAssets: PersistentList<Text>,
+    possibleAssets: PersistentList<StaticTextId>,
+    horizontalArrangement: Arrangement.Horizontal,
+    verticalArrangement: Arrangement.Vertical,
+    paddingForItem: PaddingValues = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
+    modifier: Modifier = Modifier,
+    onChange: (assets: PersistentList<Text>) -> Unit
+) {
+    val selectedAssetIds = selectedAssets.map { it.id.raw }.toImmutableSet()
+
+    CoreSmallAssetsSelection(
+        selectedAssets = selectedAssets,
+        possibleAssets = possibleAssets,
+        modifier = modifier,
+        horizontalArrangement = horizontalArrangement,
+        verticalArrangement = verticalArrangement,
+        paddingForItem = paddingForItem
+    ) { text ->
+        val newAssets = if (text.id in selectedAssetIds) {
+            selectedAssets.removeAll { it.id.raw == text.id }
+        } else {
+            val asset = text.toText(type = Text.Type.Default)
+            selectedAssets.add(asset)
+        }
+        onChange(newAssets)
     }
 }
 

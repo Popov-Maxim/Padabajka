@@ -28,6 +28,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Filters -> "Filters"
             StaticTextId.UiId.LookingFor -> "Looking for..."
             StaticTextId.UiId.BasicInfo -> "Basic info"
+            StaticTextId.UiId.Lifestyle -> "Lifestyle"
             StaticTextId.UiId.EnterMessage -> "Enter message..."
             StaticTextId.UiId.MessagePopupLike -> "Like"
             StaticTextId.UiId.MessagePopupReply -> "Reply"
@@ -97,6 +98,14 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.MessageTitle -> "message:"
             StaticTextId.UiId.SuperLikeCountTitle -> "you have available:"
             StaticTextId.UiId.EmptyReactionsScreen -> "No reactions yet, be the first!"
+            StaticTextId.UiId.Smoking -> "Smoking"
+            StaticTextId.UiId.SmokingHint -> "Tell us about your attitude toward smoking"
+            StaticTextId.UiId.Alcohol -> "Alcohol"
+            StaticTextId.UiId.AlcoholHint -> "Share how you feel about alcohol"
+            StaticTextId.UiId.Animals -> "Animals"
+            StaticTextId.UiId.AnimalsHint -> "Tell us about your pets or your attitude toward animals"
+            StaticTextId.UiId.YourLifestyle -> "your style:"
+            StaticTextId.UiId.ChooseTheAppropriateOne -> "choose what suits you"
         }
     }
 
@@ -123,6 +132,37 @@ class EngDictionary : Dictionary() {
             StaticTextId.AssetId.Extrovert -> "Extrovert"
             StaticTextId.AssetId.Introvert -> "Introvert"
             StaticTextId.AssetId.Ambidextrous -> "Ambidextrous"
+
+            StaticTextId.AssetId.Rarely -> "Rarely"
+            StaticTextId.AssetId.InTheCompany -> "In the company"
+            StaticTextId.AssetId.Regularly -> "Regularly"
+
+            StaticTextId.AssetId.DontSmoking -> "Don't smoke"
+            StaticTextId.AssetId.Cigarettes -> "Cigarettes"
+            StaticTextId.AssetId.Cigars -> "Cigars"
+            StaticTextId.AssetId.Hookah -> "Hookah"
+            StaticTextId.AssetId.Vape -> "Vape"
+            StaticTextId.AssetId.DisposableVape -> "Disposable vape"
+
+            StaticTextId.AssetId.DontDrink -> "Don't drink"
+            StaticTextId.AssetId.Wine -> "Wine"
+            StaticTextId.AssetId.Whiskey -> "Whiskey"
+            StaticTextId.AssetId.Beer -> "Beer"
+            StaticTextId.AssetId.Vodka -> "Vodka"
+            StaticTextId.AssetId.Rum -> "Rum"
+            StaticTextId.AssetId.Cocktails -> "Cocktails"
+            StaticTextId.AssetId.Tequila -> "Tequila"
+
+            StaticTextId.AssetId.DontLikeAnimals -> "Don't like animals"
+            StaticTextId.AssetId.LikeAnimalsNoPet -> "Like animals, but have no pet"
+            StaticTextId.AssetId.WantToGetAPet -> "Want to get a pet"
+            StaticTextId.AssetId.HaveAPet -> "Have a pet"
+            StaticTextId.AssetId.AllergicToAnimals -> "Allergic to animals"
+            StaticTextId.AssetId.Cat -> "Cat"
+            StaticTextId.AssetId.Dog -> "Dog"
+            StaticTextId.AssetId.Fish -> "Fish"
+            StaticTextId.AssetId.Parrot -> "Parrot"
+            StaticTextId.AssetId.Hamster -> "Hamster"
         }
     }
 }

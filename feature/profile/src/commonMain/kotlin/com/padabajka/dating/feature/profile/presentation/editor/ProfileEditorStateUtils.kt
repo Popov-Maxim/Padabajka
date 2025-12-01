@@ -7,6 +7,7 @@ import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.feature.profile.presentation.editor.model.DetailUIItem
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorState
 import com.padabajka.dating.feature.profile.presentation.editor.model.SupportedDetails
+import com.padabajka.dating.feature.profile.presentation.editor.model.SupportedLifestyles
 
 fun ProfileEditorState.changeAchievementMain(achievement: Achievement?): ProfileEditorState {
     return if (achievement == null) {
@@ -61,6 +62,14 @@ fun ProfileEditorState.updateDetails(supportedDetails: SupportedDetails): Profil
     return this.copy(
         details = this.details.updatedValue { details ->
             details.copy(supportedDetails = supportedDetails)
+        },
+    )
+}
+
+fun ProfileEditorState.updateLifestyle(lifestyle: SupportedLifestyles): ProfileEditorState {
+    return this.copy(
+        lifeStyle = this.lifeStyle.updatedValue { details ->
+            details.copy(supportedLifestyles = lifestyle)
         },
     )
 }

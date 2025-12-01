@@ -18,6 +18,7 @@ interface ProfileApi {
             Images("images"),
             LookingFor("looking_for"),
             Details("details"),
+            Lifestyles("lifestyles"),
         }
     }
 

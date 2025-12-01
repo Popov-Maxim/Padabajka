@@ -24,6 +24,7 @@ data class MakeAchievementMainClickEvent(val achievement: Achievement) : Profile
 data object RemoveMainAchievementClickEvent : ProfileEditorEvent
 
 data class DetailUpdateEvent(val supportedDetails: SupportedDetails) : ProfileEditorEvent
+data class LifeStyleUpdateEvent(val lifestyle: SupportedLifestyles) : ProfileEditorEvent
 
 data object NavigateBackEvent : ProfileEditorEvent
 

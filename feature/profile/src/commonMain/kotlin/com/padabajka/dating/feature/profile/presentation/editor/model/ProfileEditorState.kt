@@ -27,6 +27,7 @@ data class ProfileEditorState(
     val aboutMe: ProfileField<String>,
     val lookingFor: ProfileField<LookingForData>,
     val details: ProfileField<DetailFields>,
+    val lifeStyle: ProfileField<LifestyleFields>,
     val mainAchievement: ProfileField<Achievement?>,
     val achievements: ProfileField<PersistentList<Achievement>>,
     val saveState: SaveState = SaveState.Idle,
@@ -93,6 +94,7 @@ fun Profile.toEditorState(): ProfileEditorState {
         details = details.toDetailFields().toField(),
         mainAchievement = mainAchievement.toField(),
         achievements = achievements.toPersistentList().toField(),
+        lifeStyle = lifestyles.toLifestyleFields().toField()
     )
 }
 
@@ -103,6 +105,7 @@ fun Profile.updated(state: ProfileEditorState) = copy(
     aboutMe = state.aboutMe.value,
     lookingFor = state.lookingFor.value,
     details = state.details.value.allDetails,
+    lifestyles = state.lifeStyle.value.toDomain(),
     mainAchievement = state.mainAchievement.value,
     achievements = state.achievements.value
 )

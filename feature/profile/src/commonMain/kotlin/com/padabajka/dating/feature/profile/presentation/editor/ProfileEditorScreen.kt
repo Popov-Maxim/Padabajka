@@ -59,6 +59,7 @@ import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.image.rememberImagePicker
 import com.padabajka.dating.feature.profile.presentation.ProfileViewBottomSheet
 import com.padabajka.dating.feature.profile.presentation.editor.asset.DetailsBlock
+import com.padabajka.dating.feature.profile.presentation.editor.asset.LifestyleBlock
 import com.padabajka.dating.feature.profile.presentation.editor.dialog.EditImageDialog
 import com.padabajka.dating.feature.profile.presentation.editor.dialog.EditLookingForDialog
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldUpdateEvent
@@ -124,6 +125,16 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
                     ) {
                         BasicInfoBlock(
                             field = state.details,
+                            onEvent = component::onEvent
+                        )
+                    }
+
+                    TotalDataBlock(
+                        label = StaticTextId.UiId.Lifestyle.translate(),
+                        modifier = Modifier.padding(20.dp)
+                    ) {
+                        LifestyleBlock(
+                            field = state.lifeStyle,
                             onEvent = component::onEvent
                         )
                     }

@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 
 fun Offset.toIntOffset(): IntOffset {
@@ -20,10 +20,19 @@ fun Size.toIntSize(): IntSize {
 
 @Composable
 fun IntSize.toDpSize(): DpSize {
-    val density = LocalDensity.current.density
-    return this.toDpSize(density)
+    return DpSize(width.toDp(), height.toDp())
 }
 
-fun IntSize.toDpSize(density: Float): DpSize {
-    return DpSize((width / density).toInt().dp, (height / density).toInt().dp)
+@Composable
+fun Int.toDp(): Dp {
+    with(LocalDensity.current) {
+        return this@toDp.toDp()
+    }
+}
+
+@Composable
+fun Dp.toPx(): Int {
+    with(LocalDensity.current) {
+        return this@toPx.toPx().roundToInt()
+    }
 }

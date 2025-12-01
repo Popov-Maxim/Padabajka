@@ -4,13 +4,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Lifestyle(
-    val type: Text,
-    val value: Value,
-    val attitude: Text
-) {
-    @Serializable
-    data class Value(
-        val frequency: Text?,
-        val specifics: List<Text>
-    )
+    val type: String,
+    val value: Text?,
+    val attributes: List<Text>
+)
+
+object LifestyleType {
+    const val Smoking = "smoking"
+    const val Alcohol = "alcohol"
+    const val Animals = "animals"
 }

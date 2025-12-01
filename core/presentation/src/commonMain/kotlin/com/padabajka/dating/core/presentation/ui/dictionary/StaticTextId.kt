@@ -28,6 +28,7 @@ sealed interface StaticTextId {
         Bio(rawId = "bio"),
         LookingFor(rawId = "looking_for"),
         BasicInfo(rawId = "basic_info"),
+        Lifestyle(rawId = "lifestyle"),
 
         City(rawId = "city"),
         CityHint(rawId = "city_hint"),
@@ -48,6 +49,16 @@ sealed interface StaticTextId {
         LanguageHint(rawId = "language_hint"),
 
         CitySearch(rawId = "city_search"),
+
+        Smoking(rawId = "smoking"),
+        SmokingHint(rawId = "smoking_hint"),
+        Alcohol(rawId = "alcohol"),
+        AlcoholHint(rawId = "alcohol_hint"),
+        Animals(rawId = "animals"),
+        AnimalsHint(rawId = "animals_hint"),
+
+        YourLifestyle(rawId = "your_lifestyle"),
+        ChooseTheAppropriateOne(rawId = "choose_the_appropriate_one"),
 
         // Profile screen
         OpenProfileEditor(rawId = "open_profile_editor"),
@@ -160,6 +171,46 @@ sealed interface StaticTextId {
         Introvert(rawId = "introvert"),
         Ambidextrous(rawId = "ambidextrous"),
         // ------------------ Character
+
+        // Total lifestyle
+        Rarely(rawId = "rarely"),
+        InTheCompany(rawId = "in_the_company"),
+        Regularly(rawId = "regularly"),
+        // ------------------ Smoking lifestyle
+
+        // Smoking lifestyle
+        DontSmoking(rawId = "dont_smoking"),
+        Cigarettes("cigarettes"),
+        Cigars("cigars"),
+        Hookah("hookah"),
+        Vape("vape"),
+        DisposableVape("disposable_vape"),
+        // ------------------ Smoking lifestyle
+
+        // Alcohol lifestyle
+        DontDrink(rawId = "dont_drink"),
+        Wine("wine"),
+        Whiskey("whiskey"),
+        Beer("beer"),
+        Vodka("vodka"),
+        Rum("rum"),
+        Cocktails("cocktails"),
+        Tequila("tequila"),
+        // ------------------ Alcohol lifestyle
+
+        // Animals lifestyle
+        DontLikeAnimals(rawId = "dont_like_animals"),
+        LikeAnimalsNoPet(rawId = "like_animals_no_pet"),
+        WantToGetAPet(rawId = "want_to_get_a_pet"),
+        HaveAPet(rawId = "have_a_pet"),
+        AllergicToAnimals(rawId = "allergic_to_animals"),
+
+        Cat("cat"),
+        Dog("dog"),
+        Fish("fish"),
+        Parrot("parrot"),
+        Hamster("hamster"),
+        // ------------------ Animals lifestyle
 
         ;
         override val id: String = rawId

@@ -2,6 +2,7 @@ package com.padabajka.dating.feature.profile.data.network
 
 import com.padabajka.dating.core.data.network.model.DetailDto
 import com.padabajka.dating.core.data.network.model.ImageDto
+import com.padabajka.dating.core.data.network.model.LifestyleDto
 import com.padabajka.dating.core.data.network.model.LookingForDataDto
 import com.padabajka.dating.core.data.network.model.toDto
 import com.padabajka.dating.core.data.network.model.toImageDto
@@ -20,6 +21,7 @@ data class ProfileDto(
     val aboutMe: String,
     val lookingFor: LookingForDataDto,
     val details: List<DetailDto>,
+    val lifestyles: List<LifestyleDto>,
 )
 
 fun Profile.toDto(gender: Gender): ProfileDto {
@@ -29,7 +31,8 @@ fun Profile.toDto(gender: Gender): ProfileDto {
         images = images.filterIsInstance<Image.Url>().map { it.toImageDto() },
         aboutMe = aboutMe,
         details = details.map { it.toDto() },
+        lifestyles = lifestyles.map { it.toDto() },
         gender = gender.raw,
-        lookingFor = lookingFor.toLookingForDataDto()
+        lookingFor = lookingFor.toLookingForDataDto(),
     )
 }

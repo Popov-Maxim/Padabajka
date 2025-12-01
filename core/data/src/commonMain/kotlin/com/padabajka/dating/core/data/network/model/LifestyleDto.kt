@@ -5,28 +5,23 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LifestyleDto(
-    val type: TextDto,
-    val value: Value,
-    val attitude: TextDto
-) {
-    @Serializable
-    data class Value(
-        val frequency: TextDto? = null,
-        val specifics: List<TextDto> = emptyList()
-    )
-}
+    val type: String,
+    val value: TextDto?,
+    val attributes: List<TextDto>
+)
 
 fun LifestyleDto.toDomain(): Lifestyle {
     return Lifestyle(
-        type = type.toText(),
-        value = value.toDomain(),
-        attitude = attitude.toText()
+        type = type,
+        value = value?.toText(),
+        attributes = attributes.map { it.toText() }
     )
 }
 
-private fun LifestyleDto.Value.toDomain(): Lifestyle.Value {
-    return Lifestyle.Value(
-        frequency = frequency?.toText(),
-        specifics = specifics.map { it.toText() }
+fun Lifestyle.toDto(): LifestyleDto {
+    return LifestyleDto(
+        type = type,
+        value = value?.toTextDto(),
+        attributes = attributes.map { it.toTextDto() }
     )
 }

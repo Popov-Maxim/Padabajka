@@ -36,13 +36,16 @@ class RemoveProfileDataSourceImpl(
             ?.toLookingForDataDto()
         val details = fieldForUpdate(current, newProfile, Profile::details)
             ?.map { it.toDto() }
+        val lifestyles = fieldForUpdate(current, newProfile, Profile::lifestyles)
+            ?.map { it.toDto() }
         val parameters = mapOfNotNull(
             ProfileApi.PatchParams.Key.Name to name,
             ProfileApi.PatchParams.Key.Birthday to birthday,
             ProfileApi.PatchParams.Key.AboutMe to aboutMe,
             ProfileApi.PatchParams.Key.Images to images?.serializeToString(),
             ProfileApi.PatchParams.Key.LookingFor to lookingFor?.serializeToString(),
-            ProfileApi.PatchParams.Key.Details to details?.serializeToString()
+            ProfileApi.PatchParams.Key.Details to details?.serializeToString(),
+            ProfileApi.PatchParams.Key.Lifestyles to lifestyles?.serializeToString(),
         )
         profileApi.patch(ProfileApi.PatchParams(parameters))
     }
