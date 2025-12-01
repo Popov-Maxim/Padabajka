@@ -1,11 +1,11 @@
-package com.padabajka.dating.settings.domain
+package com.padabajka.dating.core.domain.sync
 
 import com.padabajka.dating.core.repository.api.CityRepository
 import com.padabajka.dating.core.repository.api.MatchRepository
 import com.padabajka.dating.core.repository.api.MessageRepository
 import kotlinx.coroutines.flow.first
 
-class SyncRemoteDataUseCase( // TODO: duplicate class
+class SyncRemoteDataUseCase(
     private val matchRepository: MatchRepository,
     private val messageRepository: MessageRepository,
     private val cityRepository: CityRepository
@@ -18,7 +18,7 @@ class SyncRemoteDataUseCase( // TODO: duplicate class
             }
             cityRepository.loadCities()
         }.onFailure {
-            println("TODO: not impl for error SyncRemoteDataUseCase")
+            println("TODO: not impl for error SyncRemoteDataUseCase\n${it.message}")
         }
     }
 

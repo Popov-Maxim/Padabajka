@@ -1,11 +1,11 @@
 package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
+import com.padabajka.dating.core.domain.sync.SyncRemoteDataUseCase
 import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
-import com.padabajka.dating.domain.SyncRemoteDataUseCase
 import com.padabajka.dating.feature.push.socket.domain.SocketMessageObserver
 import com.padabajka.dating.settings.domain.NewAuthMetadataUseCase
 import kotlinx.coroutines.launch

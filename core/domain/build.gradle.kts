@@ -26,6 +26,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(projects.core.repositoryApi)
+
             api(libs.immutable.collections)
             api(libs.coroutines.core)
             api(libs.koin.core)

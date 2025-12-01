@@ -331,8 +331,10 @@ private fun City(
             }
 
             is FoundedAssets.Success -> {
-                CitiesList(foundedAssets) {
-                    onSelected(cityItem.copy(value = it))
+                CitiesList(cityItem.value, foundedAssets) {
+                    val isSelectedValue = it.id == cityItem.value?.id
+                    val newValue = if (isSelectedValue) null else it
+                    onSelected(cityItem.copy(value = newValue))
                 }
             }
         }
@@ -341,14 +343,19 @@ private fun City(
 
 @Composable
 private fun CitiesList(
+    selectedAsset: Text?,
     foundedAssets: FoundedAssets.Success,
     onSelected: (Text) -> Unit
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize().innerShadow()) {
         val possibleAssets = foundedAssets.possibleAssets
         itemsIndexed(possibleAssets) { index, city ->
+            val color =
+                if (selectedAsset?.id == city.id) CoreColors.secondary.mainColor else Color.Transparent
+            val fortColor =
+                if (selectedAsset?.id == city.id) CoreColors.secondary.textColor else CoreColors.background.textColor
             Box(
-                modifier = Modifier
+                modifier = Modifier.background(color)
                     .clickable {
                         onSelected(city)
                     }
@@ -356,7 +363,8 @@ private fun CitiesList(
             ) {
                 Text(
                     text = city.translate(),
-                    fontSize = 15.sp
+                    fontSize = 15.sp,
+                    color = fortColor
                 )
             }
 
