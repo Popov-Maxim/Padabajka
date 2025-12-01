@@ -83,3 +83,15 @@ internal val CoreRes.img.mail_logo: String
 @OptIn(ExperimentalResourceApi::class)
 internal val CoreRes.img.google_logo: String
     get() = Res.getUri("drawable/google_logo.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.smoking_lifestyle: String
+    get() = Res.getUri("drawable/smoking_lifestyle.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.alcohol_lifestyle: String
+    get() = Res.getUri("drawable/alcohol_lifestyle.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.animal_lifestyle: String
+    get() = Res.getUri("drawable/animal_lifestyle.svg")

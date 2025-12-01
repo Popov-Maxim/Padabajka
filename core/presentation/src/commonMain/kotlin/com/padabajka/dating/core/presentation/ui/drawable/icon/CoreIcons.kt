@@ -2,6 +2,8 @@ package com.padabajka.dating.core.presentation.ui.drawable.icon
 
 import androidx.compose.runtime.Composable
 import com.padabajka.dating.core.presentation.ui.resource.CoreRes
+import com.padabajka.dating.core.presentation.ui.resource.drawable.alcohol_lifestyle
+import com.padabajka.dating.core.presentation.ui.resource.drawable.animal_lifestyle
 import com.padabajka.dating.core.presentation.ui.resource.drawable.app_logo
 import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_left_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_right_icon
@@ -21,6 +23,7 @@ import com.padabajka.dating.core.presentation.ui.resource.drawable.message_sent
 import com.padabajka.dating.core.presentation.ui.resource.drawable.profile_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.reaction_like
 import com.padabajka.dating.core.presentation.ui.resource.drawable.search_pref_icon
+import com.padabajka.dating.core.presentation.ui.resource.drawable.smoking_lifestyle
 import com.padabajka.dating.core.presentation.ui.resource.drawable.swiper_icon
 import com.padabajka.dating.core.presentation.ui.resource.painterResource
 
@@ -107,6 +110,18 @@ object CoreIcons {
         val GoogleLogo
             @Composable
             get() = painterResource(CoreRes.img.google_logo)
+    }
+
+    object Lifestyle {
+        val Smoking
+            @Composable
+            get() = painterResource(CoreRes.svg.smoking_lifestyle)
+        val Alcohol
+            @Composable
+            get() = painterResource(CoreRes.svg.alcohol_lifestyle)
+        val Animals
+            @Composable
+            get() = painterResource(CoreRes.svg.animal_lifestyle)
     }
 
     val AppLogo

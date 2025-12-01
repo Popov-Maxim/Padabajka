@@ -16,7 +16,6 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEdi
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileField
 
 @Composable
-@Suppress("UnusedParameter")
 fun DetailsBlock(
     field: ProfileField<DetailFields>,
     onEvent: (ProfileEditorEvent) -> Unit

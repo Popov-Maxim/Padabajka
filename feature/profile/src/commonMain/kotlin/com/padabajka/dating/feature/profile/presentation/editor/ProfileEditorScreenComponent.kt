@@ -24,6 +24,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.DiscardPro
 import com.padabajka.dating.feature.profile.presentation.editor.model.FoundedAssets
 import com.padabajka.dating.feature.profile.presentation.editor.model.HideAchievementClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ImageAddEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.LifeStyleUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.LookingForUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.MakeAchievementMainClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.MakeAchievementVisibleClickEvent
@@ -35,6 +36,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEdi
 import com.padabajka.dating.feature.profile.presentation.editor.model.RemoveMainAchievementClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.SaveProfileUpdatesClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.SupportedDetails
+import com.padabajka.dating.feature.profile.presentation.editor.model.SupportedLifestyles
 import com.padabajka.dating.feature.profile.presentation.editor.model.UpdateCitySearchEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.toEditorState
 import com.padabajka.dating.feature.profile.presentation.editor.model.updated
@@ -76,6 +78,7 @@ class ProfileEditorScreenComponent(
             is DeleteImageEvent -> deleteImage(event.image)
             is LookingForUpdateEvent -> updateLoockingForData(event.data)
             is DetailUpdateEvent -> updateDetails(event.supportedDetails)
+            is LifeStyleUpdateEvent -> updateLifestyle(event.lifestyle)
             is CitySearchQueryChangedEvent -> searchCity(event.query)
             UpdateCitySearchEvent ->
                 searchCity(state.value.details.value.supportedDetails.city.searchItem.value)
@@ -160,6 +163,12 @@ class ProfileEditorScreenComponent(
     private fun updateDetails(supportedDetails: SupportedDetails) {
         reduce {
             it.updateDetails(supportedDetails)
+        }
+    }
+
+    private fun updateLifestyle(lifestyles: SupportedLifestyles) {
+        reduce {
+            it.updateLifestyle(lifestyles)
         }
     }
 

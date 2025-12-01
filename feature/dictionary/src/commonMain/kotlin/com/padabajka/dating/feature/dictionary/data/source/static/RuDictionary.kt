@@ -27,6 +27,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Filters -> "Фильтр"
             StaticTextId.UiId.LookingFor -> "Ищу..."
             StaticTextId.UiId.BasicInfo -> "Основное"
+            StaticTextId.UiId.Lifestyle -> "Стиль жизни"
             StaticTextId.UiId.EnterMessage -> "Введите сообщение..."
             StaticTextId.UiId.MessagePopupLike -> "Лайк"
             StaticTextId.UiId.MessagePopupReply -> "Ответить"
@@ -94,6 +95,14 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.MessageTitle -> "сообщение:"
             StaticTextId.UiId.SuperLikeCountTitle -> "вам доступно:"
             StaticTextId.UiId.EmptyReactionsScreen -> "Пока тут пусто"
+            StaticTextId.UiId.Smoking -> "Курение"
+            StaticTextId.UiId.SmokingHint -> "Расскажите о вашем отношении к курению"
+            StaticTextId.UiId.Alcohol -> "Алкоголь"
+            StaticTextId.UiId.AlcoholHint -> "Укажите, как вы относитесь к алкоголю"
+            StaticTextId.UiId.Animals -> "Животные"
+            StaticTextId.UiId.AnimalsHint -> "Расскажите о ваших питомцах или отношении к животным"
+            StaticTextId.UiId.YourLifestyle -> "твой стиль:"
+            StaticTextId.UiId.ChooseTheAppropriateOne -> "выбери подходящее:"
         }
     }
 
@@ -120,6 +129,37 @@ class RuDictionary : Dictionary() {
             StaticTextId.AssetId.Extrovert -> "Экстраверт"
             StaticTextId.AssetId.Introvert -> "Интроверт"
             StaticTextId.AssetId.Ambidextrous -> "Амбидекстр"
+
+            StaticTextId.AssetId.Rarely -> "Редко"
+            StaticTextId.AssetId.InTheCompany -> "В компании"
+            StaticTextId.AssetId.Regularly -> "Регулярно"
+
+            StaticTextId.AssetId.DontSmoking -> "Не курю"
+            StaticTextId.AssetId.Cigarettes -> "Сигареты"
+            StaticTextId.AssetId.Cigars -> "Сигары"
+            StaticTextId.AssetId.Hookah -> "Кальян"
+            StaticTextId.AssetId.Vape -> "Вейп"
+            StaticTextId.AssetId.DisposableVape -> "Одноразки"
+
+            StaticTextId.AssetId.DontDrink -> "Не пью"
+            StaticTextId.AssetId.Wine -> "Вино"
+            StaticTextId.AssetId.Whiskey -> "Виски"
+            StaticTextId.AssetId.Beer -> "Пиво"
+            StaticTextId.AssetId.Vodka -> "Водка"
+            StaticTextId.AssetId.Rum -> "Ром"
+            StaticTextId.AssetId.Cocktails -> "Коктейли"
+            StaticTextId.AssetId.Tequila -> "Текила"
+
+            StaticTextId.AssetId.DontLikeAnimals -> "Не люблю животных"
+            StaticTextId.AssetId.LikeAnimalsNoPet -> "Люблю, но нет питомца"
+            StaticTextId.AssetId.WantToGetAPet -> "Хочу завести питомца"
+            StaticTextId.AssetId.HaveAPet -> "Есть питомец"
+            StaticTextId.AssetId.AllergicToAnimals -> "Аллергия на животных"
+            StaticTextId.AssetId.Cat -> "Кошка"
+            StaticTextId.AssetId.Dog -> "Собака"
+            StaticTextId.AssetId.Fish -> "Рыбки"
+            StaticTextId.AssetId.Parrot -> "Попугай"
+            StaticTextId.AssetId.Hamster -> "Хомяк"
         }
     }
 }
