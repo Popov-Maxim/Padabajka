@@ -21,8 +21,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,6 +38,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.padabajka.dating.core.presentation.ui.CoreChipItem
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
@@ -47,7 +46,6 @@ import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.pager.ImagePager
 import com.padabajka.dating.core.presentation.ui.pager.PagerData
 import com.padabajka.dating.core.presentation.ui.pager.PagerIndicators
-import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.profile.Detail
 import com.padabajka.dating.core.repository.api.model.profile.ServerIcon
 import com.padabajka.dating.feature.profile.presentation.model.ProfileViewUIItem
@@ -248,35 +246,17 @@ private fun AssetBlock(
 }
 
 @Composable
+@Suppress("UnusedParameter")
 private fun ChipItem(
     text: String,
     icon: ServerIcon?,
     modifier: Modifier = Modifier
 ) {
-    AssistChip(
-        label = {
-            Text(text = text, fontSize = 16.sp)
-        },
-        modifier = modifier,
-        leadingIcon = { LeadingIcon(icon) },
-        onClick = {},
-//        enabled = false,
-        shape = RoundedCornerShape(20.dp),
-        colors = AssistChipDefaults.assistChipColors(
-            containerColor = CoreColors.secondary.mainColor,
-            labelColor = CoreColors.secondary.textColor,
-            leadingIconContentColor = CoreColors.secondary.textColor
-        ),
-//        elevation = TODO(),
-        border = null,
-//        interactionSource = TODO()
+    CoreChipItem(
+        text = text,
+        icon = null,
+        modifier = modifier
     )
-}
-
-@Composable
-@Suppress("UnusedParameter")
-private fun LeadingIcon(icon: ServerIcon?) {
-    // TODO
 }
 
 @Suppress("MagicNumber")

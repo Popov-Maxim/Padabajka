@@ -57,6 +57,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Apply -> "Apply"
             StaticTextId.UiId.Reset -> "Reset"
             StaticTextId.UiId.Send -> "Send"
+            StaticTextId.UiId.Add -> "Add"
             StaticTextId.UiId.WelcomeText ->
                 "Welcome to Padabajka! " +
                     "We’re glad to have you here. Let’s get to know each other.\n\n" +
@@ -106,6 +107,14 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.AnimalsHint -> "Tell us about your pets or your attitude toward animals"
             StaticTextId.UiId.YourLifestyle -> "your style:"
             StaticTextId.UiId.ChooseTheAppropriateOne -> "choose what suits you"
+            StaticTextId.UiId.Native -> "Native"
+            StaticTextId.UiId.Known -> "Known"
+            StaticTextId.UiId.Learning -> "Learning"
+            StaticTextId.UiId.YourNativeLanguage -> "Your native language"
+            StaticTextId.UiId.YourKnownLanguage -> "Languages, that you know"
+            StaticTextId.UiId.YourLearningLanguage -> "Languages, that you are learning"
+            StaticTextId.UiId.SelectUpToNLanguages -> "Select up to {n} languages"
+            StaticTextId.UiId.LanguageSearch -> "Language search"
         }
     }
 

@@ -13,7 +13,7 @@ import com.padabajka.dating.core.presentation.ui.modifier.optionalClickable
 
 @Composable
 fun CoreTextEditField(
-    text: String,
+    text: String, // TODO: try TextFieldValue for fix ios
     hint: String = "",
     enabled: Boolean = true,
     singleLine: Boolean = true,

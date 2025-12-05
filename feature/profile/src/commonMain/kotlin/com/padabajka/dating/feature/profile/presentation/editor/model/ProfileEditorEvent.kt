@@ -30,5 +30,8 @@ data object NavigateBackEvent : ProfileEditorEvent
 
 data class CitySearchQueryChangedEvent(val query: String) : ProfileEditorEvent
 data object UpdateCitySearchEvent : ProfileEditorEvent
+data class UpdateLangSearchEvent(val type: LanguagesAssetType) : ProfileEditorEvent
+data class LangSearchQueryChangedEvent(val query: String, val type: LanguagesAssetType) : ProfileEditorEvent
+data class LanguagesUpdateEvent(val lang: LanguageAssetsField, val type: LanguagesAssetType) : ProfileEditorEvent
 
 data object ConsumeInternalErrorEvent : ProfileEditorEvent

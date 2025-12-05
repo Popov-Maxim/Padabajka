@@ -95,3 +95,7 @@ internal val CoreRes.svg.alcohol_lifestyle: String
 @OptIn(ExperimentalResourceApi::class)
 internal val CoreRes.svg.animal_lifestyle: String
     get() = Res.getUri("drawable/animal_lifestyle.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.add: String
+    get() = Res.getUri("drawable/add.svg")

@@ -60,6 +60,16 @@ sealed interface StaticTextId {
         YourLifestyle(rawId = "your_lifestyle"),
         ChooseTheAppropriateOne(rawId = "choose_the_appropriate_one"),
 
+        Native(rawId = "native"),
+        Known(rawId = "known"),
+        Learning(rawId = "learn"),
+
+        YourNativeLanguage(rawId = "your_native_language"),
+        YourKnownLanguage(rawId = "your_known_language"),
+        YourLearningLanguage(rawId = "your_learning_language"),
+        SelectUpToNLanguages(rawId = "select_up_to_n_languages"),
+        LanguageSearch(rawId = "language_search"),
+
         // Profile screen
         OpenProfileEditor(rawId = "open_profile_editor"),
         Preview(rawId = "preview"),
@@ -86,6 +96,7 @@ sealed interface StaticTextId {
         Apply(rawId = "apply"),
         Reset(rawId = "reset"),
         Send(rawId = "send"),
+        Add(rawId = "Add"),
 
         // Profile creating
 

@@ -28,6 +28,7 @@ data class ProfileEditorState(
     val lookingFor: ProfileField<LookingForData>,
     val details: ProfileField<DetailFields>,
     val lifeStyle: ProfileField<LifestyleFields>,
+    val language: ProfileField<LanguagesAssetsFields>,
     val mainAchievement: ProfileField<Achievement?>,
     val achievements: ProfileField<PersistentList<Achievement>>,
     val saveState: SaveState = SaveState.Idle,
@@ -94,7 +95,8 @@ fun Profile.toEditorState(): ProfileEditorState {
         details = details.toDetailFields().toField(),
         mainAchievement = mainAchievement.toField(),
         achievements = achievements.toPersistentList().toField(),
-        lifeStyle = lifestyles.toLifestyleFields().toField()
+        lifeStyle = lifestyles.toLifestyleFields().toField(),
+        language = languagesAsset.toLanguagesFields().toField()
     )
 }
 

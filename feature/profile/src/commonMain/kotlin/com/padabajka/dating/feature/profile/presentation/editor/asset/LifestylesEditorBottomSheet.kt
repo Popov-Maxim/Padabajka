@@ -36,7 +36,10 @@ import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.CoreMultiSmallAssetsSelection
+import com.padabajka.dating.core.presentation.ui.CoreSingleSmallAssetsSelection
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.toTexts
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
@@ -328,7 +331,7 @@ private fun ValueBlock(
             modifier = Modifier.padding(horizontal = 15.dp).fillMaxWidth(),
             paddingForItem = PaddingValues(horizontal = 15.dp, vertical = 10.dp),
             selectedAsset = selectedAsset,
-            possibleAssets = possibleAssets,
+            possibleAssets = possibleAssets.toTexts(Text.Type.Default),
             onChange = onChange,
             horizontalArrangement = Arrangement.spacedBy(space = 10.dp),
             verticalArrangement = Arrangement.spacedBy(space = 15.dp)
@@ -356,7 +359,7 @@ private fun AttributesBlock(
             modifier = Modifier.padding(horizontal = 15.dp).fillMaxWidth(),
             paddingForItem = PaddingValues(horizontal = 15.dp, vertical = 10.dp),
             selectedAssets = selectedAssets,
-            possibleAssets = possibleAssets,
+            possibleAssets = possibleAssets.toTexts(Text.Type.Default),
             onChange = onChange,
             horizontalArrangement = Arrangement.spacedBy(space = 10.dp),
             verticalArrangement = Arrangement.spacedBy(space = 15.dp)
