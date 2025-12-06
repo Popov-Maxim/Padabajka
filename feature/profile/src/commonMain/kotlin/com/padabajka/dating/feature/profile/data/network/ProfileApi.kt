@@ -19,6 +19,7 @@ interface ProfileApi {
             LookingFor("looking_for"),
             Details("details"),
             Lifestyles("lifestyles"),
+            LanguagesAsset("languages_asset"),
         }
     }
 

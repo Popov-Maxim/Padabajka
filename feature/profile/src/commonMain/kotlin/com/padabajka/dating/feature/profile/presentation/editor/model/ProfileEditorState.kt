@@ -108,6 +108,7 @@ fun Profile.updated(state: ProfileEditorState) = copy(
     lookingFor = state.lookingFor.value,
     details = state.details.value.allDetails,
     lifestyles = state.lifeStyle.value.toDomain(),
+    languagesAsset = state.language.value.toDomain(),
     mainAchievement = state.mainAchievement.value,
     achievements = state.achievements.value
 )
