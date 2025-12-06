@@ -1,5 +1,6 @@
 package com.padabajka.dating.core.data.network.model
 
+import com.padabajka.dating.core.repository.api.model.profile.LanguagesAsset
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.profile.Profile
 import com.padabajka.dating.core.repository.api.model.swiper.Person
@@ -37,6 +38,7 @@ fun PersonResponse.toProfile(): Profile {
         lookingFor = lookingFor?.toLookingForData() ?: LookingForData.default,
         details = details.map { it.toDomain() },
         lifestyles = lifestyles.map { it.toDomain() },
+        languagesAsset = LanguagesAsset(),
         mainAchievement = null,
         achievements = persistentListOf(),
     )

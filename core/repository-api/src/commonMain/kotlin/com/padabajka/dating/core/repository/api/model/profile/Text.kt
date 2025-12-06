@@ -17,6 +17,7 @@ data class Text(
     enum class Type(val raw: String) {
         UI("ui"),
         City("city"),
+        Language("language"),
         Default("default");
 
         companion object {

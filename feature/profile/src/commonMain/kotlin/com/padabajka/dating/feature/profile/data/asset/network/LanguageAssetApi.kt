@@ -1,15 +1,15 @@
 package com.padabajka.dating.feature.profile.data.asset.network
 
 import com.padabajka.dating.core.networking.KtorClientProvider
-import com.padabajka.dating.feature.profile.data.asset.model.CityDto
+import com.padabajka.dating.feature.profile.data.asset.model.LanguageAssetDto
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.http.path
 
-class CityApi(
+class LanguageAssetApi(
     private val ktorClientProvider: KtorClientProvider
 ) {
-    suspend fun getCities(): List<CityDto> {
+    suspend fun getAssets(): List<LanguageAssetDto> {
         val client = ktorClientProvider.client()
 
         val response = client.get {
@@ -21,7 +21,7 @@ class CityApi(
         return response.body()
     }
 
-    companion object {
-        private const val PATH_FOR_GET = "assets/cities"
+    companion object Companion {
+        private const val PATH_FOR_GET = "assets/languages"
     }
 }

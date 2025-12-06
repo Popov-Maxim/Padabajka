@@ -8,6 +8,8 @@ import androidx.compose.runtime.remember
 import com.padabajka.dating.core.repository.api.DictionaryRepository
 import com.padabajka.dating.core.repository.api.model.dictionary.Language
 import com.padabajka.dating.core.repository.api.model.profile.Text
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
 import org.koin.compose.rememberCurrentKoinScope
 
 @Composable
@@ -82,11 +84,17 @@ private fun DictionaryRepository.stableGetText(id: String, lang: Language): Stri
     return getFastText(id, lang)
 }
 
+@Stable
 fun StaticTextId.toText(type: Text.Type): Text {
     return Text(
         id = Text.Id(this.id),
         type = type,
     )
+}
+
+@Stable
+fun PersistentList<StaticTextId>.toTexts(type: Text.Type): PersistentList<Text> {
+    return map { it.toText(type) }.toPersistentList()
 }
 
 private val defaultLanguage = Language.Static.EN

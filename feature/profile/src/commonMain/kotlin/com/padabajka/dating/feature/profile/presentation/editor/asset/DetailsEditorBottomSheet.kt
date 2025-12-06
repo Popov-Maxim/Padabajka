@@ -1,15 +1,11 @@
 package com.padabajka.dating.feature.profile.presentation.editor.asset
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,9 +40,11 @@ import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.CoreSearchField
+import com.padabajka.dating.core.presentation.ui.CoreSingleSmallAssetsSelection
 import com.padabajka.dating.core.presentation.ui.CoreTextEditField
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
-import com.padabajka.dating.core.presentation.ui.dictionary.toText
+import com.padabajka.dating.core.presentation.ui.dictionary.toTexts
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
@@ -67,9 +65,6 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.updatedCit
 import com.padabajka.dating.feature.profile.presentation.editor.model.updatedHeight
 import com.padabajka.dating.feature.profile.presentation.editor.model.updatedProfession
 import com.padabajka.dating.feature.profile.presentation.editor.model.updatedSexualOrientation
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.toImmutableSet
-import kotlinx.collections.immutable.toPersistentList
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -317,7 +312,7 @@ private fun City(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        CoreTextEditField(
+        CoreSearchField(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
             text = cityItem.searchItem.value,
             onChange = {
@@ -331,8 +326,10 @@ private fun City(
             }
 
             is FoundedAssets.Success -> {
-                CitiesList(foundedAssets) {
-                    onSelected(cityItem.copy(value = it))
+                CitiesList(cityItem.value, foundedAssets) {
+                    val isSelectedValue = it.id == cityItem.value?.id
+                    val newValue = if (isSelectedValue) null else it
+                    onSelected(cityItem.copy(value = newValue))
                 }
             }
         }
@@ -341,14 +338,19 @@ private fun City(
 
 @Composable
 private fun CitiesList(
+    selectedAsset: Text?,
     foundedAssets: FoundedAssets.Success,
     onSelected: (Text) -> Unit
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize().innerShadow()) {
         val possibleAssets = foundedAssets.possibleAssets
         itemsIndexed(possibleAssets) { index, city ->
+            val color =
+                if (selectedAsset?.id == city.id) CoreColors.secondary.mainColor else Color.Transparent
+            val fortColor =
+                if (selectedAsset?.id == city.id) CoreColors.secondary.textColor else CoreColors.background.textColor
             Box(
-                modifier = Modifier
+                modifier = Modifier.background(color)
                     .clickable {
                         onSelected(city)
                     }
@@ -356,7 +358,8 @@ private fun CitiesList(
             ) {
                 Text(
                     text = city.translate(),
-                    fontSize = 15.sp
+                    fontSize = 15.sp,
+                    color = fortColor
                 )
             }
 
@@ -402,54 +405,6 @@ private fun ProfessionSelector(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun CoreSmallAssetsSelection(
-    selectedAssets: PersistentList<Text>,
-    possibleAssets: PersistentList<StaticTextId>,
-    horizontalArrangement: Arrangement.Horizontal,
-    verticalArrangement: Arrangement.Vertical,
-    paddingForItem: PaddingValues,
-    modifier: Modifier = Modifier,
-    onClick: (asset: StaticTextId) -> Unit
-) {
-    val selectedAssetIds = selectedAssets.map { it.id.raw }.toImmutableSet()
-    val shape = RoundedCornerShape(20.dp)
-    FlowRow(
-        modifier = modifier,
-        horizontalArrangement = horizontalArrangement,
-        verticalArrangement = verticalArrangement,
-    ) {
-        possibleAssets.onEach { asset ->
-            val isSelected = asset.id in selectedAssetIds
-            val withBackground: Modifier.() -> Modifier = {
-                if (isSelected) background(CoreColors.secondary.mainColor) else this
-            }
-            val withBorder: Modifier.() -> Modifier = {
-                if (isSelected.not()) border(0.5.dp, Color.Black, shape) else this
-            }
-            val contentColor = if (isSelected) {
-                CoreColors.secondary.textColor
-            } else {
-                CoreColors.background.textColor
-            }
-            Box(
-                modifier = Modifier
-                    .withBorder()
-                    .clip(shape)
-                    .clickable { onClick(asset) }
-                    .withBackground()
-                    .padding(paddingForItem)
-            ) {
-                Text(
-                    text = asset.translate(),
-                    color = contentColor
-                )
-            }
-        }
-    }
-}
-
 @Composable
 private fun SmallAssetsSelection(
     detailUIItem: DetailUIItem.Asset,
@@ -459,7 +414,7 @@ private fun SmallAssetsSelection(
 ) {
     CoreSingleSmallAssetsSelection(
         selectedAsset = detailUIItem.value,
-        possibleAssets = detailUIItem.possibleAssets,
+        possibleAssets = detailUIItem.possibleAssets.toTexts(Text.Type.Default),
         allowDelete = allowDelete,
         modifier = modifier.fillMaxSize().padding(15.dp),
         horizontalArrangement = Arrangement.spacedBy(
@@ -472,64 +427,6 @@ private fun SmallAssetsSelection(
         ),
     ) { text ->
         onChange(detailUIItem.copy(value = text))
-    }
-}
-
-@Composable
-fun CoreSingleSmallAssetsSelection(
-    selectedAsset: Text?,
-    possibleAssets: PersistentList<StaticTextId>,
-    horizontalArrangement: Arrangement.Horizontal,
-    verticalArrangement: Arrangement.Vertical,
-    paddingForItem: PaddingValues = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
-    allowDelete: Boolean = true,
-    modifier: Modifier = Modifier,
-    onChange: (asset: Text?) -> Unit
-) {
-    CoreSmallAssetsSelection(
-        selectedAssets = listOfNotNull(selectedAsset).toPersistentList(),
-        possibleAssets = possibleAssets,
-        modifier = modifier,
-        horizontalArrangement = horizontalArrangement,
-        verticalArrangement = verticalArrangement,
-        paddingForItem = paddingForItem
-    ) { asset ->
-        val value = if (asset.id != selectedAsset?.id?.raw || allowDelete.not()) {
-            asset.toText(type = Text.Type.Default)
-        } else {
-            null
-        }
-        onChange(value)
-    }
-}
-
-@Composable
-fun CoreMultiSmallAssetsSelection(
-    selectedAssets: PersistentList<Text>,
-    possibleAssets: PersistentList<StaticTextId>,
-    horizontalArrangement: Arrangement.Horizontal,
-    verticalArrangement: Arrangement.Vertical,
-    paddingForItem: PaddingValues = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
-    modifier: Modifier = Modifier,
-    onChange: (assets: PersistentList<Text>) -> Unit
-) {
-    val selectedAssetIds = selectedAssets.map { it.id.raw }.toImmutableSet()
-
-    CoreSmallAssetsSelection(
-        selectedAssets = selectedAssets,
-        possibleAssets = possibleAssets,
-        modifier = modifier,
-        horizontalArrangement = horizontalArrangement,
-        verticalArrangement = verticalArrangement,
-        paddingForItem = paddingForItem
-    ) { text ->
-        val newAssets = if (text.id in selectedAssetIds) {
-            selectedAssets.removeAll { it.id.raw == text.id }
-        } else {
-            val asset = text.toText(type = Text.Type.Default)
-            selectedAssets.add(asset)
-        }
-        onChange(newAssets)
     }
 }
 

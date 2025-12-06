@@ -14,6 +14,7 @@ import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.feature.image.domain.GetLocalImageUseCase
 import com.padabajka.dating.feature.profile.domain.SaveUpdatedProfileUseCase
 import com.padabajka.dating.feature.profile.domain.asset.FindCitiesUseCase
+import com.padabajka.dating.feature.profile.domain.asset.FindLanguageAssetsUseCase
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldLoosFocusEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFieldUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.CitySearchQueryChangedEvent
@@ -24,6 +25,10 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.DiscardPro
 import com.padabajka.dating.feature.profile.presentation.editor.model.FoundedAssets
 import com.padabajka.dating.feature.profile.presentation.editor.model.HideAchievementClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ImageAddEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.LangSearchQueryChangedEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.LanguageAssetsField
+import com.padabajka.dating.feature.profile.presentation.editor.model.LanguagesAssetType
+import com.padabajka.dating.feature.profile.presentation.editor.model.LanguagesUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.LifeStyleUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.LookingForUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.MakeAchievementMainClickEvent
@@ -38,6 +43,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.SaveProfil
 import com.padabajka.dating.feature.profile.presentation.editor.model.SupportedDetails
 import com.padabajka.dating.feature.profile.presentation.editor.model.SupportedLifestyles
 import com.padabajka.dating.feature.profile.presentation.editor.model.UpdateCitySearchEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.UpdateLangSearchEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.toEditorState
 import com.padabajka.dating.feature.profile.presentation.editor.model.updated
 import com.padabajka.dating.feature.profile.presentation.model.InternalError
@@ -49,7 +55,8 @@ class ProfileEditorScreenComponent(
     private val profileRepository: ProfileRepository,
     saveUpdatedProfileUseCaseFactory: Factory<SaveUpdatedProfileUseCase>,
     getLocalImageUseCaseFactory: Factory<GetLocalImageUseCase>,
-    private val findCitiesUseCase: FindCitiesUseCase
+    private val findCitiesUseCase: FindCitiesUseCase,
+    private val findLanguageAssetsUseCase: FindLanguageAssetsUseCase
 ) : BaseComponent<ProfileEditorState>(
     context,
     initProfileState(profileRepository)
@@ -82,6 +89,12 @@ class ProfileEditorScreenComponent(
             is CitySearchQueryChangedEvent -> searchCity(event.query)
             UpdateCitySearchEvent ->
                 searchCity(state.value.details.value.supportedDetails.city.searchItem.value)
+
+            is LangSearchQueryChangedEvent -> searchLang(event.query, event.type)
+            is UpdateLangSearchEvent ->
+                searchLang(state.value.language.value.nativeLanguages.searchItem.value, event.type)
+
+            is LanguagesUpdateEvent -> updateLanguages(event.lang, event.type)
         }
     }
 
@@ -172,6 +185,12 @@ class ProfileEditorScreenComponent(
         }
     }
 
+    private fun updateLanguages(languagesField: LanguageAssetsField, type: LanguagesAssetType) {
+        reduce {
+            it.changeLanguage(languagesField, type)
+        }
+    }
+
     private fun addImage(image: Image) = mapAndReduceException(
         action = {
             val uiImage = if (image is Image.Local) {
@@ -210,6 +229,39 @@ class ProfileEditorScreenComponent(
                 reduce {
                     it.updateDetailCity {
                         copy(foundedAssets = FoundedAssets.Success(cities))
+                    }
+                }
+            },
+            mapper = { TODO(it.toString()) },
+            update = { state, _ -> state }
+        )
+    }
+
+    private fun searchLang(query: String, type: LanguagesAssetType) {
+        searchLang(query) { updated ->
+            updateLanguage(updated, type)
+        }
+    }
+
+    private fun searchLang(
+        query: String,
+        updateLang: ProfileEditorState.(LanguageAssetsField.() -> LanguageAssetsField) -> ProfileEditorState
+    ) {
+        reduce {
+            it.updateLang {
+                copy(
+                    foundedAssets = FoundedAssets.Searching,
+                    searchItem = searchItem.copy(value = query)
+                )
+            }
+        }
+        mapAndReduceException(
+            action = {
+                val texts = findLanguageAssetsUseCase(query)
+                    .toPersistentList()
+                reduce {
+                    it.updateLang {
+                        copy(foundedAssets = FoundedAssets.Success(texts))
                     }
                 }
             },

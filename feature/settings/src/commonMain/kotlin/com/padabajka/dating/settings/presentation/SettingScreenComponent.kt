@@ -3,11 +3,11 @@ package com.padabajka.dating.settings.presentation
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.domain.Factory
 import com.padabajka.dating.core.domain.delegate
+import com.padabajka.dating.core.domain.sync.SyncRemoteDataUseCase
 import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.presentation.EmptyState
 import com.padabajka.dating.feature.auth.domain.LogOutUseCase
 import com.padabajka.dating.feature.push.data.domain.SaveTokenUseCase
-import com.padabajka.dating.settings.domain.SyncRemoteDataUseCase
 import com.padabajka.dating.settings.presentation.model.LogOutEvent
 import com.padabajka.dating.settings.presentation.model.NavigateBackEvent
 import com.padabajka.dating.settings.presentation.model.RequestPermissionEvent

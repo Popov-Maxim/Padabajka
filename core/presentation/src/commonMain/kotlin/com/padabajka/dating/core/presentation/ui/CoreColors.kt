@@ -35,6 +35,16 @@ object CoreColors {
     object Login {
         val appNameColor = Color(0xFF5E1E80)
     }
+
+    object Chips {
+        val selected = secondary
+
+        val unselected = ColorGroup(
+            0x00000000,
+            0xFF6EA3CA,
+            totalVariant,
+        )
+    }
 }
 
 data class ColorGroup(

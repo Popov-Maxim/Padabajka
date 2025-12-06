@@ -7,9 +7,7 @@ import com.padabajka.dating.core.repository.api.model.settings.DebugAppSettings
 import com.padabajka.dating.settings.data.AppSettingsRepositoryImpl
 import com.padabajka.dating.settings.data.LocalAppSettingsDataStore
 import com.padabajka.dating.settings.data.LocalDebugAppSettingsDataStore
-import com.padabajka.dating.settings.domain.SyncRemoteDataUseCase
 import com.padabajka.dating.settings.presentation.SettingScreenComponent
-import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 private val dataModule = module {
@@ -54,8 +52,6 @@ private val presentationModule = module {
             syncRemoteDataUseCase = get()
         )
     }
-
-    factoryOf(::SyncRemoteDataUseCase)
 }
 
 val settingDiModules = arrayOf(dataModule, presentationModule)

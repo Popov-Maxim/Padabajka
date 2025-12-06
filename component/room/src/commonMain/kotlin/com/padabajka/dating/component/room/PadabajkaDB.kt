@@ -8,6 +8,8 @@ import androidx.room.TypeConverters
 import com.padabajka.dating.component.room.asset.city.CityDao
 import com.padabajka.dating.component.room.asset.city.entry.CityEntry
 import com.padabajka.dating.component.room.asset.city.entry.CityTranslation
+import com.padabajka.dating.component.room.asset.language.LanguageDao
+import com.padabajka.dating.component.room.asset.language.entry.LanguageTranslationEntry
 import com.padabajka.dating.component.room.matches.MatchesDao
 import com.padabajka.dating.component.room.matches.entry.MatchEntry
 import com.padabajka.dating.component.room.messenger.MessageDao
@@ -21,7 +23,14 @@ import com.padabajka.dating.component.room.person.converters.LookingForDataConve
 import com.padabajka.dating.component.room.person.entry.PersonEntry
 
 @Database(
-    entities = [MessageEntry::class, PersonEntry::class, MatchEntry::class, CityEntry::class, CityTranslation::class],
+    entities = [
+        MessageEntry::class,
+        PersonEntry::class,
+        MatchEntry::class,
+        CityEntry::class,
+        CityTranslation::class,
+        LanguageTranslationEntry::class
+    ],
     version = 1
 )
 @TypeConverters(
@@ -37,6 +46,7 @@ abstract class PadabajkaDB : RoomDatabase() {
     abstract fun personDao(): PersonDao
     abstract fun matchesDao(): MatchesDao
     abstract fun cityDao(): CityDao
+    abstract fun languageDao(): LanguageDao
 }
 
 internal const val DB_NAME = "padabajka.db"

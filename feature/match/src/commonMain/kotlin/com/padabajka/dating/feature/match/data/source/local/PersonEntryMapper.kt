@@ -4,6 +4,7 @@ import com.padabajka.dating.component.room.person.entry.PersonEntry
 import com.padabajka.dating.core.data.network.model.toLookingForData
 import com.padabajka.dating.core.data.network.model.toLookingForDataDto
 import com.padabajka.dating.core.repository.api.model.profile.Image
+import com.padabajka.dating.core.repository.api.model.profile.LanguagesAsset
 import com.padabajka.dating.core.repository.api.model.profile.Profile
 import com.padabajka.dating.core.repository.api.model.swiper.Person
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
@@ -37,6 +38,7 @@ fun PersonEntry.toProfile(): Profile {
         lookingFor = lookingFor.toLookingForData(),
         details = listOf(),
         lifestyles = listOf(),
+        languagesAsset = LanguagesAsset(),
         mainAchievement = null,
         achievements = persistentListOf()
     )

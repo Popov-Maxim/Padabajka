@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.profile.domain
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.exception.ProfileException
 import com.padabajka.dating.core.repository.api.model.profile.DraftProfile
+import com.padabajka.dating.core.repository.api.model.profile.LanguagesAsset
 import com.padabajka.dating.core.repository.api.model.profile.Profile
 import com.padabajka.dating.feature.profile.domain.creator.DraftProfileProvider
 import kotlinx.collections.immutable.toPersistentList
@@ -39,6 +40,7 @@ class CreateProfileFromDraftUseCase(
             lookingFor = lookingFor!!,
             details = details,
             lifestyles = lifestyles,
+            languagesAsset = LanguagesAsset(),
             mainAchievement = null,
             achievements = emptyList(),
         )

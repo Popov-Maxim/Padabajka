@@ -57,6 +57,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Apply -> "Применить"
             StaticTextId.UiId.Reset -> "Сбросить"
             StaticTextId.UiId.Send -> "Отправить"
+            StaticTextId.UiId.Add -> "Добавить"
             StaticTextId.UiId.WelcomeText ->
                 "Добро пожаловать в Padabajka " +
                     "мы рады, что вы пресоеденились к нам, давайте познакомимся\n\n" +
@@ -103,6 +104,14 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.AnimalsHint -> "Расскажите о ваших питомцах или отношении к животным"
             StaticTextId.UiId.YourLifestyle -> "твой стиль:"
             StaticTextId.UiId.ChooseTheAppropriateOne -> "выбери подходящее:"
+            StaticTextId.UiId.Native -> "Родной"
+            StaticTextId.UiId.Known -> "Знаю"
+            StaticTextId.UiId.Learning -> "Учу"
+            StaticTextId.UiId.YourNativeLanguage -> "Твои родные языки"
+            StaticTextId.UiId.YourKnownLanguage -> "Языки, которые ты знаешь"
+            StaticTextId.UiId.YourLearningLanguage -> "Языки, которые ты учишь"
+            StaticTextId.UiId.SelectUpToNLanguages -> "Выбери до {n} языков"
+            StaticTextId.UiId.LanguageSearch -> "Поиск языка"
         }
     }
 
