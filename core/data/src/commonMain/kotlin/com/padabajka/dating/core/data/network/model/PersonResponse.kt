@@ -19,7 +19,8 @@ data class PersonResponse(
     val lookingFor: LookingForDataDto? = null,
     val images: List<ImageDto> = listOf(),
     val lifestyles: List<LifestyleDto> = listOf(),
-    val details: List<DetailDto> = listOf()
+    val details: List<DetailDto> = listOf(),
+    val languagesAsset: LanguagesAssetDto? = null
 )
 
 fun PersonResponse.toPerson(): Person {
@@ -38,7 +39,7 @@ fun PersonResponse.toProfile(): Profile {
         lookingFor = lookingFor?.toLookingForData() ?: LookingForData.default,
         details = details.map { it.toDomain() },
         lifestyles = lifestyles.map { it.toDomain() },
-        languagesAsset = LanguagesAsset(),
+        languagesAsset = languagesAsset?.toDomain() ?: LanguagesAsset(),
         mainAchievement = null,
         achievements = persistentListOf(),
     )

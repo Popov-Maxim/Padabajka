@@ -20,6 +20,14 @@ data class LanguageAssetsField(
     val searchItem: SearchItem
 )
 
+fun LanguagesAssetsFields.toDomain(): LanguagesAsset {
+    return LanguagesAsset(
+        native = nativeLanguages.value,
+        known = knownLanguages.value,
+        learning = learningLanguages.value
+    )
+}
+
 fun LanguageAssetsField.fillValue(value: List<Text>): LanguageAssetsField {
     return copy(value = value.toPersistentList())
 }

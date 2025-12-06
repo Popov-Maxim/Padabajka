@@ -38,6 +38,7 @@ class RemoveProfileDataSourceImpl(
             ?.map { it.toDto() }
         val lifestyles = fieldForUpdate(current, newProfile, Profile::lifestyles)
             ?.map { it.toDto() }
+        val languages = fieldForUpdate(current, newProfile, Profile::languagesAsset)?.toDto()
         val parameters = mapOfNotNull(
             ProfileApi.PatchParams.Key.Name to name,
             ProfileApi.PatchParams.Key.Birthday to birthday,
@@ -46,6 +47,7 @@ class RemoveProfileDataSourceImpl(
             ProfileApi.PatchParams.Key.LookingFor to lookingFor?.serializeToString(),
             ProfileApi.PatchParams.Key.Details to details?.serializeToString(),
             ProfileApi.PatchParams.Key.Lifestyles to lifestyles?.serializeToString(),
+            ProfileApi.PatchParams.Key.LanguagesAsset to languages?.serializeToString(),
         )
         profileApi.patch(ProfileApi.PatchParams(parameters))
     }
