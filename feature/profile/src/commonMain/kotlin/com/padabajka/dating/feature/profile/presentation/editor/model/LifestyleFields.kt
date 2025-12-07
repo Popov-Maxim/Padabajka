@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.profile.presentation.editor.model
 
+import androidx.compose.runtime.Stable
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.repository.api.model.profile.Lifestyle
 import com.padabajka.dating.core.repository.api.model.profile.LifestyleType
@@ -32,6 +33,17 @@ data class PossibleValueForLifestyle(
     val values: PersistentList<StaticTextId>,
     val attributes: PersistentList<StaticTextId>
 )
+
+@Stable
+fun SupportedLifestyles.isEmpty(): Boolean {
+    return smoking.isEmpty() &&
+        alcohol.isEmpty() &&
+        animals.isEmpty()
+}
+
+fun LifestyleField.isEmpty(): Boolean {
+    return value.value == null && value.attributes.isEmpty()
+}
 
 fun LifestyleFields.toDomain(): List<Lifestyle> {
     with(this.supportedLifestyles) {
@@ -76,6 +88,7 @@ fun LifestyleField.updateAttributes(attributes: PersistentList<Text>): Lifestyle
     copy(value = value)
 }
 
+@Stable
 fun List<Lifestyle>.toLifestyleFields(): LifestyleFields {
     var smoking: Lifestyle? = null
     var alcohol: Lifestyle? = null

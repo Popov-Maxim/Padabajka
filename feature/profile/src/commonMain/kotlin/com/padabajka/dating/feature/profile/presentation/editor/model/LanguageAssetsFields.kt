@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.profile.presentation.editor.model
 
+import androidx.compose.runtime.Stable
 import com.padabajka.dating.core.repository.api.model.profile.LanguagesAsset
 import com.padabajka.dating.core.repository.api.model.profile.Text
 import kotlinx.collections.immutable.PersistentList
@@ -20,6 +21,18 @@ data class LanguageAssetsField(
     val searchItem: SearchItem
 )
 
+@Stable
+fun LanguagesAssetsFields.isEmpty(): Boolean {
+    return nativeLanguages.isEmpty() &&
+        knownLanguages.isEmpty() &&
+        learningLanguages.isEmpty()
+}
+
+@Stable
+fun LanguageAssetsField.isEmpty(): Boolean {
+    return value.isEmpty()
+}
+
 fun LanguagesAssetsFields.toDomain(): LanguagesAsset {
     return LanguagesAsset(
         native = nativeLanguages.value,
@@ -32,6 +45,7 @@ fun LanguageAssetsField.fillValue(value: List<Text>): LanguageAssetsField {
     return copy(value = value.toPersistentList())
 }
 
+@Stable
 fun LanguagesAsset.toLanguagesFields(): LanguagesAssetsFields {
     val supportedDetails = LanguagesAssetsFields(
         nativeLanguages = Default.defaultNativeLangField.fillValue(native),

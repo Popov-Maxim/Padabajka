@@ -435,8 +435,7 @@ enum class DetailTab(val staticId: StaticTextId) {
     SexualOrientation(StaticTextId.UiId.SexualOrientation),
     Profession(StaticTextId.UiId.Profession),
     Height(StaticTextId.UiId.Height),
-    Character(StaticTextId.UiId.Character),
-    Language(StaticTextId.UiId.Language);
+    Character(StaticTextId.UiId.Character);
 
     companion object {
         private val mapper = entries.associateBy { it.staticId }

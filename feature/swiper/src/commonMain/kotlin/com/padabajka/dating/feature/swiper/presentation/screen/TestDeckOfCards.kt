@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.padabajka.dating.core.repository.api.model.profile.Age
+import com.padabajka.dating.core.repository.api.model.profile.LanguagesAsset
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.swiper.presentation.model.PersonItem
@@ -104,7 +105,8 @@ private fun createPersonItem(index: Int): PersonItem {
         mainAchievement = null,
         achievements = persistentListOf(),
         lookingFor = LookingForData.default,
-        lifestyles = persistentListOf()
+        lifestyles = persistentListOf(),
+        languages = LanguagesAsset()
     )
 }
 
