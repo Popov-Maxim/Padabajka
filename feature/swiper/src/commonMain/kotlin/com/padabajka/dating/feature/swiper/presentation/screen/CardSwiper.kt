@@ -130,7 +130,13 @@ private fun PersonCard(
                 if (showViewProfile) {
                     ProfileViewBottomSheet(
                         profileViewUIItem = personItem.toPersonView(),
-                        onDismissRequest = { showViewProfile = false }
+                        onDismissRequest = { showViewProfile = false },
+                        onLike = {
+                            onReaction(CardReaction.Like)
+                        },
+                        onDislike = {
+                            onReaction(CardReaction.Dislike)
+                        }
                     )
                 }
                 Spacer(Modifier.height(15.dp))

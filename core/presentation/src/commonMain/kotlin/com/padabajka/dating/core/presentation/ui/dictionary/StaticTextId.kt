@@ -46,7 +46,6 @@ sealed interface StaticTextId {
         Character(rawId = "character"),
         CharacterHint(rawId = "character_hint"),
         Language(rawId = "language"),
-        LanguageHint(rawId = "language_hint"),
 
         CitySearch(rawId = "city_search"),
 

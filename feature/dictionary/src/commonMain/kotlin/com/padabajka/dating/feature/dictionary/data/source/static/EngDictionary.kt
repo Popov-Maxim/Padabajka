@@ -52,7 +52,6 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Character -> "Character"
             StaticTextId.UiId.CharacterHint -> "Are you more of an introvert or an extrovert?"
             StaticTextId.UiId.Language -> "Language"
-            StaticTextId.UiId.LanguageHint -> "Which languages do you speak?"
             StaticTextId.UiId.CitySearch -> "City search"
             StaticTextId.UiId.Apply -> "Apply"
             StaticTextId.UiId.Reset -> "Reset"

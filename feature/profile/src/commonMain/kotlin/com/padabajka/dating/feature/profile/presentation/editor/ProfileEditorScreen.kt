@@ -364,7 +364,7 @@ private fun BasicInfoBlock(
 }
 
 @Composable
-private fun TotalDataBlock(
+fun TotalDataBlock(
     label: String,
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit

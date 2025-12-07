@@ -7,6 +7,7 @@ import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.profile.Age
 import com.padabajka.dating.core.repository.api.model.profile.Detail
 import com.padabajka.dating.core.repository.api.model.profile.Image
+import com.padabajka.dating.core.repository.api.model.profile.LanguagesAsset
 import com.padabajka.dating.core.repository.api.model.profile.Lifestyle
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.swiper.Person
@@ -48,6 +49,7 @@ data class PersonItem(
     val lookingFor: LookingForData,
     val details: PersistentList<Detail>,
     val lifestyles: PersistentList<Lifestyle>,
+    val languages: LanguagesAsset
 )
 
 fun Person.toPersonItem() = PersonItem(
@@ -57,7 +59,8 @@ fun Person.toPersonItem() = PersonItem(
     aboutMe = profile.aboutMe,
     lookingFor = profile.lookingFor,
     details = profile.details.toPersistentList(),
-    lifestyles = profile.lifestyles.toPersistentList()
+    lifestyles = profile.lifestyles.toPersistentList(),
+    languages = profile.languagesAsset
 )
 
 @Stable
@@ -69,6 +72,7 @@ fun PersonItem.toPersonView(): ProfileViewUIItem {
         aboutMe = aboutMe,
         lookingFor = lookingFor,
         details = details,
-        lifestyle = lifestyles
+        lifestyle = lifestyles,
+        languages = languages
     )
 }

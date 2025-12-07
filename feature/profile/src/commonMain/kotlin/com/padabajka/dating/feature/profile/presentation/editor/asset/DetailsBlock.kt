@@ -28,7 +28,6 @@ fun DetailsBlock(
         Profession(supportedDetails.profession) { bottomSheetTabState = DetailTab.Profession }
         HeightField(supportedDetails.height) { bottomSheetTabState = DetailTab.Height }
         Character(supportedDetails.character) { bottomSheetTabState = DetailTab.Character }
-        Language(supportedDetails.language) { bottomSheetTabState = DetailTab.Language }
     }
 
     bottomSheetTabState?.let { state ->
@@ -117,21 +116,6 @@ private fun Character(
         label = StaticTextId.UiId.Character.translate(),
         value = valueText,
         hint = StaticTextId.UiId.CharacterHint.translate(),
-        onClick = onClick
-    )
-}
-
-@Composable
-private fun Language(
-    detail: DetailUIItem.Asset,
-    onClick: () -> Unit
-) {
-    val valueText = detail.getRawValue() ?: ""
-
-    SmallOnlyDataField(
-        label = StaticTextId.UiId.Language.translate(),
-        value = valueText,
-        hint = StaticTextId.UiId.LanguageHint.translate(),
         onClick = onClick
     )
 }

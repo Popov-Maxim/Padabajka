@@ -1,7 +1,6 @@
 package com.padabajka.dating.feature.profile.presentation.editor.asset
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +26,9 @@ import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
+import com.padabajka.dating.core.presentation.ui.layout.SeparatedColumn
+import com.padabajka.dating.core.presentation.ui.layout.SeparatedColumnScope
+import com.padabajka.dating.core.presentation.ui.modifier.optionalClickable
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.feature.profile.presentation.editor.model.LanguageAssetsField
 import com.padabajka.dating.feature.profile.presentation.editor.model.LanguagesAssetType
@@ -35,6 +37,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.LanguagesU
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileField
 import com.padabajka.dating.feature.profile.presentation.editor.model.UpdateLangSearchEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.isEmpty
 
 @Composable
 fun LanguageBlock(
@@ -104,6 +107,45 @@ fun LanguageBlock(
 }
 
 @Composable
+fun LanguageBlockView(field: LanguagesAssetsFields) {
+    val languageAssetsFields = field
+
+    SeparatedColumn(
+        divider = {
+            LifestyleDivider()
+        }
+    ) {
+        itemLanguageField(languageAssetsFields.nativeLanguages) {
+            Languages(
+                title = StaticTextId.UiId.Native,
+                field = languageAssetsFields.nativeLanguages,
+            )
+        }
+        itemLanguageField(languageAssetsFields.knownLanguages) {
+            Languages(
+                title = StaticTextId.UiId.Known,
+                field = languageAssetsFields.knownLanguages,
+            )
+        }
+        itemLanguageField(languageAssetsFields.learningLanguages) {
+            Languages(
+                title = StaticTextId.UiId.Learning,
+                field = languageAssetsFields.learningLanguages,
+            )
+        }
+    }
+}
+
+private fun SeparatedColumnScope.itemLanguageField(
+    field: LanguageAssetsField,
+    content: @Composable () -> Unit
+) {
+    if (field.isEmpty().not()) {
+        item(content = content)
+    }
+}
+
+@Composable
 private fun LifestyleDivider() {
     Box(modifier = Modifier.padding(horizontal = 10.dp)) {
         HorizontalDivider(
@@ -117,10 +159,10 @@ private fun LifestyleDivider() {
 private fun Languages(
     title: StaticTextId,
     field: LanguageAssetsField,
-    onClick: () -> Unit
+    onClick: (() -> Unit)? = null
 ) {
     Row(
-        modifier = Modifier.clickable(onClick = onClick)
+        modifier = Modifier.optionalClickable(onClick = onClick)
             .padding(vertical = 20.dp).fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(15.dp)
@@ -128,6 +170,7 @@ private fun Languages(
         Text(text = title.translate())
         Languages(
             field = field,
+            showAddButton = onClick != null
         )
     }
 }
@@ -135,6 +178,7 @@ private fun Languages(
 @Composable
 private fun Languages(
     field: LanguageAssetsField,
+    showAddButton: Boolean = true
 ) {
     FlowRow(
         modifier = Modifier.padding(horizontal = 10.dp),
@@ -146,7 +190,7 @@ private fun Languages(
                 text = it.translate()
             )
         }
-        if (field.value.size < field.maxValues) {
+        if (field.value.size < field.maxValues && showAddButton) {
             CoreChipItem(
                 text = StaticTextId.UiId.Add.translate(),
                 icon = CoreIcons.Add.toData(),

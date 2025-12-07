@@ -15,7 +15,6 @@ import com.padabajka.dating.core.repository.api.model.profile.Profile
 import com.padabajka.dating.core.repository.api.model.profile.age
 import com.padabajka.dating.feature.profile.presentation.model.ProfileViewUIItem
 import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.datetime.LocalDate
 
@@ -43,7 +42,8 @@ data class ProfileEditorState(
         aboutMe = aboutMe.value,
         lookingFor = lookingFor.value,
         details = details.value.allDetails,
-        lifestyle = persistentListOf(),
+        lifestyle = lifeStyle.value.toDomain().toPersistentList(),
+        languages = language.value.toDomain()
     )
 
     sealed interface SaveState {

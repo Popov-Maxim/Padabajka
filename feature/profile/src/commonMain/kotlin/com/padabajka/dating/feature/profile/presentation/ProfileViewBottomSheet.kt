@@ -1,10 +1,10 @@
 package com.padabajka.dating.feature.profile.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -48,6 +50,14 @@ import com.padabajka.dating.core.presentation.ui.pager.PagerData
 import com.padabajka.dating.core.presentation.ui.pager.PagerIndicators
 import com.padabajka.dating.core.repository.api.model.profile.Detail
 import com.padabajka.dating.core.repository.api.model.profile.ServerIcon
+import com.padabajka.dating.feature.profile.presentation.editor.TotalDataBlock
+import com.padabajka.dating.feature.profile.presentation.editor.asset.LanguageBlockView
+import com.padabajka.dating.feature.profile.presentation.editor.asset.LifestyleBlockView
+import com.padabajka.dating.feature.profile.presentation.editor.model.LanguagesAssetsFields
+import com.padabajka.dating.feature.profile.presentation.editor.model.LifestyleFields
+import com.padabajka.dating.feature.profile.presentation.editor.model.isEmpty
+import com.padabajka.dating.feature.profile.presentation.editor.model.toLanguagesFields
+import com.padabajka.dating.feature.profile.presentation.editor.model.toLifestyleFields
 import com.padabajka.dating.feature.profile.presentation.model.ProfileViewUIItem
 import kotlinx.collections.immutable.PersistentList
 
@@ -56,8 +66,8 @@ import kotlinx.collections.immutable.PersistentList
 fun ProfileViewBottomSheet(
     profileViewUIItem: ProfileViewUIItem,
     onDismissRequest: () -> Unit,
-    onLike: () -> Unit = {},
-    onDislike: () -> Unit = {},
+    onLike: (() -> Unit)? = null,
+    onDislike: (() -> Unit)? = null,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(true)
     ModalBottomSheet(
@@ -68,23 +78,22 @@ fun ProfileViewBottomSheet(
         onDismissRequest = onDismissRequest,
         dragHandle = null
     ) {
-        Box {
-            ProfileViewContent(
-                profileViewUIItem,
-                Modifier.fillMaxSize()
-//                .padding(
-//                    WindowInsets.systemBars
-//                        .asPaddingValues()
-//                )
-//                .background(
-//                    CoreColors.background.mainColor,
-//                    RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
-//                )
-            )
-
-            // TODO: fix ui
-            ReactionsButtons(Modifier.align(Alignment.BottomCenter), onLike, onDislike)
-        }
+        ProfileViewContent(
+            profileViewUIItem = profileViewUIItem,
+            modifier = Modifier.fillMaxSize(),
+            onLike = onLike?.let {
+                {
+                    onDismissRequest()
+                    onLike()
+                }
+            },
+            onDislike = onDislike?.let {
+                {
+                    onDismissRequest()
+                    onDislike()
+                }
+            },
+        )
     }
 }
 
@@ -99,13 +108,15 @@ private fun ReactionsButtons(
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         val buttonModifier = Modifier.align(Alignment.CenterVertically)
-            .background(CoreColors.background.mainColor, CircleShape)
-            .border(width = 1.dp, color = Color.Black)
+            .shadow(elevation = 5.dp, shape = CircleShape)
 
         IconButton(
             modifier = buttonModifier
                 .size(64.dp).weight(1f),
-            onClick = { onDislike() }
+            onClick = { onDislike() },
+            colors = IconButtonDefaults.iconButtonColors().copy(
+                containerColor = Color.White,
+            )
         ) {
             Icon(
                 modifier = Modifier.size(34.dp),
@@ -117,12 +128,15 @@ private fun ReactionsButtons(
         IconButton(
             modifier = buttonModifier
                 .height(64.dp).weight(2f),
-            onClick = { onLike() }
+            onClick = { onLike() },
+            colors = IconButtonDefaults.iconButtonColors().copy(
+                containerColor = Color(color = 0xFF47C04C),
+                contentColor = Color.White
+            )
         ) {
             Icon(
                 modifier = Modifier.size(34.dp),
                 imageVector = Icons.Default.Favorite,
-                tint = Color(color = 0xFF47C04C),
                 contentDescription = "Like",
             )
         }
@@ -132,12 +146,31 @@ private fun ReactionsButtons(
 @Composable
 private fun ProfileViewContent(
     profileViewUIItem: ProfileViewUIItem,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onLike: (() -> Unit)?,
+    onDislike: (() -> Unit)?
 ) {
     val scrollState = rememberScrollState()
-    Column(modifier.verticalScroll(scrollState)) {
+    Column(
+        modifier = modifier.verticalScroll(scrollState)
+    ) {
         BlockWithImagePager(profileViewUIItem)
-        TextAssetsInProfile(profileViewUIItem)
+        Column(
+            modifier = Modifier.padding(vertical = 40.dp),
+            verticalArrangement = Arrangement.spacedBy(40.dp)
+        ) {
+            TextAssetsInProfile(
+                modifier = Modifier.padding(horizontal = 20.dp),
+                profileViewUIItem = profileViewUIItem
+            )
+
+            if (onLike != null && onDislike != null) {
+                ReactionsButtons(
+                    onLike = onLike,
+                    onDislike = onDislike
+                )
+            }
+        }
     }
 }
 
@@ -164,6 +197,24 @@ private fun BlockWithImagePager(profileViewUIItem: ProfileViewUIItem) {
                 pagerData = pagerData
             )
         }
+
+        val gradientBottom = Brush.verticalGradient(
+            colors = gradientBottomAlfa.map { Color.Black.copy(alpha = it) }
+        )
+        Box(
+            modifier = Modifier.align(Alignment.BottomCenter)
+                .fillMaxWidth().height(84.dp)
+                .background(gradientBottom)
+                .padding(horizontal = 20.dp, vertical = 15.dp)
+        ) {
+            val textColor = Color.White
+            Text(
+                text = "${profileViewUIItem.name}, ${profileViewUIItem.age.raw}",
+                fontSize = 26.sp,
+                color = textColor,
+                modifier = Modifier.align(Alignment.BottomStart)
+            )
+        }
     }
 }
 
@@ -173,7 +224,7 @@ private fun TextAssetsInProfile(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.padding(vertical = 40.dp, horizontal = 20.dp),
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(40.dp)
     ) {
         AboutMe(
@@ -181,6 +232,12 @@ private fun TextAssetsInProfile(
         )
         Details(
             details = profileViewUIItem.details
+        )
+        Lifestyle(
+            field = profileViewUIItem.lifestyle.toLifestyleFields()
+        )
+        Language(
+            field = profileViewUIItem.languages.toLanguagesFields()
         )
     }
 }
@@ -207,25 +264,57 @@ private fun Details(
     details: PersistentList<Detail>,
     modifier: Modifier = Modifier
 ) {
-    AssetBlock(
-        modifier = modifier,
-        label = StaticTextId.UiId.BasicInfo
-    ) {
-        FlowRow(
-//            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+    if (details.isNotEmpty()) {
+        AssetBlock(
+            modifier = modifier,
+            label = StaticTextId.UiId.BasicInfo
         ) {
-            details.onEach { detail ->
-                val text = when (val value = detail.value) {
-                    is Detail.Value.Centimeter -> value.raw.toString()
-                    is Detail.Value.String -> value.raw
-                    is Detail.Value.Asset -> value.raw.translate()
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(7.dp)
+            ) {
+                details.onEach { detail ->
+                    val text = when (val value = detail.value) {
+                        is Detail.Value.Centimeter -> value.raw.toString()
+                        is Detail.Value.String -> value.raw
+                        is Detail.Value.Asset -> value.raw.translate()
+                    }
+                    ChipItem(
+                        text = text,
+                        icon = detail.icon,
+                    )
                 }
-                ChipItem(
-                    text = text,
-                    icon = detail.icon,
-                )
             }
+        }
+    }
+}
+
+@Composable
+private fun Lifestyle(
+    field: LifestyleFields,
+    modifier: Modifier = Modifier
+) {
+    if (field.supportedLifestyles.isEmpty().not()) {
+        AssetBlock(
+            label = StaticTextId.UiId.Lifestyle,
+            modifier = modifier
+        ) {
+            LifestyleBlockView(field)
+        }
+    }
+}
+
+@Composable
+private fun Language(
+    field: LanguagesAssetsFields,
+    modifier: Modifier = Modifier
+) {
+    if (field.isEmpty().not()) {
+        AssetBlock(
+            label = StaticTextId.UiId.Language,
+            modifier = modifier
+        ) {
+            LanguageBlockView(field)
         }
     }
 }
@@ -234,15 +323,13 @@ private fun Details(
 private fun AssetBlock(
     label: StaticTextId.UiId,
     modifier: Modifier,
-    context: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
-    Column(modifier = modifier) {
-        Text(
-            text = label.translate(),
-            fontSize = 24.sp
-        )
-        context()
-    }
+    TotalDataBlock(
+        label = label.translate(),
+        modifier = modifier,
+        content = content
+    )
 }
 
 @Composable
@@ -261,5 +348,8 @@ private fun ChipItem(
 
 @Suppress("MagicNumber")
 private val gradientTopAlfa = listOf(0f, 0.3f, 0.8f).reversed()
+
+@Suppress("MagicNumber")
+private val gradientBottomAlfa = listOf(0f, 0.6f, 1f)
 
 private const val RATIO_FOR_IMAGE = 3f / 4

@@ -1,6 +1,5 @@
 package com.padabajka.dating.feature.profile.presentation.editor.asset
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,11 +25,16 @@ import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.drawable.icon.Icon
 import com.padabajka.dating.core.presentation.ui.drawable.icon.IconData
 import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
+import com.padabajka.dating.core.presentation.ui.layout.SeparatedColumn
+import com.padabajka.dating.core.presentation.ui.layout.SeparatedColumnScope
+import com.padabajka.dating.core.presentation.ui.modifier.optionalClickable
 import com.padabajka.dating.core.repository.api.model.profile.Text
+import com.padabajka.dating.feature.profile.presentation.editor.model.LifestyleField
 import com.padabajka.dating.feature.profile.presentation.editor.model.LifestyleFields
 import com.padabajka.dating.feature.profile.presentation.editor.model.LifestyleUIItem
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileField
+import com.padabajka.dating.feature.profile.presentation.editor.model.isEmpty
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -70,6 +74,44 @@ fun LifestyleBlock(
 }
 
 @Composable
+fun LifestyleBlockView(field: LifestyleFields) {
+    val supportedLifestyles = field.supportedLifestyles
+    SeparatedColumn(
+        divider = {
+            LifestyleDivider()
+        }
+    ) {
+        itemLifestyleField(supportedLifestyles.smoking) {
+            Smoking(
+                lifestyle = supportedLifestyles.smoking.value,
+                defaultDescription = ""
+            )
+        }
+        itemLifestyleField(supportedLifestyles.alcohol) {
+            Alcohol(
+                lifestyle = supportedLifestyles.alcohol.value,
+                defaultDescription = ""
+            )
+        }
+        itemLifestyleField(supportedLifestyles.animals) {
+            Animals(
+                lifestyle = supportedLifestyles.animals.value,
+                defaultDescription = ""
+            )
+        }
+    }
+}
+
+private fun SeparatedColumnScope.itemLifestyleField(
+    field: LifestyleField,
+    content: @Composable () -> Unit
+) {
+    if (field.isEmpty().not()) {
+        item(content = content)
+    }
+}
+
+@Composable
 private fun LifestyleDivider() {
     Box(Modifier.padding(horizontal = 10.dp)) {
         HorizontalDivider(
@@ -82,14 +124,15 @@ private fun LifestyleDivider() {
 @Composable
 private fun Smoking(
     lifestyle: LifestyleUIItem,
-    onClick: () -> Unit
+    defaultDescription: String = StaticTextId.UiId.SmokingHint.translate(),
+    onClick: (() -> Unit)? = null
 ) {
     LifestyleField(
         iconData = CoreIcons.Lifestyle.Smoking.toData(),
         title = StaticTextId.UiId.Smoking,
         value = lifestyle.value,
         description = lifestyle.attributes,
-        defaultDescription = StaticTextId.UiId.SmokingHint.translate(),
+        defaultDescription = defaultDescription,
         onClick = onClick
     )
 }
@@ -97,14 +140,15 @@ private fun Smoking(
 @Composable
 private fun Alcohol(
     lifestyle: LifestyleUIItem,
-    onClick: () -> Unit
+    defaultDescription: String = StaticTextId.UiId.AlcoholHint.translate(),
+    onClick: (() -> Unit)? = null
 ) {
     LifestyleField(
         iconData = CoreIcons.Lifestyle.Alcohol.toData(),
         title = StaticTextId.UiId.Alcohol,
         value = lifestyle.value,
         description = lifestyle.attributes,
-        defaultDescription = StaticTextId.UiId.AlcoholHint.translate(),
+        defaultDescription = defaultDescription,
         onClick = onClick
     )
 }
@@ -112,14 +156,15 @@ private fun Alcohol(
 @Composable
 private fun Animals(
     lifestyle: LifestyleUIItem,
-    onClick: () -> Unit
+    defaultDescription: String = StaticTextId.UiId.AnimalsHint.translate(),
+    onClick: (() -> Unit)? = null
 ) {
     LifestyleField(
         iconData = CoreIcons.Lifestyle.Animals.toData(),
         title = StaticTextId.UiId.Animals,
         value = lifestyle.value,
         description = lifestyle.attributes,
-        defaultDescription = StaticTextId.UiId.AnimalsHint.translate(),
+        defaultDescription = defaultDescription,
         onClick = onClick
     )
 }
@@ -131,7 +176,7 @@ fun LifestyleField(
     value: Text?,
     description: ImmutableList<Text>,
     defaultDescription: String,
-    onClick: () -> Unit
+    onClick: (() -> Unit)? = null
 ) {
     val mappingDescription = description.takeIf { it.isNotEmpty() }
         ?.map { it.translate() }
@@ -160,10 +205,10 @@ private fun CoreLifestyleField(
     value: String?,
     description: String,
     descriptionColor: Color,
-    onClick: () -> Unit
+    onClick: (() -> Unit)? = null
 ) {
     Row(
-        modifier = Modifier.clickable(onClick = onClick).padding(vertical = 10.dp),
+        modifier = Modifier.optionalClickable(onClick = onClick).padding(vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(15.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

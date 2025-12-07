@@ -51,7 +51,6 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Character -> "Характер"
             StaticTextId.UiId.CharacterHint -> "Ты больше интроверт или экстраверт?"
             StaticTextId.UiId.Language -> "Язык"
-            StaticTextId.UiId.LanguageHint -> "На каких языках ты говоришь?"
             StaticTextId.UiId.Preview -> "просмотр"
             StaticTextId.UiId.CitySearch -> "Поиск города"
             StaticTextId.UiId.Apply -> "Применить"
