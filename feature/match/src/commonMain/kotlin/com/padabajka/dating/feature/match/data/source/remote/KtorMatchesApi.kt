@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.match.data.source.remote
 import com.padabajka.dating.core.networking.KtorClientProvider
 import com.padabajka.dating.feature.match.data.model.MatchDto
 import io.ktor.client.call.body
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.http.path
 
@@ -15,6 +16,18 @@ class KtorMatchesApi(
         val response = client.get {
             url {
                 path(MatchesApi.PATH)
+            }
+        }
+
+        return response.body()
+    }
+
+    override suspend fun delete(matchId: String) {
+        val client = ktorClientProvider.client()
+
+        val response = client.delete {
+            url {
+                path(MatchesApi.PATH_DELETE + "/$matchId")
             }
         }
 

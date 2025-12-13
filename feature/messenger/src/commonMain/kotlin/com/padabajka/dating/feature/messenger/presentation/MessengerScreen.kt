@@ -86,7 +86,7 @@ private fun MatchesBlock(matches: List<EmptyChatItem>, onEvent: (MessengerEvent)
         ) {
             items(matches) { match ->
                 ProfileAvatar(match.match.person.images.firstOrNull()?.raw()) {
-                    onEvent(OpenChatEvent(match.chatId, match.match.person))
+                    onEvent(OpenChatEvent(match.chatId, match.match))
                 }
             }
         }
@@ -112,7 +112,7 @@ private fun ChatsBlock(chats: List<ChatItem>, onEvent: (MessengerEvent) -> Unit)
             Row(
                 modifier = Modifier.fillMaxWidth()
                     .clickable {
-                        onEvent(OpenChatEvent(chat.chatId, chat.match.person))
+                        onEvent(OpenChatEvent(chat.chatId, chat.match))
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {

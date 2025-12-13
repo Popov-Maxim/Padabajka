@@ -25,6 +25,8 @@ import com.padabajka.dating.core.presentation.ui.ProfileAvatar
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
 import com.padabajka.dating.core.repository.api.model.profile.raw
+import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteChatEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteMatchEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.Field
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.NavigateBackEvent
@@ -35,6 +37,7 @@ import com.padabajka.dating.feature.messenger.presentation.chat.ui.ParentMessage
 import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
 import com.padabajka.dating.feature.messenger.presentation.model.toPersonView
 import com.padabajka.dating.feature.profile.presentation.ProfileViewBottomSheet
+import com.padabajka.dating.feature.profile.presentation.model.ProfileViewMode
 
 @Composable
 fun ChatScreen(component: ChatComponent) {
@@ -129,7 +132,15 @@ private fun TopBar(person: PersonItem, onEvent: (MessengerEvent) -> Unit) {
         val profileViewUIItem = person.toPersonView()
         ProfileViewBottomSheet(
             profileViewUIItem = profileViewUIItem,
-            onDismissRequest = { showViewProfile = false }
+            onDismissRequest = { showViewProfile = false },
+            mode = ProfileViewMode.Match(
+                onDeleteChat = {
+                    onEvent(DeleteChatEvent)
+                },
+                onUnmatch = {
+                    onEvent(DeleteMatchEvent)
+                }
+            )
         )
     }
 }

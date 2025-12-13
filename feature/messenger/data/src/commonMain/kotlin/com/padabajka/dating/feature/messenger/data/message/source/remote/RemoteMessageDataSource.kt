@@ -12,4 +12,5 @@ internal interface RemoteMessageDataSource {
     suspend fun removeReaction(messageId: String, author: String)
     suspend fun readMessages(messageRequest: MessageRequest.MarkAsRead)
     suspend fun getMessages(chatId: String, beforeMessageId: String?, count: Int): List<MessageDto>
+    suspend fun deleteChat(chatId: String)
 }

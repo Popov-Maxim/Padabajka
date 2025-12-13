@@ -79,6 +79,18 @@ class KtorMessageApi(
         return response.throwIfNotSuccessful()
     }
 
+    override suspend fun deleteChat(chatId: String) {
+        val client = ktorClientProvider.client()
+
+        val response = client.delete {
+            url {
+                path(MessageApi.PATH_DELETE_CHAT + "/$chatId")
+            }
+        }
+
+        return response.throwIfNotSuccessful()
+    }
+
     override suspend fun markAsRead(messageRequest: MessageRequest.MarkAsRead) {
         val client = ktorClientProvider.client()
 

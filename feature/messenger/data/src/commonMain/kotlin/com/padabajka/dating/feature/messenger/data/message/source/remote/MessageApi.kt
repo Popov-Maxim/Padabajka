@@ -13,6 +13,8 @@ interface MessageApi {
 
     suspend fun deleteMessage(chatId: String, messageId: String)
 
+    suspend fun deleteChat(chatId: String)
+
     suspend fun markAsRead(messageRequest: MessageRequest.MarkAsRead)
 
     data class GetParams(
@@ -40,6 +42,7 @@ interface MessageApi {
         const val PATH_NEW = "new_message"
         const val PATH_PATCH = "patch_message"
         const val PATH_DELETE = "delete_message"
+        const val PATH_DELETE_CHAT = "delete_chat"
         const val PATH_MARK_AS_READ = "mark_as_read"
     }
 }

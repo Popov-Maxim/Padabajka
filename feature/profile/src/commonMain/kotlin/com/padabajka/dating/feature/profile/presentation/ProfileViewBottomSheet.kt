@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreChipItem
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.GhostButton
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
@@ -58,6 +59,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.LifestyleF
 import com.padabajka.dating.feature.profile.presentation.editor.model.isEmpty
 import com.padabajka.dating.feature.profile.presentation.editor.model.toLanguagesFields
 import com.padabajka.dating.feature.profile.presentation.editor.model.toLifestyleFields
+import com.padabajka.dating.feature.profile.presentation.model.ProfileViewMode
 import com.padabajka.dating.feature.profile.presentation.model.ProfileViewUIItem
 import kotlinx.collections.immutable.PersistentList
 
@@ -66,8 +68,7 @@ import kotlinx.collections.immutable.PersistentList
 fun ProfileViewBottomSheet(
     profileViewUIItem: ProfileViewUIItem,
     onDismissRequest: () -> Unit,
-    onLike: (() -> Unit)? = null,
-    onDislike: (() -> Unit)? = null,
+    mode: ProfileViewMode = ProfileViewMode.None,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(true)
     ModalBottomSheet(
@@ -81,19 +82,40 @@ fun ProfileViewBottomSheet(
         ProfileViewContent(
             profileViewUIItem = profileViewUIItem,
             modifier = Modifier.fillMaxSize(),
-            onLike = onLike?.let {
-                {
-                    onDismissRequest()
-                    onLike()
-                }
-            },
-            onDislike = onDislike?.let {
-                {
-                    onDismissRequest()
-                    onDislike()
-                }
-            },
+            mode = mode,
+            onDismissRequest = onDismissRequest,
         )
+    }
+}
+
+@Composable
+private fun BottomButtons(mode: ProfileViewMode, onDismissRequest: () -> Unit) {
+    when (mode) {
+        is ProfileViewMode.Discovery -> {
+            ReactionsButtons(
+                onLike = {
+                    onDismissRequest()
+                    mode.onLike()
+                },
+                onDislike = {
+                    onDismissRequest()
+                    mode.onDislike()
+                }
+            )
+        }
+        is ProfileViewMode.Match -> {
+            MatchButtons(
+                onDeleteChat = {
+                    onDismissRequest()
+                    mode.onDeleteChat()
+                },
+                onUnmatch = {
+                    onDismissRequest()
+                    mode.onUnmatch()
+                }
+            )
+        }
+        ProfileViewMode.None -> Unit
     }
 }
 
@@ -144,11 +166,32 @@ private fun ReactionsButtons(
 }
 
 @Composable
+private fun MatchButtons(
+    modifier: Modifier = Modifier,
+    onDeleteChat: () -> Unit = {},
+    onUnmatch: () -> Unit = {},
+) {
+    Column(
+        modifier = modifier.padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        GhostButton(
+            text = "Удалить чат",
+            onClick = onDeleteChat
+        )
+        GhostButton(
+            text = "Удалить метч",
+            onClick = onUnmatch
+        )
+    }
+}
+
+@Composable
 private fun ProfileViewContent(
     profileViewUIItem: ProfileViewUIItem,
     modifier: Modifier = Modifier,
-    onLike: (() -> Unit)?,
-    onDislike: (() -> Unit)?
+    mode: ProfileViewMode,
+    onDismissRequest: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -157,19 +200,14 @@ private fun ProfileViewContent(
         BlockWithImagePager(profileViewUIItem)
         Column(
             modifier = Modifier.padding(vertical = 40.dp),
-            verticalArrangement = Arrangement.spacedBy(40.dp)
+            verticalArrangement = Arrangement.spacedBy(70.dp)
         ) {
             TextAssetsInProfile(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 profileViewUIItem = profileViewUIItem
             )
 
-            if (onLike != null && onDislike != null) {
-                ReactionsButtons(
-                    onLike = onLike,
-                    onDislike = onDislike
-                )
-            }
+            BottomButtons(mode, onDismissRequest)
         }
     }
 }

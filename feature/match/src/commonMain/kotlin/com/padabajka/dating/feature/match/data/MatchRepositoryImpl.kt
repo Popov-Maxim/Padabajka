@@ -37,4 +37,8 @@ class MatchRepositoryImpl(
         val matches = matchesDto.map { it.toEntry() }
         localMatchDataSource.replaceMatches(matches)
     }
+
+    override suspend fun deleteMatch(match: Match.Id) {
+        remoteMatchDataSource.deleteMatch(match.raw)
+    }
 }

@@ -120,6 +120,14 @@ internal class MessageRepositoryImpl(
         }
     }
 
+    override suspend fun deleteChat(chatId: ChatId) {
+        remoteMessageDataSource.deleteChat(chatId.raw)
+    }
+
+    override suspend fun deleteLocalChat(chatId: ChatId) {
+//        localMessageDataSource.deleteChat(chatId.raw)
+    }
+
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override suspend fun readMessage(messageId: MessageId) {
         val message = localMessageDataSource.message(messageId.raw)

@@ -8,4 +8,6 @@ interface MatchRepository {
     suspend fun matches(): Flow<List<Match>>
     suspend fun saveMatch(match: RawMatch)
     suspend fun sync()
+
+    suspend fun deleteMatch(match: Match.Id)
 }

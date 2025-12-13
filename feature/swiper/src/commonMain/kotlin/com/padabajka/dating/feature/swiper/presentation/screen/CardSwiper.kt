@@ -40,6 +40,7 @@ import com.padabajka.dating.core.presentation.ui.pager.ImagePager
 import com.padabajka.dating.core.presentation.ui.pager.PagerData
 import com.padabajka.dating.core.presentation.ui.pager.PagerIndicators
 import com.padabajka.dating.feature.profile.presentation.ProfileViewBottomSheet
+import com.padabajka.dating.feature.profile.presentation.model.ProfileViewMode
 import com.padabajka.dating.feature.swiper.presentation.model.CardItem
 import com.padabajka.dating.feature.swiper.presentation.model.EmptyCardItem
 import com.padabajka.dating.feature.swiper.presentation.model.LoadingItem
@@ -131,12 +132,14 @@ private fun PersonCard(
                     ProfileViewBottomSheet(
                         profileViewUIItem = personItem.toPersonView(),
                         onDismissRequest = { showViewProfile = false },
-                        onLike = {
-                            onReaction(CardReaction.Like)
-                        },
-                        onDislike = {
-                            onReaction(CardReaction.Dislike)
-                        }
+                        mode = ProfileViewMode.Discovery(
+                            onLike = {
+                                onReaction(CardReaction.Like)
+                            },
+                            onDislike = {
+                                onReaction(CardReaction.Dislike)
+                            }
+                        )
                     )
                 }
                 Spacer(Modifier.height(15.dp))
