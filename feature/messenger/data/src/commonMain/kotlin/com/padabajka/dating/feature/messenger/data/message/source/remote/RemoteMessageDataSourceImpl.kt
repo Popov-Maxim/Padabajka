@@ -37,4 +37,8 @@ internal class RemoteMessageDataSourceImpl(
         val params = MessageApi.GetParams(chatId, beforeMessageId, count)
         return messageApi.getMessages(params)
     }
+
+    override suspend fun deleteChat(chatId: String) {
+        messageApi.deleteChat(chatId)
+    }
 }

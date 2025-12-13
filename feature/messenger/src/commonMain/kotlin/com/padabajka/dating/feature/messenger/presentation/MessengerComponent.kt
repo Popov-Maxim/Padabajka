@@ -11,7 +11,6 @@ import com.padabajka.dating.feature.messenger.presentation.model.MatchItem
 import com.padabajka.dating.feature.messenger.presentation.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.model.MessengerState
 import com.padabajka.dating.feature.messenger.presentation.model.OpenChatEvent
-import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
 import com.padabajka.dating.feature.messenger.presentation.model.toPersonItem
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -19,7 +18,7 @@ import kotlinx.coroutines.flow.map
 
 class MessengerComponent(
     context: ComponentContext,
-    private val openChat: (chatId: ChatId, personItem: PersonItem) -> Unit,
+    private val openChat: (chatId: ChatId, matchItem: MatchItem) -> Unit,
     private val matchWithChatUseCase: MatchWithChatUseCase,
 ) : BaseComponent<MessengerState>(
     context,
@@ -67,7 +66,7 @@ class MessengerComponent(
 
     fun onEvent(event: MessengerEvent) {
         when (event) {
-            is OpenChatEvent -> openChat(event.chatId, event.personItem)
+            is OpenChatEvent -> openChat(event.chatId, event.matchItem)
         }
     }
 }

@@ -6,7 +6,7 @@ import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.feature.messenger.presentation.MessengerComponent
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatComponent
-import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
+import com.padabajka.dating.feature.messenger.presentation.model.MatchItem
 import com.padabajka.dating.feature.permission.flow.presentation.PermissionFlowComponent
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
@@ -92,7 +92,7 @@ class MainAuthScopeNavigateComponent(
                     parametersOf(
                         context,
                         configuration.chatId,
-                        configuration.personItem,
+                        configuration.matchItem,
                         userId,
                         ::navigateBack
                     )
@@ -103,8 +103,8 @@ class MainAuthScopeNavigateComponent(
                 component = get {
                     parametersOf(
                         context,
-                        { chatId: ChatId, personItem: PersonItem ->
-                            navigate(Configuration.ChatScreen(chatId, personItem))
+                        { chatId: ChatId, matchItem: MatchItem ->
+                            navigate(Configuration.ChatScreen(chatId, matchItem))
                         }
                     )
                 }
@@ -162,7 +162,7 @@ class MainAuthScopeNavigateComponent(
         @Serializable
         data class ChatScreen(
             val chatId: ChatId,
-            val personItem: PersonItem
+            val matchItem: MatchItem
         ) : Configuration
 
         @Serializable

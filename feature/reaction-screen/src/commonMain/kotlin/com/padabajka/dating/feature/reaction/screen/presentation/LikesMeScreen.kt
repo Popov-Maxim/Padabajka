@@ -48,6 +48,7 @@ import com.padabajka.dating.core.presentation.ui.utils.rememberImageLoader
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.profile.presentation.ProfileViewBottomSheet
+import com.padabajka.dating.feature.profile.presentation.model.ProfileViewMode
 import com.padabajka.dating.feature.profile.presentation.model.ProfileViewUIItem
 import com.padabajka.dating.feature.reaction.screen.presentation.model.LikesMeEvent
 import com.padabajka.dating.feature.reaction.screen.presentation.model.ListReactions
@@ -180,14 +181,16 @@ private fun HasLikesMeScreen(
         ProfileViewBottomSheet(
             profileViewUIItem = it.profile,
             onDismissRequest = { reactionUIState = null },
-            onLike = {
-                component.onEvent(LikesMeEvent.Like(it.personId))
-                reactionUIState = null
-            },
-            onDislike = {
-                component.onEvent(LikesMeEvent.Dislike(it.personId))
-                reactionUIState = null
-            }
+            mode = ProfileViewMode.Discovery(
+                onLike = {
+                    component.onEvent(LikesMeEvent.Like(it.personId))
+                    reactionUIState = null
+                },
+                onDislike = {
+                    component.onEvent(LikesMeEvent.Dislike(it.personId))
+                    reactionUIState = null
+                }
+            )
         )
     }
 }

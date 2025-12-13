@@ -21,4 +21,7 @@ data object RemoveParentMessageEvent : MessengerEvent
 data object ConsumeInternalErrorEvent : MessengerEvent
 data object EndOfMessagesListReachedEvent : MessengerEvent
 
+data object DeleteChatEvent : MessengerEvent
+data object DeleteMatchEvent : MessengerEvent
+
 data object NavigateBackEvent : MessengerEvent

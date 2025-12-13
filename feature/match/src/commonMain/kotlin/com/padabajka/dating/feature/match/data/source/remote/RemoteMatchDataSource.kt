@@ -8,4 +8,8 @@ class RemoteMatchDataSource(
     suspend fun loadMatches(): List<MatchDto> {
         return matchesApi.getMatches()
     }
+
+    suspend fun deleteMatch(matchId: String) {
+        return matchesApi.delete(matchId)
+    }
 }

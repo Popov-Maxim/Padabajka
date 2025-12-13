@@ -34,6 +34,7 @@ data class ChatItem(
     val unreadMessagesCount: Int
 )
 
+@Serializable
 data class MatchItem(
     val id: Match.Id,
     val person: PersonItem,

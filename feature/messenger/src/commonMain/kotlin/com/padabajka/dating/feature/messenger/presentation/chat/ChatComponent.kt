@@ -7,11 +7,12 @@ import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.presentation.event.consumed
 import com.padabajka.dating.core.presentation.event.raised
 import com.padabajka.dating.core.presentation.event.raisedIfNotNull
-import com.padabajka.dating.core.repository.api.model.auth.UserId
+import com.padabajka.dating.core.repository.api.MatchRepository
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.feature.messenger.domain.chat.ChatMessagesUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.DeleteChatUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.DeleteMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.EditMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.ReactToMessageUseCase
@@ -22,6 +23,8 @@ import com.padabajka.dating.feature.messenger.domain.chat.StopTypingUseCase
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ChatLoadingState
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ChatState
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ConsumeInternalErrorEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteChatEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteMatchEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.EndOfMessagesListReachedEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.Field
@@ -40,7 +43,7 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.item.Outgo
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.ParentMessageItem
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.addDateItems
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.toMessageItem
-import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
+import com.padabajka.dating.feature.messenger.presentation.model.MatchItem
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -49,9 +52,7 @@ import kotlinx.coroutines.launch
 class ChatComponent(
     context: ComponentContext,
     private val chatId: ChatId,
-    personItem: PersonItem,
-    @Suppress("UnusedPrivateMember")
-    private val userId: UserId,
+    private val matchItem: MatchItem,
     private val navigateBack: () -> Unit,
     chatMessagesUseCaseFactory: Factory<ChatMessagesUseCase>,
     sendMessageUseCaseFactory: Factory<SendMessageUseCase>,
@@ -60,8 +61,10 @@ class ChatComponent(
     startTypingUseCaseFactory: Factory<StartTypingUseCase>,
     stopTypingUseCaseFactory: Factory<StopTypingUseCase>,
     private val deleteMessageUseCase: DeleteMessageUseCase,
-    private val editMessageUseCase: EditMessageUseCase
-) : BaseComponent<ChatState>(context, ChatState(personItem)) {
+    private val editMessageUseCase: EditMessageUseCase,
+    private val deleteChatUseCase: DeleteChatUseCase,
+    private val matchRepository: MatchRepository,
+) : BaseComponent<ChatState>(context, ChatState(matchItem.person)) {
 
     private val chatMessagesUseCase by chatMessagesUseCaseFactory.delegate()
     private val sendMessageUseCase by sendMessageUseCaseFactory.delegate()
@@ -102,6 +105,7 @@ class ChatComponent(
         )
     }
 
+    @Suppress("CyclomaticComplexMethod")
     fun onEvent(event: MessengerEvent) {
         when (event) {
             is NextMessageTextUpdateEvent -> updateNextMessageText(event.nextMessageText)
@@ -116,6 +120,9 @@ class ChatComponent(
             NavigateBackEvent -> navigateBack()
             is DeleteMessageEvent -> deleteMessage(event.messageId)
             is SelectMessageForEditEvent -> selectMessageForEdit(event.message)
+
+            DeleteChatEvent -> deleteChat()
+            DeleteMatchEvent -> deleteMatch()
         }
     }
 
@@ -207,6 +214,28 @@ class ChatComponent(
         mapAndReduceException(
             action = {
                 deleteMessageUseCase(chatId, messageId)
+            },
+            mapper = { InternalError },
+            update = { state, internalError ->
+                state.copy(internalErrorStateEvent = raisedIfNotNull(internalError))
+            }
+        )
+
+    private fun deleteChat() =
+        mapAndReduceException(
+            action = {
+                deleteChatUseCase(chatId)
+            },
+            mapper = { InternalError },
+            update = { state, internalError ->
+                state.copy(internalErrorStateEvent = raisedIfNotNull(internalError))
+            }
+        )
+
+    private fun deleteMatch() =
+        mapAndReduceException(
+            action = {
+                matchRepository.deleteMatch(matchItem.id)
             },
             mapper = { InternalError },
             update = { state, internalError ->
