@@ -7,6 +7,7 @@ import com.padabajka.dating.core.domain.replaced
 import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.MessageRepository
 import com.padabajka.dating.core.repository.api.PersonRepository
+import com.padabajka.dating.core.repository.api.SyncResult
 import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
 import com.padabajka.dating.core.repository.api.model.auth.NoAuthorisedUserException
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
@@ -120,14 +121,6 @@ internal class MessageRepositoryImpl(
         }
     }
 
-    override suspend fun deleteChat(chatId: ChatId) {
-        remoteMessageDataSource.deleteChat(chatId.raw)
-    }
-
-    override suspend fun deleteLocalChat(chatId: ChatId) {
-//        localMessageDataSource.deleteChat(chatId.raw)
-    }
-
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override suspend fun readMessage(messageId: MessageId) {
         val message = localMessageDataSource.message(messageId.raw)
@@ -190,14 +183,39 @@ internal class MessageRepositoryImpl(
         }
     }
 
-    override suspend fun sync(chatId: ChatId, beforeMessageId: MessageId?, count: Int) {
-        val messageDto = remoteMessageDataSource.getMessages(chatId.raw, beforeMessageId?.raw, count)
+    override suspend fun loadMessages(
+        chatId: ChatId,
+        beforeMessageId: MessageId,
+        count: Int
+    ) {
+        val messageSyncResponse = remoteMessageDataSource.getMessages(chatId.raw, beforeMessageId.raw, count)
+        updateMessageDto(messageSyncResponse.messages)
+    }
+
+    override suspend fun loadMessages(
+        chatId: ChatId,
+        count: Int
+    ): SyncResult {
+        val messageSyncResponse = remoteMessageDataSource.getMessages(chatId.raw, null, count)
+        updateMessageDto(messageSyncResponse.messages)
+
+        return SyncResult(messageSyncResponse.lastEventNumber)
+    }
+
+    override suspend fun syncMessages(chatId: ChatId, lastEventNumber: Long): SyncResult {
+        val messageSyncResponse = remoteMessageDataSource.getMessages(chatId.raw, lastEventNumber)
+        updateMessageDto(messageSyncResponse.messages)
+
+        return SyncResult(messageSyncResponse.lastEventNumber)
+    }
+
+    private suspend fun updateMessageDto(messageDto: List<MessageDto>) {
         val messageEntities = messageDto.filterIsInstance<MessageDto.Existing>().map { it.toEntity() }
         val messageIdsForDeleted = messageDto.filterIsInstance<MessageDto.Deleted>().map { it.id }
         localMessageDataSource.updateMessages(messageEntities, messageIdsForDeleted)
     }
 
-    override suspend fun addMessage(chatId: ChatId, message: RawMessage) {
+    override suspend fun addLocalMessage(chatId: ChatId, message: RawMessage) {
         val messageEntry = message.toEntity(chatId)
         localMessageDataSource.addMessage(messageEntry)
     }

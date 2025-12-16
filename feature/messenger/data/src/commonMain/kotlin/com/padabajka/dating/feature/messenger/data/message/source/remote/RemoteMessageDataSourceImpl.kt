@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.messenger.data.message.source.remote
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.MessageReactionDto
 import com.padabajka.dating.feature.messenger.data.message.model.MessageRequest
+import com.padabajka.dating.feature.messenger.data.message.model.MessageSyncResponse
 
 internal class RemoteMessageDataSourceImpl(
     private val messageApi: MessageApi
@@ -33,12 +34,16 @@ internal class RemoteMessageDataSourceImpl(
         messageApi.markAsRead(messageRequest)
     }
 
-    override suspend fun getMessages(chatId: String, beforeMessageId: String?, count: Int): List<MessageDto> {
+    override suspend fun getMessages(chatId: String, beforeMessageId: String?, count: Int): MessageSyncResponse {
         val params = MessageApi.GetParams(chatId, beforeMessageId, count)
         return messageApi.getMessages(params)
     }
 
-    override suspend fun deleteChat(chatId: String) {
-        messageApi.deleteChat(chatId)
+    override suspend fun getMessages(
+        chatId: String,
+        fromEventNumber: Long
+    ): MessageSyncResponse {
+        val params = MessageApi.GetSyncParams(chatId, fromEventNumber)
+        return messageApi.getSyncMessages(params)
     }
 }

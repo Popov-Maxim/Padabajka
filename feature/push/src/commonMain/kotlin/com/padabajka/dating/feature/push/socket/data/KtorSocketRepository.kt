@@ -7,58 +7,80 @@ import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.websocket.Frame
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
+@Suppress("TooGenericExceptionCaught")
 class KtorSocketRepository(
+    private val scope: CoroutineScope,
     private val ktorSocketApi: KtorSocketApi,
-    private val metadataRepository: MetadataRepository
+    private val metadataRepository: MetadataRepository,
 ) : SocketRepository {
 
     private var socketSession: DefaultClientWebSocketSession? = null
-    private var active = false
-    private var _messages = MutableSharedFlow<String>(extraBufferCapacity = 64)
-    override val message: Flow<String> = _messages.asSharedFlow()
 
-    override suspend fun startConnecting() {
-        log("startConnecting")
-        if (active) return log("already active")
+    private val _messages = MutableSharedFlow<String>(
+        extraBufferCapacity = 64,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    override val messages: Flow<String> = _messages.asSharedFlow()
 
-        active = true
-        while (active) {
-            runCatching {
-                connect()
-            }
-            log("disconnected")
-            delay(DELAY_BEFORE_RECONNECTING)
+    private val _connectionState = MutableStateFlow(SocketRepository.ConnectionState.DISCONNECTED)
+    override val connectionState: Flow<SocketRepository.ConnectionState> =
+        _connectionState.asStateFlow()
+
+    override suspend fun connect() {
+        if (socketSession != null) {
+            log("already connected")
+            return
         }
-    }
 
-    private suspend fun connect() {
-        val deviceUid = metadataRepository.getDeviceUid()
-        ktorSocketApi.connect(deviceUid.raw).apply {
-            socketSession = this
+        _connectionState.value = SocketRepository.ConnectionState.CONNECTING
+        log("startConnecting")
+
+        try {
+            val deviceUid = metadataRepository.getDeviceUid()
+            val session = ktorSocketApi.connect(deviceUid.raw)
+            socketSession = session
+            _connectionState.value = SocketRepository.ConnectionState.CONNECTED
             log("connected")
-            incoming.consumeEach { frame ->
-                if (frame is Frame.Text) {
-                    _messages.emit(frame.readText())
+
+            scope.launch {
+                try {
+                    session.incoming.consumeEach { frame ->
+                        if (frame is Frame.Text) {
+                            _messages.emit(frame.readText())
+                        }
+                    }
+                } finally {
+                    disconnectInternal()
                 }
             }
+        } catch (e: Exception) {
+            _connectionState.value = SocketRepository.ConnectionState.DISCONNECTED
+            log("connection error: ${e.message}")
         }
     }
 
     override suspend fun disconnect() {
+        disconnectInternal()
+    }
+
+    private suspend fun disconnectInternal() {
         socketSession?.close()
         socketSession = null
-        active = false
+        _connectionState.value = SocketRepository.ConnectionState.DISCONNECTED
+        log("disconnected")
     }
 
     private companion object {
-        private const val DELAY_BEFORE_RECONNECTING = 5_000L
-
         private fun log(message: String) {
             println("LOG: websocket $message")
         }

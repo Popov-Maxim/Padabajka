@@ -1,5 +1,6 @@
 package com.padabajka.dating.core.domain.di
 
+import com.padabajka.dating.core.domain.sync.SyncChatsUseCase
 import com.padabajka.dating.core.domain.sync.SyncRemoteDataUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -9,6 +10,7 @@ internal expect val platformDomainDiModule: Module
 
 private val domainDiModule = module {
     factoryOf(::SyncRemoteDataUseCase)
+    factoryOf(::SyncChatsUseCase)
 }
 
 val domainDiModules: Array<Module>

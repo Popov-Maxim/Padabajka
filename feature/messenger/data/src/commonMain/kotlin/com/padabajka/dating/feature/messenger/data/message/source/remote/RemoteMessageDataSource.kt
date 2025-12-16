@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.messenger.data.message.source.remote
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.MessageReactionDto
 import com.padabajka.dating.feature.messenger.data.message.model.MessageRequest
+import com.padabajka.dating.feature.messenger.data.message.model.MessageSyncResponse
 
 internal interface RemoteMessageDataSource {
     suspend fun sendMessage(sendMessageDto: MessageRequest.Send): MessageDto.Existing
@@ -11,6 +12,6 @@ internal interface RemoteMessageDataSource {
     suspend fun sendReaction(messageId: String, reaction: MessageReactionDto): MessageReactionDto
     suspend fun removeReaction(messageId: String, author: String)
     suspend fun readMessages(messageRequest: MessageRequest.MarkAsRead)
-    suspend fun getMessages(chatId: String, beforeMessageId: String?, count: Int): List<MessageDto>
-    suspend fun deleteChat(chatId: String)
+    suspend fun getMessages(chatId: String, beforeMessageId: String?, count: Int): MessageSyncResponse
+    suspend fun getMessages(chatId: String, fromEventNumber: Long): MessageSyncResponse
 }

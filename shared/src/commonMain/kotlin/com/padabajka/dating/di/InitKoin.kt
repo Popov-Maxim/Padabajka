@@ -5,6 +5,7 @@ import com.padabajka.dating.core.domain.di.domainDiModules
 import com.padabajka.dating.core.networking.di.networkingModule
 import com.padabajka.dating.core.permission.di.permissionDiModules
 import com.padabajka.dating.core.presentation.di.presentationDiModules
+import com.padabajka.dating.core.sync.di.syncDiModule
 import com.padabajka.dating.core.system.intent.di.systemIntentDiModule
 import com.padabajka.dating.feature.ads.di.adModules
 import com.padabajka.dating.feature.auth.di.authModules
@@ -53,6 +54,7 @@ fun initKoin(platformModule: Module) {
             *matchDiModules,
             *pushDiModules,
             *permissionDiModules,
+            syncDiModule,
             permissionFlowDIModule,
             sharedDiModule,
             roomModule,

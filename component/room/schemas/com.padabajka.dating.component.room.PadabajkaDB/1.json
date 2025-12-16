@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f0184ef44e94488b09f6f1dd06657dc9",
+    "identityHash": "9083af57f9518cc183091f527558c42f",
     "entities": [
       {
         "tableName": "messages",
@@ -75,6 +75,30 @@
             "fieldPath": "parentMessageId",
             "columnName": "parentMessageId",
             "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "chats",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `lastEventNumber` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastEventNumber",
+            "columnName": "lastEventNumber",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -269,7 +293,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f0184ef44e94488b09f6f1dd06657dc9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9083af57f9518cc183091f527558c42f')"
     ]
   }
 }

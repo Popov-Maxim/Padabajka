@@ -10,6 +10,8 @@ import com.padabajka.dating.component.room.asset.city.entry.CityEntry
 import com.padabajka.dating.component.room.asset.city.entry.CityTranslation
 import com.padabajka.dating.component.room.asset.language.LanguageDao
 import com.padabajka.dating.component.room.asset.language.entry.LanguageTranslationEntry
+import com.padabajka.dating.component.room.chat.ChatDao
+import com.padabajka.dating.component.room.chat.entry.ChatEntry
 import com.padabajka.dating.component.room.matches.MatchesDao
 import com.padabajka.dating.component.room.matches.entry.MatchEntry
 import com.padabajka.dating.component.room.messenger.MessageDao
@@ -25,6 +27,7 @@ import com.padabajka.dating.component.room.person.entry.PersonEntry
 @Database(
     entities = [
         MessageEntry::class,
+        ChatEntry::class,
         PersonEntry::class,
         MatchEntry::class,
         CityEntry::class,
@@ -43,6 +46,7 @@ import com.padabajka.dating.component.room.person.entry.PersonEntry
 @ConstructedBy(PadabajkaDBConstructor::class)
 abstract class PadabajkaDB : RoomDatabase() {
     abstract fun messageDao(): MessageDao
+    abstract fun chatDao(): ChatDao
     abstract fun personDao(): PersonDao
     abstract fun matchesDao(): MatchesDao
     abstract fun cityDao(): CityDao

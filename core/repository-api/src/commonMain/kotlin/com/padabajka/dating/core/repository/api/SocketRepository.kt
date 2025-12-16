@@ -3,7 +3,13 @@ package com.padabajka.dating.core.repository.api
 import kotlinx.coroutines.flow.Flow
 
 interface SocketRepository {
-    val message: Flow<String>
-    suspend fun startConnecting()
+    val messages: Flow<String>
+    val connectionState: Flow<ConnectionState>
+
+    suspend fun connect()
     suspend fun disconnect()
+
+    enum class ConnectionState {
+        DISCONNECTED, CONNECTING, CONNECTED
+    }
 }

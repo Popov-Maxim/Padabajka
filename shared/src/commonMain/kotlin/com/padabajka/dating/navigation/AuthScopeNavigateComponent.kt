@@ -1,12 +1,11 @@
 package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
-import com.padabajka.dating.core.domain.sync.SyncRemoteDataUseCase
 import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
-import com.padabajka.dating.feature.push.socket.domain.SocketMessageObserver
+import com.padabajka.dating.core.sync.SyncManager
 import com.padabajka.dating.settings.domain.NewAuthMetadataUseCase
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -16,9 +15,8 @@ class AuthScopeNavigateComponent(
     context: ComponentContext,
     private val userId: UserId,
     private val updateAuthMetadataUseCase: NewAuthMetadataUseCase,
-    private val syncRemoteDataUseCase: SyncRemoteDataUseCase,
-    private val socketMessageObserver: SocketMessageObserver,
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val syncManager: SyncManager
 ) : NavigateComponentContext<AuthScopeNavigateComponent.Configuration, AuthScopeNavigateComponent.Child>(
     context,
     Configuration.serializer(),
@@ -34,8 +32,7 @@ class AuthScopeNavigateComponent(
                     ProfileState.NotCreated -> navigateNewStack(Configuration.CreateProfileScope)
                     is ProfileState.Existing -> {
                         updateAuthMetadataUseCase()
-                        socketMessageObserver.subscribe()
-                        syncRemoteDataUseCase()
+                        syncManager.start()
 
                         navigateNewStack(Configuration.MainAuthScope)
                     }
