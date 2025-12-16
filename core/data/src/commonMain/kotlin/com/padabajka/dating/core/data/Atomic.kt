@@ -7,6 +7,10 @@ interface Atomic<T> {
     suspend operator fun <R> invoke(action: suspend T.() -> R): R
 }
 
+suspend fun <T, R> Atomic<T>.lockWith(action: suspend T.() -> R): R {
+    return invoke(action)
+}
+
 private class AtomicImpl<T>(
     private val value: T,
     private val mutex: Mutex

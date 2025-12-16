@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.messenger.data.message.source.remote
 import com.padabajka.dating.core.networking.KtorClientProvider
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.MessageRequest
+import com.padabajka.dating.feature.messenger.data.message.model.MessageSyncResponse
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ResponseException
 import io.ktor.client.request.delete
@@ -19,12 +20,28 @@ import io.ktor.http.path
 class KtorMessageApi(
     private val ktorClientProvider: KtorClientProvider
 ) : MessageApi {
-    override suspend fun getMessages(params: MessageApi.GetParams): List<MessageDto> {
+    override suspend fun getMessages(params: MessageApi.GetParams): MessageSyncResponse {
         val client = ktorClientProvider.client()
 
         val response = client.get {
             url {
                 path(MessageApi.PATH_GET)
+
+                params.toMap().onEach { (key, value) ->
+                    parameters.append(key, value)
+                }
+            }
+        }
+
+        return response.body()
+    }
+
+    override suspend fun getSyncMessages(params: MessageApi.GetSyncParams): MessageSyncResponse {
+        val client = ktorClientProvider.client()
+
+        val response = client.get {
+            url {
+                path(MessageApi.PATH_GET_SYNC)
 
                 params.toMap().onEach { (key, value) ->
                     parameters.append(key, value)

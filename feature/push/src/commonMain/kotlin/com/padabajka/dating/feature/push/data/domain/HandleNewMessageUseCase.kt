@@ -12,7 +12,7 @@ class HandleNewMessageUseCase(
     suspend operator fun invoke(dataPush: DataPush.NewMessage) {
         val rawMessage = dataPush.toRawMessage()
         val chatId = dataPush.chatId.run(::ChatId)
-        messageRepository.addMessage(chatId, rawMessage)
+        messageRepository.addLocalMessage(chatId, rawMessage)
     }
 
     private fun DataPush.NewMessage.toRawMessage(): RawMessage {

@@ -16,14 +16,15 @@ interface MessageRepository {
     suspend fun deleteLocalMessage(chatId: ChatId, messageId: MessageId)
     suspend fun editMessage(chatId: ChatId, messageId: MessageId, content: String)
 
-    suspend fun deleteChat(chatId: ChatId)
-    suspend fun deleteLocalChat(chatId: ChatId)
-
     suspend fun readMessage(messageId: MessageId)
     suspend fun reactToMessage(messageId: MessageId, reaction: MessageReaction.Value)
     suspend fun removeReactToMessage(messageId: MessageId)
 
-    suspend fun sync(chatId: ChatId, beforeMessageId: MessageId? = null, count: Int)
-    suspend fun addMessage(chatId: ChatId, message: RawMessage)
+    suspend fun loadMessages(chatId: ChatId, beforeMessageId: MessageId, count: Int)
+    suspend fun loadMessages(chatId: ChatId, count: Int): SyncResult
+    suspend fun syncMessages(chatId: ChatId, lastEventNumber: Long): SyncResult
+    suspend fun addLocalMessage(chatId: ChatId, message: RawMessage)
     suspend fun updateLocalMessage(chatId: ChatId, messageId: MessageId, update: (RawMessage) -> RawMessage)
 }
+
+data class SyncResult(val lastEventNumber: Long)
