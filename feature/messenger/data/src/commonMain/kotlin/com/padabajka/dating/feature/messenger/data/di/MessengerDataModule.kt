@@ -3,8 +3,10 @@ package com.padabajka.dating.feature.messenger.data.di
 import com.padabajka.dating.core.repository.api.ChatRepository
 import com.padabajka.dating.core.repository.api.MessageRepository
 import com.padabajka.dating.core.repository.api.TypingRepository
+import com.padabajka.dating.core.repository.api.UserPresenceRepository
 import com.padabajka.dating.feature.messenger.data.message.ChatRepositoryImpl
 import com.padabajka.dating.feature.messenger.data.message.MessageRepositoryImpl
+import com.padabajka.dating.feature.messenger.data.message.UserPresenceRepositoryImpl
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalChatDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.RoomLocalMessageDataSource
@@ -45,6 +47,9 @@ val messengerDataModule = module {
         TypingRepositoryImpl(
             typingRemoteDataSource = get()
         )
+    }
+    single<UserPresenceRepository> {
+        UserPresenceRepositoryImpl()
     }
     factory<TypingRemoteDataSource> {
         SocketTypingRemoteDataSource()

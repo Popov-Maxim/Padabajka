@@ -8,6 +8,7 @@ import com.padabajka.dating.core.presentation.event.consumed
 import com.padabajka.dating.core.presentation.event.raised
 import com.padabajka.dating.core.presentation.event.raisedIfNotNull
 import com.padabajka.dating.core.repository.api.MatchRepository
+import com.padabajka.dating.core.repository.api.UserPresenceRepository
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
@@ -44,6 +45,7 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.item.Paren
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.addDateItems
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.toMessageItem
 import com.padabajka.dating.feature.messenger.presentation.model.MatchItem
+import com.padabajka.dating.feature.messenger.presentation.model.toUI
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -64,7 +66,8 @@ class ChatComponent(
     private val editMessageUseCase: EditMessageUseCase,
     private val deleteChatUseCase: DeleteChatUseCase,
     private val matchRepository: MatchRepository,
-) : BaseComponent<ChatState>(context, ChatState(matchItem.person)) {
+    private val userPresenceRepository: UserPresenceRepository,
+) : BaseComponent<ChatState>(context, initChatState(matchItem, userPresenceRepository)) {
 
     private val chatMessagesUseCase by chatMessagesUseCaseFactory.delegate()
     private val sendMessageUseCase by sendMessageUseCaseFactory.delegate()
@@ -76,6 +79,36 @@ class ChatComponent(
     private var typingJob: Job? = null
 
     init {
+        subscribeOnMessages()
+        subscribeUserPresence(matchItem)
+    }
+
+    @Suppress("CyclomaticComplexMethod")
+    fun onEvent(event: MessengerEvent) {
+        when (event) {
+            is NextMessageTextUpdateEvent -> updateNextMessageText(event.nextMessageText)
+            NextMessageFieldLostFocusEvent -> notifyTypingStopped()
+            is SelectParentMessageEvent -> updateParentMessage(event.message)
+            RemoveParentMessageEvent -> updateParentMessage(null)
+            ConsumeInternalErrorEvent -> consumeInternalErrorEvent()
+            is MessageGotReadEvent -> readMessage(event.messageId)
+            is ReactToMessageEvent -> reactToMessage(event.messageId, event.reaction)
+            EndOfMessagesListReachedEvent -> loadMoreMessages()
+            is SendMessageClickEvent -> sendMessage(event.field)
+            NavigateBackEvent -> navigateBack()
+            is DeleteMessageEvent -> deleteMessage(event.messageId)
+            is SelectMessageForEditEvent -> selectMessageForEdit(event.message)
+
+            DeleteChatEvent -> deleteChat()
+            DeleteMatchEvent -> deleteMatch()
+        }
+    }
+
+    override fun onStopped() {
+        notifyTypingStopped()
+    }
+
+    private fun subscribeOnMessages() {
         mapAndReduceException(
             action = {
                 val messagesFlow = chatMessagesUseCase(chatId)
@@ -105,29 +138,23 @@ class ChatComponent(
         )
     }
 
-    @Suppress("CyclomaticComplexMethod")
-    fun onEvent(event: MessengerEvent) {
-        when (event) {
-            is NextMessageTextUpdateEvent -> updateNextMessageText(event.nextMessageText)
-            NextMessageFieldLostFocusEvent -> notifyTypingStopped()
-            is SelectParentMessageEvent -> updateParentMessage(event.message)
-            RemoveParentMessageEvent -> updateParentMessage(null)
-            ConsumeInternalErrorEvent -> consumeInternalErrorEvent()
-            is MessageGotReadEvent -> readMessage(event.messageId)
-            is ReactToMessageEvent -> reactToMessage(event.messageId, event.reaction)
-            EndOfMessagesListReachedEvent -> loadMoreMessages()
-            is SendMessageClickEvent -> sendMessage(event.field)
-            NavigateBackEvent -> navigateBack()
-            is DeleteMessageEvent -> deleteMessage(event.messageId)
-            is SelectMessageForEditEvent -> selectMessageForEdit(event.message)
-
-            DeleteChatEvent -> deleteChat()
-            DeleteMatchEvent -> deleteMatch()
-        }
-    }
-
-    override fun onStopped() {
-        notifyTypingStopped()
+    private fun subscribeUserPresence(matchItem: MatchItem) {
+        mapAndReduceException(
+            action = {
+                userPresenceRepository.userPresenceFlow(matchItem.person.id).collect {
+                    val userPresence = it.toUI()
+                    reduce {
+                        it.copy(userPresence = userPresence)
+                    }
+                }
+            },
+            mapper = {
+                it
+            },
+            update = { state, _ ->
+                state.copy(internalErrorStateEvent = raised)
+            }
+        )
     }
 
     private fun notifyTypingStopped() {
@@ -278,5 +305,15 @@ class ChatComponent(
 
     companion object {
         private const val TYPING_STOP_DELAY = 2000L
+
+        private fun initChatState(
+            matchItem: MatchItem,
+            userPresenceRepository: UserPresenceRepository
+        ): ChatState {
+            val userPresence =
+                userPresenceRepository.currentUserPresence(matchItem.person.id)?.toUI()
+                    ?: matchItem.userPresence
+            return ChatState(matchItem.person, userPresence)
+        }
     }
 }

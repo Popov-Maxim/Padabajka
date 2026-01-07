@@ -10,6 +10,15 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface DataPush {
     @Serializable
+    @SerialName("users_presence")
+    data class UsersPresence(
+        val list: List<UserPresenceDto>
+    ) : DataPush
+}
+
+@Serializable
+sealed interface MessageDataPush : DataPush {
+    @Serializable
     @SerialName("new_match")
     data class NewMatch(
         val id: Match.Id,
@@ -18,7 +27,7 @@ sealed interface DataPush {
         val creationTime: Long,
 
         val personName: String
-    ) : DataPush
+    ) : MessageDataPush
 
     @Serializable
     @SerialName("new_message")
@@ -31,7 +40,7 @@ sealed interface DataPush {
         val parentMessageId: MessageId? = null,
         val editedAt: Long? = null,
         val readAt: Long? = null
-    ) : DataPush
+    ) : MessageDataPush
 
     @Serializable
     @SerialName("edited_message")
@@ -41,12 +50,12 @@ sealed interface DataPush {
         val editedAt: Long,
         val content: String,
         val parentMessageId: MessageId? = null,
-    ) : DataPush
+    ) : MessageDataPush
 
     @Serializable
     @SerialName("delete_message")
     data class DeleteMessage(
         val id: MessageId,
         val chatId: String,
-    ) : DataPush
+    ) : MessageDataPush
 }

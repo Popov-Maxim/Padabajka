@@ -8,12 +8,14 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.item.Messe
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.OutgoingMessageItem
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.ParentMessageItem
 import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
+import com.padabajka.dating.feature.messenger.presentation.model.UserPresenceItem
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 
 @Immutable
 data class ChatState(
     val person: PersonItem,
+    val userPresence: UserPresenceItem,
     val field: Field = Field.NewMessage(),
     val messengerItems: PersistentList<MessengerItem> = persistentListOf(),
     val chatLoadingState: ChatLoadingState = ChatLoadingState.Loading,
