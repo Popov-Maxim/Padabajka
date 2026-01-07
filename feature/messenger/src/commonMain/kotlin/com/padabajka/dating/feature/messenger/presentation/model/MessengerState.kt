@@ -11,6 +11,7 @@ import com.padabajka.dating.core.repository.api.model.profile.LanguagesAsset
 import com.padabajka.dating.core.repository.api.model.profile.Lifestyle
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.swiper.Person
+import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.MessageItem
 import com.padabajka.dating.feature.profile.presentation.model.ProfileViewUIItem
 import kotlinx.collections.immutable.PersistentList
@@ -38,11 +39,13 @@ data class ChatItem(
 data class MatchItem(
     val id: Match.Id,
     val person: PersonItem,
-    val creationTime: Long
+    val creationTime: Long,
+    val userPresence: UserPresenceItem,
 )
 
 @Serializable
 data class PersonItem(
+    val id: PersonId,
     val name: String,
     val age: Age,
     val images: PersistentList<Image>,
@@ -54,6 +57,7 @@ data class PersonItem(
 )
 
 fun Person.toPersonItem() = PersonItem(
+    id = id,
     name = profile.name,
     age = profile.age,
     images = profile.images.toPersistentList(),

@@ -2,7 +2,7 @@ package com.padabajka.dating.feature.push.data.domain
 
 import com.padabajka.dating.core.repository.api.MatchRepository
 import com.padabajka.dating.core.repository.api.model.match.RawMatch
-import com.padabajka.dating.core.repository.api.model.push.DataPush
+import com.padabajka.dating.core.repository.api.model.push.MessageDataPush
 import com.padabajka.dating.feature.push.notification.NotificationService
 import com.padabajka.dating.feature.push.notification.model.NotificationChannel
 
@@ -10,7 +10,7 @@ class HandleNewMatchUseCase(
     private val matchRepository: MatchRepository,
     private val notificationService: NotificationService
 ) {
-    suspend operator fun invoke(dataPush: DataPush.NewMatch) {
+    suspend operator fun invoke(dataPush: MessageDataPush.NewMatch) {
         val rawMatch = dataPush.toRawMatch()
         matchRepository.saveMatch(rawMatch)
         notificationService.showNotification(
@@ -21,7 +21,7 @@ class HandleNewMatchUseCase(
         )
     }
 
-    private fun DataPush.NewMatch.toRawMatch(): RawMatch {
+    private fun MessageDataPush.NewMatch.toRawMatch(): RawMatch {
         return RawMatch(
             id = id,
             personId = personId,

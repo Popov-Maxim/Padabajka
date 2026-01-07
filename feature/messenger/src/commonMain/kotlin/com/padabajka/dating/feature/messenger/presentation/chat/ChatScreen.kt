@@ -35,6 +35,8 @@ import com.padabajka.dating.feature.messenger.presentation.chat.ui.EditedMessage
 import com.padabajka.dating.feature.messenger.presentation.chat.ui.MessageField
 import com.padabajka.dating.feature.messenger.presentation.chat.ui.ParentMessageField
 import com.padabajka.dating.feature.messenger.presentation.model.PersonItem
+import com.padabajka.dating.feature.messenger.presentation.model.UserPresenceItem
+import com.padabajka.dating.feature.messenger.presentation.model.text
 import com.padabajka.dating.feature.messenger.presentation.model.toPersonView
 import com.padabajka.dating.feature.profile.presentation.ProfileViewBottomSheet
 import com.padabajka.dating.feature.profile.presentation.model.ProfileViewMode
@@ -48,7 +50,7 @@ fun ChatScreen(component: ChatComponent) {
 
     CustomScaffold(
         topBar = {
-            TopBar(state.person, component::onEvent)
+            TopBar(state.person, state.userPresence, component::onEvent)
         },
         bottomBar = {
             Column {
@@ -89,7 +91,7 @@ fun ChatScreen(component: ChatComponent) {
 }
 
 @Composable
-private fun TopBar(person: PersonItem, onEvent: (MessengerEvent) -> Unit) {
+private fun TopBar(person: PersonItem, userPresence: UserPresenceItem, onEvent: (MessengerEvent) -> Unit) {
     var showViewProfile by remember { mutableStateOf(false) }
 
     Row(
@@ -120,8 +122,10 @@ private fun TopBar(person: PersonItem, onEvent: (MessengerEvent) -> Unit) {
                     text = person.name,
                     fontSize = 16.sp,
                 )
+
+                val textOnlineStatus = userPresence.text()
                 Text(
-                    text = "online",
+                    text = textOnlineStatus,
                     fontSize = 10.sp
                 )
             }

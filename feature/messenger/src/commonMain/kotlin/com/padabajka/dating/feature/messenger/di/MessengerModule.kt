@@ -46,6 +46,7 @@ private val presentationModule = module {
             editMessageUseCase = get(),
             deleteChatUseCase = get(),
             matchRepository = get(),
+            userPresenceRepository = get(),
         )
     }
 
@@ -53,7 +54,8 @@ private val presentationModule = module {
         MessengerComponent(
             context = parameters.get(),
             openChat = parameters.get(),
-            matchWithChatUseCase = get()
+            matchWithChatUseCase = get(),
+            userPresenceRepository = get(),
         )
     }
 }
