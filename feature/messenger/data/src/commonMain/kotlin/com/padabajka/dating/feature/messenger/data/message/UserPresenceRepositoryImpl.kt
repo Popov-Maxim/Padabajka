@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 
 class UserPresenceRepositoryImpl : UserPresenceRepository {
     private val _presenceMap = MutableStateFlow<Map<PersonId, UserPresence>>(emptyMap())
@@ -26,5 +27,12 @@ class UserPresenceRepositoryImpl : UserPresenceRepository {
     override suspend fun setUserPresences(userPresence: List<UserPresence>) {
         val newMap = userPresence.associateBy(UserPresence::userId)
         _presenceMap.emit(newMap)
+    }
+
+    override suspend fun updateUserPresences(userPresence: UserPresence) {
+        _presenceMap.update { presenceMap ->
+            val updatedMap = presenceMap + (userPresence.userId to userPresence)
+            updatedMap
+        }
     }
 }

@@ -20,6 +20,7 @@ class HandlePushUseCase(
             is MessageDataPush.DeleteMessage -> handleDeleteMessageUseCase(dataPush)
             is MessageDataPush.EditedMessage -> handleEditedMessageUseCase(dataPush)
             is DataPush.UsersPresence -> handleUsersPresenceUseCase(dataPush)
+            is DataPush.UserPresence -> handleUsersPresenceUseCase(dataPush)
         }
     }
 }

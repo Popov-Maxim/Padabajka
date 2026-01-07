@@ -11,4 +11,9 @@ class HandleUsersPresenceUseCase(
         val userPresences = dataPush.list.map { it.toDomain() }
         userPresenceRepository.setUserPresences(userPresences)
     }
+
+    suspend operator fun invoke(dataPush: DataPush.UserPresence) {
+        val userPresence = dataPush.userPresence.toDomain()
+        userPresenceRepository.updateUserPresences(userPresence)
+    }
 }

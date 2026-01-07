@@ -2,6 +2,7 @@ package com.padabajka.dating.core.repository.api.model.profile
 
 import kotlinx.serialization.Serializable
 
+@Serializable
 sealed interface Image {
     @Serializable
     data class Url(val value: String) : Image
