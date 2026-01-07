@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.messenger.presentation.model
 
 import androidx.compose.runtime.Stable
+import com.padabajka.dating.core.presentation.PersistentListSerializer
 import com.padabajka.dating.core.presentation.State
 import com.padabajka.dating.core.repository.api.model.match.Match
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
@@ -48,10 +49,13 @@ data class PersonItem(
     val id: PersonId,
     val name: String,
     val age: Age,
+    @Serializable(with = PersistentListSerializer::class)
     val images: PersistentList<Image>,
     val aboutMe: String,
     val lookingFor: LookingForData,
+    @Serializable(with = PersistentListSerializer::class)
     val details: PersistentList<Detail>,
+    @Serializable(with = PersistentListSerializer::class)
     val lifestyles: PersistentList<Lifestyle>,
     val languages: LanguagesAsset
 )

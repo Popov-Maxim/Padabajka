@@ -14,6 +14,12 @@ sealed interface DataPush {
     data class UsersPresence(
         val list: List<UserPresenceDto>
     ) : DataPush
+
+    @Serializable
+    @SerialName("user_presence")
+    data class UserPresence(
+        val userPresence: UserPresenceDto
+    ) : DataPush
 }
 
 @Serializable

@@ -9,4 +9,5 @@ interface UserPresenceRepository {
     fun currentUserPresence(personId: PersonId): UserPresence?
 
     suspend fun setUserPresences(userPresence: List<UserPresence>)
+    suspend fun updateUserPresences(userPresence: UserPresence)
 }
