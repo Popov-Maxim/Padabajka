@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -22,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,83 +39,124 @@ import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.settings.presentation.model.LogOutEvent
 import com.padabajka.dating.settings.presentation.model.NavigateBackEvent
 import com.padabajka.dating.settings.presentation.model.RequestPermissionEvent
-import com.padabajka.dating.settings.presentation.model.SendPushToken
 import com.padabajka.dating.settings.presentation.model.SettingsEvent
-import com.padabajka.dating.settings.presentation.model.SyncData
 import com.padabajka.dating.settings.presentation.setting.AppSettingsDialog
-import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Composable
 fun SettingScreen(component: SettingScreenComponent) {
-    var showDialog by remember { mutableStateOf(false) }
-    val notificationPermissionController: NotificationPermissionController = koinInject()
-    val coroutineScope = rememberCoroutineScope()
-    val initPermissionAllow by produceState<Boolean?>(initialValue = null) {
-        value = notificationPermissionController.hasPermission()
-    }
-    var permissionAllow by remember(initPermissionAllow) { mutableStateOf(initPermissionAllow) }
     CustomScaffold(
         topBar = { TopBar(component::onEvent) }
     ) {
-        val settingsButtonData = listOf(
-            SettingButtonData(
-                iconData = CoreIcons.NavigationBar.Profile.toData(),
-                text = StaticTextId.UiId.Name.translate(),
-                secondText = null,
-                onClick = {}
-            ),
-            SettingButtonData(
-                iconData = Icons.Filled.Settings.toData(),
-                text = "AppSettings",
-                secondText = null,
-                onClick = { showDialog = true }
-            ),
-            SettingButtonData(
-                iconData = Icons.AutoMirrored.Filled.ExitToApp.toData(),
-                text = StaticTextId.UiId.LogOut.translate(),
-                secondText = null,
-                onClick = { component.onEvent(LogOutEvent) }
-            ),
-
-            SettingButtonData(
-                iconData = IconData.Empty,
-                text = "request permission",
-                secondText = "permissionAllow: $permissionAllow",
-                onClick = {
-                    coroutineScope.launch {
-                        component.onEvent(RequestPermissionEvent)
-                    }
-                }
-            ),
-            SettingButtonData(
-                iconData = IconData.Empty,
-                text = "refresh push token",
-                onClick = { component.onEvent(SendPushToken) }
-            ),
-            SettingButtonData(
-                iconData = IconData.Empty,
-                text = "sync data",
-                onClick = { component.onEvent(SyncData) }
-            ),
-        )
         Column(
             modifier = Modifier.padding(
                 start = 20.dp,
                 end = 20.dp,
                 top = 20.dp,
                 bottom = 50.dp
-            )
+            ),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text(
-                    text = StaticTextId.UiId.General.translate(),
-                    fontSize = 24.sp
-                )
-                Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                    settingsButtonData.onEach { data ->
-                        SettingButton(data.iconData, data.text, data.secondText, data.onClick)
-                    }
+            GeneralSetting(component)
+            LittleSetting(component)
+        }
+    }
+}
+
+@Composable
+private fun GeneralSetting(
+    component: SettingScreenComponent,
+    modifier: Modifier = Modifier
+) {
+    var showDialog by remember { mutableStateOf(false) }
+    val notificationPermissionController: NotificationPermissionController = koinInject()
+    val initPermissionAllow by produceState<Boolean?>(initialValue = null) {
+        value = notificationPermissionController.hasPermission()
+    }
+    var permissionAllow by remember(initPermissionAllow) { mutableStateOf(initPermissionAllow) }
+
+    val settingsButtonData = listOf(
+//            SettingButtonData(
+//                iconData = CoreIcons.NavigationBar.Profile.toData(),
+//                text = StaticTextId.UiId.Name.translate(),
+//                secondText = null,
+//                onClick = {}
+//            ),
+//            SettingButtonData(
+//                iconData = Icons.Filled.Settings.toData(),
+//                text = "AppSettings",
+//                secondText = null,
+//                onClick = { showDialog = true }
+//            ),
+        SettingButtonData(
+            iconData = IconData.Empty,
+            text = StaticTextId.UiId.Subscription.translate(),
+            secondText = "не активирована",
+            onClick = { }
+        ),
+        SettingButtonData(
+            iconData = CoreIcons.Settings.Language.toData(),
+            text = StaticTextId.UiId.Language.translate(),
+            secondText = "русский",
+            onClick = { }
+        ),
+        SettingButtonData(
+            iconData = CoreIcons.Settings.Notification.toData(),
+            text = StaticTextId.UiId.Notification.translate(),
+            secondText = "permissionAllow: $permissionAllow",
+            onClick = { component.onEvent(RequestPermissionEvent) }
+        ),
+        SettingButtonData(
+            iconData = CoreIcons.Settings.FAQ.toData(),
+            text = StaticTextId.UiId.FAQ.translate(),
+            secondText = null,
+            onClick = { }
+        ),
+        SettingButtonData(
+            iconData = CoreIcons.Settings.Snowman.toData(),
+            text = StaticTextId.UiId.FreezeProfile.translate(),
+            secondText = "account is active",
+            onClick = { }
+        ),
+        SettingButtonData(
+            iconData = CoreIcons.Settings.Logout.toData(),
+            text = StaticTextId.UiId.LogOut.translate(),
+            secondText = null,
+            onClick = { component.onEvent(LogOutEvent) }
+        ),
+
+//            SettingButtonData(
+//                iconData = IconData.Empty,
+//                text = "request permission",
+//                secondText = "permissionAllow: $permissionAllow",
+//                onClick = {
+//                    coroutineScope.launch {
+//                        component.onEvent(RequestPermissionEvent)
+//                    }
+//                }
+//            ),
+//            SettingButtonData(
+//                iconData = IconData.Empty,
+//                text = "refresh push token",
+//                onClick = { component.onEvent(SendPushToken) }
+//            ),
+//            SettingButtonData(
+//                iconData = IconData.Empty,
+//                text = "sync data",
+//                onClick = { component.onEvent(SyncData) }
+//            ),
+    )
+    Column(
+        modifier = modifier
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text(
+                text = StaticTextId.UiId.General.translate(),
+                fontSize = 24.sp
+            )
+            Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                settingsButtonData.onEach { data ->
+                    SettingButton(data.iconData, data.text, data.secondText, data.onClick)
                 }
             }
         }
@@ -127,6 +164,41 @@ fun SettingScreen(component: SettingScreenComponent) {
 
     if (showDialog) {
         AppSettingsDialog { showDialog = false }
+    }
+}
+
+@Suppress("UnusedParameter")
+@Composable
+private fun LittleSetting(
+    component: SettingScreenComponent,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+    ) {
+        LittleButton(
+            text = StaticTextId.UiId.TermsOfUse.translate()
+        )
+        LittleButton(
+            text = StaticTextId.UiId.DeleteAccount.translate()
+        )
+    }
+}
+
+@Composable
+private fun LittleButton(
+    text: String
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+//            .background(Color.LightGray)
+            .padding(vertical = 10.dp)
+    ) {
+        Text(
+            text = text,
+            fontSize = 14.sp
+        )
     }
 }
 

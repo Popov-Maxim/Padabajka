@@ -9,8 +9,11 @@ import com.padabajka.dating.core.presentation.ui.resource.drawable.app_logo
 import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_left_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_right_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.camera_icon
+import com.padabajka.dating.core.presentation.ui.resource.drawable.faq_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.google_logo
+import com.padabajka.dating.core.presentation.ui.resource.drawable.language_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.likes_icon
+import com.padabajka.dating.core.presentation.ui.resource.drawable.logout_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.mail_logo
 import com.padabajka.dating.core.presentation.ui.resource.drawable.message_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_copy
@@ -21,10 +24,12 @@ import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup
 import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_trash
 import com.padabajka.dating.core.presentation.ui.resource.drawable.message_read
 import com.padabajka.dating.core.presentation.ui.resource.drawable.message_sent
+import com.padabajka.dating.core.presentation.ui.resource.drawable.notification_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.profile_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.reaction_like
 import com.padabajka.dating.core.presentation.ui.resource.drawable.search_pref_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.smoking_lifestyle
+import com.padabajka.dating.core.presentation.ui.resource.drawable.snowman
 import com.padabajka.dating.core.presentation.ui.resource.drawable.swiper_icon
 import com.padabajka.dating.core.presentation.ui.resource.painterResource
 
@@ -127,6 +132,28 @@ object CoreIcons {
         val Animals
             @Composable
             get() = painterResource(CoreRes.svg.animal_lifestyle)
+    }
+
+    object Settings {
+        val FAQ
+            @Composable
+            get() = painterResource(CoreRes.svg.faq_icon)
+
+        val Language
+            @Composable
+            get() = painterResource(CoreRes.svg.language_icon)
+
+        val Logout
+            @Composable
+            get() = painterResource(CoreRes.svg.logout_icon)
+
+        val Notification
+            @Composable
+            get() = painterResource(CoreRes.svg.notification_icon)
+
+        val Snowman
+            @Composable
+            get() = painterResource(CoreRes.svg.snowman)
     }
 
     val AppLogo

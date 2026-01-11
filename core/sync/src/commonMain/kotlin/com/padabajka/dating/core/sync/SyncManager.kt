@@ -21,15 +21,19 @@ class SyncManager(
 ) {
 
     private enum class State {
-        DISCONNECTED, CONNECTING, SYNCING, ONLINE
+        DISCONNECTED, CONNECTING, SYNCING, ONLINE, TURNED_OFF
     }
 
     private var state = State.DISCONNECTED
     private val buffer = atomic(mutableListOf<MessagePush>())
     private var reconnectJob: Job? = null
+    private var observed = false
 
     fun start() {
-        observeSocket()
+        if (observed.not()) {
+            observeSocket()
+            observed = true
+        }
         connect()
     }
 
@@ -51,6 +55,11 @@ class SyncManager(
                     SocketRepository.ConnectionState.CONNECTING -> {
                         log("socket connecting...")
                         state = State.CONNECTING
+                    }
+
+                    SocketRepository.ConnectionState.TURNED_OFF -> {
+                        log("socket turn off")
+                        state = State.TURNED_OFF
                     }
                 }
             }
