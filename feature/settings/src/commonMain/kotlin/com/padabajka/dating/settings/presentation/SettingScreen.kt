@@ -22,8 +22,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.permission.NotificationPermissionController
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
@@ -36,10 +38,13 @@ import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
+import com.padabajka.dating.core.repository.api.model.dictionary.Language
 import com.padabajka.dating.settings.presentation.model.LogOutEvent
 import com.padabajka.dating.settings.presentation.model.NavigateBackEvent
+import com.padabajka.dating.settings.presentation.model.OpenLanguageSelectorEvent
 import com.padabajka.dating.settings.presentation.model.RequestPermissionEvent
 import com.padabajka.dating.settings.presentation.model.SettingsEvent
+import com.padabajka.dating.settings.presentation.model.language.supportedLanguagesMap
 import com.padabajka.dating.settings.presentation.setting.AppSettingsDialog
 import org.koin.compose.koinInject
 
@@ -68,6 +73,8 @@ private fun GeneralSetting(
     component: SettingScreenComponent,
     modifier: Modifier = Modifier
 ) {
+    val state by component.state.subscribeAsState()
+
     var showDialog by remember { mutableStateOf(false) }
     val notificationPermissionController: NotificationPermissionController = koinInject()
     val initPermissionAllow by produceState<Boolean?>(initialValue = null) {
@@ -97,8 +104,8 @@ private fun GeneralSetting(
         SettingButtonData(
             iconData = CoreIcons.Settings.Language.toData(),
             text = StaticTextId.UiId.Language.translate(),
-            secondText = "русский",
-            onClick = { }
+            secondText = state.selectedLanguage.uiText(),
+            onClick = { component.onEvent(OpenLanguageSelectorEvent) }
         ),
         SettingButtonData(
             iconData = CoreIcons.Settings.Notification.toData(),
@@ -236,7 +243,10 @@ private fun SettingButton(
                 Column {
                     Text(text = text)
                     if (secondText != null) {
-                        Text(text = secondText)
+                        Text(
+                            text = secondText,
+                            color = Color(color = 0xFF7E7D7D)
+                        )
                     }
                 }
             }
@@ -277,4 +287,8 @@ private fun TopBar(onEvent: (SettingsEvent) -> Unit) {
             )
         }
     }
+}
+
+private fun Language.Static.uiText(): String {
+    return supportedLanguagesMap[this]!!.name
 }
