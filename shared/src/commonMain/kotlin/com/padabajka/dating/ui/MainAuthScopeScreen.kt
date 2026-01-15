@@ -8,13 +8,12 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stac
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.feature.messenger.presentation.MessengerScreen
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatScreen
-import com.padabajka.dating.feature.permission.flow.presentation.PermissionFlowScreen
 import com.padabajka.dating.feature.profile.presentation.ProfileScreen
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreen
 import com.padabajka.dating.feature.reaction.screen.presentation.LikesMeScreen
 import com.padabajka.dating.feature.swiper.presentation.screen.SwiperScreen
 import com.padabajka.dating.navigation.MainAuthScopeNavigateComponent
-import com.padabajka.dating.settings.presentation.SettingScreen
+import com.padabajka.dating.settings.presentation.SettingsScopeScreen
 
 @Composable
 fun MainAuthScopeScreen(component: MainAuthScopeNavigateComponent) {
@@ -46,16 +45,13 @@ fun MainAuthScopeScreen(component: MainAuthScopeNavigateComponent) {
                 ProfileEditorScreen(instance.component)
 
             is MainAuthScopeNavigateComponent.Child.SettingScreen ->
-                SettingScreen(instance.component)
+                SettingsScopeScreen(instance.component)
 
             is MainAuthScopeNavigateComponent.Child.ChatScreen ->
                 ChatScreen(instance.component)
 
             is MainAuthScopeNavigateComponent.Child.MessengerScreen ->
                 MessengerScreen(instance.component, navigateBar)
-
-            is MainAuthScopeNavigateComponent.Child.PermissionFlowScreen ->
-                PermissionFlowScreen(instance.component)
 
             is MainAuthScopeNavigateComponent.Child.LikesMeScreen ->
                 LikesMeScreen(instance.component, navigateBar)

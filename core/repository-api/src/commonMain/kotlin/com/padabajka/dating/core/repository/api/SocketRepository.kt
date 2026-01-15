@@ -10,6 +10,6 @@ interface SocketRepository {
     suspend fun disconnect()
 
     enum class ConnectionState {
-        DISCONNECTED, CONNECTING, CONNECTED
+        TURNED_OFF, DISCONNECTED, CONNECTING, CONNECTED
     }
 }

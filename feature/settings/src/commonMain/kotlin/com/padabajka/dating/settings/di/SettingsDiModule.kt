@@ -7,7 +7,11 @@ import com.padabajka.dating.core.repository.api.model.settings.DebugAppSettings
 import com.padabajka.dating.settings.data.AppSettingsRepositoryImpl
 import com.padabajka.dating.settings.data.LocalAppSettingsDataStore
 import com.padabajka.dating.settings.data.LocalDebugAppSettingsDataStore
+import com.padabajka.dating.settings.domain.AppSettingsComponentProvider
+import com.padabajka.dating.settings.domain.ChangeLanguageUseCase
 import com.padabajka.dating.settings.presentation.SettingScreenComponent
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 private val dataModule = module {
@@ -41,17 +45,23 @@ private val dataModule = module {
     }
 }
 
+private val domain = module {
+    factoryOf(::ChangeLanguageUseCase)
+    singleOf(::AppSettingsComponentProvider)
+}
+
 private val presentationModule = module {
     factory<SettingScreenComponent> { parameters ->
         SettingScreenComponent(
             context = parameters.get(),
             navigateBack = parameters.get(),
-            openPermissionFlow = parameters.get(),
+            settingNavigator = parameters.get(),
             logoutUseCaseFactory = { get() },
             saveTokenUseCase = get(),
-            syncRemoteDataUseCase = get()
+            syncRemoteDataUseCase = get(),
+            settingsComponentProvider = get(),
         )
     }
 }
 
-val settingDiModules = arrayOf(dataModule, presentationModule)
+val settingDiModules = arrayOf(dataModule, domain, presentationModule)

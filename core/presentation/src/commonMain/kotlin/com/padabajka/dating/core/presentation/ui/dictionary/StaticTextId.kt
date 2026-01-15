@@ -17,6 +17,14 @@ sealed interface StaticTextId {
         Name(rawId = "name"),
         LogOut(rawId = "log_out"),
         General(rawId = "general_error"),
+        Subscription(rawId = "subscription"),
+        Notification(rawId = "notification"),
+        FAQ(rawId = "faq"),
+        FreezeProfile(rawId = "freeze_profile"),
+
+        TermsOfUse(rawId = "terms_of_use"),
+        DeleteAccount(rawId = "delete_account"),
+//        PrivacyPolicy(rawId = "privacy_policy"),
 
         // Total for Profile
         Male(rawId = "male"),

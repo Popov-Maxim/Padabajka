@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AppSettings(
-    val language: Language = Language.Static.EN,
+    val language: Language.Static = Language.Static.EN,
 )

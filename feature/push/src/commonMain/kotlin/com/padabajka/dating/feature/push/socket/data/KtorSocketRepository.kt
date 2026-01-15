@@ -32,7 +32,7 @@ class KtorSocketRepository(
     )
     override val messages: Flow<String> = _messages.asSharedFlow()
 
-    private val _connectionState = MutableStateFlow(SocketRepository.ConnectionState.DISCONNECTED)
+    private val _connectionState = MutableStateFlow(SocketRepository.ConnectionState.TURNED_OFF)
     override val connectionState: Flow<SocketRepository.ConnectionState> =
         _connectionState.asStateFlow()
 
@@ -60,7 +60,7 @@ class KtorSocketRepository(
                         }
                     }
                 } finally {
-                    disconnectInternal()
+                    disconnectInternal(false)
                 }
             }
         } catch (e: Exception) {
@@ -70,13 +70,18 @@ class KtorSocketRepository(
     }
 
     override suspend fun disconnect() {
-        disconnectInternal()
+        disconnectInternal(true)
     }
 
-    private suspend fun disconnectInternal() {
+    private suspend fun disconnectInternal(turnOff: Boolean) {
         socketSession?.close()
         socketSession = null
-        _connectionState.value = SocketRepository.ConnectionState.DISCONNECTED
+        val state = if (turnOff.not() && _connectionState.value != SocketRepository.ConnectionState.TURNED_OFF) {
+            SocketRepository.ConnectionState.DISCONNECTED
+        } else {
+            SocketRepository.ConnectionState.TURNED_OFF
+        }
+        _connectionState.value = state
         log("disconnected")
     }
 

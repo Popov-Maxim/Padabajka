@@ -99,3 +99,23 @@ internal val CoreRes.svg.animal_lifestyle: String
 @OptIn(ExperimentalResourceApi::class)
 internal val CoreRes.svg.add: String
     get() = Res.getUri("drawable/add.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.faq_icon: String
+    get() = Res.getUri("drawable/faq_icon.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.language_icon: String
+    get() = Res.getUri("drawable/language_icon.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.logout_icon: String
+    get() = Res.getUri("drawable/logout_icon.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.notification_icon: String
+    get() = Res.getUri("drawable/notification_icon.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.snowman: String
+    get() = Res.getUri("drawable/snowman.svg")

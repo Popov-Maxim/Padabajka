@@ -3,17 +3,22 @@ package com.padabajka.dating.core.presentation.ui.dictionary
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import com.padabajka.dating.core.repository.api.AppSettingsRepository
 import com.padabajka.dating.core.repository.api.DictionaryRepository
 import com.padabajka.dating.core.repository.api.model.dictionary.Language
 import com.padabajka.dating.core.repository.api.model.profile.Text
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import org.koin.compose.rememberCurrentKoinScope
 
 @Composable
-fun rememberDictionary(): DictionaryRepository {
+inline fun <reified T> rememberForKoin(): T {
     val koinScope = rememberCurrentKoinScope()
     return remember {
         koinScope.getKoin().get()
@@ -21,13 +26,36 @@ fun rememberDictionary(): DictionaryRepository {
 }
 
 @Composable
-fun StaticTextId.translate(lang: Language = defaultLanguage): String {
-    return rememberTranslation(this, lang).value
+fun rememberDictionary(): DictionaryRepository {
+    return rememberForKoin()
 }
 
 @Composable
-fun Text.translate(lang: Language = defaultLanguage): String {
-    return rememberTranslation(this, lang).value
+fun rememberAppSettingRepository(): AppSettingsRepository {
+    return rememberForKoin()
+}
+
+@Composable
+private fun languageState(): State<Language.Static> {
+    val appSettingsRepository = rememberAppSettingRepository()
+    val language = appSettingsRepository
+        .appSettings
+        .map { it.language }
+        .distinctUntilChanged()
+        .collectAsState(initial = defaultLanguage)
+    return language
+}
+
+@Composable
+fun StaticTextId.translate(): String {
+    val language by languageState()
+    return rememberTranslation(this, language).value
+}
+
+@Composable
+fun Text.translate(): String {
+    val language by languageState()
+    return rememberTranslation(this, language).value
 }
 
 @Composable
@@ -38,7 +66,7 @@ private fun rememberTranslation(
     val dictionary = rememberDictionary()
     val fastTranslate = staticTextId.fastTranslate(lang)
 
-    return produceState(initialValue = fastTranslate, key1 = staticTextId) {
+    return produceState(initialValue = fastTranslate, key1 = staticTextId, key2 = lang) {
         val type = when (staticTextId) {
             is StaticTextId.UiId -> Text.Type.UI
             is StaticTextId.AssetId -> Text.Type.Default

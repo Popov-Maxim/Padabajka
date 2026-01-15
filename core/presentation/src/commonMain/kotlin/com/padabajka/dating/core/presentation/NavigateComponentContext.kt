@@ -20,13 +20,15 @@ abstract class NavigateComponentContext<Config : Any, Child : Any>(
 ) : ComponentContext by context, KoinComponent {
 
     private val navigation = StackNavigation<Config>()
-    val childStack = childStack(
-        source = navigation,
-        serializer = serializable,
-        initialConfiguration = initialConfiguration,
-        handleBackButton = true,
-        childFactory = ::createChild
-    )
+    val childStack by lazy {
+        childStack(
+            source = navigation,
+            serializer = serializable,
+            initialConfiguration = initialConfiguration,
+            handleBackButton = true,
+            childFactory = ::createChild
+        )
+    }
 
     protected val navigateScope: CoroutineScope =
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)

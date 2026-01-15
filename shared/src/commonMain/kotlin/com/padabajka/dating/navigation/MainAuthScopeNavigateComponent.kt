@@ -7,12 +7,11 @@ import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.feature.messenger.presentation.MessengerComponent
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatComponent
 import com.padabajka.dating.feature.messenger.presentation.model.MatchItem
-import com.padabajka.dating.feature.permission.flow.presentation.PermissionFlowComponent
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
 import com.padabajka.dating.feature.reaction.screen.presentation.LikesMeScreenComponent
 import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
-import com.padabajka.dating.settings.presentation.SettingScreenComponent
+import com.padabajka.dating.settings.presentation.SettingsScopeNavigateComponent
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -78,13 +77,10 @@ class MainAuthScopeNavigateComponent(
             )
 
             Configuration.SettingScreen -> Child.SettingScreen(
-                component = get {
-                    parametersOf(
-                        context,
-                        ::navigateBack,
-                        { navigate(Configuration.PermissionFlowScreen) }
-                    )
-                }
+                component = SettingsScopeNavigateComponent(
+                    context = context,
+                    navigateBack = ::navigateBack
+                )
             )
 
             is Configuration.ChatScreen -> Child.ChatScreen(
@@ -110,15 +106,6 @@ class MainAuthScopeNavigateComponent(
                 }
             )
 
-            Configuration.PermissionFlowScreen -> Child.PermissionFlowScreen(
-                component = get {
-                    parametersOf(
-                        context,
-                        ::navigateBack
-                    )
-                }
-            )
-
             Configuration.LikesMeScreen -> Child.LikesMeScreen(
                 component = LikesMeScreenComponent(
                     context = context,
@@ -131,15 +118,13 @@ class MainAuthScopeNavigateComponent(
 
     sealed interface Child {
         data class ProfileEditorScreen(val component: ProfileEditorScreenComponent) : Child
-        data class SettingScreen(val component: SettingScreenComponent) : Child
+        data class SettingScreen(val component: SettingsScopeNavigateComponent) : Child
 
         data class SwiperScreen(val component: SwiperScreenComponent) : Child
         data class ProfileScreen(val component: ProfileScreenComponent) : Child
         data class ChatScreen(val component: ChatComponent) : Child
         data class MessengerScreen(val component: MessengerComponent) : Child
         data class LikesMeScreen(val component: LikesMeScreenComponent) : Child
-
-        data class PermissionFlowScreen(val component: PermissionFlowComponent) : Child
     }
 
     @Serializable
@@ -167,8 +152,5 @@ class MainAuthScopeNavigateComponent(
 
         @Serializable
         data object LikesMeScreen : Configuration
-
-        @Serializable
-        data object PermissionFlowScreen : Configuration
     }
 }
