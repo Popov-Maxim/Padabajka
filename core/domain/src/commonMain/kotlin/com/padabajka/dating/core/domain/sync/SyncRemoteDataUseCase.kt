@@ -3,13 +3,15 @@ package com.padabajka.dating.core.domain.sync
 import com.padabajka.dating.core.repository.api.CityRepository
 import com.padabajka.dating.core.repository.api.LanguageAssetRepository
 import com.padabajka.dating.core.repository.api.MatchRepository
+import com.padabajka.dating.core.repository.api.ReactionRepository
 import kotlinx.coroutines.flow.first
 
 class SyncRemoteDataUseCase(
     private val matchRepository: MatchRepository,
     private val cityRepository: CityRepository,
     private val languageAssetRepository: LanguageAssetRepository,
-    private val syncChatsUseCase: SyncChatsUseCase
+    private val syncChatsUseCase: SyncChatsUseCase,
+    private val reactionRepository: ReactionRepository
 ) {
     suspend operator fun invoke() {
         runCatching {
@@ -18,6 +20,7 @@ class SyncRemoteDataUseCase(
                 val matchIds = matches.map { it.chatId }
                 syncChatsUseCase(matchIds)
             }
+            reactionRepository.syncReactionsToMe()
             cityRepository.loadCities()
             languageAssetRepository.loadAssets()
         }.onFailure {

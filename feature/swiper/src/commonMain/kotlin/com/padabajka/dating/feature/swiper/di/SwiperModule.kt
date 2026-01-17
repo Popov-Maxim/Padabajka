@@ -18,6 +18,7 @@ import com.padabajka.dating.feature.swiper.data.candidate.source.RemoteCandidate
 import com.padabajka.dating.feature.swiper.data.reaction.ReactionRepositoryImpl
 import com.padabajka.dating.feature.swiper.data.reaction.network.KtorReactionApi
 import com.padabajka.dating.feature.swiper.data.reaction.network.ReactionApi
+import com.padabajka.dating.feature.swiper.data.reaction.source.LocalReactionDataSource
 import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDataSource
 import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDataSourceImpl
 import com.padabajka.dating.feature.swiper.data.search.SearchPreferencesRepositoryImpl
@@ -29,6 +30,7 @@ import com.padabajka.dating.feature.swiper.domain.ReactToCardUseCase
 import com.padabajka.dating.feature.swiper.domain.search.SearchPreferencesProvider
 import com.padabajka.dating.feature.swiper.domain.search.UpdateSearchPrefUseCase
 import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 private val dataModule = module {
@@ -63,9 +65,12 @@ private val dataModule = module {
 
     single<ReactionRepository> {
         ReactionRepositoryImpl(
-            remoteReactionDataSource = get()
+            remoteReactionDataSource = get(),
+            localReactionDataSource = get()
         )
     }
+
+    factoryOf(::LocalReactionDataSource)
 
     factory<RemoteReactionDataSource> {
         RemoteReactionDataSourceImpl(

@@ -25,15 +25,17 @@ class LikesMeScreenComponent(
 
     init {
         componentScope.launch {
-            val reactionUIState = reactionsToMeUseCase().sortByPriorityType().map { reaction ->
-                reaction.toUIState()
-            }
-            reduce { state ->
-                state.copy(
-                    listReactions = ListReactions.Success(
-                        likes = reactionUIState.toPersistentList()
+            reactionsToMeUseCase.reactionsToMe.collect {
+                val reactionUIState = it.sortByPriorityType().map { reaction ->
+                    reaction.toUIState()
+                }
+                reduce { state ->
+                    state.copy(
+                        listReactions = ListReactions.Success(
+                            likes = reactionUIState.toPersistentList()
+                        )
                     )
-                )
+                }
             }
         }
     }
