@@ -1,8 +1,8 @@
 package com.padabajka.dating.feature.push.data.domain
 
+import com.padabajka.dating.core.data.network.incoming.dto.DataPush
+import com.padabajka.dating.core.data.network.model.ReactionType
 import com.padabajka.dating.core.repository.api.ReactionRepository
-import com.padabajka.dating.core.repository.api.model.push.DataPush
-import com.padabajka.dating.core.repository.api.model.push.ReactionType
 import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
 
 class HandleNewReactionToMeUseCase(

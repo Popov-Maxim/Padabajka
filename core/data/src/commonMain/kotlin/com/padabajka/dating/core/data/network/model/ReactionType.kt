@@ -1,4 +1,4 @@
-package com.padabajka.dating.core.repository.api.model.push
+package com.padabajka.dating.core.data.network.model
 
 import kotlinx.serialization.Serializable
 
