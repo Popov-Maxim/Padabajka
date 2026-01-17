@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.swiper.data.reaction.network
 
+import com.padabajka.dating.core.repository.api.model.push.ReactionType
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
 import kotlinx.serialization.Serializable
@@ -10,13 +11,6 @@ data class ReactionDto(
     val reaction: ReactionType,
     val message: String? = null
 )
-
-@Serializable
-enum class ReactionType(val raw: String) {
-    SuperLike("superlike"),
-    Like("like"),
-    Dislike("dislike")
-}
 
 fun PersonReaction.toReactionDto(): ReactionDto {
     return ReactionDto(

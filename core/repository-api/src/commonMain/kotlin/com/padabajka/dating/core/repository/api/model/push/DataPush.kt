@@ -7,6 +7,7 @@ import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+// TODO: move from domain
 @Serializable
 sealed interface DataPush {
     @Serializable
@@ -19,6 +20,14 @@ sealed interface DataPush {
     @SerialName("user_presence")
     data class UserPresence(
         val userPresence: UserPresenceDto
+    ) : DataPush
+
+    @Serializable
+    @SerialName("new_reaction_to_me")
+    data class NewReactionToMe(
+        val fromUserId: PersonId,
+        val reaction: ReactionType,
+        val message: String? = null
     ) : DataPush
 }
 
