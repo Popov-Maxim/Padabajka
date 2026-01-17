@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.padabajka.dating.component.room.asset.city.entry.CityEntry
-import com.padabajka.dating.component.room.asset.city.entry.CityTranslation
 
 @Dao
 interface CityDao {
@@ -18,23 +17,4 @@ interface CityDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCities(cities: List<CityEntry>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCityTranslations(cities: List<CityTranslation>)
-
-    @Query(
-        """
-        SELECT * FROM city_translations
-        WHERE name LIKE '%' || :query || '%' COLLATE NOCASE
-        """
-    )
-    suspend fun findCityTranslations(query: String): List<CityTranslation>
-
-    @Query(
-        """
-        SELECT * FROM city_translations
-        WHERE cityId = :id and language = :language
-        """
-    )
-    suspend fun getCityTranslation(id: String, language: String): CityTranslation?
 }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9083af57f9518cc183091f527558c42f",
+    "identityHash": "0fbd597f60f6748bbb505334e36d2ded",
     "entities": [
       {
         "tableName": "messages",
@@ -229,43 +229,18 @@
         }
       },
       {
-        "tableName": "city_translations",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cityId` TEXT NOT NULL, `language` TEXT NOT NULL, `name` TEXT NOT NULL COLLATE NOCASE, PRIMARY KEY(`cityId`, `language`))",
-        "fields": [
-          {
-            "fieldPath": "cityId",
-            "columnName": "cityId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "language",
-            "columnName": "language",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "cityId",
-            "language"
-          ]
-        }
-      },
-      {
-        "tableName": "language_translations",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `language` TEXT NOT NULL, `name` TEXT NOT NULL COLLATE NOCASE, PRIMARY KEY(`id`, `language`))",
+        "tableName": "assets_translation",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `type` TEXT NOT NULL, `language` TEXT NOT NULL, `name` TEXT NOT NULL COLLATE NOCASE, PRIMARY KEY(`id`, `type`, `language`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -286,6 +261,7 @@
           "autoGenerate": false,
           "columnNames": [
             "id",
+            "type",
             "language"
           ]
         }
@@ -293,7 +269,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9083af57f9518cc183091f527558c42f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0fbd597f60f6748bbb505334e36d2ded')"
     ]
   }
 }

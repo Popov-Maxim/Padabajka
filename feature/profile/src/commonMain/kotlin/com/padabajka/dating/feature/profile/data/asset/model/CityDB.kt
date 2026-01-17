@@ -21,8 +21,18 @@ fun CityDB.toDomain(): City {
     )
 }
 
-fun CityEntry.toDomain(name: String): CityDB {
+fun CityEntry.toDB(name: String): CityDB {
     return CityDB(
+        id = id,
+        name = name,
+        lat = lat,
+        lon = lon,
+        radiusKm = radiusKm
+    )
+}
+
+fun CityEntry.toDomain(name: String): City {
+    return City(
         id = id,
         name = name,
         lat = lat,

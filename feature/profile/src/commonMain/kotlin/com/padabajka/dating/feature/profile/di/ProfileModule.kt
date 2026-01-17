@@ -1,20 +1,20 @@
 package com.padabajka.dating.feature.profile.di
 
 import com.padabajka.dating.core.data.utils.DataStoreUtils
-import com.padabajka.dating.core.repository.api.CityRepository
+import com.padabajka.dating.core.repository.api.AssetRepository
 import com.padabajka.dating.core.repository.api.DraftProfileRepository
-import com.padabajka.dating.core.repository.api.LanguageAssetRepository
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.profile.DraftProfile
 import com.padabajka.dating.feature.profile.data.DraftProfileRepositoryImpl
 import com.padabajka.dating.feature.profile.data.ProfileRepositoryImpl
+import com.padabajka.dating.feature.profile.data.asset.AssetRepositoryImpl
 import com.padabajka.dating.feature.profile.data.asset.CityRepositoryImpl
 import com.padabajka.dating.feature.profile.data.asset.LanguageAssetRepositoryImpl
 import com.padabajka.dating.feature.profile.data.asset.network.CityApi
 import com.padabajka.dating.feature.profile.data.asset.network.LanguageAssetApi
+import com.padabajka.dating.feature.profile.data.asset.source.LocalAssetsDataSource
 import com.padabajka.dating.feature.profile.data.asset.source.LocalCityDataSource
 import com.padabajka.dating.feature.profile.data.asset.source.LocalCityDataSourceImpl
-import com.padabajka.dating.feature.profile.data.asset.source.LocalLanguageAssetDataSource
 import com.padabajka.dating.feature.profile.data.asset.source.RemoteCityDataSource
 import com.padabajka.dating.feature.profile.data.asset.source.RemoteCityDataSourceImpl
 import com.padabajka.dating.feature.profile.data.asset.source.RemoteLanguageAssetDataSource
@@ -75,23 +75,34 @@ private val dataModule = module {
         )
     }
 
-    single<CityRepository> {
+    single<CityRepositoryImpl> {
         CityRepositoryImpl(
             remoteCityDataSource = get(),
-            localCityDataSource = get()
+            localCityDataSource = get(),
+            localAssetsDataSource = get(),
         )
     }
 
-    single<LanguageAssetRepository> {
+    single<LanguageAssetRepositoryImpl> {
         LanguageAssetRepositoryImpl(
             remoteLanguageAssetDataSource = get(),
-            localLanguageAssetDataSource = get()
+            localAssetsDataSource = get(),
+        )
+    }
+
+    single<AssetRepository> {
+        AssetRepositoryImpl(
+            localAssetDataSource = get(),
+            localCityDataSource = get(),
+            settingsRepository = get(),
+            cityRepository = get(),
+            languageRepository = get()
         )
     }
 
     factoryOf(::RemoteLanguageAssetDataSource)
     factoryOf(::LanguageAssetApi)
-    factoryOf(::LocalLanguageAssetDataSource)
+    factoryOf(::LocalAssetsDataSource)
 
     factory<RemoteCityDataSource> {
         RemoteCityDataSourceImpl(

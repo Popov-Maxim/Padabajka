@@ -1,7 +1,8 @@
 package com.padabajka.dating.feature.profile.data.asset.model
 
 import com.padabajka.dating.component.room.asset.city.entry.CityEntry
-import com.padabajka.dating.component.room.asset.city.entry.CityTranslation
+import com.padabajka.dating.component.room.asset.entry.AssetsTranslationEntry
+import com.padabajka.dating.core.repository.api.model.profile.Text
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -22,10 +23,11 @@ fun CityDto.toEntity(): CityEntry {
     )
 }
 
-fun CityDto.toTranslationEntity(): List<CityTranslation> {
+fun CityDto.toTranslationEntity(): List<AssetsTranslationEntry> {
     return translations.map { (language, translation) ->
-        CityTranslation(
-            cityId = id,
+        AssetsTranslationEntry(
+            id = id,
+            type = Text.Type.City.raw,
             language = language,
             name = translation
         )
