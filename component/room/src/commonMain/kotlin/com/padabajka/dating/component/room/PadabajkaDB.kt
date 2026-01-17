@@ -5,11 +5,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
+import com.padabajka.dating.component.room.asset.AssetsDao
 import com.padabajka.dating.component.room.asset.city.CityDao
 import com.padabajka.dating.component.room.asset.city.entry.CityEntry
-import com.padabajka.dating.component.room.asset.city.entry.CityTranslation
-import com.padabajka.dating.component.room.asset.language.LanguageDao
-import com.padabajka.dating.component.room.asset.language.entry.LanguageTranslationEntry
+import com.padabajka.dating.component.room.asset.entry.AssetsTranslationEntry
 import com.padabajka.dating.component.room.chat.ChatDao
 import com.padabajka.dating.component.room.chat.entry.ChatEntry
 import com.padabajka.dating.component.room.matches.MatchesDao
@@ -31,8 +30,7 @@ import com.padabajka.dating.component.room.person.entry.PersonEntry
         PersonEntry::class,
         MatchEntry::class,
         CityEntry::class,
-        CityTranslation::class,
-        LanguageTranslationEntry::class
+        AssetsTranslationEntry::class
     ],
     version = 1
 )
@@ -50,7 +48,7 @@ abstract class PadabajkaDB : RoomDatabase() {
     abstract fun personDao(): PersonDao
     abstract fun matchesDao(): MatchesDao
     abstract fun cityDao(): CityDao
-    abstract fun languageDao(): LanguageDao
+    abstract fun assetsDao(): AssetsDao
 }
 
 internal const val DB_NAME = "padabajka.db"

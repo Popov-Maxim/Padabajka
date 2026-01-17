@@ -1,15 +1,13 @@
 package com.padabajka.dating.core.domain.sync
 
-import com.padabajka.dating.core.repository.api.CityRepository
-import com.padabajka.dating.core.repository.api.LanguageAssetRepository
+import com.padabajka.dating.core.repository.api.AssetRepository
 import com.padabajka.dating.core.repository.api.MatchRepository
 import com.padabajka.dating.core.repository.api.ReactionRepository
 import kotlinx.coroutines.flow.first
 
 class SyncRemoteDataUseCase(
     private val matchRepository: MatchRepository,
-    private val cityRepository: CityRepository,
-    private val languageAssetRepository: LanguageAssetRepository,
+    private val assetRepository: AssetRepository,
     private val syncChatsUseCase: SyncChatsUseCase,
     private val reactionRepository: ReactionRepository
 ) {
@@ -21,8 +19,7 @@ class SyncRemoteDataUseCase(
                 syncChatsUseCase(matchIds)
             }
             reactionRepository.syncReactionsToMe()
-            cityRepository.loadCities()
-            languageAssetRepository.loadAssets()
+            assetRepository.loadAssets()
         }.onFailure {
             println("TODO: not impl for error SyncRemoteDataUseCase ${it.message}")
             it.printStackTrace()

@@ -1,16 +1,14 @@
 package com.padabajka.dating.feature.dictionary.data
 
-import com.padabajka.dating.core.repository.api.CityRepository
+import com.padabajka.dating.core.repository.api.AssetRepository
 import com.padabajka.dating.core.repository.api.DictionaryRepository
-import com.padabajka.dating.core.repository.api.LanguageAssetRepository
 import com.padabajka.dating.core.repository.api.model.dictionary.Language
 import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.feature.dictionary.data.source.StaticWordDataSource
 
 class DictionaryRepositoryImpl(
     private val staticWordDataSource: StaticWordDataSource,
-    private val cityRepository: CityRepository,
-    private val languageAssetRepository: LanguageAssetRepository,
+    private val assetRepository: AssetRepository,
 ) : DictionaryRepository {
     override suspend fun loadDictionaries(selectedLang: String) {
         TODO("Not yet implemented")
@@ -18,11 +16,13 @@ class DictionaryRepositoryImpl(
 
     override suspend fun getText(id: String, type: String, lang: Language): String? {
         return when (type) {
-            Text.Type.City.raw -> {
-                cityRepository.getTranslation(id, lang)
-            }
+            Text.Type.City.raw,
             Text.Type.Language.raw -> {
-                languageAssetRepository.getTranslation(id, lang)
+                val text = Text(
+                    id = Text.Id(id),
+                    type = Text.Type.parse(type),
+                )
+                assetRepository.getTranslation(text, lang)
             }
             else -> {
                 when (lang) {

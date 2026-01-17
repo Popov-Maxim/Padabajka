@@ -12,8 +12,7 @@ private val dataModule = module {
     single<DictionaryRepository> {
         DictionaryRepositoryImpl(
             staticWordDataSource = get(),
-            cityRepository = get(),
-            languageAssetRepository = get(),
+            assetRepository = get()
         )
     }
 
