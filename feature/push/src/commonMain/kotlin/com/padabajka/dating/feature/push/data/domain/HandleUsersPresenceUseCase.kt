@@ -1,8 +1,8 @@
 package com.padabajka.dating.feature.push.data.domain
 
+import com.padabajka.dating.core.data.network.incoming.dto.DataPush
+import com.padabajka.dating.core.data.network.incoming.dto.toDomain
 import com.padabajka.dating.core.repository.api.UserPresenceRepository
-import com.padabajka.dating.core.repository.api.model.push.DataPush
-import com.padabajka.dating.core.repository.api.model.push.toDomain
 
 class HandleUsersPresenceUseCase(
     private val userPresenceRepository: UserPresenceRepository

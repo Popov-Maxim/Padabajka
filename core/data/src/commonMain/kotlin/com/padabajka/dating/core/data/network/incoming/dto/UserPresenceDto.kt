@@ -1,4 +1,4 @@
-package com.padabajka.dating.core.repository.api.model.push
+package com.padabajka.dating.core.data.network.incoming.dto
 
 import com.padabajka.dating.core.repository.api.model.profile.UserPresence
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId

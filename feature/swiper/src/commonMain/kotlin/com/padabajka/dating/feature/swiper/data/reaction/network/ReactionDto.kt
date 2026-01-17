@@ -1,6 +1,6 @@
 package com.padabajka.dating.feature.swiper.data.reaction.network
 
-import com.padabajka.dating.core.repository.api.model.push.ReactionType
+import com.padabajka.dating.core.data.network.model.ReactionType
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
 import kotlinx.serialization.Serializable

@@ -1,5 +1,6 @@
-package com.padabajka.dating.core.repository.api.model.push
+package com.padabajka.dating.core.data.network.incoming.dto
 
+import com.padabajka.dating.core.data.network.model.ReactionType
 import com.padabajka.dating.core.repository.api.model.match.Match
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
@@ -7,7 +8,6 @@ import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-// TODO: move from domain
 @Serializable
 sealed interface DataPush {
     @Serializable
