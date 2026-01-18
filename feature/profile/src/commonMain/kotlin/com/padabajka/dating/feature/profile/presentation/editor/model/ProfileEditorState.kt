@@ -12,7 +12,9 @@ import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.profile.Profile
+import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.core.repository.api.model.profile.age
+import com.padabajka.dating.feature.profile.presentation.model.AssetsFromDb
 import com.padabajka.dating.feature.profile.presentation.model.ProfileViewUIItem
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
@@ -27,6 +29,7 @@ data class ProfileEditorState(
     val lookingFor: ProfileField<LookingForData>,
     val details: ProfileField<DetailFields>,
     val lifeStyle: ProfileField<LifestyleFields>,
+    val interests: ProfileField<AssetsFromDb>,
     val language: ProfileField<LanguagesAssetsFields>,
     val mainAchievement: ProfileField<Achievement?>,
     val achievements: ProfileField<PersistentList<Achievement>>,
@@ -43,6 +46,7 @@ data class ProfileEditorState(
         lookingFor = lookingFor.value,
         details = details.value.allDetails,
         lifestyle = lifeStyle.value.toDomain().toPersistentList(),
+        interests = interests.value.value,
         languages = language.value.toDomain()
     )
 
@@ -96,6 +100,7 @@ fun Profile.toEditorState(): ProfileEditorState {
         mainAchievement = mainAchievement.toField(),
         achievements = achievements.toPersistentList().toField(),
         lifeStyle = lifestyles.toLifestyleFields().toField(),
+        interests = interests.toPersistentList().run(::createInterests).toField(),
         language = languagesAsset.toLanguagesFields().toField()
     )
 }
@@ -115,4 +120,13 @@ fun Profile.updated(state: ProfileEditorState) = copy(
 
 private fun <T> T.toField(): ProfileField<T> {
     return ProfileField(this)
+}
+
+private fun createInterests(value: PersistentList<Text>): AssetsFromDb {
+    return AssetsFromDb(
+        value = value,
+        maxValues = 10,
+        foundedAssets = FoundedAssets.Searching,
+        searchItem = SearchItem("")
+    )
 }

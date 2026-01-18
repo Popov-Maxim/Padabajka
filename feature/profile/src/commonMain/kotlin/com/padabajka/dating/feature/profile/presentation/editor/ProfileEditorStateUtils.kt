@@ -4,6 +4,7 @@ import com.padabajka.dating.core.domain.replaced
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
+import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.feature.profile.presentation.editor.model.DetailUIItem
 import com.padabajka.dating.feature.profile.presentation.editor.model.LanguageAssetsField
 import com.padabajka.dating.feature.profile.presentation.editor.model.LanguagesAssetType
@@ -11,6 +12,8 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.LanguagesA
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorState
 import com.padabajka.dating.feature.profile.presentation.editor.model.SupportedDetails
 import com.padabajka.dating.feature.profile.presentation.editor.model.SupportedLifestyles
+import com.padabajka.dating.feature.profile.presentation.model.AssetsFromDb
+import kotlinx.collections.immutable.PersistentList
 
 fun ProfileEditorState.changeAchievementMain(achievement: Achievement?): ProfileEditorState {
     return if (achievement == null) {
@@ -142,5 +145,21 @@ fun ProfileEditorState.updateLanguage(
         LanguagesAssetType.Native -> updateNativeLang(updated)
         LanguagesAssetType.Known -> updateKnownLang(updated)
         LanguagesAssetType.Learning -> updateLearningLang(updated)
+    }
+}
+
+fun ProfileEditorState.updateInterests(
+    updated: AssetsFromDb.() -> AssetsFromDb
+): ProfileEditorState {
+    return this.copy(
+        interests = this.interests.updatedValue { it.updated() }
+    )
+}
+
+fun ProfileEditorState.changeInterests(
+    value: PersistentList<Text>,
+): ProfileEditorState {
+    return updateInterests {
+        copy(value = value)
     }
 }

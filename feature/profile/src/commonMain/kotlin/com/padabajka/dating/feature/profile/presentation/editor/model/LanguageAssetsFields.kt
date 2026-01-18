@@ -16,7 +16,6 @@ data class LanguagesAssetsFields(
 data class LanguageAssetsField(
     val value: PersistentList<Text>,
     val maxValues: Int,
-    val possibleValues: PersistentList<Text>,
     val foundedAssets: FoundedAssets,
     val searchItem: SearchItem
 )
@@ -60,7 +59,6 @@ private object Default {
     private val defaultLangField = LanguageAssetsField(
         value = persistentListOf(),
         maxValues = 0,
-        possibleValues = persistentListOf(),
         foundedAssets = FoundedAssets.Searching,
         searchItem = SearchItem("")
     )

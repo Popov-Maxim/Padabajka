@@ -18,6 +18,7 @@ data class Text(
         UI("ui"),
         City("city"),
         Language("language"),
+        Interest("interest"),
         Default("default");
 
         companion object {

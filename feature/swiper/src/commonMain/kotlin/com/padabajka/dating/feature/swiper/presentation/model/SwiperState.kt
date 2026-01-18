@@ -13,6 +13,7 @@ import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LanguagesAsset
 import com.padabajka.dating.core.repository.api.model.profile.Lifestyle
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
+import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.core.repository.api.model.swiper.AdCard
 import com.padabajka.dating.core.repository.api.model.swiper.Card
 import com.padabajka.dating.core.repository.api.model.swiper.EmptyCard
@@ -65,6 +66,7 @@ data class PersonItem(
     val lookingFor: LookingForData,
     val details: PersistentList<Detail>,
     val lifestyles: PersistentList<Lifestyle>,
+    val interests: PersistentList<Text>,
     val languages: LanguagesAsset,
     val mainAchievement: Achievement?,
     val achievements: PersistentList<Achievement>,
@@ -89,6 +91,7 @@ fun Person.toUIPerson(): PersonItem {
             profile.lookingFor,
             profile.details.toPersistentList(),
             profile.lifestyles.toPersistentList(),
+            profile.interests.toPersistentList(),
             profile.languagesAsset,
             profile.mainAchievement,
             profile.achievements.toPersistentList()
@@ -137,6 +140,7 @@ fun PersonItem.toPersonView(): ProfileViewUIItem {
         lookingFor = lookingFor,
         details = details,
         lifestyle = lifestyles,
+        interests = interests,
         languages = languages
     )
 }

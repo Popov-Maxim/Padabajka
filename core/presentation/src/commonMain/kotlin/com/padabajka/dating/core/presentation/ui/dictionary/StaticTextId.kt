@@ -37,6 +37,7 @@ sealed interface StaticTextId {
         LookingFor(rawId = "looking_for"),
         BasicInfo(rawId = "basic_info"),
         Lifestyle(rawId = "lifestyle"),
+        Interests(rawId = "interests"),
 
         City(rawId = "city"),
         CityHint(rawId = "city_hint"),
@@ -76,6 +77,8 @@ sealed interface StaticTextId {
         YourLearningLanguage(rawId = "your_learning_language"),
         SelectUpToNLanguages(rawId = "select_up_to_n_languages"),
         LanguageSearch(rawId = "language_search"),
+        YourInterests(rawId = "your_interests"),
+        SelectUpToNInterests(rawId = "select_up_to_n_interests"),
 
         // Profile screen
         OpenProfileEditor(rawId = "open_profile_editor"),

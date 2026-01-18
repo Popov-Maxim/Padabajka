@@ -9,15 +9,15 @@ import com.padabajka.dating.feature.profile.data.DraftProfileRepositoryImpl
 import com.padabajka.dating.feature.profile.data.ProfileRepositoryImpl
 import com.padabajka.dating.feature.profile.data.asset.AssetRepositoryImpl
 import com.padabajka.dating.feature.profile.data.asset.CityRepositoryImpl
-import com.padabajka.dating.feature.profile.data.asset.LanguageAssetRepositoryImpl
 import com.padabajka.dating.feature.profile.data.asset.network.CityApi
+import com.padabajka.dating.feature.profile.data.asset.network.InterestAssetApi
 import com.padabajka.dating.feature.profile.data.asset.network.LanguageAssetApi
 import com.padabajka.dating.feature.profile.data.asset.source.LocalAssetsDataSource
 import com.padabajka.dating.feature.profile.data.asset.source.LocalCityDataSource
 import com.padabajka.dating.feature.profile.data.asset.source.LocalCityDataSourceImpl
+import com.padabajka.dating.feature.profile.data.asset.source.RemoteAssetDataSource
 import com.padabajka.dating.feature.profile.data.asset.source.RemoteCityDataSource
 import com.padabajka.dating.feature.profile.data.asset.source.RemoteCityDataSourceImpl
-import com.padabajka.dating.feature.profile.data.asset.source.RemoteLanguageAssetDataSource
 import com.padabajka.dating.feature.profile.data.network.KtorProfileApi
 import com.padabajka.dating.feature.profile.data.network.ProfileApi
 import com.padabajka.dating.feature.profile.data.source.DataStoreLocalDraftProfileDataSource
@@ -28,6 +28,7 @@ import com.padabajka.dating.feature.profile.domain.CreateProfileFromDraftUseCase
 import com.padabajka.dating.feature.profile.domain.LoadImageUseCase
 import com.padabajka.dating.feature.profile.domain.SaveUpdatedProfileUseCase
 import com.padabajka.dating.feature.profile.domain.asset.FindCitiesUseCase
+import com.padabajka.dating.feature.profile.domain.asset.FindInterestAssetsUseCase
 import com.padabajka.dating.feature.profile.domain.asset.FindLanguageAssetsUseCase
 import com.padabajka.dating.feature.profile.domain.creator.BirthdayValidator
 import com.padabajka.dating.feature.profile.domain.creator.DraftProfileProvider
@@ -79,14 +80,6 @@ private val dataModule = module {
         CityRepositoryImpl(
             remoteCityDataSource = get(),
             localCityDataSource = get(),
-            localAssetsDataSource = get(),
-        )
-    }
-
-    single<LanguageAssetRepositoryImpl> {
-        LanguageAssetRepositoryImpl(
-            remoteLanguageAssetDataSource = get(),
-            localAssetsDataSource = get(),
         )
     }
 
@@ -95,12 +88,13 @@ private val dataModule = module {
             localAssetDataSource = get(),
             localCityDataSource = get(),
             settingsRepository = get(),
-            cityRepository = get(),
-            languageRepository = get()
+            remoteAssetDataSource = get(),
+            cityRepository = get()
         )
     }
 
-    factoryOf(::RemoteLanguageAssetDataSource)
+    factoryOf(::RemoteAssetDataSource)
+    factoryOf(::InterestAssetApi)
     factoryOf(::LanguageAssetApi)
     factoryOf(::LocalAssetsDataSource)
 
@@ -147,6 +141,7 @@ private val domainModule = module {
     factoryOf(::UpdateMainImageUseCase)
     factoryOf(::CreateProfileFromDraftUseCase)
     factoryOf(::LoadImageUseCase)
+    factoryOf(::FindInterestAssetsUseCase)
 }
 
 private val presentationModule = module {
@@ -167,7 +162,8 @@ private val presentationModule = module {
             saveUpdatedProfileUseCaseFactory = { get() },
             getLocalImageUseCaseFactory = { get() },
             findCitiesUseCase = get(),
-            findLanguageAssetsUseCase = get()
+            findLanguageAssetsUseCase = get(),
+            findInterestAssetsUseCase = get()
         )
     }
 }

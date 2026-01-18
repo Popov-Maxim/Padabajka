@@ -35,6 +35,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.LookingFor -> "Looking for..."
             StaticTextId.UiId.BasicInfo -> "Basic info"
             StaticTextId.UiId.Lifestyle -> "Lifestyle"
+            StaticTextId.UiId.Interests -> "Interests"
             StaticTextId.UiId.EnterMessage -> "Enter message..."
             StaticTextId.UiId.MessagePopupLike -> "Like"
             StaticTextId.UiId.MessagePopupReply -> "Reply"
@@ -120,6 +121,8 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.YourLearningLanguage -> "Languages, that you are learning"
             StaticTextId.UiId.SelectUpToNLanguages -> "Select up to {n} languages"
             StaticTextId.UiId.LanguageSearch -> "Language search"
+            StaticTextId.UiId.YourInterests -> "Your interests"
+            StaticTextId.UiId.SelectUpToNInterests -> "Select up to {n} interests"
         }
     }
 

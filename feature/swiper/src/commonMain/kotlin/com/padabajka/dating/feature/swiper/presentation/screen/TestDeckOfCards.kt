@@ -106,6 +106,7 @@ private fun createPersonItem(index: Int): PersonItem {
         achievements = persistentListOf(),
         lookingFor = LookingForData.default,
         lifestyles = persistentListOf(),
+        interests = persistentListOf(),
         languages = LanguagesAsset()
     )
 }
