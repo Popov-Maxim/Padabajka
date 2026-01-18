@@ -20,6 +20,7 @@ interface ProfileApi {
             Details("details"),
             Lifestyles("lifestyles"),
             LanguagesAsset("languages_asset"),
+            Interests("interests"),
         }
     }
 
