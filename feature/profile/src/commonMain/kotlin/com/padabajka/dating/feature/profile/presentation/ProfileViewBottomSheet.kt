@@ -51,7 +51,9 @@ import com.padabajka.dating.core.presentation.ui.pager.PagerData
 import com.padabajka.dating.core.presentation.ui.pager.PagerIndicators
 import com.padabajka.dating.core.repository.api.model.profile.Detail
 import com.padabajka.dating.core.repository.api.model.profile.ServerIcon
+import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.feature.profile.presentation.editor.TotalDataBlock
+import com.padabajka.dating.feature.profile.presentation.editor.asset.InterestsBlockView
 import com.padabajka.dating.feature.profile.presentation.editor.asset.LanguageBlockView
 import com.padabajka.dating.feature.profile.presentation.editor.asset.LifestyleBlockView
 import com.padabajka.dating.feature.profile.presentation.editor.model.LanguagesAssetsFields
@@ -274,6 +276,9 @@ private fun TextAssetsInProfile(
         Lifestyle(
             field = profileViewUIItem.lifestyle.toLifestyleFields()
         )
+        Interests(
+            field = profileViewUIItem.interests
+        )
         Language(
             field = profileViewUIItem.languages.toLanguagesFields()
         )
@@ -353,6 +358,21 @@ private fun Language(
             modifier = modifier
         ) {
             LanguageBlockView(field)
+        }
+    }
+}
+
+@Composable
+private fun Interests(
+    field: PersistentList<Text>,
+    modifier: Modifier = Modifier
+) {
+    if (field.isEmpty().not()) {
+        AssetBlock(
+            label = StaticTextId.UiId.Interests,
+            modifier = modifier
+        ) {
+            InterestsBlockView(field)
         }
     }
 }

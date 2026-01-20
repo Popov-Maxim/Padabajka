@@ -22,7 +22,6 @@ class ProfileRepositoryImpl(
 
     override suspend fun updateProfile() {
         val profile = removeProfileDataSource.getProfile()
-        println("ProfileRepositoryImpl updateProfile: $profile")
         _profile.value = profile
         if (profile == null) {
             _profileState.value = ProfileState.NotCreated

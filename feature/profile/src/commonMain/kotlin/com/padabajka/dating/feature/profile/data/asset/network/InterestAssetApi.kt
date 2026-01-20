@@ -21,7 +21,7 @@ class InterestAssetApi(
         return response.body()
     }
 
-    companion object Companion {
+    companion object {
         private const val PATH_FOR_GET = "assets/interests"
     }
 }

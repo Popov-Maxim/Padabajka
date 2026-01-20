@@ -23,12 +23,16 @@ import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
 import com.padabajka.dating.core.presentation.ui.modifier.optionalClickable
 import com.padabajka.dating.core.presentation.ui.textColor
+import com.padabajka.dating.core.repository.api.model.profile.Text
+import com.padabajka.dating.feature.profile.presentation.editor.model.FoundedAssets
 import com.padabajka.dating.feature.profile.presentation.editor.model.InterestSearchQueryChangedEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.InterestUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileField
+import com.padabajka.dating.feature.profile.presentation.editor.model.SearchItem
 import com.padabajka.dating.feature.profile.presentation.editor.model.UpdateInterestSearchEvent
 import com.padabajka.dating.feature.profile.presentation.model.AssetsFromDb
+import kotlinx.collections.immutable.PersistentList
 
 @Composable
 fun InterestsBlock(
@@ -71,7 +75,20 @@ fun InterestsBlock(
 }
 
 @Composable
-fun Interests(
+fun InterestsBlockView(
+    value: PersistentList<Text>,
+) {
+    val field = AssetsFromDb(
+        value = value,
+        maxValues = null,
+        foundedAssets = FoundedAssets.Searching,
+        searchItem = SearchItem("")
+    )
+    Interests(field)
+}
+
+@Composable
+private fun Interests(
     field: AssetsFromDb,
     onClick: (() -> Unit)? = null
 //    onEvent: (ProfileEditorEvent) -> Unit
