@@ -16,19 +16,18 @@ class DictionaryRepositoryImpl(
 
     override suspend fun getText(id: String, type: String, lang: Language): String? {
         return when (type) {
-            Text.Type.City.raw,
-            Text.Type.Language.raw -> {
+            Text.Type.UI.raw -> {
+                when (lang) {
+                    is Language.Static -> staticWordDataSource.getWord(id, lang)
+                    is Language.Dynamic -> TODO()
+                }
+            }
+            else -> {
                 val text = Text(
                     id = Text.Id(id),
                     type = Text.Type.parse(type),
                 )
                 assetRepository.getTranslation(text, lang)
-            }
-            else -> {
-                when (lang) {
-                    is Language.Static -> staticWordDataSource.getWord(id, lang)
-                    is Language.Dynamic -> TODO()
-                }
             }
         }
     }

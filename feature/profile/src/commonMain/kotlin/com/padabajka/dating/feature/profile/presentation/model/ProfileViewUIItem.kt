@@ -7,6 +7,7 @@ import com.padabajka.dating.core.repository.api.model.profile.LanguagesAsset
 import com.padabajka.dating.core.repository.api.model.profile.Lifestyle
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.profile.Profile
+import com.padabajka.dating.core.repository.api.model.profile.Text
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 
@@ -18,6 +19,7 @@ data class ProfileViewUIItem(
     val lookingFor: LookingForData,
     val details: PersistentList<Detail>,
     val lifestyle: PersistentList<Lifestyle>,
+    val interests: PersistentList<Text>,
     val languages: LanguagesAsset
 )
 
@@ -30,6 +32,7 @@ fun Profile.toPersonView(): ProfileViewUIItem {
         lookingFor = lookingFor,
         details = details.toPersistentList(),
         lifestyle = lifestyles.toPersistentList(),
+        interests = interests.toPersistentList(),
         languages = languagesAsset
     )
 }

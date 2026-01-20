@@ -4,6 +4,7 @@ import com.padabajka.dating.core.data.network.model.toDto
 import com.padabajka.dating.core.data.network.model.toImageDto
 import com.padabajka.dating.core.data.network.model.toLookingForDataDto
 import com.padabajka.dating.core.data.network.model.toProfile
+import com.padabajka.dating.core.data.network.model.toTextDto
 import com.padabajka.dating.core.domain.mapOfNotNull
 import com.padabajka.dating.core.repository.api.model.profile.Gender
 import com.padabajka.dating.core.repository.api.model.profile.Image
@@ -39,6 +40,8 @@ class RemoveProfileDataSourceImpl(
         val lifestyles = fieldForUpdate(current, newProfile, Profile::lifestyles)
             ?.map { it.toDto() }
         val languages = fieldForUpdate(current, newProfile, Profile::languagesAsset)?.toDto()
+        val interests = fieldForUpdate(current, newProfile, Profile::interests)
+            ?.map { it.toTextDto() }
         val parameters = mapOfNotNull(
             ProfileApi.PatchParams.Key.Name to name,
             ProfileApi.PatchParams.Key.Birthday to birthday,
@@ -48,6 +51,7 @@ class RemoveProfileDataSourceImpl(
             ProfileApi.PatchParams.Key.Details to details?.serializeToString(),
             ProfileApi.PatchParams.Key.Lifestyles to lifestyles?.serializeToString(),
             ProfileApi.PatchParams.Key.LanguagesAsset to languages?.serializeToString(),
+            ProfileApi.PatchParams.Key.Interests to interests?.serializeToString(),
         )
         profileApi.patch(ProfileApi.PatchParams(parameters))
     }

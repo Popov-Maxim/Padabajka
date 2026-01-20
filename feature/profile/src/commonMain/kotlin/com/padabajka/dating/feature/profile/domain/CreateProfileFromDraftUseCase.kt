@@ -40,6 +40,7 @@ class CreateProfileFromDraftUseCase(
             lookingFor = lookingFor!!,
             details = details,
             lifestyles = lifestyles,
+            interests = interests,
             languagesAsset = LanguagesAsset(),
             mainAchievement = null,
             achievements = emptyList(),

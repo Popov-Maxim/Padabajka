@@ -17,6 +17,7 @@ data class Profile(
     val lookingFor: LookingForData,
     val details: List<Detail>,
     val lifestyles: List<Lifestyle>,
+    val interests: List<Text>,
     val languagesAsset: LanguagesAsset,
     val mainAchievement: Achievement?,
     val achievements: List<Achievement>

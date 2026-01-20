@@ -34,6 +34,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.LookingFor -> "Ищу..."
             StaticTextId.UiId.BasicInfo -> "Основное"
             StaticTextId.UiId.Lifestyle -> "Стиль жизни"
+            StaticTextId.UiId.Interests -> "Интересы"
             StaticTextId.UiId.EnterMessage -> "Введите сообщение..."
             StaticTextId.UiId.MessagePopupLike -> "Лайк"
             StaticTextId.UiId.MessagePopupReply -> "Ответить"
@@ -117,6 +118,8 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.YourLearningLanguage -> "Языки, которые ты учишь"
             StaticTextId.UiId.SelectUpToNLanguages -> "Выбери до {n} языков"
             StaticTextId.UiId.LanguageSearch -> "Поиск языка"
+            StaticTextId.UiId.YourInterests -> "Твои интересы"
+            StaticTextId.UiId.SelectUpToNInterests -> "Выбери до {n} интересов"
         }
     }
 

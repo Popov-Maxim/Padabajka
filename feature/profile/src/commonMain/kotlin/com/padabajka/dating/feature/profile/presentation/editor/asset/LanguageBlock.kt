@@ -30,6 +30,7 @@ import com.padabajka.dating.core.presentation.ui.layout.SeparatedColumn
 import com.padabajka.dating.core.presentation.ui.layout.SeparatedColumnScope
 import com.padabajka.dating.core.presentation.ui.modifier.optionalClickable
 import com.padabajka.dating.core.presentation.ui.textColor
+import com.padabajka.dating.feature.profile.presentation.editor.model.LangSearchQueryChangedEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.LanguageAssetsField
 import com.padabajka.dating.feature.profile.presentation.editor.model.LanguagesAssetType
 import com.padabajka.dating.feature.profile.presentation.editor.model.LanguagesAssetsFields
@@ -38,6 +39,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEdi
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileField
 import com.padabajka.dating.feature.profile.presentation.editor.model.UpdateLangSearchEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.isEmpty
+import com.padabajka.dating.feature.profile.presentation.model.AssetsFromDb
 
 @Composable
 fun LanguageBlock(
@@ -72,7 +74,7 @@ fun LanguageBlock(
             onEvent(UpdateLangSearchEvent(type))
         }
 
-        val langField = when (type) {
+        val languageAssetsField = when (type) {
             LanguagesAssetType.Native -> languageAssetsFields.nativeLanguages
             LanguagesAssetType.Known -> languageAssetsFields.knownLanguages
             LanguagesAssetType.Learning -> languageAssetsFields.learningLanguages
@@ -84,23 +86,29 @@ fun LanguageBlock(
             LanguagesAssetType.Learning -> StaticTextId.UiId.YourLearningLanguage.translate()
         }
         val body = StaticTextId.UiId.SelectUpToNLanguages.translate()
-            .replace("{n}", langField.maxValues.toString())
+            .replace("{n}", languageAssetsField.maxValues.toString())
 
-        val languageUIText = LanguageUIText(
+        val textAssetUIText = TextAssetUIText(
             title = title,
             body = body
         )
 
-        LanguagesEditorBottomSheet(
-            languageAssetsField = langField,
-            type = type,
-            languageUIText = languageUIText,
-            onEvent = onEvent,
+        AssetSelectorEditorBottomSheet(
+            assetsFromDb = AssetsFromDb(
+                value = languageAssetsField.value,
+                maxValues = languageAssetsField.maxValues,
+                foundedAssets = languageAssetsField.foundedAssets,
+                searchItem = languageAssetsField.searchItem
+            ),
+            textAssetUIText = textAssetUIText,
+            onChangeValue = { value ->
+                onEvent(LanguagesUpdateEvent(languageAssetsField.copy(value = value), type))
+            },
+            onChangeSearchField = {
+                onEvent(LangSearchQueryChangedEvent(it, type))
+            },
             onDismissRequest = {
                 selectedType = null
-            },
-            onChange = {
-                onEvent(LanguagesUpdateEvent(it, type))
             }
         )
     }

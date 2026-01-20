@@ -11,5 +11,6 @@ data class DraftProfile(
     val aboutMe: String? = null,
     val lookingFor: LookingForData? = null,
     val details: List<Detail> = listOf(),
-    val lifestyles: List<Lifestyle> = listOf()
+    val lifestyles: List<Lifestyle> = listOf(),
+    val interests: List<Text> = listOf()
 )

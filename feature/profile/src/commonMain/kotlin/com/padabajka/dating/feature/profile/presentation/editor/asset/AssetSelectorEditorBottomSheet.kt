@@ -36,24 +36,23 @@ import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.feature.profile.presentation.creator.name.TextAsset
 import com.padabajka.dating.feature.profile.presentation.editor.model.FoundedAssets
-import com.padabajka.dating.feature.profile.presentation.editor.model.LangSearchQueryChangedEvent
-import com.padabajka.dating.feature.profile.presentation.editor.model.LanguageAssetsField
-import com.padabajka.dating.feature.profile.presentation.editor.model.LanguagesAssetType
-import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.SearchItem
+import com.padabajka.dating.feature.profile.presentation.model.AssetsFromDb
 import kotlinx.collections.immutable.PersistentList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LanguagesEditorBottomSheet(
-    languageAssetsField: LanguageAssetsField,
-    type: LanguagesAssetType,
-    languageUIText: LanguageUIText,
-    onChange: (LanguageAssetsField) -> Unit,
-    onEvent: (ProfileEditorEvent) -> Unit,
+fun AssetSelectorEditorBottomSheet(
+    assetsFromDb: AssetsFromDb,
+    textAssetUIText: TextAssetUIText,
+    onChangeValue: (PersistentList<Text>) -> Unit,
+    onChangeSearchField: (SearchItem) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(true)
+
+    var localValue by remember { mutableStateOf(assetsFromDb.value) }
+
     ModalBottomSheet(
         sheetState = bottomSheetState,
         containerColor = CoreColors.background.mainColor,
@@ -62,35 +61,27 @@ fun LanguagesEditorBottomSheet(
         contentWindowInsets = { WindowInsets.safeDrawing },
         dragHandle = null // TODO add dragHandle
     ) {
-        val foundedAssets by remember(languageAssetsField.foundedAssets) {
-            mutableStateOf(languageAssetsField.foundedAssets)
-        }
-        var supportedDetailsState by remember(languageAssetsField.value) { // TODO: bad
-            mutableStateOf(languageAssetsField)
-        }
-
         Column(
             modifier = Modifier.fillMaxSize().padding(top = 30.dp),
             verticalArrangement = Arrangement.spacedBy(30.dp)
         ) {
             SearchBlock(
-                languageAssetsField.searchItem,
-                type,
-                languageUIText,
-                onEvent
+                searchItem = assetsFromDb.searchItem,
+                textAssetUIText = textAssetUIText,
+                onChange = onChangeSearchField
             )
             FoundedAssets(
                 modifier = Modifier.weight(1f).fillMaxWidth(),
-                value = supportedDetailsState.value,
-                maxSelectedItems = languageAssetsField.maxValues,
-                foundedAssets = foundedAssets,
+                value = localValue,
+                maxSelectedItems = assetsFromDb.maxValues,
+                foundedAssets = assetsFromDb.foundedAssets,
                 onChange = {
-                    supportedDetailsState = supportedDetailsState.copy(value = it)
+                    localValue = it
                 }
             )
             SaveButton(
                 onClick = {
-                    onChange(supportedDetailsState)
+                    onChangeValue(localValue)
                     onDismissRequest()
                 }
             )
@@ -101,16 +92,15 @@ fun LanguagesEditorBottomSheet(
 @Composable
 private fun SearchBlock(
     searchItem: SearchItem,
-    type: LanguagesAssetType,
-    languageUIText: LanguageUIText,
-    onEvent: (ProfileEditorEvent) -> Unit
+    textAssetUIText: TextAssetUIText,
+    onChange: (SearchItem) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         TextAsset(
-            title = languageUIText.title,
-            body = languageUIText.body,
+            title = textAssetUIText.title,
+            body = textAssetUIText.body,
             titleFontSize = 24.sp,
             bodyFontSize = 16.sp,
             modifier = Modifier.fillMaxWidth()
@@ -119,7 +109,7 @@ private fun SearchBlock(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
             text = searchItem.value,
             onChange = {
-                onEvent(LangSearchQueryChangedEvent(it, type))
+                onChange(SearchItem(it))
             },
             hint = StaticTextId.UiId.LanguageSearch.translate()
         )
@@ -175,7 +165,7 @@ private fun FoundedAssets(
     }
 }
 
-data class LanguageUIText(
+data class TextAssetUIText(
     val title: String,
     val body: String,
 )

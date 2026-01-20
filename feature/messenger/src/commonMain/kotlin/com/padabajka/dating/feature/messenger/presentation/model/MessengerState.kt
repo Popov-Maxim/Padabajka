@@ -11,6 +11,7 @@ import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LanguagesAsset
 import com.padabajka.dating.core.repository.api.model.profile.Lifestyle
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
+import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.core.repository.api.model.swiper.Person
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.MessageItem
@@ -56,6 +57,8 @@ data class PersonItem(
     @Serializable(with = PersistentListSerializer::class)
     val details: PersistentList<Detail>,
     @Serializable(with = PersistentListSerializer::class)
+    val interests: PersistentList<Text>,
+    @Serializable(with = PersistentListSerializer::class)
     val lifestyles: PersistentList<Lifestyle>,
     val languages: LanguagesAsset
 )
@@ -69,6 +72,7 @@ fun Person.toPersonItem() = PersonItem(
     lookingFor = profile.lookingFor,
     details = profile.details.toPersistentList(),
     lifestyles = profile.lifestyles.toPersistentList(),
+    interests = profile.interests.toPersistentList(),
     languages = profile.languagesAsset
 )
 
@@ -82,6 +86,7 @@ fun PersonItem.toPersonView(): ProfileViewUIItem {
         lookingFor = lookingFor,
         details = details,
         lifestyle = lifestyles,
+        interests = interests,
         languages = languages
     )
 }

@@ -38,6 +38,7 @@ fun PersonEntry.toProfile(): Profile {
         lookingFor = lookingFor.toLookingForData(),
         details = listOf(),
         lifestyles = listOf(),
+        interests = listOf(),
         languagesAsset = LanguagesAsset(),
         mainAchievement = null,
         achievements = persistentListOf()
