@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.profile.domain
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.exception.ProfileException
 import com.padabajka.dating.core.repository.api.model.profile.Profile
+import com.padabajka.dating.feature.image.domain.LoadImageUseCase
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.first
 import kotlin.coroutines.cancellation.CancellationException

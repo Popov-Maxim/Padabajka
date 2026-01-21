@@ -5,6 +5,7 @@ import com.padabajka.dating.core.repository.api.AssetRepository
 import com.padabajka.dating.core.repository.api.DraftProfileRepository
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.profile.DraftProfile
+import com.padabajka.dating.feature.image.domain.LoadImageUseCase
 import com.padabajka.dating.feature.profile.data.DraftProfileRepositoryImpl
 import com.padabajka.dating.feature.profile.data.ProfileRepositoryImpl
 import com.padabajka.dating.feature.profile.data.asset.AssetRepositoryImpl
@@ -25,7 +26,6 @@ import com.padabajka.dating.feature.profile.data.source.LocalDraftProfileDataSou
 import com.padabajka.dating.feature.profile.data.source.RemoveProfileDataSource
 import com.padabajka.dating.feature.profile.data.source.RemoveProfileDataSourceImpl
 import com.padabajka.dating.feature.profile.domain.CreateProfileFromDraftUseCase
-import com.padabajka.dating.feature.profile.domain.LoadImageUseCase
 import com.padabajka.dating.feature.profile.domain.SaveUpdatedProfileUseCase
 import com.padabajka.dating.feature.profile.domain.asset.FindCitiesUseCase
 import com.padabajka.dating.feature.profile.domain.asset.FindInterestAssetsUseCase
