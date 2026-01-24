@@ -34,7 +34,7 @@ actual fun rememberImagePicker(onResult: (Image?) -> Unit): ImagePicker {
                 picker: UIImagePickerController,
                 didFinishPickingMediaWithInfo: Map<Any?, *>
             ) {
-                val uiImage = didFinishPickingMediaWithInfo.getValue(
+                val uiImage = didFinishPickingMediaWithInfo.get(
                     UIImagePickerControllerEditedImage
                 ) as? UIImage ?: didFinishPickingMediaWithInfo.getValue(
                     UIImagePickerControllerOriginalImage
@@ -51,7 +51,7 @@ actual fun rememberImagePicker(onResult: (Image?) -> Unit): ImagePicker {
     return remember {
         ImagePickerImpl {
             imagePicker.setSourceType(UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypePhotoLibrary)
-            imagePicker.setAllowsEditing(true)
+            imagePicker.setAllowsEditing(false)
             imagePicker.setDelegate(galleryDelegate)
             UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
                 imagePicker,

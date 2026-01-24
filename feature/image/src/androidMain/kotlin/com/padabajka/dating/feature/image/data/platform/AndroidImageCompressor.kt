@@ -2,9 +2,10 @@ package com.padabajka.dating.feature.image.data.platform
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.core.graphics.scale
+import com.padabajka.dating.feature.image.data.SizeUtils
 import com.padabajka.dating.feature.image.domain.ImageCompressor
 import java.io.ByteArrayOutputStream
-import kotlin.math.sqrt
 
 class AndroidImageCompressor : ImageCompressor {
 
@@ -15,36 +16,22 @@ class AndroidImageCompressor : ImageCompressor {
         val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
             ?: throw IllegalArgumentException("Cannot decode image bytes")
 
-        val (newWidth, newHeight) = calculateNewDimensions(
+        val newSize = SizeUtils.calculateNewDimensions(
             bitmap.width,
             bitmap.height,
             config.maxMegapixels
         )
 
-        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
+        val resizedBitmap = if (newSize != bitmap.width to bitmap.height) {
+            val (newWidth, newHeight) = newSize
+            bitmap.scale(newWidth, newHeight)
+        } else {
+            bitmap
+        }
 
         val outputStream = ByteArrayOutputStream()
         resizedBitmap.compress(Bitmap.CompressFormat.JPEG, config.quality, outputStream)
 
         return outputStream.toByteArray()
-    }
-
-    private fun calculateNewDimensions(
-        width: Int,
-        height: Int,
-        maxMegapixels: Float
-    ): Pair<Int, Int> {
-        val currentMP = width.toFloat() * height / MEGAPIXEL
-        println("LoadImageUseCase: currentMP $currentMP mb")
-        if (currentMP <= maxMegapixels) return width to height
-
-        val scale = sqrt(maxMegapixels / currentMP)
-        val newWidth = (width * scale).toInt()
-        val newHeight = (height * scale).toInt()
-        return newWidth to newHeight
-    }
-
-    companion object {
-        private const val MEGAPIXEL = 1_000_000f
     }
 }

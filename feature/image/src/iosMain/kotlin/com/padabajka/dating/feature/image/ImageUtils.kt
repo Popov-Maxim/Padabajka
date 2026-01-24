@@ -1,9 +1,13 @@
 package com.padabajka.dating.feature.image
 
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.useContents
 import kotlinx.cinterop.usePinned
+import platform.CoreGraphics.CGSize
 import platform.Foundation.NSData
+import platform.Foundation.dataWithBytes
 import platform.UIKit.UIImage
 import platform.UIKit.UIImageJPEGRepresentation
 import platform.UIKit.UIImagePNGRepresentation
@@ -27,3 +31,17 @@ private fun NSData.toByteArray(): ByteArray {
         }
     }
 }
+
+@OptIn(ExperimentalForeignApi::class)
+internal fun ByteArray.toNSData(): NSData =
+    this.usePinned {
+        NSData.dataWithBytes(it.addressOf(0), size.toULong())
+    }
+
+@OptIn(ExperimentalForeignApi::class)
+val CValue<CGSize>.width: Double
+    get() = useContents { this.width }
+
+@OptIn(ExperimentalForeignApi::class)
+val CValue<CGSize>.height: Double
+    get() = useContents { this.height }
