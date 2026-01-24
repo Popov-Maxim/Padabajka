@@ -96,6 +96,10 @@ private fun PadabajkaTheme(content: @Composable () -> Unit) {
         Box(
             modifier = Modifier
                 .background(CoreColors.background.mainColor)
+//                .padding(
+//                    WindowInsets.systemBars
+//                        .asPaddingValues()
+//                )
                 .fillMaxSize()
                 .hideKeyboardOnTap()
         ) {
