@@ -16,4 +16,10 @@ class LocalReactionDataSource {
             it + reactions
         }
     }
+
+    fun clear() {
+        _reactionsToMe.update {
+            emptyList()
+        }
+    }
 }
