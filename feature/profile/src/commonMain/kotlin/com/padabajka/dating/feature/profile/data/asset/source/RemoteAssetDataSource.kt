@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.profile.data.asset.source
 
+import com.padabajka.dating.feature.profile.data.asset.model.AssetsDto
 import com.padabajka.dating.feature.profile.data.asset.model.InterestAssetDto
 import com.padabajka.dating.feature.profile.data.asset.model.LanguageAssetDto
 import com.padabajka.dating.feature.profile.data.asset.network.InterestAssetApi
@@ -9,11 +10,11 @@ class RemoteAssetDataSource(
     private val languageAssetApi: LanguageAssetApi,
     private val interestAssetApi: InterestAssetApi
 ) {
-    suspend fun loadLanguages(): List<LanguageAssetDto> {
-        return languageAssetApi.getAssets()
+    suspend fun loadLanguages(clientVersion: Int): AssetsDto<LanguageAssetDto>? {
+        return languageAssetApi.getAssets(clientVersion)
     }
 
-    suspend fun loadInterestAssets(): List<InterestAssetDto> {
-        return interestAssetApi.getAssets()
+    suspend fun loadInterestAssets(clientVersion: Int): AssetsDto<InterestAssetDto>? {
+        return interestAssetApi.getAssets(clientVersion)
     }
 }

@@ -65,8 +65,10 @@ private val dataModule = module {
 
     single<ReactionRepository> {
         ReactionRepositoryImpl(
+            scope = get(),
             remoteReactionDataSource = get(),
-            localReactionDataSource = get()
+            localReactionDataSource = get(),
+            authRepository = get()
         )
     }
 

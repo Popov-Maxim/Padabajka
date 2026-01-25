@@ -10,9 +10,11 @@ import com.padabajka.dating.feature.profile.data.DraftProfileRepositoryImpl
 import com.padabajka.dating.feature.profile.data.ProfileRepositoryImpl
 import com.padabajka.dating.feature.profile.data.asset.AssetRepositoryImpl
 import com.padabajka.dating.feature.profile.data.asset.CityRepositoryImpl
+import com.padabajka.dating.feature.profile.data.asset.model.AssetVersionsDto
 import com.padabajka.dating.feature.profile.data.asset.network.CityApi
 import com.padabajka.dating.feature.profile.data.asset.network.InterestAssetApi
 import com.padabajka.dating.feature.profile.data.asset.network.LanguageAssetApi
+import com.padabajka.dating.feature.profile.data.asset.source.LocalAssetVersionsDataSource
 import com.padabajka.dating.feature.profile.data.asset.source.LocalAssetsDataSource
 import com.padabajka.dating.feature.profile.data.asset.source.LocalCityDataSource
 import com.padabajka.dating.feature.profile.data.asset.source.LocalCityDataSourceImpl
@@ -80,6 +82,8 @@ private val dataModule = module {
         CityRepositoryImpl(
             remoteCityDataSource = get(),
             localCityDataSource = get(),
+            localAssetVersionsDataSource = get(),
+            localAssetDataSource = get()
         )
     }
 
@@ -89,7 +93,8 @@ private val dataModule = module {
             localCityDataSource = get(),
             settingsRepository = get(),
             remoteAssetDataSource = get(),
-            cityRepository = get()
+            cityRepository = get(),
+            localAssetVersionsDataSource = get()
         )
     }
 
@@ -97,6 +102,15 @@ private val dataModule = module {
     factoryOf(::InterestAssetApi)
     factoryOf(::LanguageAssetApi)
     factoryOf(::LocalAssetsDataSource)
+    single<LocalAssetVersionsDataSource> {
+        LocalAssetVersionsDataSource(
+            assetVersionsDataStore = DataStoreUtils.create(
+                "asset_versions_storage",
+                AssetVersionsDto.serializer(),
+                AssetVersionsDto.default()
+            )
+        )
+    }
 
     factory<RemoteCityDataSource> {
         RemoteCityDataSourceImpl(
