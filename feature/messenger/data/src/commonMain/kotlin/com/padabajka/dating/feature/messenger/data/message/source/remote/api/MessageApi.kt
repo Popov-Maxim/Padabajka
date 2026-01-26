@@ -1,23 +1,37 @@
-package com.padabajka.dating.feature.messenger.data.message.source.remote
+package com.padabajka.dating.feature.messenger.data.message.source.remote.api
 
 import com.padabajka.dating.core.domain.mapOfNotNull
+import com.padabajka.dating.core.repository.api.model.messenger.ChatId
+import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.MessageRequest
 import com.padabajka.dating.feature.messenger.data.message.model.MessageSyncResponse
 
 interface MessageApi {
+    /**
+     * GET /messages?chatId={chatId}&beforeMessageId={beforeMessageId}&count={count}
+     */
     suspend fun getMessages(params: GetParams): MessageSyncResponse
-    suspend fun getSyncMessages(params: GetSyncParams): MessageSyncResponse
 
-    suspend fun postMessage(messageDto: MessageRequest.Send): MessageDto.Existing
+    /**
+     * GET /messages/sync?chatId={chatId}&beforeMessageId={beforeMessageId}
+     */
+    suspend fun syncMessages(params: GetSyncParams): MessageSyncResponse
 
-    suspend fun patchMessage(messageDto: MessageRequest.Edit): MessageDto.Existing
+    /**
+     * POST /messages
+     */
+    suspend fun sendMessage(messageDto: MessageRequest.Send): MessageDto.Existing
 
-    suspend fun deleteMessage(chatId: String, messageId: String)
+    /**
+     * PATCH /messages
+     */
+    suspend fun editMessage(messageDto: MessageRequest.Edit): MessageDto.Existing
 
-    suspend fun deleteChat(chatId: String)
-
-    suspend fun markAsRead(messageRequest: MessageRequest.MarkAsRead)
+    /**
+     * DELETE /chats/{chatId}/messages/{messageId}
+     */
+    suspend fun deleteMessage(chatId: ChatId, messageId: MessageId)
 
     data class GetParams(
         val chatId: String,
@@ -56,13 +70,5 @@ interface MessageApi {
 
     companion object {
         private const val CHAT_ID = "chatId"
-
-        const val PATH_GET = "messages"
-        const val PATH_GET_SYNC = "messages/sync"
-        const val PATH_NEW = "new_message"
-        const val PATH_PATCH = "patch_message"
-        const val PATH_DELETE = "delete_message"
-        const val PATH_DELETE_CHAT = "delete_chat"
-        const val PATH_MARK_AS_READ = "mark_as_read"
     }
 }

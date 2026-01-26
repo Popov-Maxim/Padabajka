@@ -27,7 +27,7 @@ import com.padabajka.dating.feature.messenger.data.message.model.toSendRequest
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.addReaction
 import com.padabajka.dating.feature.messenger.data.message.source.local.removeReaction
-import com.padabajka.dating.feature.messenger.data.message.source.local.toDto
+import com.padabajka.dating.feature.messenger.data.message.source.local.toSendRequestDto
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteMessageDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -94,7 +94,7 @@ internal class MessageRepositoryImpl(
 
     override suspend fun deleteMessage(chatId: ChatId, messageId: MessageId) {
         runCatching {
-            remoteMessageDataSource.deleteMessage(chatId.raw, messageId.raw)
+            remoteMessageDataSource.deleteMessage(chatId, messageId)
         } // TODO(message): add exception handling
         localMessageDataSource.deleteMessage(messageId.raw)
     }
@@ -130,8 +130,9 @@ internal class MessageRepositoryImpl(
         }
 
         try {
-            val messageRequest = updatedMessage.toMarkAsReadRequest()
-            remoteMessageDataSource.readMessages(messageRequest)
+            val (chatId, request) = updatedMessage.toMarkAsReadRequest()
+
+            remoteMessageDataSource.readMessages(chatId, request)
 
             localMessageDataSource.updateMessage(messageId.raw) {
                 it.copy(readSynced = true)
@@ -152,13 +153,15 @@ internal class MessageRepositoryImpl(
             time = nowMilliseconds(),
         )
 
-        localMessageDataSource.updateMessage(messageId.raw) {
+        val updatedMessage = localMessageDataSource.updateMessage(messageId.raw) {
             it.addReaction(reaction)
         }
 
         try {
+            val chatId = updatedMessage.chatId.let(::ChatId) // TODO: add chatId in method
+
             val updatedReaction =
-                remoteMessageDataSource.sendReaction(messageId.raw, reaction.toDto())
+                remoteMessageDataSource.sendReaction(chatId, messageId, reaction.toSendRequestDto())
 
             localMessageDataSource.updateMessage(messageId.raw) {
                 it.copy(reactions = it.reactions?.replaced(reaction, updatedReaction.toEntity()))
@@ -172,12 +175,14 @@ internal class MessageRepositoryImpl(
     override suspend fun removeReactToMessage(
         messageId: MessageId
     ) {
-        localMessageDataSource.updateMessage(messageId.raw) { message ->
+        val updatedMessage = localMessageDataSource.updateMessage(messageId.raw) { message ->
             message.removeReaction { it.author == myPersonId.raw }
         } // TODO(messenger): add safely remove reaction
 
         try {
-            remoteMessageDataSource.removeReaction(messageId.raw, myPersonId.raw)
+            val chatId = updatedMessage.chatId.let(::ChatId)
+
+            remoteMessageDataSource.removeReaction(chatId, messageId)
         } catch (e: Throwable) {
             // TODO: retry sending reaction
         }

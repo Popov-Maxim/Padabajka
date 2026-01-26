@@ -10,11 +10,13 @@ import com.padabajka.dating.feature.messenger.data.message.UserPresenceRepositor
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalChatDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.RoomLocalMessageDataSource
-import com.padabajka.dating.feature.messenger.data.message.source.remote.KtorMessageApi
-import com.padabajka.dating.feature.messenger.data.message.source.remote.MessageApi
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteChatDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteMessageDataSourceImpl
+import com.padabajka.dating.feature.messenger.data.message.source.remote.api.ChatApi
+import com.padabajka.dating.feature.messenger.data.message.source.remote.api.MessageApi
+import com.padabajka.dating.feature.messenger.data.message.source.remote.api.MessageReactionApi
+import com.padabajka.dating.feature.messenger.data.message.source.remote.ktor.KtorMessageApi
 import com.padabajka.dating.feature.messenger.data.typing.TypingRepositoryImpl
 import com.padabajka.dating.feature.messenger.data.typing.source.SocketTypingRemoteDataSource
 import com.padabajka.dating.feature.messenger.data.typing.source.TypingRemoteDataSource
@@ -56,7 +58,9 @@ val messengerDataModule = module {
     }
     factory<RemoteMessageDataSource> {
         RemoteMessageDataSourceImpl(
-            messageApi = get()
+            messageApi = get(),
+            chatApi = get(),
+            messageReactionApi = get()
         )
     }
     factory<MessageApi> {
@@ -69,4 +73,6 @@ val messengerDataModule = module {
             messageDao = get()
         )
     }
+    factoryOf(::ChatApi)
+    factoryOf(::MessageReactionApi)
 }

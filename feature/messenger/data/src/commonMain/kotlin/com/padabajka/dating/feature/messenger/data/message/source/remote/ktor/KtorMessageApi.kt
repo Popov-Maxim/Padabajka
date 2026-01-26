@@ -1,20 +1,22 @@
-package com.padabajka.dating.feature.messenger.data.message.source.remote
+package com.padabajka.dating.feature.messenger.data.message.source.remote.ktor
 
 import com.padabajka.dating.core.networking.KtorClientProvider
+import com.padabajka.dating.core.networking.utils.throwIfNotSuccessful
+import com.padabajka.dating.core.repository.api.model.messenger.ChatId
+import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.MessageRequest
 import com.padabajka.dating.feature.messenger.data.message.model.MessageSyncResponse
+import com.padabajka.dating.feature.messenger.data.message.source.remote.api.MessageApi
+import com.padabajka.dating.feature.messenger.data.message.source.remote.routes.MessageRoutes
 import io.ktor.client.call.body
-import io.ktor.client.plugins.ResponseException
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.http.isSuccess
 import io.ktor.http.path
 
 class KtorMessageApi(
@@ -25,7 +27,7 @@ class KtorMessageApi(
 
         val response = client.get {
             url {
-                path(MessageApi.PATH_GET)
+                path(MessageRoutes.MESSAGES)
 
                 params.toMap().onEach { (key, value) ->
                     parameters.append(key, value)
@@ -36,12 +38,12 @@ class KtorMessageApi(
         return response.body()
     }
 
-    override suspend fun getSyncMessages(params: MessageApi.GetSyncParams): MessageSyncResponse {
+    override suspend fun syncMessages(params: MessageApi.GetSyncParams): MessageSyncResponse {
         val client = ktorClientProvider.client()
 
         val response = client.get {
             url {
-                path(MessageApi.PATH_GET_SYNC)
+                path(MessageRoutes.oldSync())
 
                 params.toMap().onEach { (key, value) ->
                     parameters.append(key, value)
@@ -52,14 +54,14 @@ class KtorMessageApi(
         return response.body()
     }
 
-    override suspend fun postMessage(
+    override suspend fun sendMessage(
         messageDto: MessageRequest.Send
     ): MessageDto.Existing {
         val client = ktorClientProvider.client()
 
         val response = client.post {
             url {
-                path(MessageApi.PATH_NEW)
+                path(MessageRoutes.MESSAGES)
             }
 
             contentType(ContentType.Application.Json)
@@ -69,12 +71,12 @@ class KtorMessageApi(
         return response.body()
     }
 
-    override suspend fun patchMessage(messageDto: MessageRequest.Edit): MessageDto.Existing {
+    override suspend fun editMessage(messageDto: MessageRequest.Edit): MessageDto.Existing {
         val client = ktorClientProvider.client()
 
         val response = client.patch {
             url {
-                path(MessageApi.PATH_PATCH)
+                path(MessageRoutes.MESSAGES)
             }
 
             contentType(ContentType.Application.Json)
@@ -84,48 +86,15 @@ class KtorMessageApi(
         return response.body()
     }
 
-    override suspend fun deleteMessage(chatId: String, messageId: String) {
+    override suspend fun deleteMessage(chatId: ChatId, messageId: MessageId) {
         val client = ktorClientProvider.client()
 
         val response = client.delete {
             url {
-                path(MessageApi.PATH_DELETE + "/$chatId/$messageId")
+                path(MessageRoutes.message(chatId, messageId))
             }
         }
 
         return response.throwIfNotSuccessful()
-    }
-
-    override suspend fun deleteChat(chatId: String) {
-        val client = ktorClientProvider.client()
-
-        val response = client.delete {
-            url {
-                path(MessageApi.PATH_DELETE_CHAT + "/$chatId")
-            }
-        }
-
-        return response.throwIfNotSuccessful()
-    }
-
-    override suspend fun markAsRead(messageRequest: MessageRequest.MarkAsRead) {
-        val client = ktorClientProvider.client()
-
-        val response = client.patch {
-            url {
-                path(MessageApi.PATH_MARK_AS_READ)
-            }
-
-            contentType(ContentType.Application.Json)
-            setBody(messageRequest)
-        }
-
-        return response.body()
-    }
-
-    private fun HttpResponse.throwIfNotSuccessful() {
-        if (!status.isSuccess()) {
-            throw ResponseException(this, "HTTP error: $status")
-        }
     }
 }

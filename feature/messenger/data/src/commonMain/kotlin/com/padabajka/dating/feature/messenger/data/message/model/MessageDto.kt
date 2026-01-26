@@ -2,6 +2,8 @@ package com.padabajka.dating.feature.messenger.data.message.model
 
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
+import com.padabajka.dating.core.repository.api.model.messenger.MessageId
+import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.messenger.RawMessage
 import kotlinx.serialization.SerialName
@@ -52,11 +54,24 @@ object MessageRequest {
         val content: String?,
         val parentMessageId: String?
     )
+}
 
+object ChatRequest {
     @Serializable
     data class MarkAsRead(
-        val id: String,
-        val chatId: String,
+        val lastReadMessageId: MessageId
+    )
+}
+
+object MessageReactionRequest {
+    @Serializable
+    data class Send(
+        val reaction: MessageReaction.Value
+    )
+
+    @Serializable
+    data class Remove(
+        val reaction: MessageReaction.Value
     )
 }
 
@@ -78,10 +93,9 @@ fun MessageEntry.toEditRequest(): MessageRequest.Edit {
     )
 }
 
-fun MessageEntry.toMarkAsReadRequest(): MessageRequest.MarkAsRead {
-    return MessageRequest.MarkAsRead(
-        id = id,
-        chatId = chatId,
+fun MessageEntry.toMarkAsReadRequest(): Pair<ChatId, ChatRequest.MarkAsRead> {
+    return ChatId(chatId) to ChatRequest.MarkAsRead(
+        lastReadMessageId = MessageId(id)
     )
 }
 
