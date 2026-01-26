@@ -46,7 +46,7 @@ fun AuthMethodButton(
                 modifier = Modifier.size(20.dp)
             )
         }
-        val padding = if (icon != null) 10.dp else 0.dp // TODO: need?
+        val padding = if (icon != null) 10.dp else 0.dp
         Text(
             text = text,
             fontSize = 16.sp,

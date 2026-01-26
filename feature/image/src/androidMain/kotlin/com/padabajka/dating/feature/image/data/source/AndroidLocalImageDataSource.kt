@@ -16,7 +16,6 @@ class AndroidLocalImageDataSource(
     }
 
     private fun <T> ContentResolver.useInputStream(uri: Uri, block: (InputStream) -> T): T {
-        // TODO(Image): handle null input stream
-        return this.openInputStream(uri)!!.use(block)
+        return this.openInputStream(uri)?.use(block) ?: TODO("Image: handle null input stream")
     }
 }

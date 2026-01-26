@@ -20,7 +20,7 @@ object DataStoreUtils {
             ): T {
                 return _data.updateAndGet { transform(it) }
             }
-        } // TODO(datastore): add init
+        }
     }
 
     fun <T> create(dbName: String, delegate: KSerializer<T>, default: T): DataStore<T> {

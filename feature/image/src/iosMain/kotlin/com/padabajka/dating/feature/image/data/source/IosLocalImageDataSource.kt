@@ -5,8 +5,7 @@ import com.padabajka.dating.feature.image.toByteArray
 
 class IosLocalImageDataSource : LocalImageDataSource {
     override fun getImage(data: ImageData): ByteArray {
-        // TODO(Image): handle null byteArray
-        val byteArray = data.uiImage.toByteArray()!!
+        val byteArray = data.uiImage.toByteArray() ?: TODO("Image: handle null input stream")
         return byteArray
     }
 }

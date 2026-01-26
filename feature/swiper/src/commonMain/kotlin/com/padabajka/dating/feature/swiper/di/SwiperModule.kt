@@ -22,6 +22,7 @@ import com.padabajka.dating.feature.swiper.data.reaction.source.LocalReactionDat
 import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDataSource
 import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDataSourceImpl
 import com.padabajka.dating.feature.swiper.data.search.SearchPreferencesRepositoryImpl
+import com.padabajka.dating.feature.swiper.data.search.model.SearchPrefLocalDto
 import com.padabajka.dating.feature.swiper.data.search.model.toDto
 import com.padabajka.dating.feature.swiper.data.search.source.LocalSearchPreferencesDataSource
 import com.padabajka.dating.feature.swiper.data.search.source.LocalSearchPreferencesDataSourceImpl
@@ -110,7 +111,11 @@ private val dataModule = module {
 
     factory<LocalSearchPreferencesDataSource> {
         LocalSearchPreferencesDataSourceImpl(
-            dataStore = DataStoreUtils.createFake(SearchPreferences.DEFAULT.toDto())
+            dataStore = DataStoreUtils.create(
+                dbName = "search_preferences_datastore",
+                delegate = SearchPrefLocalDto.serializer(),
+                default = SearchPreferences.DEFAULT.toDto()
+            )
         )
     }
 }
