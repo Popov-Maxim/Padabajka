@@ -32,7 +32,7 @@ fun initKoin(platformModule: Module) {
         single<CoroutineScope> {
             CoroutineScope(SupervisorJob() + Dispatchers.Default)
         }
-    } // TODO(koin): application scope
+    }
 
     startKoin {
         modules(

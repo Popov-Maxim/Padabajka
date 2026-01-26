@@ -13,7 +13,7 @@ import dev.gitlive.firebase.auth.ActionCodeSettings
 import dev.gitlive.firebase.auth.AndroidPackageName
 import dev.gitlive.firebase.auth.AuthCredential
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 internal class AuthRepositoryImpl(
@@ -52,7 +52,7 @@ internal class AuthRepositoryImpl(
     }
 
     override suspend fun signInWithEmailLink(link: String) {
-        val email = localAuthDataSource.authPreferences.firstOrNull()?.email ?: TODO()
+        val email = localAuthDataSource.authPreferences.first().email ?: TODO()
 
         remoteAuthDataSource.signInWithEmailLink(email, link)
     }
@@ -63,7 +63,6 @@ internal class AuthRepositoryImpl(
 
     override suspend fun register(email: String, password: String) {
         remoteAuthDataSource.register(email, password)
-        // TODO: Add email verification
     }
 
     override suspend fun logout() {

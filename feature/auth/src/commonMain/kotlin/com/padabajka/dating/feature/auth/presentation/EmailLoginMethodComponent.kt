@@ -54,7 +54,7 @@ class EmailLoginMethodComponent(
                 state.copy(emailFieldState = emailFieldState.copy(trimmedEmail))
             }
 
-            is LoggingInState.FieldState.WaitSignFromEmail -> TODO()
+            is LoggingInState.FieldState.WaitSignFromEmail -> state
         }
     }
 
@@ -70,7 +70,7 @@ class EmailLoginMethodComponent(
                         )
                     }
                 }
-                is LoggingInState.FieldState.WaitSignFromEmail -> TODO()
+                is LoggingInState.FieldState.WaitSignFromEmail -> Unit
             }
         },
         mapper = {
