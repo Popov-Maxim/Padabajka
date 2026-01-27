@@ -8,5 +8,5 @@ object MessageReactionRoutes {
     const val REACTIONS = "reactions"
 
     fun reactions(chatId: ChatId, messageId: MessageId) =
-        "chats/$chatId/messages/$messageId/$REACTIONS"
+        "chats/${chatId.raw}/messages/${messageId.raw}/$REACTIONS"
 }

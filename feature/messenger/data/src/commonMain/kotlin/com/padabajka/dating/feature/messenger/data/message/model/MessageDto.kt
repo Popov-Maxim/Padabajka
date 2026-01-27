@@ -42,17 +42,25 @@ object MessageRequest {
     @Serializable
     data class Send(
         val id: String,
-        val chatId: String,
         val content: String,
         val parentMessageId: String?
     )
 
     @Serializable
     data class Edit(
-        val id: String,
-        val chatId: String,
         val content: String?,
         val parentMessageId: String?
+    )
+
+    @Serializable
+    data class Get(
+        val beforeMessageId: String? = null,
+        val count: Int
+    )
+
+    @Serializable
+    data class GetSync(
+        val lastEventNumber: Long
     )
 }
 
@@ -78,7 +86,6 @@ object MessageReactionRequest {
 fun MessageEntry.toSendRequest(): MessageRequest.Send {
     return MessageRequest.Send(
         id = id,
-        chatId = chatId,
         content = content,
         parentMessageId = parentMessageId
     )
@@ -86,8 +93,6 @@ fun MessageEntry.toSendRequest(): MessageRequest.Send {
 
 fun MessageEntry.toEditRequest(): MessageRequest.Edit {
     return MessageRequest.Edit(
-        id = id,
-        chatId = chatId,
         content = content,
         parentMessageId = parentMessageId
     )

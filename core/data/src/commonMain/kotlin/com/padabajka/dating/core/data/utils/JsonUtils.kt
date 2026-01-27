@@ -7,6 +7,8 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
 
 fun Json.mapToJson(map: Map<String, Any?>): JsonObject {
@@ -32,4 +34,13 @@ private fun anyToJsonElement(value: Any?): JsonElement = when (value) {
     is Number -> JsonPrimitive(value)
     is String -> Json.parseToJsonElement(value)
     else -> Json.parseToJsonElement(value.toString())
+}
+
+inline fun <reified T> Json.encodeToMap(value: T): Map<String, String?> {
+    val element = this.encodeToJsonElement(value)
+    val obj = element.jsonObject
+
+    return obj.mapValues { (_, jsonElement) ->
+        (jsonElement as? JsonPrimitive)?.contentOrNull
+    }
 }

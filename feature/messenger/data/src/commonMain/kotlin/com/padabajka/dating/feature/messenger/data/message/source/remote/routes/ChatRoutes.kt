@@ -7,8 +7,8 @@ object ChatRoutes {
     const val CHATS = "chats"
 
     fun chat(chatId: ChatId) =
-        "$CHATS/$chatId"
+        "$CHATS/${chatId.raw}"
 
     fun markAsRead(chatId: ChatId) =
-        "$CHATS/$chatId/read"
+        "$CHATS/${chatId.raw}/read"
 }

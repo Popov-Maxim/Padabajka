@@ -10,13 +10,11 @@ object MessageRoutes {
     const val SYNC = "sync"
 
     fun messages(chatId: ChatId) =
-        "$CHATS/$chatId/$MESSAGES"
+        "$CHATS/${chatId.raw}/$MESSAGES"
 
     fun message(chatId: ChatId, messageId: MessageId) =
-        "$CHATS/$chatId/$MESSAGES/$messageId"
+        "$CHATS/${chatId.raw}/$MESSAGES/${messageId.raw}"
 
     fun sync(chatId: ChatId) =
-        "$CHATS/$chatId/$MESSAGES/$SYNC"
-
-    fun oldSync() = "$MESSAGES/$SYNC"
+        "$CHATS/${chatId.raw}/$MESSAGES/$SYNC"
 }

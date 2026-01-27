@@ -111,7 +111,11 @@ internal class MessageRepositoryImpl(
 
         try {
             val editMessageDto = updatedMessage.toEditRequest()
-            val updatedMessageDto = remoteMessageDataSource.editMessage(editMessageDto)
+            val updatedMessageDto = remoteMessageDataSource.editMessage(
+                chatId,
+                messageId,
+                editMessageDto
+            )
 
             localMessageDataSource.updateMessage(messageId.raw) {
                 updatedMessageDto.toEntity()
@@ -193,7 +197,7 @@ internal class MessageRepositoryImpl(
         beforeMessageId: MessageId,
         count: Int
     ) {
-        val messageSyncResponse = remoteMessageDataSource.getMessages(chatId.raw, beforeMessageId.raw, count)
+        val messageSyncResponse = remoteMessageDataSource.getMessages(chatId, beforeMessageId.raw, count)
         updateMessageDto(messageSyncResponse.messages)
     }
 
@@ -201,14 +205,14 @@ internal class MessageRepositoryImpl(
         chatId: ChatId,
         count: Int
     ): SyncResult {
-        val messageSyncResponse = remoteMessageDataSource.getMessages(chatId.raw, null, count)
+        val messageSyncResponse = remoteMessageDataSource.getMessages(chatId, null, count)
         updateMessageDto(messageSyncResponse.messages)
 
         return SyncResult(messageSyncResponse.lastEventNumber)
     }
 
     override suspend fun syncMessages(chatId: ChatId, lastEventNumber: Long): SyncResult {
-        val messageSyncResponse = remoteMessageDataSource.getMessages(chatId.raw, lastEventNumber)
+        val messageSyncResponse = remoteMessageDataSource.getMessages(chatId, lastEventNumber)
         updateMessageDto(messageSyncResponse.messages)
 
         return SyncResult(messageSyncResponse.lastEventNumber)
@@ -240,8 +244,9 @@ internal class MessageRepositoryImpl(
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     private suspend fun trySendMessageToRemote(messageEntry: MessageEntry) {
         try {
+            val chatId = messageEntry.chatId.run(::ChatId)
             val updatedMessageDto =
-                remoteMessageDataSource.sendMessage(messageEntry.toSendRequest())
+                remoteMessageDataSource.sendMessage(chatId, messageEntry.toSendRequest())
 
             localMessageDataSource.updateMessage(messageEntry.id) { updatedMessageDto.toEntity() }
         } catch (e: Throwable) {

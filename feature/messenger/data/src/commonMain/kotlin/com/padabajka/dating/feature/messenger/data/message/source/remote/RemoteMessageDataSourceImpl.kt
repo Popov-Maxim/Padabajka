@@ -17,8 +17,8 @@ internal class RemoteMessageDataSourceImpl(
     private val chatApi: ChatApi,
     private val messageReactionApi: MessageReactionApi
 ) : RemoteMessageDataSource {
-    override suspend fun sendMessage(sendMessageDto: MessageRequest.Send): MessageDto.Existing {
-        return messageApi.sendMessage(sendMessageDto)
+    override suspend fun sendMessage(chatId: ChatId, sendMessageDto: MessageRequest.Send): MessageDto.Existing {
+        return messageApi.sendMessage(chatId, sendMessageDto)
     }
 
     override suspend fun deleteMessage(chatId: ChatId, messageId: MessageId) {
@@ -26,9 +26,11 @@ internal class RemoteMessageDataSourceImpl(
     }
 
     override suspend fun editMessage(
+        chatId: ChatId,
+        messageId: MessageId,
         editMessageDto: MessageRequest.Edit
     ): MessageDto.Existing {
-        return messageApi.editMessage(editMessageDto)
+        return messageApi.editMessage(chatId, messageId, editMessageDto)
     }
 
     override suspend fun sendReaction(
@@ -50,16 +52,16 @@ internal class RemoteMessageDataSourceImpl(
         chatApi.markChatAsRead(chatId, request)
     }
 
-    override suspend fun getMessages(chatId: String, beforeMessageId: String?, count: Int): MessageSyncResponse {
-        val params = MessageApi.GetParams(chatId, beforeMessageId, count)
-        return messageApi.getMessages(params)
+    override suspend fun getMessages(chatId: ChatId, beforeMessageId: String?, count: Int): MessageSyncResponse {
+        val params = MessageRequest.Get(beforeMessageId, count)
+        return messageApi.getMessages(chatId, params)
     }
 
     override suspend fun getMessages(
-        chatId: String,
+        chatId: ChatId,
         fromEventNumber: Long
     ): MessageSyncResponse {
-        val params = MessageApi.GetSyncParams(chatId, fromEventNumber)
-        return messageApi.syncMessages(params)
+        val params = MessageRequest.GetSync(fromEventNumber)
+        return messageApi.syncMessages(chatId, params)
     }
 }

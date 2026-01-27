@@ -1,6 +1,8 @@
 package com.padabajka.dating.feature.messenger.data.message.source.remote.ktor
 
+import com.padabajka.dating.core.data.utils.encodeToMap
 import com.padabajka.dating.core.networking.KtorClientProvider
+import com.padabajka.dating.core.networking.utils.appendNotNull
 import com.padabajka.dating.core.networking.utils.throwIfNotSuccessful
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
@@ -18,19 +20,23 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.path
+import kotlinx.serialization.json.Json
 
 class KtorMessageApi(
     private val ktorClientProvider: KtorClientProvider
 ) : MessageApi {
-    override suspend fun getMessages(params: MessageApi.GetParams): MessageSyncResponse {
+    override suspend fun getMessages(
+        chatId: ChatId,
+        params: MessageRequest.Get
+    ): MessageSyncResponse {
         val client = ktorClientProvider.client()
 
         val response = client.get {
             url {
-                path(MessageRoutes.MESSAGES)
+                path(MessageRoutes.messages(chatId))
 
-                params.toMap().onEach { (key, value) ->
-                    parameters.append(key, value)
+                Json.encodeToMap(params).onEach { (key, value) ->
+                    parameters.appendNotNull(key, value)
                 }
             }
         }
@@ -38,15 +44,18 @@ class KtorMessageApi(
         return response.body()
     }
 
-    override suspend fun syncMessages(params: MessageApi.GetSyncParams): MessageSyncResponse {
+    override suspend fun syncMessages(
+        chatId: ChatId,
+        params: MessageRequest.GetSync
+    ): MessageSyncResponse {
         val client = ktorClientProvider.client()
 
         val response = client.get {
             url {
-                path(MessageRoutes.oldSync())
+                path(MessageRoutes.sync(chatId))
 
-                params.toMap().onEach { (key, value) ->
-                    parameters.append(key, value)
+                Json.encodeToMap(params).onEach { (key, value) ->
+                    parameters.appendNotNull(key, value)
                 }
             }
         }
@@ -55,13 +64,14 @@ class KtorMessageApi(
     }
 
     override suspend fun sendMessage(
+        chatId: ChatId,
         messageDto: MessageRequest.Send
     ): MessageDto.Existing {
         val client = ktorClientProvider.client()
 
         val response = client.post {
             url {
-                path(MessageRoutes.MESSAGES)
+                path(MessageRoutes.messages(chatId))
             }
 
             contentType(ContentType.Application.Json)
@@ -71,12 +81,16 @@ class KtorMessageApi(
         return response.body()
     }
 
-    override suspend fun editMessage(messageDto: MessageRequest.Edit): MessageDto.Existing {
+    override suspend fun editMessage(
+        chatId: ChatId,
+        messageId: MessageId,
+        messageDto: MessageRequest.Edit
+    ): MessageDto.Existing {
         val client = ktorClientProvider.client()
 
         val response = client.patch {
             url {
-                path(MessageRoutes.MESSAGES)
+                path(MessageRoutes.message(chatId, messageId))
             }
 
             contentType(ContentType.Application.Json)
