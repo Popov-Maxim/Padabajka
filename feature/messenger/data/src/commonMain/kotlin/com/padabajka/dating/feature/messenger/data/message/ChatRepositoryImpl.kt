@@ -30,7 +30,7 @@ internal class ChatRepositoryImpl(
     }
 
     override suspend fun deleteChat(chatId: ChatId) {
-        remoteChatDataSource.deleteChat(chatId.raw)
+        remoteChatDataSource.deleteChat(chatId)
     }
 
     override suspend fun deleteLocalChat(chatId: ChatId) {
