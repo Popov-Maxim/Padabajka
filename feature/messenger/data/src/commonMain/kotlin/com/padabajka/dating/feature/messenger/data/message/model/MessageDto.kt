@@ -1,11 +1,13 @@
 package com.padabajka.dating.feature.messenger.data.message.model
 
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
+import com.padabajka.dating.core.data.network.incoming.dto.MessageDataPush
+import com.padabajka.dating.core.data.network.incoming.dto.MessageReactionResponse
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
-import com.padabajka.dating.core.repository.api.model.messenger.RawMessage
+import com.padabajka.dating.feature.messenger.data.message.source.local.toEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -32,7 +34,7 @@ sealed interface MessageDto {
         val editedAt: Long?,
         val authorId: String,
         val content: String,
-        val reactions: List<MessageReactionDto>,
+        val reactions: List<MessageReactionResponse>,
         val readAt: Long?,
         val parentMessageId: String?
     ) : MessageDto
@@ -121,11 +123,11 @@ fun MessageDto.Existing.toEntity(): MessageEntry {
     )
 }
 
-fun RawMessage.toEntity(chatId: ChatId): MessageEntry {
+fun MessageDataPush.NewMessage.toEntity(): MessageEntry {
     return MessageEntry(
         id = id.raw,
-        chatId = chatId.raw,
-        authorId = authorId.raw,
+        chatId = chatId,
+        authorId = authorId,
         content = content,
         creationTime = creationTime,
         reactions = listOf(),

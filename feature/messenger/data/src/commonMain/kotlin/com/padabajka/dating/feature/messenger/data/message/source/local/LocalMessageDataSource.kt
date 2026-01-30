@@ -3,7 +3,7 @@ package com.padabajka.dating.feature.messenger.data.message.source.local
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import kotlinx.coroutines.flow.Flow
 
-internal interface LocalMessageDataSource {
+interface LocalMessageDataSource {
     fun messages(chatId: String): Flow<List<MessageEntry>>
     fun lastMessage(chatId: String): Flow<MessageEntry?>
     suspend fun unreadMessagesCount(chatId: String, currentUserId: String): Int

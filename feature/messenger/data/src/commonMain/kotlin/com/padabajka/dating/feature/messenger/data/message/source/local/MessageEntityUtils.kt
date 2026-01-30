@@ -2,8 +2,8 @@ package com.padabajka.dating.feature.messenger.data.message.source.local
 
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import com.padabajka.dating.component.room.messenger.entry.MessageReactionEntity
+import com.padabajka.dating.core.data.network.incoming.dto.MessageReactionResponse
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
-import com.padabajka.dating.feature.messenger.data.message.model.MessageReactionDto
 import com.padabajka.dating.feature.messenger.data.message.model.MessageReactionRequest
 
 fun MessageEntry.addReaction(reaction: MessageReactionEntity): MessageEntry {
@@ -22,11 +22,13 @@ fun MessageReaction.toEntity(): MessageReactionEntity {
         reactionSynced = reactionSynced
     )
 }
-fun MessageReactionEntity.toDto(): MessageReactionDto {
-    return MessageReactionDto(
+
+fun MessageReactionResponse.toEntity(): MessageReactionEntity {
+    return MessageReactionEntity(
         author = author,
         value = value,
         time = time,
+        reactionSynced = true
     )
 }
 

@@ -35,6 +35,8 @@ kotlin {
             implementation(projects.core.networking)
             implementation(projects.core.data)
             implementation(projects.feature.settings.metadata)
+            implementation(projects.feature.messenger.data)
+            implementation(projects.component.room)
 
             implementation(libs.gitlive.firebase.messaging)
         }
