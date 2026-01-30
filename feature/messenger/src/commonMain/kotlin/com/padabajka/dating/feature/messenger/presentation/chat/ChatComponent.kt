@@ -16,11 +16,11 @@ import com.padabajka.dating.feature.messenger.domain.chat.ChatMessagesUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.DeleteChatUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.DeleteMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.EditMessageUseCase
-import com.padabajka.dating.feature.messenger.domain.chat.ReactToMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.ReadMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.SendMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.StartTypingUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.StopTypingUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.ToggleMessageReactionUseCase
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ChatLoadingState
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ChatState
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ConsumeInternalErrorEvent
@@ -59,7 +59,6 @@ class ChatComponent(
     chatMessagesUseCaseFactory: Factory<ChatMessagesUseCase>,
     sendMessageUseCaseFactory: Factory<SendMessageUseCase>,
     readMessageUseCaseFactory: Factory<ReadMessageUseCase>,
-    reactToMessageUseCaseFactory: Factory<ReactToMessageUseCase>,
     startTypingUseCaseFactory: Factory<StartTypingUseCase>,
     stopTypingUseCaseFactory: Factory<StopTypingUseCase>,
     private val deleteMessageUseCase: DeleteMessageUseCase,
@@ -67,12 +66,12 @@ class ChatComponent(
     private val deleteChatUseCase: DeleteChatUseCase,
     private val matchRepository: MatchRepository,
     private val userPresenceRepository: UserPresenceRepository,
+    private val toggleMessageReactionUseCase: ToggleMessageReactionUseCase
 ) : BaseComponent<ChatState>(context, initChatState(matchItem, userPresenceRepository)) {
 
     private val chatMessagesUseCase by chatMessagesUseCaseFactory.delegate()
     private val sendMessageUseCase by sendMessageUseCaseFactory.delegate()
     private val readMessageUseCase by readMessageUseCaseFactory.delegate()
-    private val reactToMessageUseCase by reactToMessageUseCaseFactory.delegate()
     private val startTypingUseCase by startTypingUseCaseFactory.delegate()
     private val stopTypingUseCase by stopTypingUseCaseFactory.delegate()
 
@@ -92,7 +91,7 @@ class ChatComponent(
             RemoveParentMessageEvent -> updateParentMessage(null)
             ConsumeInternalErrorEvent -> consumeInternalErrorEvent()
             is MessageGotReadEvent -> readMessage(event.messageId)
-            is ReactToMessageEvent -> reactToMessage(event.messageId, event.reaction)
+            is ReactToMessageEvent -> reactToMessage(event.messageId)
             EndOfMessagesListReachedEvent -> loadMoreMessages()
             is SendMessageClickEvent -> sendMessage(event.field)
             NavigateBackEvent -> navigateBack()
@@ -226,10 +225,10 @@ class ChatComponent(
         }
     )
 
-    private fun reactToMessage(messageId: MessageId, reaction: MessageReaction.Value?) =
+    private fun reactToMessage(messageId: MessageId) =
         mapAndReduceException(
             action = {
-                reactToMessageUseCase(messageId, reaction)
+                toggleMessageReactionUseCase(chatId, messageId, MessageReaction.Value.Like)
             },
             mapper = { InternalError },
             update = { state, internalError ->

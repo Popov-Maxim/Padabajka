@@ -1,29 +1,14 @@
 package com.padabajka.dating.feature.push.data.domain
 
 import com.padabajka.dating.core.data.network.incoming.dto.MessageDataPush
-import com.padabajka.dating.core.repository.api.MessageRepository
-import com.padabajka.dating.core.repository.api.model.messenger.ChatId
-import com.padabajka.dating.core.repository.api.model.messenger.RawMessage
-import com.padabajka.dating.core.repository.api.model.swiper.PersonId
+import com.padabajka.dating.feature.messenger.data.message.model.toEntity
+import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
 
 class HandleNewMessageUseCase(
-    private val messageRepository: MessageRepository
+    private val localMessageDataSource: LocalMessageDataSource
 ) {
     suspend operator fun invoke(dataPush: MessageDataPush.NewMessage) {
-        val rawMessage = dataPush.toRawMessage()
-        val chatId = dataPush.chatId.run(::ChatId)
-        messageRepository.addLocalMessage(chatId, rawMessage)
-    }
-
-    private fun MessageDataPush.NewMessage.toRawMessage(): RawMessage {
-        return RawMessage(
-            id = id,
-            authorId = authorId.run(::PersonId),
-            content = content,
-            creationTime = creationTime,
-            parentMessageId = parentMessageId,
-            editedAt = editedAt,
-            readAt = readAt
-        )
+        val rawMessage = dataPush.toEntity()
+        localMessageDataSource.addMessage(rawMessage)
     }
 }

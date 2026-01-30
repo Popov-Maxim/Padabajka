@@ -28,5 +28,5 @@ data class MessageReactionEntity(
     val author: String,
     val value: MessageReaction.Value,
     val time: Long,
-    val reactionSynced: Boolean = false,
+    val reactionSynced: Boolean,
 )

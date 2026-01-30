@@ -1,9 +1,9 @@
 package com.padabajka.dating.feature.messenger.data.message.source.remote.api
 
+import com.padabajka.dating.core.data.network.incoming.dto.MessageReactionResponse
 import com.padabajka.dating.core.networking.KtorClientProvider
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
-import com.padabajka.dating.feature.messenger.data.message.model.MessageReactionDto
 import com.padabajka.dating.feature.messenger.data.message.model.MessageReactionRequest
 import com.padabajka.dating.feature.messenger.data.message.source.remote.routes.MessageReactionRoutes
 import io.ktor.client.call.body
@@ -25,7 +25,7 @@ class MessageReactionApi(
         chatId: ChatId,
         messageId: MessageId,
         request: MessageReactionRequest.Send
-    ): MessageReactionDto {
+    ): MessageReactionResponse {
         val client = ktorClientProvider.client()
 
         val response = client.post {

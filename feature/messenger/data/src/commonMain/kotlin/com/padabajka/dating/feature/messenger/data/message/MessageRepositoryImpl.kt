@@ -17,7 +17,6 @@ import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
-import com.padabajka.dating.core.repository.api.model.messenger.RawMessage
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.toEditRequest
@@ -27,6 +26,7 @@ import com.padabajka.dating.feature.messenger.data.message.model.toSendRequest
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.addReaction
 import com.padabajka.dating.feature.messenger.data.message.source.local.removeReaction
+import com.padabajka.dating.feature.messenger.data.message.source.local.toEntity
 import com.padabajka.dating.feature.messenger.data.message.source.local.toSendRequestDto
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteMessageDataSource
 import kotlinx.coroutines.flow.Flow
@@ -59,6 +59,13 @@ internal class MessageRepositoryImpl(
     override fun lastMessage(chatId: ChatId): Flow<Message?> {
         return localMessageDataSource.lastMessage(chatId.raw)
             .map { it?.toDomain() }
+    }
+
+    override suspend fun message(
+        chatId: ChatId,
+        messageId: MessageId
+    ): Message? {
+        return localMessageDataSource.message(messageId.raw).toDomain()
     }
 
     override suspend fun unreadMessagesCount(chatId: ChatId): Int {
@@ -155,6 +162,7 @@ internal class MessageRepositoryImpl(
             author = myPersonId.raw,
             value = reaction,
             time = nowMilliseconds(),
+            reactionSynced = false
         )
 
         val updatedMessage = localMessageDataSource.updateMessage(messageId.raw) {
@@ -222,23 +230,6 @@ internal class MessageRepositoryImpl(
         val messageEntities = messageDto.filterIsInstance<MessageDto.Existing>().map { it.toEntity() }
         val messageIdsForDeleted = messageDto.filterIsInstance<MessageDto.Deleted>().map { it.id }
         localMessageDataSource.updateMessages(messageEntities, messageIdsForDeleted)
-    }
-
-    override suspend fun addLocalMessage(chatId: ChatId, message: RawMessage) {
-        val messageEntry = message.toEntity(chatId)
-        localMessageDataSource.addMessage(messageEntry)
-    }
-
-    override suspend fun updateLocalMessage(
-        chatId: ChatId,
-        messageId: MessageId,
-        update: (RawMessage) -> RawMessage
-    ) {
-        localMessageDataSource.updateMessage(messageId.raw) { messageEntry ->
-            val message = messageEntry.toRawMessage()
-            val updatedMessage = update(message)
-            messageEntry.merge(updatedMessage)
-        }
     }
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")

@@ -68,7 +68,7 @@ val messengerDataModule = module {
             ktorClientProvider = get()
         )
     }
-    factory<LocalMessageDataSource> {
+    single<LocalMessageDataSource> {
         RoomLocalMessageDataSource(
             messageDao = get()
         )

@@ -11,6 +11,7 @@ import com.padabajka.dating.feature.messenger.domain.chat.ReadMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.SendMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.StartTypingUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.StopTypingUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.ToggleMessageReactionUseCase
 import com.padabajka.dating.feature.messenger.presentation.MessengerComponent
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatComponent
 import org.koin.core.module.dsl.factoryOf
@@ -21,6 +22,7 @@ private val domainModule = module {
     factoryOf(::SendMessageUseCase)
     factoryOf(::ReadMessageUseCase)
     factoryOf(::ReactToMessageUseCase)
+    factoryOf(::ToggleMessageReactionUseCase)
     factoryOf(::StartTypingUseCase)
     factoryOf(::StopTypingUseCase)
     factoryOf(::MatchWithChatUseCase)
@@ -39,7 +41,6 @@ private val presentationModule = module {
             chatMessagesUseCaseFactory = { get() },
             sendMessageUseCaseFactory = { get() },
             readMessageUseCaseFactory = { get() },
-            reactToMessageUseCaseFactory = { get() },
             startTypingUseCaseFactory = { get() },
             stopTypingUseCaseFactory = { get() },
             deleteMessageUseCase = get(),
@@ -47,6 +48,7 @@ private val presentationModule = module {
             deleteChatUseCase = get(),
             matchRepository = get(),
             userPresenceRepository = get(),
+            toggleMessageReactionUseCase = get(),
         )
     }
 

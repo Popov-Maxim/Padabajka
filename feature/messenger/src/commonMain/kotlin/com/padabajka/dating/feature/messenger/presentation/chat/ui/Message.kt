@@ -54,7 +54,6 @@ import com.padabajka.dating.core.presentation.ui.drawable.icon.IconData
 import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
-import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.core.utils.safeCast
@@ -455,12 +454,5 @@ private data class PopupButtonData(
 private fun likeEvent(
     message: MessageItem
 ): ReactToMessageEvent {
-    return if (message.reactions.isEmpty()) {
-        ReactToMessageEvent(
-            message.id,
-            reaction = MessageReaction.Value.Like
-        )
-    } else {
-        ReactToMessageEvent(message.id, reaction = null)
-    }
+    return ReactToMessageEvent(message.id)
 }

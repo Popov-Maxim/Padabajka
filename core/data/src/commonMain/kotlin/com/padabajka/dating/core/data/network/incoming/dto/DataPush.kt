@@ -62,9 +62,10 @@ sealed interface MessageDataPush : DataPush {
     data class EditedMessage(
         val id: MessageId,
         val chatId: String,
-        val editedAt: Long,
+        val editedAt: Long?,
         val content: String,
         val parentMessageId: MessageId? = null,
+        val reactions: List<MessageReactionResponse> = listOf(),
     ) : MessageDataPush
 
     @Serializable
