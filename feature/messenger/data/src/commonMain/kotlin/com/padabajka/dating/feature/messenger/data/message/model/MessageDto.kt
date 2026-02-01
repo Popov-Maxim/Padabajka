@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.messenger.data.message.model
 
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
+import com.padabajka.dating.component.room.messenger.entry.MessageReadEventEntry
 import com.padabajka.dating.core.data.network.incoming.dto.MessageDataPush
 import com.padabajka.dating.core.data.network.incoming.dto.MessageReactionResponse
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
@@ -62,14 +63,17 @@ object MessageRequest {
 
     @Serializable
     data class GetSync(
-        val lastEventNumber: Long
+        val lastEventNumber: Long,
+        val lastReadEventNumber: Long
     )
 }
 
 object ChatRequest {
     @Serializable
     data class MarkAsRead(
-        val lastReadMessageId: MessageId
+        val lastReadMessageId: MessageId,
+        val lastReadMessageTime: Long,
+        val readAt: Long
     )
 }
 
@@ -100,9 +104,11 @@ fun MessageEntry.toEditRequest(): MessageRequest.Edit {
     )
 }
 
-fun MessageEntry.toMarkAsReadRequest(): Pair<ChatId, ChatRequest.MarkAsRead> {
+fun MessageReadEventEntry.toRequest(): Pair<ChatId, ChatRequest.MarkAsRead> {
     return ChatId(chatId) to ChatRequest.MarkAsRead(
-        lastReadMessageId = MessageId(id)
+        lastReadMessageId = MessageId(this.lastReadMessageId),
+        lastReadMessageTime = this.lastReadMessageTime,
+        readAt = readAt
     )
 }
 

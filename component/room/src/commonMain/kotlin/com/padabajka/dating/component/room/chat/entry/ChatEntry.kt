@@ -9,19 +9,22 @@ import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 @Entity(tableName = "chats")
 data class ChatEntry(
     @PrimaryKey val id: String,
-    @ColumnInfo("lastEventNumber") val lastEventNumber: Long
+    @ColumnInfo("lastEventNumber") val lastEventNumber: Long,
+    @ColumnInfo("lastReadEventNumber") val lastReadEventNumber: Long
 )
 
 fun ChatEntry.toDomain(): Chat {
     return Chat(
         id = id.run(::ChatId),
-        lastEventNumber = lastEventNumber
+        lastEventNumber = lastEventNumber,
+        lastReadEventNumber = lastReadEventNumber
     )
 }
 
 fun Chat.toDB(): ChatEntry {
     return ChatEntry(
         id = id.raw,
-        lastEventNumber = lastEventNumber
+        lastEventNumber = lastEventNumber,
+        lastReadEventNumber = lastReadEventNumber
     )
 }

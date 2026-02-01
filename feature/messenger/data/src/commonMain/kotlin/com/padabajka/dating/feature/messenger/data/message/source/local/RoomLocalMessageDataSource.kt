@@ -2,6 +2,7 @@ package com.padabajka.dating.feature.messenger.data.message.source.local
 
 import com.padabajka.dating.component.room.messenger.MessageDao
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
+import com.padabajka.dating.component.room.messenger.entry.MessageReadEventEntry
 import kotlinx.coroutines.flow.Flow
 
 internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
@@ -14,8 +15,16 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
         return messageDao.lastMessageByChatId(chatId)
     }
 
-    override suspend fun unreadMessagesCount(chatId: String, currentUserId: String): Int {
-        return messageDao.unreadMessagesCount(chatId, currentUserId)
+    override suspend fun unreadMessagesCount(
+        chatId: String,
+        currentUserId: String,
+        messageReadEvent: MessageReadEventEntry?
+    ): Int {
+        return messageDao.unreadMessagesCount(
+            chatId,
+            currentUserId,
+            messageReadEvent?.lastReadMessageTime ?: 0
+        )
     }
 
     override suspend fun message(messageId: String): MessageEntry {
