@@ -33,11 +33,16 @@ interface MessageDao {
         """
         SELECT COUNT(*)
         FROM messages
-        WHERE chatId = :chatId AND readAt IS NULL AND authorId != :currentUserId 
-        LIMIT 1
+        WHERE chatId = :chatId
+          AND authorId != :currentUserId
+          AND creationTime > :lastReadTime
         """
     )
-    suspend fun unreadMessagesCount(chatId: String, currentUserId: String): Int
+    suspend fun unreadMessagesCount(
+        chatId: String,
+        currentUserId: String,
+        lastReadTime: Long
+    ): Int
 
     @Query("DELETE FROM messages WHERE id = :id")
     suspend fun deleteMessageById(id: String)

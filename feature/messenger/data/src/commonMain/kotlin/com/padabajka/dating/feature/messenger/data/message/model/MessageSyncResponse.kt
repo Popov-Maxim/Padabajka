@@ -4,6 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MessageSyncResponse(
-    val messages: List<MessageDto>,
     val lastEventNumber: Long,
+    val messages: List<MessageDto>,
+    val lastReadEventLogNumber: Long,
+    val readEvents: List<ChatReadEventResponse>,
 )

@@ -27,7 +27,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            // put your multiplatform dependencies here
+            api(libs.kotlinx.datetime)
         }
     }
 }

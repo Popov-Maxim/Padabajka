@@ -14,9 +14,11 @@ import com.padabajka.dating.component.room.chat.entry.ChatEntry
 import com.padabajka.dating.component.room.matches.MatchesDao
 import com.padabajka.dating.component.room.matches.entry.MatchEntry
 import com.padabajka.dating.component.room.messenger.MessageDao
+import com.padabajka.dating.component.room.messenger.MessageReadEventDao
 import com.padabajka.dating.component.room.messenger.converters.MessageReactionEntityConverters
 import com.padabajka.dating.component.room.messenger.converters.MessageStatusConverters
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
+import com.padabajka.dating.component.room.messenger.entry.MessageReadEventEntry
 import com.padabajka.dating.component.room.person.PersonDao
 import com.padabajka.dating.component.room.person.converters.ListStringConverters
 import com.padabajka.dating.component.room.person.converters.LocalDateConverters
@@ -27,6 +29,7 @@ import com.padabajka.dating.component.room.person.entry.PersonEntry
     entities = [
         MessageEntry::class,
         ChatEntry::class,
+        MessageReadEventEntry::class,
         PersonEntry::class,
         MatchEntry::class,
         CityEntry::class,
@@ -45,6 +48,7 @@ import com.padabajka.dating.component.room.person.entry.PersonEntry
 abstract class PadabajkaDB : RoomDatabase() {
     abstract fun messageDao(): MessageDao
     abstract fun chatDao(): ChatDao
+    abstract fun messageReadEventDao(): MessageReadEventDao
     abstract fun personDao(): PersonDao
     abstract fun matchesDao(): MatchesDao
     abstract fun cityDao(): CityDao

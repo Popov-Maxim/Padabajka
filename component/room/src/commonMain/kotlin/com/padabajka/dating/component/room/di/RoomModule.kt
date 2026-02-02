@@ -7,6 +7,7 @@ import com.padabajka.dating.component.room.asset.city.CityDao
 import com.padabajka.dating.component.room.chat.ChatDao
 import com.padabajka.dating.component.room.matches.MatchesDao
 import com.padabajka.dating.component.room.messenger.MessageDao
+import com.padabajka.dating.component.room.messenger.MessageReadEventDao
 import com.padabajka.dating.component.room.person.PersonDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -46,5 +47,10 @@ val roomModule = module {
     factory<ChatDao> {
         val db: PadabajkaDB = get()
         db.chatDao()
+    }
+
+    factory<MessageReadEventDao> {
+        val db: PadabajkaDB = get()
+        db.messageReadEventDao()
     }
 }

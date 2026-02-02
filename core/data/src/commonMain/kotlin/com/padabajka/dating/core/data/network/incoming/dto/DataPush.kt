@@ -74,4 +74,14 @@ sealed interface MessageDataPush : DataPush {
         val id: MessageId,
         val chatId: String,
     ) : MessageDataPush
+
+    @Serializable
+    @SerialName("read_message")
+    data class ReadMessageEvent(
+        val chatId: ChatId,
+        val userId: PersonId,
+        val lastReadMessageId: MessageId,
+        val lastReadMessageTime: Long,
+        val readAt: Long
+    ) : MessageDataPush
 }

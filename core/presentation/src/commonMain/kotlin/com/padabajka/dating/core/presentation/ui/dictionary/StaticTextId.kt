@@ -101,6 +101,7 @@ sealed interface StaticTextId {
         MessagePopupPin(rawId = "message_popup_pin"),
         MessagePopupEdit(rawId = "message_popup_edit"),
         MessagePopupDelete(rawId = "message_popup_delete"),
+        MessageReadAt(rawId = "message_read_at"),
 
         // General
         Apply(rawId = "apply"),

@@ -11,7 +11,8 @@ class HandlePushUseCase(
     private val handleDeleteMessageUseCase: HandleDeleteMessageUseCase,
     private val handleEditedMessageUseCase: HandleEditedMessageUseCase,
     private val handleUsersPresenceUseCase: HandleUsersPresenceUseCase,
-    private val handleNewReactionToMeUseCase: HandleNewReactionToMeUseCase
+    private val handleNewReactionToMeUseCase: HandleNewReactionToMeUseCase,
+    private val handleReadMessageEventUseCase: HandleReadMessageEventUseCase
 ) {
     suspend operator fun invoke(rawPush: MessagePush) {
         val dataPush = dataPushParser.parse(rawPush) ?: return
@@ -20,6 +21,7 @@ class HandlePushUseCase(
             is MessageDataPush.NewMessage -> handleNewMessageUseCase(dataPush)
             is MessageDataPush.DeleteMessage -> handleDeleteMessageUseCase(dataPush)
             is MessageDataPush.EditedMessage -> handleEditedMessageUseCase(dataPush)
+            is MessageDataPush.ReadMessageEvent -> handleReadMessageEventUseCase(dataPush)
             is DataPush.UsersPresence -> handleUsersPresenceUseCase(dataPush)
             is DataPush.UserPresence -> handleUsersPresenceUseCase(dataPush)
             is DataPush.NewReactionToMe -> handleNewReactionToMeUseCase(dataPush)

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0fbd597f60f6748bbb505334e36d2ded",
+    "identityHash": "c61bbce1ab3e6735d0ae85376cdbe5bc",
     "entities": [
       {
         "tableName": "messages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `chatId` TEXT NOT NULL, `authorId` TEXT NOT NULL, `content` TEXT NOT NULL, `creationTime` INTEGER NOT NULL, `reaction` TEXT, `messageStatus` TEXT NOT NULL, `readAt` INTEGER, `readSynced` INTEGER NOT NULL, `editedAt` INTEGER, `editSynced` INTEGER NOT NULL, `parentMessageId` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `chatId` TEXT NOT NULL, `authorId` TEXT NOT NULL, `content` TEXT NOT NULL, `creationTime` INTEGER NOT NULL, `reaction` TEXT, `messageStatus` TEXT NOT NULL, `readSynced` INTEGER NOT NULL, `editedAt` INTEGER, `editSynced` INTEGER NOT NULL, `parentMessageId` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -50,11 +50,6 @@
             "notNull": true
           },
           {
-            "fieldPath": "readAt",
-            "columnName": "readAt",
-            "affinity": "INTEGER"
-          },
-          {
             "fieldPath": "readSynced",
             "columnName": "readSynced",
             "affinity": "INTEGER",
@@ -86,7 +81,7 @@
       },
       {
         "tableName": "chats",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `lastEventNumber` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `lastEventNumber` INTEGER NOT NULL, `lastReadEventNumber` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -99,6 +94,12 @@
             "columnName": "lastEventNumber",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "lastReadEventNumber",
+            "columnName": "lastReadEventNumber",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -107,6 +108,73 @@
             "id"
           ]
         }
+      },
+      {
+        "tableName": "message_read_events",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `chatId` TEXT NOT NULL, `userId` TEXT NOT NULL, `lastReadMessageId` TEXT NOT NULL, `lastReadMessageTime` INTEGER NOT NULL, `readAt` INTEGER NOT NULL, `readSynced` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chatId",
+            "columnName": "chatId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastReadMessageId",
+            "columnName": "lastReadMessageId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastReadMessageTime",
+            "columnName": "lastReadMessageTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "readAt",
+            "columnName": "readAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "readSynced",
+            "columnName": "readSynced",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_message_read_events_chatId_userId_lastReadMessageId",
+            "unique": true,
+            "columnNames": [
+              "chatId",
+              "userId",
+              "lastReadMessageId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_message_read_events_chatId_userId_lastReadMessageId` ON `${TABLE_NAME}` (`chatId`, `userId`, `lastReadMessageId`)"
+          }
+        ]
       },
       {
         "tableName": "person",
@@ -269,7 +337,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0fbd597f60f6748bbb505334e36d2ded')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c61bbce1ab3e6735d0ae85376cdbe5bc')"
     ]
   }
 }

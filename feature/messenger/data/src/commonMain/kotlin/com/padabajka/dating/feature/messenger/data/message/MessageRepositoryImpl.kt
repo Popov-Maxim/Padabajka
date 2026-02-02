@@ -2,14 +2,16 @@ package com.padabajka.dating.feature.messenger.data.message
 
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import com.padabajka.dating.component.room.messenger.entry.MessageReactionEntity
+import com.padabajka.dating.component.room.messenger.entry.MessageReadEventEntry
 import com.padabajka.dating.core.data.uuid
 import com.padabajka.dating.core.domain.replaced
 import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.MessageRepository
 import com.padabajka.dating.core.repository.api.PersonRepository
 import com.padabajka.dating.core.repository.api.SyncResult
-import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
 import com.padabajka.dating.core.repository.api.model.auth.NoAuthorisedUserException
+import com.padabajka.dating.core.repository.api.model.auth.UserId
+import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.Message
 import com.padabajka.dating.core.repository.api.model.messenger.MessageDirection
@@ -18,11 +20,12 @@ import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
+import com.padabajka.dating.feature.messenger.data.message.model.ChatReadEventResponse
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.toEditRequest
 import com.padabajka.dating.feature.messenger.data.message.model.toEntity
-import com.padabajka.dating.feature.messenger.data.message.model.toMarkAsReadRequest
 import com.padabajka.dating.feature.messenger.data.message.model.toSendRequest
+import com.padabajka.dating.feature.messenger.data.message.source.local.LocalChatReadStateDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.addReaction
 import com.padabajka.dating.feature.messenger.data.message.source.local.removeReaction
@@ -30,7 +33,7 @@ import com.padabajka.dating.feature.messenger.data.message.source.local.toEntity
 import com.padabajka.dating.feature.messenger.data.message.source.local.toSendRequestDto
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteMessageDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
@@ -40,36 +43,38 @@ import kotlinx.datetime.toLocalDateTime
 internal class MessageRepositoryImpl(
     private val authRepository: AuthRepository,
     private val localMessageDataSource: LocalMessageDataSource,
+    private val localChatReadStateDataSource: LocalChatReadStateDataSource,
     private val remoteMessageDataSource: RemoteMessageDataSource,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
+    private val readMessageManager: ReadMessageManager
 ) : MessageRepository {
 
-    private val myRawPersonId: String?
-        get() = authRepository.currentAuthState
-            .let { (it as? LoggedIn)?.userId?.raw }
+    private val myPersonId: UserId
+        get() = authRepository.currentAuthState.userIdOrNull() ?: throw NoAuthorisedUserException
 
-    private val myPersonId: PersonId
-        get() = PersonId(myRawPersonId ?: throw NoAuthorisedUserException)
-
-    override fun messages(chatId: ChatId): Flow<List<Message>> =
-        localMessageDataSource.messages(chatId.raw).map { messages ->
-            messages.map { it.toDomain() }
+    override fun messages(chatId: ChatId): Flow<List<Message>> {
+        return combine(
+            localMessageDataSource.messages(chatId.raw),
+            localChatReadStateDataSource.readStates(chatId.raw)
+        ) { messages, readStates ->
+            messages.map { messageEntry ->
+                messageEntry.combineWithReadStates(readStates)
+            }
         }
-
-    override fun lastMessage(chatId: ChatId): Flow<Message?> {
-        return localMessageDataSource.lastMessage(chatId.raw)
-            .map { it?.toDomain() }
     }
 
-    override suspend fun message(
-        chatId: ChatId,
-        messageId: MessageId
-    ): Message? {
-        return localMessageDataSource.message(messageId.raw).toDomain()
+    override fun lastMessage(chatId: ChatId): Flow<Message?> {
+        return combine(
+            localMessageDataSource.lastMessage(chatId.raw),
+            localChatReadStateDataSource.readStates(chatId.raw)
+        ) { messageEntry, readStates ->
+            messageEntry?.combineWithReadStates(readStates)
+        }
     }
 
     override suspend fun unreadMessagesCount(chatId: ChatId): Int {
-        return localMessageDataSource.unreadMessagesCount(chatId.raw, myPersonId.raw)
+        val lastReadEvent = localChatReadStateDataSource.lastReadEvent(chatId.raw, myPersonId)
+        return localMessageDataSource.unreadMessagesCount(chatId.raw, myPersonId.raw, lastReadEvent)
     }
 
     override suspend fun sendMessage(
@@ -86,7 +91,6 @@ internal class MessageRepositoryImpl(
             content = content,
             creationTime = currentTime,
             messageStatus = MessageStatus.Sending,
-            readAt = null,
             readSynced = true,
             reactions = listOf(),
             parentMessageId = parentMessageId?.raw,
@@ -132,25 +136,8 @@ internal class MessageRepositoryImpl(
         }
     }
 
-    @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override suspend fun readMessage(messageId: MessageId) {
-        val message = localMessageDataSource.message(messageId.raw)
-        if (message.readAt != null || message.authorId == myRawPersonId) return
-        val updatedMessage = localMessageDataSource.updateMessage(messageId.raw) {
-            it.copy(readAt = nowMilliseconds(), readSynced = false)
-        }
-
-        try {
-            val (chatId, request) = updatedMessage.toMarkAsReadRequest()
-
-            remoteMessageDataSource.readMessages(chatId, request)
-
-            localMessageDataSource.updateMessage(messageId.raw) {
-                it.copy(readSynced = true)
-            }
-        } catch (e: Throwable) {
-            // TODO: retry read updating
-        }
+        readMessageManager.markRead(messageId)
     }
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
@@ -200,12 +187,19 @@ internal class MessageRepositoryImpl(
         }
     }
 
+    override suspend fun messageReactions(messageId: MessageId): List<MessageReaction> {
+        return localMessageDataSource.message(messageId.raw)
+            .reactions
+            ?.map { it.toDomain() } ?: listOf()
+    }
+
     override suspend fun loadMessages(
         chatId: ChatId,
         beforeMessageId: MessageId,
         count: Int
     ) {
-        val messageSyncResponse = remoteMessageDataSource.getMessages(chatId, beforeMessageId.raw, count)
+        val messageSyncResponse =
+            remoteMessageDataSource.getMessages(chatId, beforeMessageId.raw, count)
         updateMessageDto(messageSyncResponse.messages)
     }
 
@@ -215,21 +209,38 @@ internal class MessageRepositoryImpl(
     ): SyncResult {
         val messageSyncResponse = remoteMessageDataSource.getMessages(chatId, null, count)
         updateMessageDto(messageSyncResponse.messages)
+        updateReadEventDto(messageSyncResponse.readEvents)
 
-        return SyncResult(messageSyncResponse.lastEventNumber)
+        return SyncResult(messageSyncResponse.lastEventNumber, messageSyncResponse.lastReadEventLogNumber)
     }
 
-    override suspend fun syncMessages(chatId: ChatId, lastEventNumber: Long): SyncResult {
-        val messageSyncResponse = remoteMessageDataSource.getMessages(chatId, lastEventNumber)
+    override suspend fun syncMessages(
+        chatId: ChatId,
+        lastEventNumber: Long,
+        lastReadEventNumber: Long
+    ): SyncResult {
+        val messageSyncResponse = remoteMessageDataSource.getMessages(
+            chatId = chatId,
+            fromEventNumber = lastEventNumber,
+            fromReadEventNumber = lastReadEventNumber
+        )
         updateMessageDto(messageSyncResponse.messages)
+        updateReadEventDto(messageSyncResponse.readEvents)
 
-        return SyncResult(messageSyncResponse.lastEventNumber)
+        return SyncResult(messageSyncResponse.lastEventNumber, messageSyncResponse.lastReadEventLogNumber)
     }
 
     private suspend fun updateMessageDto(messageDto: List<MessageDto>) {
-        val messageEntities = messageDto.filterIsInstance<MessageDto.Existing>().map { it.toEntity() }
+        val messageEntities =
+            messageDto.filterIsInstance<MessageDto.Existing>().map { it.toEntity() }
         val messageIdsForDeleted = messageDto.filterIsInstance<MessageDto.Deleted>().map { it.id }
         localMessageDataSource.updateMessages(messageEntities, messageIdsForDeleted)
+    }
+
+    private suspend fun updateReadEventDto(messageDto: List<ChatReadEventResponse>) {
+        val messageEntities =
+            messageDto.map { it.toEntity() }
+        localChatReadStateDataSource.addMessageReadEvents(messageEntities)
     }
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
@@ -248,7 +259,19 @@ internal class MessageRepositoryImpl(
         }
     }
 
-    private suspend fun MessageEntry.toDomain(): Message {
+    private suspend fun MessageEntry.combineWithReadStates(
+        readStates: List<MessageReadEventEntry>
+    ): Message {
+        val lastReadState = readStates
+            .asSequence()
+            .filter { it.userId != this.authorId }
+            .filter { it.lastReadMessageTime >= creationTime }
+            .minByOrNull { it.lastReadMessageTime }
+
+        return this.toDomain(lastReadState?.readAt)
+    }
+
+    private suspend fun MessageEntry.toDomain(readAt: Long?): Message {
         val parentMessage = parentMessageId?.let { parentId ->
             val parentMessageDto = localMessageDataSource.message(parentId)
             ParentMessage(
@@ -258,16 +281,7 @@ internal class MessageRepositoryImpl(
             )
         }
 
-        val domainReactions = reactions?.map {
-            val personId = PersonId(it.author)
-            val person = personRepository.getPerson(personId)
-            MessageReaction(
-                author = person,
-                value = it.value,
-                time = it.time,
-                reactionSynced = it.reactionSynced
-            )
-        }
+        val domainReactions = reactions?.map { it.toDomain() }
 
         return Message(
             id = MessageId(id),
@@ -279,6 +293,17 @@ internal class MessageRepositoryImpl(
             reactions = domainReactions ?: listOf(),
             parentMessage = parentMessage,
             editedAt = editedAt
+        )
+    }
+
+    private suspend fun MessageReactionEntity.toDomain(): MessageReaction {
+        val personId = PersonId(this.author)
+        val person = personRepository.getPerson(personId)
+        return MessageReaction(
+            author = person,
+            value = this.value,
+            time = this.time,
+            reactionSynced = this.reactionSynced
         )
     }
 

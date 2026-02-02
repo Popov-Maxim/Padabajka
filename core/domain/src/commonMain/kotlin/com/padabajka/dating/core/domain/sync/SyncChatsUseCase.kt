@@ -18,11 +18,22 @@ class SyncChatsUseCase(
                 val syncResult = if (chat == null || chat.lastEventNumber < 0) {
                     messageRepository.loadMessages(chatId, COUNT_MESSAGE_FOR_SYNC)
                 } else {
-                    messageRepository.syncMessages(chatId, chat.lastEventNumber)
+                    messageRepository.syncMessages(
+                        chatId,
+                        chat.lastEventNumber,
+                        chat.lastReadEventNumber
+                    )
                 }
                 val newLastEventNumber = syncResult.lastEventNumber
-                val newChat = chat?.copy(lastEventNumber = newLastEventNumber)
-                    ?: Chat(chatId, newLastEventNumber)
+                val newLastReadEventNumber = syncResult.lastReadEventNumber
+                val newChat = chat?.copy(
+                    lastEventNumber = newLastEventNumber,
+                    lastReadEventNumber = newLastReadEventNumber
+                ) ?: Chat(
+                    id = chatId,
+                    lastEventNumber = newLastEventNumber,
+                    lastReadEventNumber = newLastReadEventNumber
+                )
 
                 chatRepository.setChat(chatId, newChat)
             }

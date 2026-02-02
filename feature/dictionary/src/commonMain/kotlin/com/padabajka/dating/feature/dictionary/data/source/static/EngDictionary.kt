@@ -43,6 +43,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.MessagePopupPin -> "Pin"
             StaticTextId.UiId.MessagePopupEdit -> "Edit"
             StaticTextId.UiId.MessagePopupDelete -> "Delete"
+            StaticTextId.UiId.MessageReadAt -> "read at"
             StaticTextId.UiId.City -> "City"
             StaticTextId.UiId.CityHint -> "Which city are you from?"
             StaticTextId.UiId.SexualOrientation -> "Sexual Orientation"

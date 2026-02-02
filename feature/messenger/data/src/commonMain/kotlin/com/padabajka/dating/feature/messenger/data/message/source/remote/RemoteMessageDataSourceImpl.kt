@@ -59,9 +59,10 @@ internal class RemoteMessageDataSourceImpl(
 
     override suspend fun getMessages(
         chatId: ChatId,
-        fromEventNumber: Long
+        fromEventNumber: Long,
+        fromReadEventNumber: Long
     ): MessageSyncResponse {
-        val params = MessageRequest.GetSync(fromEventNumber)
+        val params = MessageRequest.GetSync(fromEventNumber, fromReadEventNumber)
         return messageApi.syncMessages(chatId, params)
     }
 }

@@ -6,21 +6,27 @@ import com.padabajka.dating.core.repository.api.TypingRepository
 import com.padabajka.dating.core.repository.api.UserPresenceRepository
 import com.padabajka.dating.feature.messenger.data.message.ChatRepositoryImpl
 import com.padabajka.dating.feature.messenger.data.message.MessageRepositoryImpl
+import com.padabajka.dating.feature.messenger.data.message.ReadMessageManager
 import com.padabajka.dating.feature.messenger.data.message.UserPresenceRepositoryImpl
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalChatDataSource
+import com.padabajka.dating.feature.messenger.data.message.source.local.LocalChatReadStateDataSource
+import com.padabajka.dating.feature.messenger.data.message.source.local.LocalChatReadStateDataSourceImpl
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.RoomLocalMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteChatDataSource
+import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteChatReadStateDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteMessageDataSourceImpl
 import com.padabajka.dating.feature.messenger.data.message.source.remote.api.ChatApi
 import com.padabajka.dating.feature.messenger.data.message.source.remote.api.MessageApi
 import com.padabajka.dating.feature.messenger.data.message.source.remote.api.MessageReactionApi
+import com.padabajka.dating.feature.messenger.data.message.source.remote.api.MessageReadEventApi
 import com.padabajka.dating.feature.messenger.data.message.source.remote.ktor.KtorMessageApi
 import com.padabajka.dating.feature.messenger.data.typing.TypingRepositoryImpl
 import com.padabajka.dating.feature.messenger.data.typing.source.SocketTypingRemoteDataSource
 import com.padabajka.dating.feature.messenger.data.typing.source.TypingRemoteDataSource
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val messengerDataModule = module {
@@ -42,9 +48,12 @@ val messengerDataModule = module {
             authRepository = get(),
             localMessageDataSource = get(),
             remoteMessageDataSource = get(),
-            personRepository = get()
+            personRepository = get(),
+            localChatReadStateDataSource = get(),
+            readMessageManager = get(),
         )
     }
+    singleOf(::ReadMessageManager)
     single<TypingRepository> {
         TypingRepositoryImpl(
             typingRemoteDataSource = get()
@@ -73,6 +82,13 @@ val messengerDataModule = module {
             messageDao = get()
         )
     }
+    single<LocalChatReadStateDataSource> {
+        LocalChatReadStateDataSourceImpl(
+            messageReadEventDao = get()
+        )
+    }
+    factoryOf(::RemoteChatReadStateDataSource)
     factoryOf(::ChatApi)
     factoryOf(::MessageReactionApi)
+    factoryOf(::MessageReadEventApi)
 }

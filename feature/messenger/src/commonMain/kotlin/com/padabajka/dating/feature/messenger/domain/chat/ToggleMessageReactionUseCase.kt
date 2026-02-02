@@ -13,9 +13,9 @@ class ToggleMessageReactionUseCase(
     private val reactToMessageUseCase: ReactToMessageUseCase
 ) {
     suspend operator fun invoke(chatId: ChatId, messageId: MessageId, reactionValue: MessageReaction.Value) {
-        val message = messageRepository.message(chatId, messageId) ?: return
+        val reactions = messageRepository.messageReactions(messageId)
         val currentUserId = authRepository.currentAuthState.userIdOrNull() ?: return
-        val userHasReacted = message.reactions.any {
+        val userHasReacted = reactions.any {
             it.author.id.raw == currentUserId.raw && it.value == reactionValue
         }
 

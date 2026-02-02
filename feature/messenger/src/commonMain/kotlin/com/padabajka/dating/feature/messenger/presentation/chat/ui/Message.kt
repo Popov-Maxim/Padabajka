@@ -41,6 +41,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.padabajka.dating.core.presentation.compactText
 import com.padabajka.dating.core.presentation.hourMinutes
 import com.padabajka.dating.core.presentation.ui.AnimatedPopup
 import com.padabajka.dating.core.presentation.ui.CoreColors
@@ -418,6 +419,16 @@ private fun PopupMessageMenuContent(
         Modifier.shadow(4.dp, shape).background(Color.White, shape)
             .width(IntrinsicSize.Max).widthIn(min = 200.dp)
     ) {
+        if (message is OutgoingMessageItem) {
+            message.readAt?.let { readAt ->
+                Text(
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    text = StaticTextId.UiId.MessageReadAt.translate() + " " + readAt.compactText,
+                    fontSize = 12.sp,
+                )
+            }
+        }
+
         popupButtonData.onEach { data ->
             Box(
                 modifier = Modifier.fillMaxWidth().clickable {
