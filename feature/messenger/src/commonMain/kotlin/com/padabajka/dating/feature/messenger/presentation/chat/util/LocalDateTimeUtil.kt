@@ -1,15 +1,12 @@
 package com.padabajka.dating.feature.messenger.presentation.chat.util
 
-import kotlinx.datetime.Clock
+import com.padabajka.dating.core.utils.now
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
-import kotlinx.datetime.toLocalDateTime
 
-fun currentDateTime(): LocalDateTime =
-    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+fun currentDateTime(): LocalDateTime = LocalDateTime.now()
 
 fun currentDate(): LocalDate = currentDateTime().date
 

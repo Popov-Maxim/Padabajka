@@ -16,7 +16,6 @@ data class MessageEntry(
     @ColumnInfo("creationTime") val creationTime: Long,
     @ColumnInfo("reaction") val reactions: List<MessageReactionEntity>?,
     @ColumnInfo("messageStatus") val messageStatus: MessageStatus,
-    @ColumnInfo("readAt") val readAt: Long?,
     @ColumnInfo("readSynced") val readSynced: Boolean,
     @ColumnInfo("editedAt") val editedAt: Long?,
     @ColumnInfo("editSynced") val editSynced: Boolean,

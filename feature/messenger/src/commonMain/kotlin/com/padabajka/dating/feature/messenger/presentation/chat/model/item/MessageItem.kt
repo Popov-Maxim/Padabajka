@@ -19,6 +19,7 @@ sealed interface MessageItem : MessengerItem {
     val content: String
     val sentTime: LocalDateTime
     val hasBeenRead: Boolean
+    val readAt: LocalDateTime?
     val reactions: PersistentList<MessageReaction>
     val parentMessage: ParentMessageItem?
 }
@@ -29,6 +30,7 @@ data class OutgoingMessageItem(
     override val content: String,
     override val sentTime: LocalDateTime,
     override val hasBeenRead: Boolean,
+    override val readAt: LocalDateTime?,
     override val reactions: PersistentList<MessageReaction>,
     override val parentMessage: ParentMessageItem?,
     val status: MessageStatus
@@ -40,8 +42,9 @@ data class IncomingMessageItem(
     override val content: String,
     override val sentTime: LocalDateTime,
     override val hasBeenRead: Boolean,
+    override val readAt: LocalDateTime?,
     override val reactions: PersistentList<MessageReaction>,
-    override val parentMessage: ParentMessageItem?
+    override val parentMessage: ParentMessageItem?,
 ) : MessageItem
 
 fun Message.toMessageItem(): MessageItem {
@@ -51,6 +54,7 @@ fun Message.toMessageItem(): MessageItem {
             content = content,
             sentTime = creationTime,
             hasBeenRead = hasBeenRead(),
+            readAt = readAt,
             reactions = reactions.toPersistentList(),
             parentMessage = parentMessage?.toItem(),
             status = status
@@ -60,6 +64,7 @@ fun Message.toMessageItem(): MessageItem {
             content = content,
             sentTime = creationTime,
             hasBeenRead = hasBeenRead(),
+            readAt = readAt,
             reactions = reactions.toPersistentList(),
             parentMessage = parentMessage?.toItem()
         )

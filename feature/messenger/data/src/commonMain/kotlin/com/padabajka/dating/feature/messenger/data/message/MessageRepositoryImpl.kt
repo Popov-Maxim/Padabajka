@@ -91,7 +91,6 @@ internal class MessageRepositoryImpl(
             content = content,
             creationTime = currentTime,
             messageStatus = MessageStatus.Sending,
-            readAt = null,
             readSynced = true,
             reactions = listOf(),
             parentMessageId = parentMessageId?.raw,
