@@ -21,8 +21,8 @@ class RemoveProfileDataSourceImpl(
         return profileApi.get()?.toProfile()
     }
 
-    override suspend fun getProfile(userId: String): Profile {
-        return profileApi.get(userId).toProfile()
+    override suspend fun getProfile(userId: String): Profile? {
+        return profileApi.get(userId)?.toProfile()
     }
 
     override suspend fun replace(current: Profile?, newProfile: Profile) {

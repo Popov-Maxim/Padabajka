@@ -12,9 +12,9 @@ class PersonRepositoryImpl(
     private val localPersonDataSource: LocalPersonDataSource,
     private val profileRepository: ProfileRepository
 ) : PersonRepository {
-    override suspend fun getPerson(personId: PersonId): Person {
+    override suspend fun getPerson(personId: PersonId): Person? {
         return localPersonDataSource.getPerson(personId)?.toPerson() ?: run {
-            val profile = profileRepository.profile(personId)
+            val profile = profileRepository.profile(personId) ?: return@run null
             val person = Person(personId, profile)
             savePerson(person)
             person

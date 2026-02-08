@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.profile.data
 
 import com.padabajka.dating.core.repository.api.ProfileRepository
+import com.padabajka.dating.core.repository.api.exception.ResourceExceptions
 import com.padabajka.dating.core.repository.api.model.profile.Gender
 import com.padabajka.dating.core.repository.api.model.profile.Profile
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
@@ -41,7 +42,11 @@ class ProfileRepositoryImpl(
         _profileState.value = ProfileState.Existing(profile)
     }
 
-    override suspend fun profile(userId: PersonId): Profile {
-        return removeProfileDataSource.getProfile(userId.raw)
+    override suspend fun profile(userId: PersonId): Profile? {
+        return try {
+            removeProfileDataSource.getProfile(userId.raw)
+        } catch (_: ResourceExceptions.Deleted) {
+            null
+        }
     }
 }

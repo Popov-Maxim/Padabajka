@@ -35,6 +35,7 @@ kotlin {
             api(projects.component.room)
 
             implementation(projects.feature.messenger)
+            implementation(projects.feature.messenger.data)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

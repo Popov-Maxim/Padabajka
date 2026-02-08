@@ -9,6 +9,7 @@ import com.padabajka.dating.settings.data.LocalAppSettingsDataStore
 import com.padabajka.dating.settings.data.LocalDebugAppSettingsDataStore
 import com.padabajka.dating.settings.domain.AppSettingsComponentProvider
 import com.padabajka.dating.settings.domain.ChangeLanguageUseCase
+import com.padabajka.dating.settings.domain.DeleteAccountUseCase
 import com.padabajka.dating.settings.presentation.SettingScreenComponent
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -48,6 +49,7 @@ private val dataModule = module {
 private val domain = module {
     factoryOf(::ChangeLanguageUseCase)
     singleOf(::AppSettingsComponentProvider)
+    factoryOf(::DeleteAccountUseCase)
 }
 
 private val presentationModule = module {
@@ -60,6 +62,7 @@ private val presentationModule = module {
             saveTokenUseCase = get(),
             syncRemoteDataUseCase = get(),
             settingsComponentProvider = get(),
+            deleteAccountUseCase = get(),
         )
     }
 }

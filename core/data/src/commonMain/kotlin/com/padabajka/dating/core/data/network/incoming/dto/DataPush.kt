@@ -1,6 +1,7 @@
 package com.padabajka.dating.core.data.network.incoming.dto
 
 import com.padabajka.dating.core.data.network.model.ReactionType
+import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.match.Match
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
@@ -25,14 +26,13 @@ sealed interface DataPush {
     @Serializable
     @SerialName("new_reaction_to_me")
     data class NewReactionToMe(
-        val fromUserId: PersonId,
+        val fromUserId: UserId,
         val reaction: ReactionType,
         val message: String? = null
     ) : DataPush
 }
 
-@Serializable
-sealed interface MessageDataPush : DataPush {
+sealed interface MatchDataPush : DataPush {
     @Serializable
     @SerialName("new_match")
     data class NewMatch(
@@ -42,7 +42,24 @@ sealed interface MessageDataPush : DataPush {
         val creationTime: Long,
 
         val personName: String
-    ) : MessageDataPush
+    ) : MatchDataPush
+
+    @Serializable
+    @SerialName("delete_match")
+    data class DeleteMatch(
+        val id: Match.Id,
+    ) : MatchDataPush
+
+    @Serializable
+    @SerialName("update_match")
+    data class UpdateMatch(
+        val id: Match.Id,
+        val newChatId: ChatId,
+    ) : MatchDataPush
+}
+
+@Serializable
+sealed interface MessageDataPush : DataPush {
 
     @Serializable
     @SerialName("new_message")
@@ -83,5 +100,11 @@ sealed interface MessageDataPush : DataPush {
         val lastReadMessageId: MessageId,
         val lastReadMessageTime: Long,
         val readAt: Long
+    ) : MessageDataPush
+
+    @Serializable
+    @SerialName("delete_chat")
+    data class DeleteChatEvent(
+        val chatId: ChatId,
     ) : MessageDataPush
 }

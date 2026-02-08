@@ -7,6 +7,8 @@ import com.padabajka.dating.feature.push.data.data.network.TokenApi
 import com.padabajka.dating.feature.push.data.data.source.RemoteDataSource
 import com.padabajka.dating.feature.push.data.data.source.RemoteDataSourceImpl
 import com.padabajka.dating.feature.push.data.domain.DataPushParser
+import com.padabajka.dating.feature.push.data.domain.HandleDeleteChatEventUseCase
+import com.padabajka.dating.feature.push.data.domain.HandleDeleteMatchUseCase
 import com.padabajka.dating.feature.push.data.domain.HandleDeleteMessageUseCase
 import com.padabajka.dating.feature.push.data.domain.HandleEditedMessageUseCase
 import com.padabajka.dating.feature.push.data.domain.HandleNewMatchUseCase
@@ -14,6 +16,7 @@ import com.padabajka.dating.feature.push.data.domain.HandleNewMessageUseCase
 import com.padabajka.dating.feature.push.data.domain.HandleNewReactionToMeUseCase
 import com.padabajka.dating.feature.push.data.domain.HandlePushUseCase
 import com.padabajka.dating.feature.push.data.domain.HandleReadMessageEventUseCase
+import com.padabajka.dating.feature.push.data.domain.HandleUpdateMatchUseCase
 import com.padabajka.dating.feature.push.data.domain.HandleUsersPresenceUseCase
 import com.padabajka.dating.feature.push.data.domain.SaveTokenUseCase
 import com.padabajka.dating.feature.push.data.domain.UpdateTokenUseCase
@@ -58,4 +61,7 @@ val dataPushDiModule = module {
     factoryOf(::HandleUsersPresenceUseCase)
     factoryOf(::HandleNewReactionToMeUseCase)
     factoryOf(::HandleReadMessageEventUseCase)
+    factoryOf(::HandleDeleteChatEventUseCase)
+    factoryOf(::HandleDeleteMatchUseCase)
+    factoryOf(::HandleUpdateMatchUseCase)
 }

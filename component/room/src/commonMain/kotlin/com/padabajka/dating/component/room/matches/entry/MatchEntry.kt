@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "matches")
-class MatchEntry(
+data class MatchEntry(
     @PrimaryKey val id: String,
     @ColumnInfo("personId") val personId: String,
     @ColumnInfo("chatId") val chatId: String,

@@ -20,9 +20,9 @@ class MatchRepositoryImpl(
 ) : MatchRepository {
     override suspend fun matches(): Flow<List<Match>> {
         return localMatchDataSource.matches().map {
-            it.map { match ->
+            it.mapNotNull { match ->
                 val personId = PersonId(match.personId)
-                val person = personRepository.getPerson(personId)
+                val person = personRepository.getPerson(personId) ?: return@mapNotNull null
                 match.toMatch(person)
             }
         }

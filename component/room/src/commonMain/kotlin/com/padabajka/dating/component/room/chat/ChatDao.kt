@@ -8,6 +8,10 @@ import com.padabajka.dating.component.room.chat.entry.ChatEntry
 
 @Dao
 interface ChatDao {
+
+    @Query("SELECT * FROM chats")
+    suspend fun getChats(): List<ChatEntry>
+
     @Query("SELECT * FROM chats WHERE id = :chatId")
     suspend fun getChat(chatId: String): ChatEntry?
 
@@ -16,4 +20,7 @@ interface ChatDao {
 
     @Query("SELECT lastEventNumber FROM chats WHERE id = :chatId")
     suspend fun getLastEventNumber(chatId: String): Long?
+
+    @Query("DELETE FROM chats WHERE id = :chatId")
+    suspend fun deleteById(chatId: String)
 }

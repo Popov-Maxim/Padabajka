@@ -11,7 +11,9 @@ import com.padabajka.dating.feature.match.data.source.local.RoomLocalPersonDataS
 import com.padabajka.dating.feature.match.data.source.remote.KtorMatchesApi
 import com.padabajka.dating.feature.match.data.source.remote.MatchesApi
 import com.padabajka.dating.feature.match.data.source.remote.RemoteMatchDataSource
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 private val dataModule = module {
@@ -36,10 +38,8 @@ private val dataModule = module {
         )
     }
 
-    factory<LocalMatchDataSource> {
-        RoomLocalMatchDataSource(
-            matchesDao = get()
-        )
+    singleOf(::RoomLocalMatchDataSource) {
+        bind<LocalMatchDataSource>()
     }
 
     factoryOf(::RemoteMatchDataSource)

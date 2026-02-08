@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.auth.domain
 
 import com.padabajka.dating.core.repository.api.AuthRepository
+import com.padabajka.dating.core.repository.api.exception.UserException
 import com.padabajka.dating.settings.domain.DeleteAuthMetadataUseCase
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -13,7 +14,13 @@ class LogOutUseCase(
     @Throws(UnexpectedLogoutException::class, CancellationException::class)
     suspend operator fun invoke() {
         try {
-            deleteAuthMetadataUseCase.invoke()
+            runCatching {
+                deleteAuthMetadataUseCase.invoke()
+            }.onFailure {
+                if (it !is UserException.Banned) {
+                    throw it
+                }
+            }
             authRepository.logout()
         } catch (ce: CancellationException) {
             throw ce
