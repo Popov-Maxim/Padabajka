@@ -9,6 +9,8 @@ import com.padabajka.dating.core.repository.api.model.dictionary.Language
 import com.padabajka.dating.feature.auth.domain.LogOutUseCase
 import com.padabajka.dating.feature.push.data.domain.SaveTokenUseCase
 import com.padabajka.dating.settings.domain.AppSettingsComponentProvider
+import com.padabajka.dating.settings.domain.DeleteAccountUseCase
+import com.padabajka.dating.settings.presentation.model.DeleteAccountEvent
 import com.padabajka.dating.settings.presentation.model.LogOutEvent
 import com.padabajka.dating.settings.presentation.model.NavigateBackEvent
 import com.padabajka.dating.settings.presentation.model.OpenLanguageSelectorEvent
@@ -26,6 +28,7 @@ class SettingScreenComponent(
     logoutUseCaseFactory: Factory<LogOutUseCase>,
     private val saveTokenUseCase: SaveTokenUseCase,
     private val syncRemoteDataUseCase: SyncRemoteDataUseCase,
+    private val deleteAccountUseCase: DeleteAccountUseCase,
     settingsComponentProvider: AppSettingsComponentProvider
 ) : BaseComponent<SettingsState>(
     context,
@@ -48,6 +51,7 @@ class SettingScreenComponent(
             SyncData -> syncRemoteData()
             RequestPermissionEvent -> settingNavigator.openPermissionFlow()
             OpenLanguageSelectorEvent -> settingNavigator.openLanguageSelector()
+            DeleteAccountEvent -> deleteAccount()
         }
     }
 
@@ -74,6 +78,16 @@ class SettingScreenComponent(
     private fun syncRemoteData() = mapAndReduceException(
         action = {
             syncRemoteDataUseCase()
+        },
+        mapper = { it },
+        update = { state, m ->
+            state
+        }
+    )
+
+    private fun deleteAccount() = mapAndReduceException(
+        action = {
+            deleteAccountUseCase()
         },
         mapper = { it },
         update = { state, m ->

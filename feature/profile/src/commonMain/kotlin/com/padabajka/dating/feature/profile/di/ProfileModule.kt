@@ -1,11 +1,13 @@
 package com.padabajka.dating.feature.profile.di
 
 import com.padabajka.dating.core.data.utils.DataStoreUtils
+import com.padabajka.dating.core.repository.api.AccountRepository
 import com.padabajka.dating.core.repository.api.AssetRepository
 import com.padabajka.dating.core.repository.api.DraftProfileRepository
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.profile.DraftProfile
 import com.padabajka.dating.feature.image.domain.LoadImageUseCase
+import com.padabajka.dating.feature.profile.data.AccountRepositoryImpl
 import com.padabajka.dating.feature.profile.data.DraftProfileRepositoryImpl
 import com.padabajka.dating.feature.profile.data.ProfileRepositoryImpl
 import com.padabajka.dating.feature.profile.data.asset.AssetRepositoryImpl
@@ -21,10 +23,12 @@ import com.padabajka.dating.feature.profile.data.asset.source.LocalCityDataSourc
 import com.padabajka.dating.feature.profile.data.asset.source.RemoteAssetDataSource
 import com.padabajka.dating.feature.profile.data.asset.source.RemoteCityDataSource
 import com.padabajka.dating.feature.profile.data.asset.source.RemoteCityDataSourceImpl
+import com.padabajka.dating.feature.profile.data.network.AccountApi
 import com.padabajka.dating.feature.profile.data.network.KtorProfileApi
 import com.padabajka.dating.feature.profile.data.network.ProfileApi
 import com.padabajka.dating.feature.profile.data.source.DataStoreLocalDraftProfileDataSource
 import com.padabajka.dating.feature.profile.data.source.LocalDraftProfileDataSource
+import com.padabajka.dating.feature.profile.data.source.RemoveAccountDataSource
 import com.padabajka.dating.feature.profile.data.source.RemoveProfileDataSource
 import com.padabajka.dating.feature.profile.data.source.RemoveProfileDataSourceImpl
 import com.padabajka.dating.feature.profile.domain.CreateProfileFromDraftUseCase
@@ -43,7 +47,9 @@ import com.padabajka.dating.feature.profile.domain.update.UpdateMainImageUseCase
 import com.padabajka.dating.feature.profile.domain.update.UpdateUserGenderUseCase
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 private val dataModule = module {
@@ -59,6 +65,13 @@ private val dataModule = module {
             localDraftProfileDataSource = get()
         )
     }
+
+    singleOf(::AccountRepositoryImpl) {
+        bind<AccountRepository>()
+    }
+
+    factoryOf(::RemoveAccountDataSource)
+    factoryOf(::AccountApi)
 
     factory<RemoveProfileDataSource> {
         RemoveProfileDataSourceImpl(

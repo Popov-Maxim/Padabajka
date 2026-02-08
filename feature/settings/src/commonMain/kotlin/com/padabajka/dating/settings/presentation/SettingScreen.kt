@@ -39,6 +39,7 @@ import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.dictionary.Language
+import com.padabajka.dating.settings.presentation.model.DeleteAccountEvent
 import com.padabajka.dating.settings.presentation.model.LogOutEvent
 import com.padabajka.dating.settings.presentation.model.NavigateBackEvent
 import com.padabajka.dating.settings.presentation.model.OpenLanguageSelectorEvent
@@ -187,18 +188,21 @@ private fun LittleSetting(
             text = StaticTextId.UiId.TermsOfUse.translate()
         )
         LittleButton(
-            text = StaticTextId.UiId.DeleteAccount.translate()
+            text = StaticTextId.UiId.DeleteAccount.translate(),
+            onClick = { component.onEvent(DeleteAccountEvent) }
         )
     }
 }
 
 @Composable
 private fun LittleButton(
-    text: String
+    text: String,
+    onClick: () -> Unit = {}
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
 //            .background(Color.LightGray)
             .padding(vertical = 10.dp)
     ) {

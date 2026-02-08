@@ -298,7 +298,7 @@ internal class MessageRepositoryImpl(
 
     private suspend fun MessageReactionEntity.toDomain(): MessageReaction {
         val personId = PersonId(this.author)
-        val person = personRepository.getPerson(personId)
+        val person = personRepository.getPerson(personId) ?: TODO()
         return MessageReaction(
             author = person,
             value = this.value,

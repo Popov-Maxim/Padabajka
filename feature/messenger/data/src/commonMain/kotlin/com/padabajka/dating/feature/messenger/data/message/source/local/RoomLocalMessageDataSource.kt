@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.messenger.data.message.source.local
 import com.padabajka.dating.component.room.messenger.MessageDao
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import com.padabajka.dating.component.room.messenger.entry.MessageReadEventEntry
+import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import kotlinx.coroutines.flow.Flow
 
 internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
@@ -37,6 +38,10 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
 
     override suspend fun deleteMessage(messageId: String) {
         messageDao.deleteMessageById(messageId)
+    }
+
+    override suspend fun deleteMessagesInChat(chatId: ChatId) {
+        messageDao.deleteMessagesByChatId(chatId.raw)
     }
 
     override suspend fun updateMessages(

@@ -8,6 +8,7 @@ import com.padabajka.dating.core.networking.config.ContentNegotiationConfigProvi
 import com.padabajka.dating.core.networking.config.HostConfigProvider
 import com.padabajka.dating.core.networking.config.LoggingConfigProvider
 import com.padabajka.dating.core.networking.config.RequestTimeoutConfigProvider
+import com.padabajka.dating.core.networking.config.ResponseValidatorConfigProvider
 import com.padabajka.dating.core.networking.config.WebSocketConfigProvider
 import org.koin.dsl.module
 
@@ -19,7 +20,8 @@ val networkingModule = module {
             HostConfigProvider(appSettings = get()),
             LoggingConfigProvider(),
             WebSocketConfigProvider(),
-            RequestTimeoutConfigProvider()
+            RequestTimeoutConfigProvider(),
+            ResponseValidatorConfigProvider()
         )
         KtorClientProviderImpl(configProviders)
     }
@@ -30,7 +32,8 @@ val networkingModule = module {
             HostConfigProvider(appSettings = get()),
             LoggingConfigProvider(),
             WebSocketConfigProvider(),
-            RequestTimeoutConfigProvider()
+            RequestTimeoutConfigProvider(),
+            ResponseValidatorConfigProvider()
         )
         KtorClientProviderImpl(configProviders)
     }

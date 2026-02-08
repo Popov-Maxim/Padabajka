@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.padabajka.dating.component.room.matches.entry.MatchEntry
-import com.padabajka.dating.core.repository.api.model.auth.UserId
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -14,6 +13,9 @@ interface MatchesDao {
 
     @Query("SELECT * FROM matches ORDER BY creationTime DESC")
     fun matches(): Flow<List<MatchEntry>>
+
+    @Query("SELECT * FROM matches WHERE id = :id LIMIT 1")
+    fun getMatch(id: String): MatchEntry?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(matchEntry: MatchEntry)
@@ -31,7 +33,7 @@ interface MatchesDao {
     suspend fun deleteAll()
 
     @Transaction
-    suspend fun replaceMatchesForUser(userId: UserId, newMatches: List<MatchEntry>) {
+    suspend fun replaceMatchesForUser(newMatches: List<MatchEntry>) {
         deleteAll()
         insertOrUpdate(newMatches)
     }

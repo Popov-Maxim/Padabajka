@@ -10,8 +10,8 @@ class ReactionsToMeUseCase(
     private val profileRepository: ProfileRepository
 ) {
     val reactionsToMe: Flow<List<ReactionsToMe>> = reactionRepository.reactionsToMe.map { reactions ->
-        val reactionsToMe = reactions.map { reaction ->
-            profileRepository.profile(reaction.id).let { profile ->
+        val reactionsToMe = reactions.mapNotNull { reaction ->
+            profileRepository.profile(reaction.id)?.let { profile ->
                 reaction.toReactionsToMe(profile)
             }
         }
