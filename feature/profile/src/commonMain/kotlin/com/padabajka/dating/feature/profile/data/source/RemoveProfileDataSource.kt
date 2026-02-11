@@ -8,4 +8,6 @@ interface RemoveProfileDataSource {
     suspend fun getProfile(userId: String): Profile?
     suspend fun replace(current: Profile?, newProfile: Profile)
     suspend fun create(profile: Profile, gender: Gender)
+
+    suspend fun setFreeze(freeze: Boolean)
 }

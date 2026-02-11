@@ -63,6 +63,7 @@ private val presentationModule = module {
             syncRemoteDataUseCase = get(),
             settingsComponentProvider = get(),
             deleteAccountUseCase = get(),
+            profileRepository = get()
         )
     }
 }

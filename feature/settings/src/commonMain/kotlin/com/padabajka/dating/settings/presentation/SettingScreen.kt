@@ -40,6 +40,7 @@ import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.dictionary.Language
 import com.padabajka.dating.settings.presentation.model.DeleteAccountEvent
+import com.padabajka.dating.settings.presentation.model.FreezeAccountEvent
 import com.padabajka.dating.settings.presentation.model.LogOutEvent
 import com.padabajka.dating.settings.presentation.model.NavigateBackEvent
 import com.padabajka.dating.settings.presentation.model.OpenLanguageSelectorEvent
@@ -124,7 +125,7 @@ private fun GeneralSetting(
             iconData = CoreIcons.Settings.Snowman.toData(),
             text = StaticTextId.UiId.FreezeProfile.translate(),
             secondText = "account is active",
-            onClick = { }
+            onClick = { component.onEvent(FreezeAccountEvent) }
         ),
         SettingButtonData(
             iconData = CoreIcons.Settings.Logout.toData(),

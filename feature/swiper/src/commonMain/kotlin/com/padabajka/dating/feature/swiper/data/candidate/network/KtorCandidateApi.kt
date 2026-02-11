@@ -6,6 +6,7 @@ import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.ParametersBuilder
 import io.ktor.http.path
 
@@ -31,7 +32,9 @@ class KtorCandidateApi(
             }
         }
 
-        return response.body()
+        return response
+            .takeIf { it.status != HttpStatusCode.NoContent }
+            ?.body() ?: emptyList()
     }
 
     private fun ParametersBuilder.append(searchPreferences: SearchPreferences) {

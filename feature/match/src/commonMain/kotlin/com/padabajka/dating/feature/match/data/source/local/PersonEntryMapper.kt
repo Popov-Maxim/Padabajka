@@ -41,6 +41,7 @@ fun PersonEntry.toProfile(): Profile {
         interests = listOf(),
         languagesAsset = LanguagesAsset(),
         mainAchievement = null,
-        achievements = persistentListOf()
+        achievements = persistentListOf(),
+        isFrozen = false
     )
 }

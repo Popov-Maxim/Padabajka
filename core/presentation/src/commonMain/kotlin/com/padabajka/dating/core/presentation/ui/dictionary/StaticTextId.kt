@@ -107,7 +107,8 @@ sealed interface StaticTextId {
         Apply(rawId = "apply"),
         Reset(rawId = "reset"),
         Send(rawId = "send"),
-        Add(rawId = "Add"),
+        Add(rawId = "add"),
+        Loading(rawId = "loading"),
 
         // Profile creating
 
@@ -160,6 +161,13 @@ sealed interface StaticTextId {
         // LikesMe
         EmptyReactionsScreen(rawId = "empty_reactions_screen"),
         // -------------- LikesMe
+
+        // Swiper
+        CardDeckErrorLoadingProfiles(rawId = "card_deck_error_loading_profiles"),
+        ResetSearchFilters(rawId = "reset_search_filters"),
+        CardDeckEmptyProfiles(rawId = "card_deck_empty_profiles"),
+        CardDeckFrozenProfile(rawId = "card_deck_frozen_profile"),
+        Unfreeze(rawId = "unfreeze"),
         ;
         override val id: String = listOfNotNull(rawId, "ui_id")
             .joinToString(separator = "_")

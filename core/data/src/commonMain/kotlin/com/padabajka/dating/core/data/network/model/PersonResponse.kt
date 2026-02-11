@@ -21,7 +21,8 @@ data class PersonResponse(
     val lifestyles: List<LifestyleDto> = listOf(),
     val interests: List<TextDto> = listOf(),
     val details: List<DetailDto> = listOf(),
-    val languagesAsset: LanguagesAssetDto? = null
+    val languagesAsset: LanguagesAssetDto? = null,
+    val isFrozen: Boolean = false
 )
 
 fun PersonResponse.toPerson(): Person {
@@ -44,5 +45,6 @@ fun PersonResponse.toProfile(): Profile {
         languagesAsset = languagesAsset?.toDomain() ?: LanguagesAsset(),
         mainAchievement = null,
         achievements = persistentListOf(),
+        isFrozen = isFrozen
     )
 }

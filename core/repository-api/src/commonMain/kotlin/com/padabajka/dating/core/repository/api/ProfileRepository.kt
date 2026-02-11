@@ -14,4 +14,6 @@ interface ProfileRepository {
     suspend fun replace(profile: Profile)
     suspend fun create(profile: Profile, gender: Gender)
     suspend fun profile(userId: PersonId): Profile?
+
+    suspend fun setFreeze(freeze: Boolean)
 }

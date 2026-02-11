@@ -9,3 +9,4 @@ data object SyncData : SettingsEvent
 data object RequestPermissionEvent : SettingsEvent
 data object OpenLanguageSelectorEvent : SettingsEvent
 data object DeleteAccountEvent : SettingsEvent
+data object FreezeAccountEvent : SettingsEvent

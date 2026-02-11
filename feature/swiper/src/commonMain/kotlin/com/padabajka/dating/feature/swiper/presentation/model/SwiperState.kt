@@ -29,15 +29,32 @@ import kotlinx.collections.immutable.toPersistentList
 @Immutable
 data class SwiperState(
     val cardDeck: CardDeck,
+    val cardDeckState: CardDeckState = CardDeckState.Idle,
     val searchPreferences: SearchPreferencesItem
 ) : State
+
+sealed interface CardDeckState {
+    data object Idle : CardDeckState
+    data object Loading : CardDeckState
+    data object Error : CardDeckState
+    data object Empty : CardDeckState
+    data object Frozen : CardDeckState
+//    data object ProfileNotCreated : CardDeckState
+}
 
 sealed interface SearchPreferencesItem {
     data class Success(
         val ageRange: AgeRange,
         val lookingGender: GenderUI,
         val distanceInKm: Int,
-    ) : SearchPreferencesItem
+    ) : SearchPreferencesItem {
+        @Stable
+        val isDefault: Boolean
+            get() {
+                return distanceInKm == SearchPreferencesConstants.MAX_DISTANCE &&
+                    ageRange == SearchPreferencesConstants.maxAgeRange
+            }
+    }
 
     data object Loading : SearchPreferencesItem
 }

@@ -16,10 +16,10 @@ import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
-import com.padabajka.dating.core.repository.api.model.profile.Age
 import com.padabajka.dating.core.repository.api.model.profile.AgeRange
 import com.padabajka.dating.core.repository.api.model.profile.rangeTo
 import com.padabajka.dating.core.repository.api.model.profile.toAge
+import com.padabajka.dating.feature.swiper.presentation.model.SearchPreferencesConstants
 import kotlin.math.roundToInt
 
 @Composable
@@ -54,7 +54,7 @@ fun AgeRange(ageRange: AgeRange, update: (AgeRange) -> Unit) {
         onValueChange = { range ->
             sliderPosition = range
         },
-        valueRange = maxAgeRange.toFloatRange(),
+        valueRange = SearchPreferencesConstants.maxAgeRange.toFloatRange(),
         onValueChangeFinished = { update.invoke(sliderPosition.toAgeRange()) },
         colors = colors
     )
@@ -63,10 +63,5 @@ fun AgeRange(ageRange: AgeRange, update: (AgeRange) -> Unit) {
 private fun AgeRange.toFloatRange(): ClosedFloatingPointRange<Float> =
     start.raw.toFloat()..endInclusive.raw.toFloat()
 
-fun IntRange.toFloatRange(): ClosedFloatingPointRange<Float> =
-    start.toFloat()..endInclusive.toFloat()
-
 private fun ClosedFloatingPointRange<Float>.toAgeRange(): AgeRange =
     start.roundToInt().toAge()..endInclusive.roundToInt().toAge()
-
-private val maxAgeRange: IntRange = Age.minAge.raw..Age.maxAge.raw

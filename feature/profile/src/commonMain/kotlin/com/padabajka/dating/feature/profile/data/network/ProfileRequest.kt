@@ -13,7 +13,7 @@ import com.padabajka.dating.core.repository.api.model.profile.Profile
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ProfileDto(
+data class ProfileRequest(
     val name: String,
     val birthday: String,
     val gender: String,
@@ -24,8 +24,8 @@ data class ProfileDto(
     val lifestyles: List<LifestyleDto>,
 )
 
-fun Profile.toDto(gender: Gender): ProfileDto {
-    return ProfileDto(
+fun Profile.toRequest(gender: Gender): ProfileRequest {
+    return ProfileRequest(
         name = name,
         birthday = birthday.toString(),
         images = images.filterIsInstance<Image.Url>().map { it.toImageDto() },

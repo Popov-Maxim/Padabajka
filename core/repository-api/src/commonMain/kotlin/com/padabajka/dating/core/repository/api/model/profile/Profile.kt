@@ -20,7 +20,8 @@ data class Profile(
     val interests: List<Text>,
     val languagesAsset: LanguagesAsset,
     val mainAchievement: Achievement?,
-    val achievements: List<Achievement>
+    val achievements: List<Achievement>,
+    val isFrozen: Boolean
 ) {
     val age: Age
         get() {
@@ -41,6 +42,7 @@ val LocalDate.age: Age
 
 fun LocalDate.Companion.fromMillis(millis: Long): LocalDate =
     Instant.fromEpochMilliseconds(millis).toLocalDateTime(TimeZone.currentSystemDefault()).date
+
 fun LocalDate.toMillis(): Long =
     atStartOfDayIn(TimeZone.UTC).toEpochMilliseconds()
 
@@ -48,4 +50,12 @@ sealed interface ProfileState {
     data object Idle : ProfileState
     data object NotCreated : ProfileState
     data class Existing(val profile: Profile) : ProfileState
+}
+
+fun ProfileState.rawProfile(): Profile? {
+    return when (this) {
+        is ProfileState.Existing -> profile
+        ProfileState.Idle,
+        ProfileState.NotCreated -> null
+    }
 }

@@ -9,13 +9,15 @@ import com.padabajka.dating.core.domain.mapOfNotNull
 import com.padabajka.dating.core.repository.api.model.profile.Gender
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.Profile
+import com.padabajka.dating.feature.profile.data.network.AccountApi
 import com.padabajka.dating.feature.profile.data.network.ProfileApi
-import com.padabajka.dating.feature.profile.data.network.toDto
+import com.padabajka.dating.feature.profile.data.network.toRequest
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class RemoveProfileDataSourceImpl(
-    private val profileApi: ProfileApi
+    private val profileApi: ProfileApi,
+    private val accountApi: AccountApi
 ) : RemoveProfileDataSource {
     override suspend fun getProfile(): Profile? {
         return profileApi.get()?.toProfile()
@@ -57,7 +59,15 @@ class RemoveProfileDataSourceImpl(
     }
 
     override suspend fun create(profile: Profile, gender: Gender) {
-        profileApi.create(profile.toDto(gender))
+        profileApi.create(profile.toRequest(gender))
+    }
+
+    override suspend fun setFreeze(freeze: Boolean) {
+        if (freeze) {
+            accountApi.freeze()
+        } else {
+            accountApi.unfreeze()
+        }
     }
 
     private fun <T> fieldForUpdate(current: Profile?, newProfile: Profile, field: Profile.() -> T): T? {
