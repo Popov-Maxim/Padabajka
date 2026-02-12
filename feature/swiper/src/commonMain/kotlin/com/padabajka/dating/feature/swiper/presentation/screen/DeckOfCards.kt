@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.swiper.presentation.screen
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,10 +14,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.event.StateEvent
+import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
 import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
 import com.padabajka.dating.feature.swiper.presentation.model.DislikeEvent
 import com.padabajka.dating.feature.swiper.presentation.model.EndOfCardAnimationEvent
@@ -25,6 +28,7 @@ import com.padabajka.dating.feature.swiper.presentation.model.LikeEvent
 import com.padabajka.dating.feature.swiper.presentation.model.PersonItem
 import com.padabajka.dating.feature.swiper.presentation.model.ReturnEvent
 import com.padabajka.dating.feature.swiper.presentation.model.SuperLikeEvent
+import com.padabajka.dating.feature.swiper.presentation.screen.card.CardDeckPlaceholder
 import com.padabajka.dating.feature.swiper.presentation.screen.card.CardReaction
 
 @Composable
@@ -40,6 +44,22 @@ fun DeckOfCards(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
+        val shape = RoundedCornerShape(50.dp)
+        CardDeckPlaceholder(
+            state = state,
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .clip(shape)
+                .fillMaxSize()
+                .border(
+                    width = 5.dp,
+                    color = Color(color = 0x1A985353),
+                    shape = shape
+                )
+                .innerShadow(shape = shape),
+            onEvent = swiperScreenComponent::onEvent
+        )
+
         val cards = cardDeck.getCards()
         cards.forEachIndexed { i, card ->
             key(card) {
@@ -49,7 +69,7 @@ fun DeckOfCards(
                         .zIndex((cards.size - i).toFloat()),
                     content = @Composable { controller ->
                         Card(
-                            modifier = Modifier.clip(RoundedCornerShape(50.dp)).fillMaxSize(),
+                            modifier = Modifier.clip(shape).fillMaxSize(),
                             cardItem = card
                         ) {
                             when (it) {

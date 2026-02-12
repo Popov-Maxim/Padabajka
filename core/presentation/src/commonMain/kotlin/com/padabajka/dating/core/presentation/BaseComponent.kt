@@ -52,6 +52,7 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
             throw ce
         } catch (e: Throwable) {
             println("${this::class.simpleName} exception in mapAndReduce: ${e.message}")
+            e.printStackTrace()
             if (isDebugBuild()) throw e
             mappedException = mapper(e)
         }

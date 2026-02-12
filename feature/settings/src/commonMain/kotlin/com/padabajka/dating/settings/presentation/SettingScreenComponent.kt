@@ -5,12 +5,14 @@ import com.padabajka.dating.core.domain.Factory
 import com.padabajka.dating.core.domain.delegate
 import com.padabajka.dating.core.domain.sync.SyncRemoteDataUseCase
 import com.padabajka.dating.core.presentation.BaseComponent
+import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.dictionary.Language
 import com.padabajka.dating.feature.auth.domain.LogOutUseCase
 import com.padabajka.dating.feature.push.data.domain.SaveTokenUseCase
 import com.padabajka.dating.settings.domain.AppSettingsComponentProvider
 import com.padabajka.dating.settings.domain.DeleteAccountUseCase
 import com.padabajka.dating.settings.presentation.model.DeleteAccountEvent
+import com.padabajka.dating.settings.presentation.model.FreezeAccountEvent
 import com.padabajka.dating.settings.presentation.model.LogOutEvent
 import com.padabajka.dating.settings.presentation.model.NavigateBackEvent
 import com.padabajka.dating.settings.presentation.model.OpenLanguageSelectorEvent
@@ -29,6 +31,7 @@ class SettingScreenComponent(
     private val saveTokenUseCase: SaveTokenUseCase,
     private val syncRemoteDataUseCase: SyncRemoteDataUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
+    private val profileRepository: ProfileRepository,
     settingsComponentProvider: AppSettingsComponentProvider
 ) : BaseComponent<SettingsState>(
     context,
@@ -52,6 +55,7 @@ class SettingScreenComponent(
             RequestPermissionEvent -> settingNavigator.openPermissionFlow()
             OpenLanguageSelectorEvent -> settingNavigator.openLanguageSelector()
             DeleteAccountEvent -> deleteAccount()
+            FreezeAccountEvent -> changeFreeze(true)
         }
     }
 
@@ -88,6 +92,16 @@ class SettingScreenComponent(
     private fun deleteAccount() = mapAndReduceException(
         action = {
             deleteAccountUseCase()
+        },
+        mapper = { it },
+        update = { state, m ->
+            state
+        }
+    )
+
+    private fun changeFreeze(freeze: Boolean) = mapAndReduceException(
+        action = {
+            profileRepository.setFreeze(freeze)
         },
         mapper = { it },
         update = { state, m ->

@@ -7,7 +7,7 @@ interface ProfileApi {
     suspend fun get(): PersonResponse?
     suspend fun get(userId: String): PersonResponse?
     suspend fun patch(params: PatchParams)
-    suspend fun create(profile: ProfileDto)
+    suspend fun create(profile: ProfileRequest)
 
     @JvmInline
     value class PatchParams(val raw: Map<Key, String>) {

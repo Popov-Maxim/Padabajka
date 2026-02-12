@@ -10,3 +10,6 @@ data class EndOfCardAnimationEvent(val cardItem: CardItem) : SwiperEvent
 data object EndReturnLastCardEvent : SwiperEvent
 
 data class ApplySearchPrefEvent(val searchPreferencesItem: SearchPreferencesItem) : SwiperEvent
+data object ResetSearchPrefEventToDefault : SwiperEvent
+
+data object UnfreezeProfileEvent : SwiperEvent

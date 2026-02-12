@@ -16,6 +16,7 @@ import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
+import com.padabajka.dating.feature.swiper.presentation.model.SearchPreferencesConstants
 import kotlin.math.roundToInt
 
 @Composable
@@ -41,7 +42,7 @@ fun DistanceSlider(distanceInKm: Int, updateDistance: (Int) -> Unit) {
         onValueChange = {
             distance = it
         },
-        valueRange = maxDistanceRange.toFloatRange(),
+        valueRange = SearchPreferencesConstants.maxDistanceRange.toFloatRange(),
         colors = SliderDefaults.colors(
             thumbColor = CoreColors.secondary.mainColor,
             activeTrackColor = CoreColors.secondary.mainColor,
@@ -50,5 +51,5 @@ fun DistanceSlider(distanceInKm: Int, updateDistance: (Int) -> Unit) {
     )
 }
 
-private const val MAX_DISTANCE = 100
-private val maxDistanceRange = 0..MAX_DISTANCE
+fun IntRange.toFloatRange(): ClosedFloatingPointRange<Float> =
+    start.toFloat()..endInclusive.toFloat()

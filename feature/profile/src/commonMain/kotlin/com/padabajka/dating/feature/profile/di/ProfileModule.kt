@@ -73,10 +73,8 @@ private val dataModule = module {
     factoryOf(::RemoveAccountDataSource)
     factoryOf(::AccountApi)
 
-    factory<RemoveProfileDataSource> {
-        RemoveProfileDataSourceImpl(
-            profileApi = get()
-        )
+    factoryOf(::RemoveProfileDataSourceImpl) {
+        bind<RemoveProfileDataSource>()
     }
 
     factory<ProfileApi> {

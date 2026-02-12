@@ -65,6 +65,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Reset -> "Сбросить"
             StaticTextId.UiId.Send -> "Отправить"
             StaticTextId.UiId.Add -> "Добавить"
+            StaticTextId.UiId.Loading -> "Загрузка..."
             StaticTextId.UiId.WelcomeText ->
                 "Добро пожаловать в Padabajka " +
                     "мы рады, что вы пресоеденились к нам, давайте познакомимся\n\n" +
@@ -121,6 +122,17 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.LanguageSearch -> "Поиск языка"
             StaticTextId.UiId.YourInterests -> "Твои интересы"
             StaticTextId.UiId.SelectUpToNInterests -> "Выбери до {n} интересов"
+            StaticTextId.UiId.CardDeckErrorLoadingProfiles ->
+                "Мы ищем новые профили, но что-то пошло не так. Попробуйте еще раз через минуту"
+
+            StaticTextId.UiId.ResetSearchFilters -> "Сбросить фильтр"
+            StaticTextId.UiId.CardDeckEmptyProfiles ->
+                "Похоже, вы просмотрели всех, кто соответствует вашим текущим фильтрам.\n\n" +
+                    "Хотите расширить поиск?"
+            StaticTextId.UiId.CardDeckFrozenProfile ->
+                "Ваш профиль заморожен. Разморозьте его и продолжайте знакомиться"
+
+            StaticTextId.UiId.Unfreeze -> "Разморозить"
         }
     }
 

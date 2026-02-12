@@ -64,7 +64,7 @@ class KtorProfileApi(
         if (response.status != HttpStatusCode.OK) TODO()
     }
 
-    override suspend fun create(profile: ProfileDto) {
+    override suspend fun create(profile: ProfileRequest) {
         val client = ktorClientProvider.client()
 
         val response = client.post {

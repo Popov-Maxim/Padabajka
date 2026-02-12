@@ -65,6 +65,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Reset -> "Reset"
             StaticTextId.UiId.Send -> "Send"
             StaticTextId.UiId.Add -> "Add"
+            StaticTextId.UiId.Loading -> "Loading..."
             StaticTextId.UiId.WelcomeText ->
                 "Welcome to Padabajka! " +
                     "We’re glad to have you here. Let’s get to know each other.\n\n" +
@@ -124,6 +125,18 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.LanguageSearch -> "Language search"
             StaticTextId.UiId.YourInterests -> "Your interests"
             StaticTextId.UiId.SelectUpToNInterests -> "Select up to {n} interests"
+            StaticTextId.UiId.CardDeckErrorLoadingProfiles ->
+                "We’re looking for new profiles, but something went wrong. Try again in a moment"
+
+            StaticTextId.UiId.ResetSearchFilters -> "Reset filter"
+            StaticTextId.UiId.CardDeckEmptyProfiles ->
+                "Looks like you’ve seen everyone who matches your current filters.\n\n" +
+                    "Want to widen your search?"
+
+            StaticTextId.UiId.CardDeckFrozenProfile ->
+                "Your profile is frozen. Unfreeze it to continue swiping and finding new matches"
+
+            StaticTextId.UiId.Unfreeze -> "Unfreeze"
         }
     }
 

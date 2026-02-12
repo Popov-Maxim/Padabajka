@@ -45,6 +45,7 @@ class CreateProfileFromDraftUseCase(
             languagesAsset = LanguagesAsset(),
             mainAchievement = null,
             achievements = emptyList(),
+            isFrozen = false
         )
     }
 }

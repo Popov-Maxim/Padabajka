@@ -153,8 +153,9 @@ private val presentationModule = module {
             context = parameters.get(),
             reactToCardUseCaseFactory = { get() },
             nextCardUseCaseFactory = { get() },
-            updateSearchPrefUseCaseFactory = { get() },
-            searchPreferencesProvider = get()
+            updateSearchPrefUseCase = get(),
+            searchPreferencesProvider = get(),
+            profileRepository = get(),
         )
     }
 }
