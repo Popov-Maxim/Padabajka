@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -19,27 +19,24 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "settings.metadata"
+            baseName = "platform.data"
             isStatic = true
         }
     }
 
     sourceSets {
+        androidMain.dependencies {
+            implementation(libs.play.services.location)
+        }
         commonMain.dependencies {
-            api(projects.core.domain)
-            api(projects.core.repositoryApi)
-            api(projects.core.data)
-            api(projects.core.networking)
-            api(projects.core.platform.data)
-            api(projects.core.platform.permission)
-
-            implementation(libs.gitlive.firebase.installations)
+            api(libs.koin.core)
+            implementation(libs.coroutines.core)
         }
     }
 }
 
 android {
-    namespace = "com.padabajka.dating.settings.metadata"
+    namespace = "com.padabajka.dating.core.platform.data"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()

@@ -5,6 +5,7 @@ import com.padabajka.dating.core.data.MutableAtomic
 import com.padabajka.dating.core.data.atomic
 import com.padabajka.dating.core.data.mutableAtomic
 import com.padabajka.dating.core.repository.api.CandidateRepository
+import com.padabajka.dating.core.repository.api.GeoRepository
 import com.padabajka.dating.core.repository.api.model.swiper.Person
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
@@ -14,12 +15,14 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 class CandidateRepositoryImpl(
     private val scope: CoroutineScope,
-    private val remoteCandidateDataSource: RemoteCandidateDataSource
+    private val remoteCandidateDataSource: RemoteCandidateDataSource,
+    private val geoRepository: GeoRepository
 ) : CandidateRepository {
 
     private var actualSearchPreferences: MutableAtomic<SearchPreferences?> = mutableAtomic(null)
@@ -85,7 +88,7 @@ class CandidateRepositoryImpl(
 
         val loaded = shared + preloaded
 
-        val newPersons = remoteCandidateDataSource.getPersons(LOADING_COUNT, loaded, searchPreferences)
+        val newPersons = updateGeoAndGetPerson(loaded, searchPreferences)
         if (newPersons.isNotEmpty()) {
             preloadedPersons {
                 if (containsKey(searchPreferences)) {
@@ -95,6 +98,21 @@ class CandidateRepositoryImpl(
                 }
             }
         }
+    }
+
+    private suspend fun updateGeoAndGetPerson(
+        loaded: Set<Person>,
+        searchPreferences: SearchPreferences
+    ): List<Person> {
+        val location = geoRepository.location.first() // TODO: show message about permission
+        geoRepository.sendLocation(location)
+        val newPersons = remoteCandidateDataSource.getPersons(
+            count = LOADING_COUNT,
+            loaded = loaded,
+            searchPreferences = searchPreferences
+        )
+
+        return newPersons
     }
 
     private suspend fun updateSearchPreferences(searchPreferences: SearchPreferences) =

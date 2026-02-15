@@ -31,7 +31,9 @@ import com.padabajka.dating.feature.swiper.domain.ReactToCardUseCase
 import com.padabajka.dating.feature.swiper.domain.search.SearchPreferencesProvider
 import com.padabajka.dating.feature.swiper.domain.search.UpdateSearchPrefUseCase
 import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 private val dataModule = module {
@@ -45,11 +47,8 @@ private val dataModule = module {
         )
     }
 
-    single<CandidateRepository> {
-        CandidateRepositoryImpl(
-            scope = get(),
-            remoteCandidateDataSource = get()
-        )
+    singleOf(::CandidateRepositoryImpl) {
+        bind<CandidateRepository>()
     }
 
     factory<RemoteCandidateDataSource> {
