@@ -47,10 +47,10 @@ kotlin {
             implementation(projects.feature.push)
             implementation(projects.feature.permissionFlow)
             implementation(projects.feature.reactionScreen)
-            implementation(projects.core.permission)
+            implementation(projects.core.platform.permission)
             implementation(projects.core.networking)
             implementation(projects.component.room)
-            implementation(projects.core.systemIntent)
+            implementation(projects.core.platform.systemIntent)
             implementation(projects.core.sync)
 
             implementation(libs.gitlive.firebase.auth)

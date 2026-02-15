@@ -33,7 +33,7 @@ kotlin {
             api(projects.core.repositoryApi)
             api(projects.core.data)
             api(projects.core.networking)
-            api(projects.core.permission)
+            api(projects.core.platform.permission)
         }
     }
 }
