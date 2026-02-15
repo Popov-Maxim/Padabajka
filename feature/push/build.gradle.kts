@@ -30,7 +30,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            implementation(projects.core.permission)
+            implementation(projects.core.platform.permission)
             implementation(projects.core.repositoryApi)
             implementation(projects.core.networking)
             implementation(projects.core.data)
