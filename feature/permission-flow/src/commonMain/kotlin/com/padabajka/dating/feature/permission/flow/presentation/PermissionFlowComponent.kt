@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.permission.GeoPermissionController
 import com.padabajka.dating.core.permission.NotificationPermissionController
 import com.padabajka.dating.core.presentation.NavigateComponentContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -52,7 +53,7 @@ class PermissionFlowComponent(
     }
 
     private fun nextScreen(currentScreen: PermissionScreen) {
-        navigateScope.launch {
+        navigateScope.launch(Dispatchers.Main) {
             when {
                 currentScreen < PermissionScreen.Geo && geoPermissionController.hasPermission()
                     .not() ->

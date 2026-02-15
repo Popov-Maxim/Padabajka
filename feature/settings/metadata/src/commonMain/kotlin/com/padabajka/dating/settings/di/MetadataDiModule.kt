@@ -1,7 +1,12 @@
 package com.padabajka.dating.settings.di
 
+import com.padabajka.dating.core.repository.api.GeoRepository
 import com.padabajka.dating.core.repository.api.metadata.MetadataRepository
 import com.padabajka.dating.settings.data.MetadataRepositoryImpl
+import com.padabajka.dating.settings.data.geo.GeoRepositoryImpl
+import com.padabajka.dating.settings.data.geo.network.GeoApi
+import com.padabajka.dating.settings.data.geo.source.LocalGeoDataSource
+import com.padabajka.dating.settings.data.geo.source.RemoteGeoDataSource
 import com.padabajka.dating.settings.data.network.AuthMetadataApi
 import com.padabajka.dating.settings.data.network.KtorAuthMetadataApi
 import com.padabajka.dating.settings.data.source.MetadataRemoteDataSource
@@ -12,7 +17,9 @@ import com.padabajka.dating.settings.domain.UpdateAuthMetadataUseCase
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.installations.FirebaseInstallations
 import dev.gitlive.firebase.installations.installations
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 private val dataModule = module {
@@ -21,6 +28,10 @@ private val dataModule = module {
             firebaseInstallations = get(),
             remoteDataSource = get()
         )
+    }
+
+    singleOf(::GeoRepositoryImpl) {
+        bind<GeoRepository>()
     }
 
     factory<FirebaseInstallations> {
@@ -38,6 +49,10 @@ private val dataModule = module {
             ktorClientProvider = get()
         )
     }
+
+    factoryOf(::LocalGeoDataSource)
+    factoryOf(::RemoteGeoDataSource)
+    factoryOf(::GeoApi)
 }
 
 private val domainModule = module {
