@@ -5,7 +5,7 @@ import com.padabajka.dating.core.data.atomic
 import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
 import com.padabajka.dating.feature.swiper.data.reaction.network.ReactionApi
 import com.padabajka.dating.feature.swiper.data.reaction.network.toDomain
-import com.padabajka.dating.feature.swiper.data.reaction.network.toReactionDto
+import com.padabajka.dating.feature.swiper.data.reaction.network.toRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -53,7 +53,7 @@ class RemoteReactionDataSourceImpl(
             }
 
             try {
-                val reactions = reactionsToPost.map { it.toReactionDto() }.toSet()
+                val reactions = reactionsToPost.map { it.toRequest() }.toSet()
                 reactionApi.postReactions(reactions)
             } catch (e: Throwable) {
                 e.printStackTrace()
