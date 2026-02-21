@@ -12,7 +12,7 @@ import io.ktor.http.path
 class KtorReactionApi(
     private val ktorClientProvider: KtorClientProvider
 ) : ReactionApi {
-    override suspend fun postReactions(reactions: Set<ReactionDto>) {
+    override suspend fun postReactions(reactions: Set<ReactionDto.Request>) {
         val client = ktorClientProvider.client()
 
         val response = client.post {
@@ -27,7 +27,7 @@ class KtorReactionApi(
         return response.body()
     }
 
-    override suspend fun getReactions(): Set<ReactionDto> {
+    override suspend fun getReactions(): Set<ReactionDto.ToMeResponse> {
         val client = ktorClientProvider.client()
 
         val response = client.get {

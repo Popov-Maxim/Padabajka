@@ -5,16 +5,25 @@ import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
 import kotlinx.serialization.Serializable
 
-@Serializable
-data class ReactionDto(
-    val reactedPersonId: PersonId,
-    val reaction: ReactionType,
-    val message: String? = null
-)
+object ReactionDto {
+    @Serializable
+    data class Request(
+        val toPersonId: PersonId,
+        val reaction: ReactionType,
+        val message: String? = null
+    )
 
-fun PersonReaction.toReactionDto(): ReactionDto {
-    return ReactionDto(
-        reactedPersonId = id,
+    @Serializable
+    data class ToMeResponse(
+        val fromPersonId: PersonId,
+        val reaction: ReactionType,
+        val message: String? = null
+    )
+}
+
+fun PersonReaction.toRequest(): ReactionDto.Request {
+    return ReactionDto.Request(
+        toPersonId = id,
         reaction = when (this) {
             is PersonReaction.SuperLike -> ReactionType.SuperLike
             is PersonReaction.Like -> ReactionType.Like
@@ -24,10 +33,10 @@ fun PersonReaction.toReactionDto(): ReactionDto {
     )
 }
 
-fun ReactionDto.toDomain(): PersonReaction {
+fun ReactionDto.ToMeResponse.toDomain(): PersonReaction {
     return when (reaction) {
-        ReactionType.SuperLike -> PersonReaction.SuperLike(reactedPersonId, message ?: "")
-        ReactionType.Like -> PersonReaction.Like(reactedPersonId)
+        ReactionType.SuperLike -> PersonReaction.SuperLike(fromPersonId, message ?: "")
+        ReactionType.Like -> PersonReaction.Like(fromPersonId)
         ReactionType.Dislike -> TODO("bad reaction format")
     }
 }
