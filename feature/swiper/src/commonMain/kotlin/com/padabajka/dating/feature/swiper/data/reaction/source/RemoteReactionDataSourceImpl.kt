@@ -7,6 +7,7 @@ import com.padabajka.dating.feature.swiper.data.reaction.network.ReactionApi
 import com.padabajka.dating.feature.swiper.data.reaction.network.toDomain
 import com.padabajka.dating.feature.swiper.data.reaction.network.toRequest
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
@@ -29,6 +30,10 @@ class RemoteReactionDataSourceImpl(
         }
     }
 
+    override suspend fun forceSendReactions() {
+        postReactions().join()
+    }
+
     override suspend fun reactionsToMe(): List<PersonReaction> {
         return reactionApi.getReactions().map { it.toDomain() }
     }
@@ -40,8 +45,8 @@ class RemoteReactionDataSourceImpl(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun postReactions() {
-        scope.launch(postJob) {
+    private fun postReactions(): Job {
+        return scope.launch(postJob) {
             val reactionsToPost = reactions {
                 toSet().also {
                     clear()
