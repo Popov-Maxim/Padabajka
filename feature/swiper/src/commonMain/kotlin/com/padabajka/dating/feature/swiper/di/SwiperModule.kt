@@ -74,11 +74,8 @@ private val dataModule = module {
 
     factoryOf(::LocalReactionDataSource)
 
-    factory<RemoteReactionDataSource> {
-        RemoteReactionDataSourceImpl(
-            reactionApi = get(),
-            scope = get()
-        )
+    singleOf(::RemoteReactionDataSourceImpl) { // TODO
+        bind<RemoteReactionDataSource>()
     }
 
     factory<ReactionApi> {

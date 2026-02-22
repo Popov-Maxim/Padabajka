@@ -10,6 +10,7 @@ import com.padabajka.dating.core.repository.api.model.swiper.Person
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
 import com.padabajka.dating.feature.swiper.data.candidate.source.RemoteCandidateDataSource
+import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -22,7 +23,8 @@ import kotlinx.coroutines.sync.withLock
 class CandidateRepositoryImpl(
     private val scope: CoroutineScope,
     private val remoteCandidateDataSource: RemoteCandidateDataSource,
-    private val geoRepository: GeoRepository
+    private val geoRepository: GeoRepository,
+    private val remoteReactionDataSource: RemoteReactionDataSource
 ) : CandidateRepository {
 
     private var actualSearchPreferences: MutableAtomic<SearchPreferences?> = mutableAtomic(null)
@@ -104,6 +106,7 @@ class CandidateRepositoryImpl(
         loaded: Set<Person>,
         searchPreferences: SearchPreferences
     ): List<Person> {
+        remoteReactionDataSource.forceSendReactions()
         val location = geoRepository.location.first() // TODO: show message about permission
         geoRepository.sendLocation(location)
         val newPersons = remoteCandidateDataSource.getPersons(
