@@ -5,21 +5,15 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import platform.CoreLocation.CLLocationCoordinate2D
 import platform.CoreLocation.CLLocationManager
-import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.CoreLocation.kCLLocationAccuracyBest
 import platform.Foundation.NSDate
 import platform.Foundation.timeIntervalSince1970
-import platform.darwin.NSObject
 
-class IOSLocationProvider :
-    NSObject(),
-    PlatformLocationProvider,
-    CLLocationManagerDelegateProtocol {
+class IOSLocationProvider : PlatformLocationProvider {
 
     private val locationManager = CLLocationManager()
 
     init {
-        locationManager.delegate = this
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
     }

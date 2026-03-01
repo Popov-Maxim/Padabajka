@@ -15,7 +15,7 @@ interface MatchesDao {
     fun matches(): Flow<List<MatchEntry>>
 
     @Query("SELECT * FROM matches WHERE id = :id LIMIT 1")
-    fun getMatch(id: String): MatchEntry?
+    suspend fun getMatch(id: String): MatchEntry?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(matchEntry: MatchEntry)
