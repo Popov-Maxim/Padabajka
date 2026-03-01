@@ -17,10 +17,12 @@ class HandlePushUseCase(
     private val handleDeleteChatEventUseCase: HandleDeleteChatEventUseCase,
     private val handleDeleteMatchUseCase: HandleDeleteMatchUseCase,
     private val handleUpdateMatchUseCase: HandleUpdateMatchUseCase,
+    private val handleNotificationPayloadUseCase: HandleNotificationPayloadUseCase,
 ) {
     suspend operator fun invoke(rawPush: MessagePush) {
         println("HandlePushUseCase: rawPush = ${rawPush.dataJson}")
-        val dataPush = dataPushParser.parse(rawPush) ?: return
+        val pushMessage = dataPushParser.parse(rawPush) ?: return
+        val dataPush = pushMessage.event
         println("HandlePushUseCase: dataPush = $dataPush")
         when (dataPush) {
             is DataPush.UsersPresence -> handleUsersPresenceUseCase(dataPush)
@@ -36,6 +38,10 @@ class HandlePushUseCase(
             is MatchDataPush.NewMatch -> handleNewMatchUseCase(dataPush)
             is MatchDataPush.DeleteMatch -> handleDeleteMatchUseCase(dataPush)
             is MatchDataPush.UpdateMatch -> handleUpdateMatchUseCase(dataPush)
+        }
+
+        pushMessage.notification?.let { notification ->
+            handleNotificationPayloadUseCase.invoke(notification)
         }
     }
 }

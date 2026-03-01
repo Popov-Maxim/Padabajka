@@ -40,8 +40,6 @@ sealed interface MatchDataPush : DataPush {
         val personId: PersonId,
         val chatId: ChatId,
         val creationTime: Long,
-
-        val personName: String
     ) : MatchDataPush
 
     @Serializable
