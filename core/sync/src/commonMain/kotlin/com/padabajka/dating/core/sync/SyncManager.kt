@@ -6,6 +6,7 @@ import com.padabajka.dating.core.domain.sync.SyncRemoteDataUseCase
 import com.padabajka.dating.core.repository.api.SocketRepository
 import com.padabajka.dating.feature.push.data.domain.HandlePushUseCase
 import com.padabajka.dating.feature.push.data.domain.model.MessagePush
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -77,6 +78,8 @@ class SyncManager(
         scope.launch {
             try {
                 socketRepository.connect()
+            } catch (exception: CancellationException) {
+                throw exception
             } catch (_: Exception) {
                 scheduleReconnect()
             }
@@ -110,6 +113,8 @@ class SyncManager(
                     forEach { handlePushUseCase(it) }
                     clear()
                 }
+            } catch (exception: CancellationException) {
+                throw exception
             } catch (e: Exception) {
                 log("sync failed: ${e.message}")
                 state = State.DISCONNECTED
