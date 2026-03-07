@@ -7,7 +7,8 @@ interface PlatformNotificationService {
         message: String,
         channelId: String,
         groupId: String? = null,
-        priority: NotificationImportance? = null
+        priority: NotificationImportance? = null,
+        deeplink: String? = null
     )
 
     fun cancelNotification(id: Int)

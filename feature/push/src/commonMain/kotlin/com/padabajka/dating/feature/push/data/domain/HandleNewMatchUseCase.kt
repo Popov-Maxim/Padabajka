@@ -3,22 +3,13 @@ package com.padabajka.dating.feature.push.data.domain
 import com.padabajka.dating.core.data.network.incoming.dto.MatchDataPush
 import com.padabajka.dating.core.repository.api.MatchRepository
 import com.padabajka.dating.core.repository.api.model.match.RawMatch
-import com.padabajka.dating.feature.push.notification.NotificationService
-import com.padabajka.dating.feature.push.notification.model.NotificationChannel
 
 class HandleNewMatchUseCase(
-    private val matchRepository: MatchRepository,
-    private val notificationService: NotificationService
+    private val matchRepository: MatchRepository
 ) {
     suspend operator fun invoke(dataPush: MatchDataPush.NewMatch) {
         val rawMatch = dataPush.toRawMatch()
         matchRepository.saveMatch(rawMatch)
-        notificationService.showNotification(
-            (Int.MIN_VALUE..Int.MAX_VALUE).random(),
-            "New match",
-            "Match with ${dataPush.personName}",
-            NotificationChannel.Match,
-        )
     }
 
     private fun MatchDataPush.NewMatch.toRawMatch(): RawMatch {

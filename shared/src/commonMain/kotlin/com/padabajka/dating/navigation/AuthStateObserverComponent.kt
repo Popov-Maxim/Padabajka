@@ -3,13 +3,13 @@ package com.padabajka.dating.navigation
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.repository.api.SocketRepository
+import com.padabajka.dating.core.repository.api.metadata.PushRepository
 import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
 import com.padabajka.dating.core.repository.api.model.auth.LoggedOut
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.WaitingForEmailValidation
 import com.padabajka.dating.feature.auth.domain.AuthStateProvider
 import com.padabajka.dating.feature.auth.presentation.VerificationComponent
-import com.padabajka.dating.settings.domain.NewAuthMetadataUseCase
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
@@ -17,15 +17,26 @@ import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 
 class AuthStateObserverComponent(
-    context: ComponentContext,
-    private val updateAuthMetadataUseCase: NewAuthMetadataUseCase,
+    context: RootComponent,
     private val socketRepository: SocketRepository,
+    private val pushRepository: PushRepository
 ) : NavigateComponentContext<AuthStateObserverComponent.Configuration, AuthStateObserverComponent.Child>(
     context,
     Configuration.serializer(),
     Configuration.SplashScreen
 ),
     KoinComponent {
+
+    init {
+        backgroundScope.launch {
+            context.deeplinkFlow.collect {
+                val instance = childStack.value.active.instance
+                if (instance is Child.AuthScope) {
+                    instance.component.onDeeplink(it)
+                }
+            }
+        }
+    }
 
     private val authProvider: AuthStateProvider = get()
 
@@ -35,22 +46,17 @@ class AuthStateObserverComponent(
                 LoggedOut -> {
                     navigateNewStack(Configuration.UnauthScope)
                     backgroundScope.launch {
-                        socketRepository.disconnect()
+                        socketRepository.disconnect() // TODO: can be crash in request with auth
+                        pushRepository.deleteToken()
                     }
                 }
 
                 is LoggedIn -> {
                     navigateNewStack(Configuration.AuthScope(authState.userId))
-                    backgroundScope.launch {
-                        updateAuthMetadataUseCase()
-                    }
                 }
 
                 is WaitingForEmailValidation -> {
                     navigateNewStack(Configuration.VerificationScreen)
-                    backgroundScope.launch {
-                        updateAuthMetadataUseCase()
-                    }
                 }
             }
         }

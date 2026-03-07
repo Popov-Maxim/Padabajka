@@ -11,6 +11,7 @@ import androidx.compose.ui.window.ComposeUIViewController
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.padabajka.dating.navigation.RootComponent
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Suppress("FunctionNaming")
@@ -27,10 +28,11 @@ fun MainViewController() =
                 backDispatcher.back()
             }
         }
+        val defaultComponentContext = DefaultComponentContext(
+            lifecycle = LifecycleRegistry(),
+            backHandler = backDispatcher
+        )
         App(
-            DefaultComponentContext(
-                lifecycle = LifecycleRegistry(),
-                backHandler = backDispatcher
-            )
+            RootComponent(defaultComponentContext)
         )
     }

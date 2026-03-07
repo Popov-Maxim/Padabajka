@@ -15,6 +15,7 @@ class NotificationService(
         message: String,
         channel: NotificationChannel,
         groupId: String? = null,
+        deeplink: String? = null
     ) {
         if (notificationPermissionController.hasPermission().not()) return
 
@@ -24,7 +25,8 @@ class NotificationService(
             message = message,
             channelId = channel.raw,
             groupId = groupId,
-            priority = channel.priority()
+            priority = channel.priority(),
+            deeplink = deeplink
         )
     }
 

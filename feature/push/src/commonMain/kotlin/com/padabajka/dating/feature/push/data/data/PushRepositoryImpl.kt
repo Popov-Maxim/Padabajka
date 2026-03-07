@@ -15,4 +15,8 @@ class PushRepositoryImpl(
     override suspend fun getToken(): String {
         return firebaseMessaging.getToken()
     }
+
+    override suspend fun deleteToken() {
+        firebaseMessaging.deleteToken()
+    }
 }
