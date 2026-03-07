@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
+import com.padabajka.dating.deeplink.AppDeeplink
 import com.padabajka.dating.feature.messenger.presentation.MessengerComponent
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatComponent
 import com.padabajka.dating.feature.messenger.presentation.model.MatchItem
@@ -45,6 +46,13 @@ class MainAuthScopeNavigateComponent(
 
     fun openLikes() {
         navigate(Configuration.LikesMeScreen)
+    }
+
+    fun onDeeplink(deeplink: AppDeeplink) {
+        when (deeplink) {
+            is AppDeeplink.OpenChat -> Unit
+            AppDeeplink.OpenLikes -> openLikes()
+        }
     }
 
     @Suppress("LongMethod")

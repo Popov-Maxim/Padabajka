@@ -6,6 +6,7 @@ import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
 import com.padabajka.dating.core.sync.SyncManager
+import com.padabajka.dating.deeplink.AppDeeplink
 import com.padabajka.dating.settings.domain.NewAuthMetadataUseCase
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -63,6 +64,13 @@ class AuthScopeNavigateComponent(
             )
 
             is Configuration.LoadingErrorScreen -> Child.LoadingErrorScreen(configuration.message)
+        }
+    }
+
+    fun onDeeplink(deeplink: AppDeeplink) {
+        val instance = childStack.value.active.instance
+        if (instance is Child.MainAuthScope) {
+            instance.component.onDeeplink(deeplink)
         }
     }
 

@@ -17,7 +17,7 @@ import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 
 class AuthStateObserverComponent(
-    context: ComponentContext,
+    context: RootComponent,
     private val socketRepository: SocketRepository,
     private val pushRepository: PushRepository
 ) : NavigateComponentContext<AuthStateObserverComponent.Configuration, AuthStateObserverComponent.Child>(
@@ -27,6 +27,17 @@ class AuthStateObserverComponent(
 ),
     KoinComponent {
 
+    init {
+        backgroundScope.launch {
+            context.deeplinkFlow.collect {
+                val instance = childStack.value.active.instance
+                if (instance is Child.AuthScope) {
+                    instance.component.onDeeplink(it)
+                }
+            }
+        }
+    }
+
     private val authProvider: AuthStateProvider = get()
 
     suspend fun subscribeToAuth() {
@@ -35,8 +46,8 @@ class AuthStateObserverComponent(
                 LoggedOut -> {
                     navigateNewStack(Configuration.UnauthScope)
                     backgroundScope.launch {
+                        socketRepository.disconnect() // TODO: can be crash in request with auth
                         pushRepository.deleteToken()
-                        socketRepository.disconnect()
                     }
                 }
 

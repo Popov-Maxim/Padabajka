@@ -13,7 +13,8 @@ class HandleNotificationPayloadUseCase(
             id = payload.id,
             title = payload.title,
             message = payload.body,
-            channel = channel
+            channel = channel,
+            deeplink = payload.deepLink
         )
     }
 }

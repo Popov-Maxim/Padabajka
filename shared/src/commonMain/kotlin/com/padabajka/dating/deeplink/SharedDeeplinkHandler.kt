@@ -1,6 +1,7 @@
 package com.padabajka.dating.deeplink
 
 import com.padabajka.dating.core.repository.api.AuthRepository
+import com.padabajka.dating.navigation.RootComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -12,16 +13,14 @@ object SharedDeeplinkHandler : KoinComponent {
 
     private val scope: CoroutineScope by inject()
 
-    fun handle(uri: String) {
+    private val deeplinkParser: DeeplinkParser by inject()
+
+    fun handle(uri: String, rootComponent: RootComponent) {
+        val deeplink = deeplinkParser.parse(uri) ?: return
         scope.launch {
-            runCatching {
-                if (uri.startsWith("https://padabajka-96c95.firebaseapp.com/__/auth/links")) {
-                    authRepository.signInWithEmailLink(uri)
-                }
-            }.onFailure {
-                println("SharedDeeplinkHandler: FAILED signInWithEmailLink")
-            }.onSuccess {
-                println("SharedDeeplinkHandler: SUCCESS signInWithEmailLink")
+            when (deeplink) {
+                is Deeplink.AuthLink -> authRepository.signInWithEmailLink(deeplink.link)
+                is AppDeeplink -> rootComponent.onDeeplink(deeplink)
             }
         }
     }
