@@ -91,7 +91,7 @@ fun ChatScreen(component: ChatComponent) {
 }
 
 @Composable
-private fun TopBar(person: PersonItem, userPresence: UserPresenceItem, onEvent: (MessengerEvent) -> Unit) {
+private fun TopBar(person: PersonItem?, userPresence: UserPresenceItem, onEvent: (MessengerEvent) -> Unit) {
     var showViewProfile by remember { mutableStateOf(false) }
 
     Row(
@@ -108,18 +108,18 @@ private fun TopBar(person: PersonItem, userPresence: UserPresenceItem, onEvent: 
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.clickable {
+            modifier = Modifier.clickable(enabled = person != null) {
                 showViewProfile = true
             }
         ) {
             ProfileAvatar(
-                model = person.images.firstOrNull()?.raw(),
+                model = person?.images?.firstOrNull()?.raw(),
                 modifier = Modifier.size(48.dp)
             )
 
             Column {
                 Text(
-                    text = person.name,
+                    text = person?.name ?: "",
                     fontSize = 16.sp,
                 )
 
@@ -132,7 +132,7 @@ private fun TopBar(person: PersonItem, userPresence: UserPresenceItem, onEvent: 
         }
     }
 
-    if (showViewProfile) {
+    if (showViewProfile && person != null) {
         val profileViewUIItem = person.toPersonView()
         ProfileViewBottomSheet(
             profileViewUIItem = profileViewUIItem,

@@ -14,6 +14,9 @@ interface MatchesDao {
     @Query("SELECT * FROM matches ORDER BY creationTime DESC")
     fun matches(): Flow<List<MatchEntry>>
 
+    @Query("SELECT * FROM matches WHERE chatId = :chatId LIMIT 1")
+    fun findMatch(chatId: String): Flow<MatchEntry>
+
     @Query("SELECT * FROM matches WHERE id = :id LIMIT 1")
     suspend fun getMatch(id: String): MatchEntry?
 

@@ -9,6 +9,7 @@ import com.padabajka.dating.core.presentation.event.raised
 import com.padabajka.dating.core.presentation.event.raisedIfNotNull
 import com.padabajka.dating.core.repository.api.MatchRepository
 import com.padabajka.dating.core.repository.api.UserPresenceRepository
+import com.padabajka.dating.core.repository.api.model.match.Match
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
@@ -45,6 +46,8 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.item.Paren
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.addDateItems
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.toMessageItem
 import com.padabajka.dating.feature.messenger.presentation.model.MatchItem
+import com.padabajka.dating.feature.messenger.presentation.model.UserPresenceItem
+import com.padabajka.dating.feature.messenger.presentation.model.toPersonItem
 import com.padabajka.dating.feature.messenger.presentation.model.toUI
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -54,7 +57,7 @@ import kotlinx.coroutines.launch
 class ChatComponent(
     context: ComponentContext,
     private val chatId: ChatId,
-    private val matchItem: MatchItem,
+    matchItem: MatchItem?,
     private val navigateBack: () -> Unit,
     chatMessagesUseCaseFactory: Factory<ChatMessagesUseCase>,
     sendMessageUseCaseFactory: Factory<SendMessageUseCase>,
@@ -76,10 +79,11 @@ class ChatComponent(
     private val stopTypingUseCase by stopTypingUseCaseFactory.delegate()
 
     private var typingJob: Job? = null
+    private var matchId = matchItem?.id
 
     init {
         subscribeOnMessages()
-        subscribeUserPresence(matchItem)
+        subscribeMatch(chatId, matchItem)
     }
 
     @Suppress("CyclomaticComplexMethod")
@@ -137,8 +141,52 @@ class ChatComponent(
         )
     }
 
-    private fun subscribeUserPresence(matchItem: MatchItem) {
+    private fun subscribeMatch(
+        chatId: ChatId,
+        matchItem: MatchItem?
+    ) {
         mapAndReduceException(
+            action = {
+                var jobSubscribeUserPresence: Job? = matchItem?.run {
+                    subscribeUserPresence(matchItem)
+                }
+                matchRepository.findMatch(chatId).collect { match ->
+                    matchId = match.id
+
+                    val newMatchItem = match.toMatchItem()
+                    if (newMatchItem != matchItem) {
+                        reduce {
+                            it.copy(
+                                person = newMatchItem.person,
+                                userPresence = newMatchItem.userPresence
+                            )
+                        }
+                        jobSubscribeUserPresence?.cancel()
+                        jobSubscribeUserPresence = subscribeUserPresence(newMatchItem)
+                    }
+                }
+            },
+            mapper = {
+                it
+            },
+            update = { state, _ ->
+                state.copy(internalErrorStateEvent = raised)
+            }
+        )
+    }
+
+    private fun Match.toMatchItem(): MatchItem {
+        val currentUserPresence =
+            userPresenceRepository.currentUserPresence(person.id)?.toUI()
+                ?: UserPresenceItem.None
+        val newMatchItem =
+            MatchItem(id, person.toPersonItem(), creationTime, currentUserPresence)
+
+        return newMatchItem
+    }
+
+    private fun subscribeUserPresence(matchItem: MatchItem): Job {
+        return mapAndReduceException(
             action = {
                 userPresenceRepository.userPresenceFlow(matchItem.person.id).collect {
                     val userPresence = it.toUI()
@@ -258,16 +306,19 @@ class ChatComponent(
             }
         )
 
-    private fun deleteMatch() =
+    private fun deleteMatch() {
+        val matchId = matchId ?: return
+
         mapAndReduceException(
             action = {
-                matchRepository.deleteMatch(matchItem.id)
+                matchRepository.deleteMatch(matchId)
             },
             mapper = { InternalError },
             update = { state, internalError ->
                 state.copy(internalErrorStateEvent = raisedIfNotNull(internalError))
             }
         )
+    }
 
     private fun selectMessageForEdit(message: OutgoingMessageItem?) = reduce {
         if (message == null) {
@@ -306,13 +357,18 @@ class ChatComponent(
         private const val TYPING_STOP_DELAY = 2000L
 
         private fun initChatState(
-            matchItem: MatchItem,
+            matchItem: MatchItem?,
             userPresenceRepository: UserPresenceRepository
         ): ChatState {
-            val userPresence =
-                userPresenceRepository.currentUserPresence(matchItem.person.id)?.toUI()
-                    ?: matchItem.userPresence
-            return ChatState(matchItem.person, userPresence)
+            if (matchItem != null) {
+                val userPresence =
+                    userPresenceRepository.currentUserPresence(matchItem.person.id)?.toUI()
+                        ?: matchItem.userPresence
+                val personState = matchItem.person
+                return ChatState(personState, userPresence)
+            } else {
+                return ChatState(null, UserPresenceItem.None)
+            }
         }
     }
 }

@@ -2,12 +2,16 @@ package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.NavigateComponentContext
+import com.padabajka.dating.core.presentation.asFlow
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
 import com.padabajka.dating.core.sync.SyncManager
 import com.padabajka.dating.deeplink.AppDeeplink
 import com.padabajka.dating.settings.domain.NewAuthMetadataUseCase
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
@@ -67,11 +71,14 @@ class AuthScopeNavigateComponent(
         }
     }
 
-    fun onDeeplink(deeplink: AppDeeplink) {
-        val instance = childStack.value.active.instance
-        if (instance is Child.MainAuthScope) {
-            instance.component.onDeeplink(deeplink)
-        }
+    suspend fun onDeeplink(deeplink: AppDeeplink) {
+        val instance = childStack
+            .asFlow()
+            .map { it.active.instance }
+            .filterIsInstance<Child.MainAuthScope>()
+            .first()
+
+        instance.component.onDeeplink(deeplink)
     }
 
     sealed interface Child {

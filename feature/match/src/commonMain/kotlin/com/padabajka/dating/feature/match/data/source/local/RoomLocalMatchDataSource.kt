@@ -15,6 +15,10 @@ class RoomLocalMatchDataSource(
         return matchesDao.matches()
     }
 
+    override fun findMatch(chatId: ChatId): Flow<MatchEntry> {
+        return matchesDao.findMatch(chatId.raw)
+    }
+
     override suspend fun saveMatch(match: MatchEntry) {
         matchesDao.insertOrUpdate(match)
     }

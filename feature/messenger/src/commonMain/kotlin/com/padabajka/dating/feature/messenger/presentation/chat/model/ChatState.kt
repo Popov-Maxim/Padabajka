@@ -14,7 +14,7 @@ import kotlinx.collections.immutable.persistentListOf
 
 @Immutable
 data class ChatState(
-    val person: PersonItem,
+    val person: PersonItem?,
     val userPresence: UserPresenceItem,
     val field: Field = Field.NewMessage(),
     val messengerItems: PersistentList<MessengerItem> = persistentListOf(),
@@ -30,6 +30,7 @@ sealed interface Field {
         override val content: String = "",
         override val parentMessage: ParentMessageItem? = null,
     ) : Field
+
     data class Editor(
         val message: OutgoingMessageItem,
         override val content: String,

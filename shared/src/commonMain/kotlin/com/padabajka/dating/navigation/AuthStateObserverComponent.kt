@@ -2,6 +2,7 @@ package com.padabajka.dating.navigation
 
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.NavigateComponentContext
+import com.padabajka.dating.core.presentation.asFlow
 import com.padabajka.dating.core.repository.api.SocketRepository
 import com.padabajka.dating.core.repository.api.metadata.PushRepository
 import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
@@ -10,6 +11,9 @@ import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.WaitingForEmailValidation
 import com.padabajka.dating.feature.auth.domain.AuthStateProvider
 import com.padabajka.dating.feature.auth.presentation.VerificationComponent
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
@@ -28,12 +32,15 @@ class AuthStateObserverComponent(
     KoinComponent {
 
     init {
-        backgroundScope.launch {
+        navigateScope.launch {
             context.deeplinkFlow.collect {
-                val instance = childStack.value.active.instance
-                if (instance is Child.AuthScope) {
-                    instance.component.onDeeplink(it)
-                }
+                val instance = childStack
+                    .asFlow()
+                    .map { it.active.instance }
+                    .filterIsInstance<Child.AuthScope>()
+                    .first()
+
+                instance.component.onDeeplink(it)
             }
         }
     }
