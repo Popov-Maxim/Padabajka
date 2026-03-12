@@ -19,7 +19,7 @@ class AndroidPlatformLocationProvider(
     )
     override suspend fun getCurrentLocation(): PlatformLocation? {
         return suspendCancellableCoroutine { cont ->
-            fusedClient.lastLocation.addOnSuccessListener { loc ->
+            fusedClient.lastLocation.addOnSuccessListener { loc -> // TODO: add request for location
                 if (loc != null) {
                     cont.resume(
                         PlatformLocation(

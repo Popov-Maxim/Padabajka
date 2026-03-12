@@ -14,6 +14,7 @@ class HandleNotificationPayloadUseCase(
             title = payload.title,
             message = payload.body,
             channel = channel,
+            groupId = payload.groupId,
             deeplink = payload.deepLink
         )
     }

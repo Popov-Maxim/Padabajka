@@ -15,7 +15,8 @@ class IosNotificationService : PlatformNotificationService {
         message: String,
         channelId: String,
         groupId: String?,
-        priority: NotificationImportance?
+        priority: NotificationImportance?,
+        deeplink: String?
     ) {
         val content = UNMutableNotificationContent().apply {
             setTitle(title)
@@ -23,6 +24,9 @@ class IosNotificationService : PlatformNotificationService {
             setSound(UNNotificationSound.defaultSound())
 
             priority?.toIosImportance()?.let { setInterruptionLevel(it) }
+            groupId?.let {
+                setThreadIdentifier(it)
+            }
         }
 
         val request = UNNotificationRequest.requestWithIdentifier(

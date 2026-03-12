@@ -50,7 +50,9 @@ class MainAuthScopeNavigateComponent(
 
     fun onDeeplink(deeplink: AppDeeplink) {
         when (deeplink) {
-            is AppDeeplink.OpenChat -> Unit
+            is AppDeeplink.OpenChat -> {
+                navigate(Configuration.ChatScreen(deeplink.chatId))
+            }
             AppDeeplink.OpenLikes -> openLikes()
         }
     }
@@ -155,7 +157,7 @@ class MainAuthScopeNavigateComponent(
         @Serializable
         data class ChatScreen(
             val chatId: ChatId,
-            val matchItem: MatchItem
+            val matchItem: MatchItem? = null
         ) : Configuration
 
         @Serializable

@@ -4,6 +4,7 @@ import com.padabajka.dating.core.repository.api.MatchRepository
 import com.padabajka.dating.core.repository.api.PersonRepository
 import com.padabajka.dating.core.repository.api.model.match.Match
 import com.padabajka.dating.core.repository.api.model.match.RawMatch
+import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.match.data.model.toEntry
 import com.padabajka.dating.feature.match.data.source.local.LocalMatchDataSource
@@ -12,6 +13,7 @@ import com.padabajka.dating.feature.match.data.source.local.toMatch
 import com.padabajka.dating.feature.match.data.source.remote.RemoteMatchDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 
 class MatchRepositoryImpl(
     private val localMatchDataSource: LocalMatchDataSource,
@@ -25,6 +27,14 @@ class MatchRepositoryImpl(
                 val person = personRepository.getPerson(personId) ?: return@mapNotNull null
                 match.toMatch(person)
             }
+        }
+    }
+
+    override suspend fun findMatch(chatId: ChatId): Flow<Match> {
+        return localMatchDataSource.findMatch(chatId).mapNotNull { match ->
+            val personId = PersonId(match.personId)
+            val person = personRepository.getPerson(personId) ?: return@mapNotNull null
+            match.toMatch(person)
         }
     }
 
