@@ -6,7 +6,7 @@ import GoogleSignIn
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         InitKoinIosKt.doInitKoinIos()
 
         FirebaseApp.configure()
@@ -31,19 +31,19 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 //        print("new APN Token: \(deviceToken.map { String(format: "%02.2hhx", $0) }.joined())")
         Messaging.messaging().apnsToken = deviceToken
     }
-    
+
     func application(_ application: UIApplication,
                      didFailToRegisterForRemoteNotificationsWithError
                      error: Error) {
 //        print("new APN Token: ")
     }
-    
+
     func application(_ app: UIApplication,
                      open url: URL,
                      options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-      return GIDSignIn.sharedInstance.handle(url)
+        return GIDSignIn.sharedInstance.handle(url)
     }
-    
+
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         return .portrait
     }
@@ -57,23 +57,27 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 //        print("LOG: AppDelefate get push")
 //        let userInfo = notification.request.content.userInfo as! [String: String]
 //        let platformMessagePush = PushUtilsKt.platformMessagePush(notification: notification)
-        
+
         SharedPushHandler.shared.handlePush(notification: notification)
         let userInfo = notification.request.content.userInfo
         let disableNotification = userInfo["disable_notification"] as? Bool ?? false
-    
+
         if disableNotification {
             completionHandler([])
         } else {
             completionHandler([.banner, .sound])
         }
     }
-    
+
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
-        // click on notification
-//        print("LOG: AppDelefate click on notification")
+        let userInfo = response.notification.request.content.userInfo
+
+        if let deepLink = userInfo["deeplink"] as? String,
+           let url = URL(string: deepLink) {
+            UIApplication.shared.open(url)
+        }
         completionHandler()
     }
 }
@@ -91,9 +95,9 @@ struct iOSApp: App {
     // register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
-	var body: some Scene {
-		WindowGroup {
-			ContentView()
-		}
-	}
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
 }

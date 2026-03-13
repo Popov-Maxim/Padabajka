@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
@@ -26,14 +27,13 @@ import com.padabajka.dating.feature.auth.presentation.screen.LoginScreen
 import com.padabajka.dating.feature.auth.presentation.screen.VerificationScreen
 import com.padabajka.dating.feature.push.notification.NotificationService
 import com.padabajka.dating.navigation.AuthStateObserverComponent
-import com.padabajka.dating.navigation.RootComponent
 import com.padabajka.dating.navigation.UnauthScopeNavigateComponent
 import com.padabajka.dating.ui.AuthScopeScreen
 import org.koin.compose.getKoin
 import org.koin.compose.koinInject
 
 @Composable
-fun App(rootContext: RootComponent) {
+fun App(rootContext: ComponentContext) {
     InitApp()
     val koin = getKoin()
     val rootComponent = remember {

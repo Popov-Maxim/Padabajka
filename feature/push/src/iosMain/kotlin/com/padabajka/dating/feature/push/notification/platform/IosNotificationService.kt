@@ -27,6 +27,9 @@ class IosNotificationService : PlatformNotificationService {
             groupId?.let {
                 setThreadIdentifier(it)
             }
+            deeplink?.let {
+                setUserInfo(mapOf("deeplink" to it))
+            }
         }
 
         val request = UNNotificationRequest.requestWithIdentifier(
