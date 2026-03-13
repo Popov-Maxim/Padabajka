@@ -10,13 +10,10 @@ import com.padabajka.dating.core.permission.PermissionRequestHandler
 import com.padabajka.dating.deeplink.SharedDeeplinkHandler
 import com.padabajka.dating.di.addActivity
 import com.padabajka.dating.di.addPermissionRequester
-import com.padabajka.dating.navigation.RootComponent
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 class MainActivity : ComponentActivity() {
-
-    private lateinit var root: RootComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,9 +24,8 @@ class MainActivity : ComponentActivity() {
             result.any { it.value }
         }
         addPermissionRequester(permissionRequestHandler)
-        root = RootComponent(defaultComponentContext())
         setContent {
-            App(root)
+            App(defaultComponentContext())
         }
 
         intent?.run { handleDeeplink(this) }
@@ -43,7 +39,7 @@ class MainActivity : ComponentActivity() {
     private fun handleDeeplink(intent: Intent) {
         println("LOG: ${intent.data}")
         val uri = intent.data ?: return
-        SharedDeeplinkHandler.handle(uri.toString(), root)
+        SharedDeeplinkHandler.handle(uri.toString())
     }
 
     private suspend fun ComponentActivity.requestPermissionsSuspend(
