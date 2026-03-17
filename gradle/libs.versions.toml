@@ -17,6 +17,7 @@ detekt = "1.23.3"
 koin = "3.6.0-alpha1"
 firebase = "33.1.1"
 firebase-perf = "1.4.2"
+firebase-crashlytics = "3.0.6"
 gitlive-firebase = "2.0.0"
 datastore = "1.1.7"
 immutable-collections = "0.3.7"
@@ -50,6 +51,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-perf = { module = "com.google.firebase:firebase-perf" }
 firebase-message = { module = "com.google.firebase:firebase-messaging-ktx" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 gitlive-firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "gitlive-firebase"}
 gitlive-firebase-perf = { module = "dev.gitlive:firebase-perf", version.ref = "gitlive-firebase"}
 gitlive-firebase-messaging = { module = "dev.gitlive:firebase-messaging", version.ref = "gitlive-firebase"}
@@ -89,6 +91,7 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebase-perf" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
