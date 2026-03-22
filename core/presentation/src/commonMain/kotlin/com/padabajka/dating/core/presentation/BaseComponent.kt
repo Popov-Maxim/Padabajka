@@ -6,6 +6,8 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.lifecycle.doOnStop
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.crashlytics.crashlytics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -53,7 +55,11 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
         } catch (e: Throwable) {
             println("${this::class.simpleName} exception in mapAndReduce: ${e.message}")
             e.printStackTrace()
-            if (isDebugBuild()) throw e
+            if (isDebugBuild()) {
+                throw e
+            } else {
+                Firebase.crashlytics.recordException(e)
+            }
             mappedException = mapper(e)
         }
 

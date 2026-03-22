@@ -50,6 +50,7 @@ kotlin {
             api(libs.coil.compose)
             api(libs.coil.network.ktor)
             api(libs.coil.svg)
+            api(libs.gitlive.firebase.crashlytics)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
