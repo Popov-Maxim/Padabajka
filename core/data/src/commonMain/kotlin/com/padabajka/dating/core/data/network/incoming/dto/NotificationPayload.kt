@@ -9,5 +9,6 @@ data class NotificationPayload(
     val groupId: String?,
     val title: String,
     val body: String,
-    val deepLink: String
+    val deepLink: String,
+    val iconUrl: String? = null
 )

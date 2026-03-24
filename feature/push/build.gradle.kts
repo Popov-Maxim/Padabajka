@@ -38,6 +38,7 @@ kotlin {
             implementation(projects.feature.messenger.data)
             implementation(projects.feature.match)
             implementation(projects.component.room)
+            implementation(projects.feature.image)
 
             implementation(libs.gitlive.firebase.messaging)
         }

@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.image.di
 
+import coil3.PlatformContext
 import com.padabajka.dating.feature.image.data.platform.IosImageCompressor
 import com.padabajka.dating.feature.image.data.source.IosLocalImageDataSource
 import com.padabajka.dating.feature.image.data.source.LocalImageDataSource
@@ -14,5 +15,9 @@ internal actual val platformModule: Module = module {
 
     single<ImageCompressor> {
         IosImageCompressor()
+    }
+
+    factory<PlatformContext> {
+        PlatformContext.INSTANCE
     }
 }

@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.push.notification.platform
 
+import coil3.Bitmap
 import platform.UserNotifications.UNMutableNotificationContent
 import platform.UserNotifications.UNNotificationInterruptionLevel
 import platform.UserNotifications.UNNotificationRequest
@@ -15,15 +16,16 @@ class IosNotificationService : PlatformNotificationService {
         message: String,
         channelId: String,
         groupId: String?,
-        priority: NotificationImportance?,
-        deeplink: String?
+        priority: NotificationImportance,
+        deeplink: String?,
+        bitmap: Bitmap?
     ) {
         val content = UNMutableNotificationContent().apply {
             setTitle(title)
             setBody(message)
             setSound(UNNotificationSound.defaultSound())
 
-            priority?.toIosImportance()?.let { setInterruptionLevel(it) }
+            setInterruptionLevel(priority.toIosImportance())
             groupId?.let {
                 setThreadIdentifier(it)
             }
@@ -44,6 +46,28 @@ class IosNotificationService : PlatformNotificationService {
         UNUserNotificationCenter.currentNotificationCenter().apply {
             addNotificationRequest(request, null)
         }
+    }
+
+    override fun showMessageNotification(
+        chatId: Int,
+        chatName: String,
+        message: String,
+        channelId: String,
+        groupId: String?,
+        priority: NotificationImportance,
+        deeplink: String?,
+        chatIcon: Bitmap?
+    ) {
+        showNotification(
+            id = chatId,
+            title = chatName,
+            message = message,
+            channelId = channelId,
+            groupId = groupId,
+            priority = priority,
+            deeplink = deeplink,
+            bitmap = chatIcon
+        )
     }
 
     override fun cancelNotification(id: Int) {
