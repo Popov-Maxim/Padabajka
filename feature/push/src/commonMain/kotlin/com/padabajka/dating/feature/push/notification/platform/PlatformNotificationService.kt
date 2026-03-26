@@ -1,5 +1,7 @@
 package com.padabajka.dating.feature.push.notification.platform
 
+import coil3.Bitmap
+
 interface PlatformNotificationService {
     fun showNotification(
         id: Int,
@@ -7,8 +9,20 @@ interface PlatformNotificationService {
         message: String,
         channelId: String,
         groupId: String? = null,
-        priority: NotificationImportance? = null,
-        deeplink: String? = null
+        priority: NotificationImportance,
+        deeplink: String? = null,
+        bitmap: Bitmap? = null
+    )
+
+    fun showMessageNotification(
+        chatId: Int,
+        chatName: String,
+        message: String,
+        channelId: String,
+        groupId: String? = null,
+        priority: NotificationImportance,
+        deeplink: String? = null,
+        chatIcon: Bitmap? = null
     )
 
     fun cancelNotification(id: Int)

@@ -15,7 +15,8 @@ class HandleNotificationPayloadUseCase(
             message = payload.body,
             channel = channel,
             groupId = payload.groupId,
-            deeplink = payload.deepLink
+            deeplink = payload.deepLink,
+            iconUrl = payload.iconUrl
         )
     }
 }

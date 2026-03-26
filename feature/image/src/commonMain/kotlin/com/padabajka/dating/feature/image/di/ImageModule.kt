@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.image.di
 
+import coil3.PlatformContext
 import com.padabajka.dating.core.repository.api.ImageRepository
 import com.padabajka.dating.feature.image.data.ImageRepositoryImpl
 import com.padabajka.dating.feature.image.data.network.ImageApi
@@ -7,8 +8,10 @@ import com.padabajka.dating.feature.image.data.network.KtorImageApi
 import com.padabajka.dating.feature.image.data.source.RemoveImageDataSource
 import com.padabajka.dating.feature.image.data.source.RemoveImageDataSourceImpl
 import com.padabajka.dating.feature.image.domain.GetLocalImageUseCase
+import com.padabajka.dating.feature.image.domain.LoadBitmapUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
 internal expect val platformModule: Module
@@ -36,6 +39,13 @@ private val dataModule = module {
 
 private val domain = module {
     factoryOf(::GetLocalImageUseCase)
+    factory<LoadBitmapUseCase> {
+        val platformContext: PlatformContext = get()
+        LoadBitmapUseCase(
+            platformContext = platformContext,
+            imageLoader = get { parametersOf(platformContext) }
+        )
+    }
 }
 
 val imageModules: Array<Module>
