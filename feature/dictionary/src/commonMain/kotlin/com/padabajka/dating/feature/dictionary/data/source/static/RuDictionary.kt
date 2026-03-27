@@ -35,6 +35,8 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.BasicInfo -> "Основное"
             StaticTextId.UiId.Lifestyle -> "Стиль жизни"
             StaticTextId.UiId.Interests -> "Интересы"
+            StaticTextId.UiId.EmptyMatches -> "Тут пока пусто"
+            StaticTextId.UiId.EmptyChats -> "Здесь появятся ваши чаты"
             StaticTextId.UiId.EnterMessage -> "Введите сообщение..."
             StaticTextId.UiId.MessagePopupLike -> "Лайк"
             StaticTextId.UiId.MessagePopupReply -> "Ответить"

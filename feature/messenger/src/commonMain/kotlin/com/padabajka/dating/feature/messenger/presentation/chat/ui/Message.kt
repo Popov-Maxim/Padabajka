@@ -25,7 +25,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,7 +58,6 @@ import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.core.utils.safeCast
 import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteMessageEvent
-import com.padabajka.dating.feature.messenger.presentation.chat.model.MessageGotReadEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ReactToMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.SelectMessageForEditEvent
@@ -82,13 +80,13 @@ fun Message(
 ): Unit = CustomViewConfiguration(
     doubleTapTimeoutMillis = 150
 ) {
-    if (message is IncomingMessageItem) {
-        SideEffect {
-            if (message.hasBeenRead.not()) {
-                onEvent(MessageGotReadEvent(message.id))
-            }
-        }
-    }
+//    if (message is IncomingMessageItem) {
+//        SideEffect {
+//            if (message.hasBeenRead.not()) {
+//                onEvent(MessageGotReadEvent(message.id))
+//            }
+//        }
+//    }
 
     var enabledDropdown: Boolean by remember { mutableStateOf(false) }
 
@@ -115,17 +113,10 @@ fun Message(
     ) {
         Row(
             modifier = Modifier
-                .alignForMessage(message, this)
+                .alignForMessage(message, this),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             when (message.status()) {
-                MessageStatus.Sending -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(16.dp),
-                        strokeWidth = 2.dp
-                    )
-                }
-
                 MessageStatus.FailedToSend -> {
                     Icon(
                         modifier = Modifier.size(24.dp),
@@ -134,6 +125,7 @@ fun Message(
                     )
                 }
 
+                MessageStatus.Sending,
                 MessageStatus.Sent,
                 null -> Unit
             }
@@ -252,7 +244,7 @@ fun MessageStatus(
     when (message.status()) {
         MessageStatus.Sending -> {
             CircularProgressIndicator(
-                modifier = modifier,
+                modifier = modifier.size(24.dp).padding(2.dp),
                 strokeWidth = 2.dp,
                 color = color
             )
@@ -260,7 +252,7 @@ fun MessageStatus(
 
         MessageStatus.FailedToSend -> {
             Icon(
-                modifier = modifier,
+                modifier = modifier.size(24.dp).padding(2.dp),
                 imageVector = Icons.Filled.Error,
                 tint = color,
                 contentDescription = "Back",
@@ -280,6 +272,7 @@ fun MessageStatus(
                 contentDescription = "Sent",
             )
         }
+
         null -> Unit
     }
 }
