@@ -36,6 +36,8 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.BasicInfo -> "Basic info"
             StaticTextId.UiId.Lifestyle -> "Lifestyle"
             StaticTextId.UiId.Interests -> "Interests"
+            StaticTextId.UiId.EmptyMatches -> "There's nothing here yet"
+            StaticTextId.UiId.EmptyChats -> "Your chats will appear here"
             StaticTextId.UiId.EnterMessage -> "Enter message..."
             StaticTextId.UiId.MessagePopupLike -> "Like"
             StaticTextId.UiId.MessagePopupReply -> "Reply"

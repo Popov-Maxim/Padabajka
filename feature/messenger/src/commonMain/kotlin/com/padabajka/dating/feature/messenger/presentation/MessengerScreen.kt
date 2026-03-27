@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -22,8 +24,10 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -80,13 +84,26 @@ private fun MatchesBlock(matches: List<EmptyChatItem>, onEvent: (MessengerEvent)
             )
         }
 
-        LazyRow(
-            contentPadding = PaddingValues(10.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            items(matches) { match ->
-                ProfileAvatar(match.match.person.images.firstOrNull()?.raw()) {
-                    onEvent(OpenChatEvent(match.chatId, match.match))
+        if (matches.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxWidth().height(100.dp),
+            ) {
+                Text(
+                    modifier = Modifier.alpha(alpha = 0.6f).align(Alignment.Center),
+                    text = StaticTextId.UiId.EmptyMatches.translate(),
+                    fontFamily = PlayfairDisplay,
+                    fontSize = 25.sp
+                )
+            }
+        } else {
+            LazyRow(
+                contentPadding = PaddingValues(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(matches) { match ->
+                    ProfileAvatar(match.match.person.images.firstOrNull()?.raw()) {
+                        onEvent(OpenChatEvent(match.chatId, match.match))
+                    }
                 }
             }
         }
@@ -107,55 +124,69 @@ private fun ChatsBlock(chats: List<ChatItem>, onEvent: (MessengerEvent) -> Unit)
         )
     }
 
-    LazyColumn {
-        itemsIndexed(chats) { index, chat ->
-            Row(
-                modifier = Modifier.fillMaxWidth()
-                    .clickable {
-                        onEvent(OpenChatEvent(chat.chatId, chat.match))
-                    },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(modifier = Modifier.padding(10.dp)) {
-                    ProfileAvatar(chat.match.person.images.firstOrNull()?.raw())
-                }
-                Column(modifier = Modifier.padding(end = 20.dp)) {
-                    Text(
-                        text = chat.match.person.name,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = chat.lastMessage.content.oneLine(),
-                        fontSize = 16.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        softWrap = false
-                    )
-                }
-                if (chat.unreadMessagesCount > 0) {
-                    val shape = RoundedCornerShape(15.dp)
-                    Spacer(modifier = Modifier.weight(1f))
-                    Box(
-                        modifier = Modifier
-                            .padding(horizontal = 20.dp)
-                            .background(CoreColors.secondary.mainColor, shape)
-                            .padding(horizontal = 10.dp, vertical = 3.dp)
-                    ) {
+    if (chats.isEmpty()) {
+        Box(
+            modifier = Modifier.fillMaxSize().padding(50.dp),
+        ) {
+            Text(
+                modifier = Modifier.alpha(alpha = 0.6f).align(Alignment.Center),
+                text = StaticTextId.UiId.EmptyChats.translate(),
+                fontFamily = PlayfairDisplay,
+                fontSize = 25.sp,
+                textAlign = TextAlign.Center
+            )
+        }
+    } else {
+        LazyColumn {
+            itemsIndexed(chats) { index, chat ->
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .clickable {
+                            onEvent(OpenChatEvent(chat.chatId, chat.match))
+                        },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(modifier = Modifier.padding(10.dp)) {
+                        ProfileAvatar(chat.match.person.images.firstOrNull()?.raw())
+                    }
+                    Column(modifier = Modifier.padding(end = 20.dp)) {
                         Text(
-                            text = "${chat.unreadMessagesCount}",
-                            fontWeight = FontWeight.Bold,
-                            color = CoreColors.secondary.textColor
+                            text = chat.match.person.name,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = chat.lastMessage.content.oneLine(),
+                            fontSize = 16.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            softWrap = false
                         )
                     }
+                    if (chat.unreadMessagesCount > 0) {
+                        val shape = RoundedCornerShape(15.dp)
+                        Spacer(modifier = Modifier.weight(1f))
+                        Box(
+                            modifier = Modifier
+                                .padding(horizontal = 20.dp)
+                                .background(CoreColors.secondary.mainColor, shape)
+                                .padding(horizontal = 10.dp, vertical = 3.dp)
+                        ) {
+                            Text(
+                                text = "${chat.unreadMessagesCount}",
+                                fontWeight = FontWeight.Bold,
+                                color = CoreColors.secondary.textColor
+                            )
+                        }
+                    }
                 }
-            }
-            if (index != chats.lastIndex) {
-                Box(Modifier.padding(horizontal = 10.dp)) {
-                    HorizontalDivider(
-                        thickness = 0.2.dp,
-                        color = Color.Black
-                    )
+                if (index != chats.lastIndex) {
+                    Box(Modifier.padding(horizontal = 10.dp)) {
+                        HorizontalDivider(
+                            thickness = 0.2.dp,
+                            color = Color.Black
+                        )
+                    }
                 }
             }
         }

@@ -17,11 +17,13 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ChatLoadingState
 import com.padabajka.dating.feature.messenger.presentation.chat.model.EndOfMessagesListReachedEvent
+import com.padabajka.dating.feature.messenger.presentation.chat.model.MessageGotReadEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.IncomingMessageItem
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.MessageItem
@@ -29,6 +31,7 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.item.Messe
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.TimeItem
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 
@@ -75,11 +78,13 @@ fun Chat(
             }
 
             scrollScope.launch {
-                if (listState.firstVisibleItemIndex <= lastUnreadIndex + 1 || lastUnreadIndex == 0) {
+                val moveToEnd = true
+                if (moveToEnd || listState.firstVisibleItemIndex <= lastUnreadIndex + 1 || lastUnreadIndex == 0) {
                     listState.animateScrollToItem(0)
                     followNewItems.value = true
                 } else {
-                    listState.animateScrollToItem(lastUnreadIndex)
+                    val indexToScroll = maxOf(lastUnreadIndex - COUNT_OF_VISIBLE, 0)
+                    listState.animateScrollToItem(indexToScroll)
                 }
             }
         }
@@ -98,6 +103,23 @@ private fun MessageList(
             listState.animateScrollToItem(index = 0)
         }
     }
+    LaunchedEffect(listState, messengerItems) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo }
+            .debounce(timeoutMillis = 50)
+            .collect { visibleItems ->
+
+                val firstIncoming = visibleItems
+                    .firstNotNullOfOrNull { messengerItems.getOrNull(it.index) as? IncomingMessageItem }
+
+                if (
+                    firstIncoming != null &&
+                    !firstIncoming.hasBeenRead
+                ) {
+                    onEvent(MessageGotReadEvent(firstIncoming.id))
+                }
+            }
+    }
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(10.dp),
@@ -127,3 +149,5 @@ private fun MessageList(
         }
     }
 }
+
+private const val COUNT_OF_VISIBLE = 5

@@ -92,6 +92,8 @@ sealed interface StaticTextId {
         // --------------
 
         // Chat screen
+        EmptyMatches(rawId = "empty_matches"),
+        EmptyChats(rawId = "empty_chats"),
         EnterMessage(rawId = "enter_message"),
 
         // Message popup
