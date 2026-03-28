@@ -68,6 +68,8 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Send -> "Отправить"
             StaticTextId.UiId.Add -> "Добавить"
             StaticTextId.UiId.Loading -> "Загрузка..."
+            StaticTextId.UiId.Yes -> "Да"
+            StaticTextId.UiId.No -> "Нет"
             StaticTextId.UiId.WelcomeText ->
                 "Добро пожаловать в Padabajka " +
                     "мы рады, что вы пресоеденились к нам, давайте познакомимся\n\n" +
@@ -99,6 +101,11 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.FinishScreenTitle ->
                 "Все нужные разрешения уже включены \uD83C\uDF89\n\n" +
                     "Можно пользоваться приложением на полную"
+            StaticTextId.UiId.LogoutAlertDialogText -> "Вы уверены, что хотите выйти?"
+            StaticTextId.UiId.FreezeAccountAlertDialogText ->
+                "Вы уверены, что хотите заморозить аккаунт?"
+            StaticTextId.UiId.DeleteAccountAlertDialogText ->
+                "Вы уверены, что хотите удалить аккаунт?"
 
             StaticTextId.UiId.SuperLikeTitle -> "Суперлайк"
             StaticTextId.UiId.SuperLikeBody -> "Напиши интересное сообщение, {name} его увидит!"

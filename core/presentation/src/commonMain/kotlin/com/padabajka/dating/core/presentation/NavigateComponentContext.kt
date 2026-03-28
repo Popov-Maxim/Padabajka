@@ -36,10 +36,16 @@ abstract class NavigateComponentContext<Config : Any, Child : Any>(
     protected val backgroundScope: CoroutineScope =
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    protected fun navigate(configuration: Config) {
+    protected fun navigate(configuration: Config, saveLast: Boolean = true) {
         navigateScope.launch {
             navigation.navigate { stack ->
-                (splash?.let { stack - it } ?: stack) - configuration + configuration
+                val stackWithoutSplash = (splash?.let { stack - it } ?: stack)
+                val stackWithLastCorrected = if (saveLast.not()) {
+                    stackWithoutSplash.dropLast(1)
+                } else {
+                    stackWithoutSplash
+                }
+                stackWithLastCorrected - configuration + configuration
             }
         }
     }

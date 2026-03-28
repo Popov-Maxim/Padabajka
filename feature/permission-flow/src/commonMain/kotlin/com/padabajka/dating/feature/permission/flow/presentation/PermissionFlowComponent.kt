@@ -16,19 +16,19 @@ class PermissionFlowComponent(
 ) : NavigateComponentContext<PermissionFlowComponent.Configuration, PermissionFlowComponent.Child>(
     context,
     Configuration.serializer(),
+    Configuration.SplashScreen,
     Configuration.SplashScreen
 ) {
-
-    init {
-        nextScreen(PermissionScreen.None)
-    }
 
     override fun createChild(
         configuration: Configuration,
         context: ComponentContext
     ): Child {
         return when (configuration) {
-            Configuration.SplashScreen -> Child.SplashScreen
+            Configuration.SplashScreen -> {
+                nextScreen(PermissionScreen.None)
+                Child.SplashScreen
+            }
             Configuration.FinishScreen -> Child.FinishScreen {
                 finish()
             }
@@ -36,7 +36,7 @@ class PermissionFlowComponent(
                 PermissionComponent(
                     context,
                     geoPermissionController,
-                    { nextScreen(PermissionScreen.Geo) },
+                    { nextScreen(PermissionScreen.Geo, false) },
                     { nextScreen(PermissionScreen.Geo) }
                 )
             )
@@ -45,26 +45,26 @@ class PermissionFlowComponent(
                 PermissionComponent(
                     context,
                     notificationPermissionController,
-                    { nextScreen(PermissionScreen.Notification) },
+                    { nextScreen(PermissionScreen.Notification, false) },
                     { nextScreen(PermissionScreen.Notification) }
                 )
             )
         }
     }
 
-    private fun nextScreen(currentScreen: PermissionScreen) {
+    private fun nextScreen(currentScreen: PermissionScreen, saveCorrectScreen: Boolean = true) {
         navigateScope.launch(Dispatchers.Main) {
             when {
                 currentScreen < PermissionScreen.Geo && geoPermissionController.hasPermission()
                     .not() ->
-                    navigate(Configuration.GeoPermissionScreen)
+                    navigate(Configuration.GeoPermissionScreen, saveCorrectScreen)
 
                 currentScreen < PermissionScreen.Notification &&
                     notificationPermissionController.hasPermission().not() ->
-                    navigate(Configuration.NotificationPermissionScreen)
+                    navigate(Configuration.NotificationPermissionScreen, saveCorrectScreen)
 
                 currentScreen == PermissionScreen.None ->
-                    navigate(Configuration.FinishScreen)
+                    navigate(Configuration.FinishScreen, saveCorrectScreen)
 
                 else -> finish()
             }

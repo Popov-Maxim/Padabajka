@@ -111,6 +111,8 @@ sealed interface StaticTextId {
         Send(rawId = "send"),
         Add(rawId = "add"),
         Loading(rawId = "loading"),
+        Yes(rawId = "yes"),
+        No(rawId = "no"),
 
         // Profile creating
 
@@ -147,6 +149,9 @@ sealed interface StaticTextId {
         GeoPermissionScreenTitle(rawId = "geo_permission_screen_title"),
         NotificationPermissionScreenTitle(rawId = "notification_permission_screen_title"),
         FinishScreenTitle(rawId = "finish_screen_title"),
+        LogoutAlertDialogText(rawId = "logout_alert_dialog_text"),
+        FreezeAccountAlertDialogText(rawId = "freeze_account_alert_dialog_text"),
+        DeleteAccountAlertDialogText(rawId = "delete_account_alert_dialog_text"),
 
         // -------------- Permission Screen
 

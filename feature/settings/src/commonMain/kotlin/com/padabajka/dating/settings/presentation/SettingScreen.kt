@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -27,8 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.permission.NotificationPermissionController
+import com.padabajka.dating.core.presentation.isDebugBuild
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
+import com.padabajka.dating.core.presentation.ui.SimpleConfirmDialog
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
@@ -84,19 +88,22 @@ private fun GeneralSetting(
     }
     var permissionAllow by remember(initPermissionAllow) { mutableStateOf(initPermissionAllow) }
 
-    val settingsButtonData = listOf(
+    var showLogoutDialog: Boolean by remember { mutableStateOf(false) }
+    var showFreezingDialog: Boolean by remember { mutableStateOf(false) }
+
+    val settingsButtonData = listOfNotNull(
 //            SettingButtonData(
 //                iconData = CoreIcons.NavigationBar.Profile.toData(),
 //                text = StaticTextId.UiId.Name.translate(),
 //                secondText = null,
 //                onClick = {}
 //            ),
-//            SettingButtonData(
-//                iconData = Icons.Filled.Settings.toData(),
-//                text = "AppSettings",
-//                secondText = null,
-//                onClick = { showDialog = true }
-//            ),
+        SettingButtonData(
+            iconData = Icons.Filled.Settings.toData(),
+            text = "AppSettings",
+            secondText = null,
+            onClick = { showDialog = true }
+        ).takeIf { isDebugBuild() },
         SettingButtonData(
             iconData = IconData.Empty,
             text = StaticTextId.UiId.Subscription.translate(),
@@ -125,13 +132,13 @@ private fun GeneralSetting(
             iconData = CoreIcons.Settings.Snowman.toData(),
             text = StaticTextId.UiId.FreezeProfile.translate(),
             secondText = "account is active",
-            onClick = { component.onEvent(FreezeAccountEvent) }
+            onClick = { showFreezingDialog = true }
         ),
         SettingButtonData(
             iconData = CoreIcons.Settings.Logout.toData(),
             text = StaticTextId.UiId.LogOut.translate(),
             secondText = null,
-            onClick = { component.onEvent(LogOutEvent) }
+            onClick = { showLogoutDialog = true }
         ),
 
 //            SettingButtonData(
@@ -174,6 +181,28 @@ private fun GeneralSetting(
     if (showDialog) {
         AppSettingsDialog { showDialog = false }
     }
+
+    if (showLogoutDialog) {
+        SimpleConfirmDialog(
+            text = StaticTextId.UiId.LogoutAlertDialogText.translate(),
+            confirmText = StaticTextId.UiId.Yes.translate(),
+            onConfirm = { component.onEvent(LogOutEvent) },
+            dismissText = StaticTextId.UiId.No.translate(),
+            onDismiss = { showLogoutDialog = false },
+            onDismissRequest = { showLogoutDialog = false }
+        )
+    }
+
+    if (showFreezingDialog) {
+        SimpleConfirmDialog(
+            text = StaticTextId.UiId.FreezeAccountAlertDialogText.translate(),
+            confirmText = StaticTextId.UiId.Yes.translate(),
+            onConfirm = { component.onEvent(FreezeAccountEvent) },
+            dismissText = StaticTextId.UiId.No.translate(),
+            onDismiss = { showFreezingDialog = false },
+            onDismissRequest = { showFreezingDialog = false }
+        )
+    }
 }
 
 @Suppress("UnusedParameter")
@@ -182,6 +211,7 @@ private fun LittleSetting(
     component: SettingScreenComponent,
     modifier: Modifier = Modifier
 ) {
+    var showDeletingDialog: Boolean by remember { mutableStateOf(false) }
     Column(
         modifier = modifier
     ) {
@@ -190,7 +220,18 @@ private fun LittleSetting(
         )
         LittleButton(
             text = StaticTextId.UiId.DeleteAccount.translate(),
-            onClick = { component.onEvent(DeleteAccountEvent) }
+            onClick = { showDeletingDialog = true }
+        )
+    }
+
+    if (showDeletingDialog) {
+        SimpleConfirmDialog(
+            text = StaticTextId.UiId.DeleteAccountAlertDialogText.translate(),
+            confirmText = StaticTextId.UiId.Yes.translate(),
+            onConfirm = { component.onEvent(DeleteAccountEvent) },
+            dismissText = StaticTextId.UiId.No.translate(),
+            onDismiss = { showDeletingDialog = false },
+            onDismissRequest = { showDeletingDialog = false }
         )
     }
 }
