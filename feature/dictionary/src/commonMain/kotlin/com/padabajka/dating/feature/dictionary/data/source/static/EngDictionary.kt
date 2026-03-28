@@ -68,6 +68,8 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Send -> "Send"
             StaticTextId.UiId.Add -> "Add"
             StaticTextId.UiId.Loading -> "Loading..."
+            StaticTextId.UiId.Yes -> "Yes"
+            StaticTextId.UiId.No -> "No"
             StaticTextId.UiId.WelcomeText ->
                 "Welcome to Padabajka! " +
                     "We’re glad to have you here. Let’s get to know each other.\n\n" +
@@ -102,6 +104,11 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.FinishScreenTitle ->
                 "All required permissions are already enabled \uD83C\uDF89\n\n" +
                     "You can now use the app to its full potential"
+            StaticTextId.UiId.LogoutAlertDialogText -> "Are you sure you want to log out?"
+            StaticTextId.UiId.FreezeAccountAlertDialogText ->
+                "Are you sure you want to freeze your account?"
+            StaticTextId.UiId.DeleteAccountAlertDialogText ->
+                "Are you sure you want to delete your account?"
 
             StaticTextId.UiId.SuperLikeTitle -> "Super like"
             StaticTextId.UiId.SuperLikeBody -> "Write an interesting message, {name} will see it!"
