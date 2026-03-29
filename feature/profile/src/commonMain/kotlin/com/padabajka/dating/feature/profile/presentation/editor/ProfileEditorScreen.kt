@@ -33,11 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreCallToActionButton
 import com.padabajka.dating.core.presentation.ui.CoreCircularProgressIndicator
@@ -49,10 +47,10 @@ import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
+import com.padabajka.dating.core.presentation.ui.image.CoreAsyncImage
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
 import com.padabajka.dating.core.presentation.ui.textColor
-import com.padabajka.dating.core.presentation.ui.utils.rememberImageLoader
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.profile.raw
@@ -204,7 +202,7 @@ private fun ImageFields(
                 line.onEach { i ->
                     val image = images.getOrNull(i)
 
-                    val fieldModifier = Modifier.weight(1f).aspectRatio(ratio = 2.0f / 3)
+                    val fieldModifier = Modifier.weight(1f)
                         .clip(RoundedCornerShape(10.dp))
                     ImageField(
                         image = image,
@@ -232,7 +230,7 @@ fun ImageField(
     onChange: (Image) -> Unit = {},
     delete: () -> Unit = {}
 ) {
-    val fieldModifier = modifier.aspectRatio(ratio = 2.0f / 3)
+    val fieldModifier = modifier.aspectRatio(ratio = 3f / 4)
 
     if (image != null) {
         ProfileImage(
@@ -260,8 +258,6 @@ private fun ProfileImage(
     image: Image,
     delete: () -> Unit
 ) {
-    val imageLoader = rememberImageLoader()
-
     var showDialog by remember { mutableStateOf(false) }
 
     Box(
@@ -269,12 +265,13 @@ private fun ProfileImage(
             showDialog = true
         }
     ) {
-        AsyncImage(
-            modifier = Modifier.background(Color.DarkGray),
-            imageLoader = imageLoader,
+        CoreAsyncImage(
+            modifier = Modifier,
             model = image.raw(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop
+            modifierForPlaceholder = Modifier.innerShadow(
+                color = Color(color = 0xFFA1A1A1),
+                shape = RoundedCornerShape(10.dp)
+            )
         )
     }
 

@@ -29,22 +29,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
+import com.padabajka.dating.core.presentation.ui.image.CoreAsyncImage
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.optionalClickable
 import com.padabajka.dating.core.presentation.ui.textColor
-import com.padabajka.dating.core.presentation.ui.utils.rememberImageLoader
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.profile.presentation.ProfileViewBottomSheet
@@ -200,18 +198,13 @@ private fun ProfileImage(
     image: Image,
     modifier: Modifier = Modifier,
 ) {
-    val imageLoader = rememberImageLoader()
-
     Box(
         modifier = modifier.aspectRatio(ratio = 2.0f / 3)
-            .clip(RoundedCornerShape(10.dp)).background(Color.DarkGray)
+            .clip(RoundedCornerShape(10.dp))
     ) {
-        AsyncImage(
+        CoreAsyncImage(
             modifier = Modifier.fillMaxSize(),
-            imageLoader = imageLoader,
             model = image.raw(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop
         )
     }
 }
