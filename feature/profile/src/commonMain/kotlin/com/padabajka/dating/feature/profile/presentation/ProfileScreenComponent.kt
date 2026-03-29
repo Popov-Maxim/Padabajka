@@ -31,7 +31,7 @@ class ProfileScreenComponent(
                 }
             }
         }
-        updateProfile()
+//        updateProfile()
     }
 
     fun onEvent(event: ProfileEvent) {

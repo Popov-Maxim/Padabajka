@@ -15,10 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
-import coil3.compose.AsyncImage
-import com.padabajka.dating.core.presentation.ui.utils.rememberImageLoader
+import com.padabajka.dating.core.presentation.ui.image.CoreAsyncImage
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.raw
 import kotlinx.collections.immutable.PersistentList
@@ -30,7 +28,6 @@ fun ImagePager(
     modifier: Modifier = Modifier,
     onPageChanged: (PagerData) -> Unit
 ) {
-    val imageLoader = rememberImageLoader()
     val pagerState = rememberPagerState(pageCount = {
         images.size
     })
@@ -46,12 +43,9 @@ fun ImagePager(
             userScrollEnabled = false
         ) { page ->
             val image = images[page]
-            AsyncImage(
+            CoreAsyncImage(
                 modifier = Modifier.fillMaxSize().background(Color.DarkGray),
-                imageLoader = imageLoader,
                 model = image.raw(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop
             )
         }
 

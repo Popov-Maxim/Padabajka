@@ -189,7 +189,6 @@ private fun GeneralSetting(
             onConfirm = { component.onEvent(LogOutEvent) },
             dismissText = StaticTextId.UiId.No.translate(),
             onDismiss = { showLogoutDialog = false },
-            onDismissRequest = { showLogoutDialog = false }
         )
     }
 
@@ -200,7 +199,6 @@ private fun GeneralSetting(
             onConfirm = { component.onEvent(FreezeAccountEvent) },
             dismissText = StaticTextId.UiId.No.translate(),
             onDismiss = { showFreezingDialog = false },
-            onDismissRequest = { showFreezingDialog = false }
         )
     }
 }
@@ -231,7 +229,6 @@ private fun LittleSetting(
             onConfirm = { component.onEvent(DeleteAccountEvent) },
             dismissText = StaticTextId.UiId.No.translate(),
             onDismiss = { showDeletingDialog = false },
-            onDismissRequest = { showDeletingDialog = false }
         )
     }
 }
