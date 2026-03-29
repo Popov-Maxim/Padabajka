@@ -70,6 +70,10 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Loading -> "Загрузка..."
             StaticTextId.UiId.Yes -> "Да"
             StaticTextId.UiId.No -> "Нет"
+            StaticTextId.UiId.Delete -> "Удалить"
+            StaticTextId.UiId.Replace -> "Заменить"
+            StaticTextId.UiId.Cancel -> "Отмена"
+
             StaticTextId.UiId.WelcomeText ->
                 "Добро пожаловать в Padabajka " +
                     "мы рады, что вы пресоеденились к нам, давайте познакомимся\n\n" +
@@ -106,6 +110,8 @@ class RuDictionary : Dictionary() {
                 "Вы уверены, что хотите заморозить аккаунт?"
             StaticTextId.UiId.DeleteAccountAlertDialogText ->
                 "Вы уверены, что хотите удалить аккаунт?"
+            StaticTextId.UiId.DeleteImageAlertDialogText ->
+                "Вы уверены, что хотите удалить это фото?"
 
             StaticTextId.UiId.SuperLikeTitle -> "Суперлайк"
             StaticTextId.UiId.SuperLikeBody -> "Напиши интересное сообщение, {name} его увидит!"

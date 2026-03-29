@@ -113,6 +113,9 @@ sealed interface StaticTextId {
         Loading(rawId = "loading"),
         Yes(rawId = "yes"),
         No(rawId = "no"),
+        Delete(rawId = "delete"),
+        Replace(rawId = "replace"),
+        Cancel(rawId = "cancel"),
 
         // Profile creating
 
@@ -152,6 +155,7 @@ sealed interface StaticTextId {
         LogoutAlertDialogText(rawId = "logout_alert_dialog_text"),
         FreezeAccountAlertDialogText(rawId = "freeze_account_alert_dialog_text"),
         DeleteAccountAlertDialogText(rawId = "delete_account_alert_dialog_text"),
+        DeleteImageAlertDialogText(rawId = "delete_image_alert_dialog_text"),
 
         // -------------- Permission Screen
 

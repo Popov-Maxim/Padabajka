@@ -17,7 +17,7 @@ data class AboutMeFieldUpdateEvent(val aboutMe: String) : ProfileEditorEvent
 data object AboutMeFieldLoosFocusEvent : ProfileEditorEvent
 data class LookingForUpdateEvent(val data: LookingForData) : ProfileEditorEvent
 
-data class ImageAddEvent(val image: Image) : ProfileEditorEvent
+data class ImageAddEvent(val image: Image, val index: Int) : ProfileEditorEvent
 data class DeleteImageEvent(val image: Image) : ProfileEditorEvent
 
 data class HideAchievementClickEvent(val achievement: Achievement) : ProfileEditorEvent

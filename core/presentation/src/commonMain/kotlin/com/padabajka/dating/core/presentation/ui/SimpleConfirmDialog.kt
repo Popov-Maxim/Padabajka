@@ -12,7 +12,7 @@ fun SimpleConfirmDialog(
     onConfirm: () -> Unit,
     dismissText: String,
     onDismiss: () -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit = onDismiss
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,

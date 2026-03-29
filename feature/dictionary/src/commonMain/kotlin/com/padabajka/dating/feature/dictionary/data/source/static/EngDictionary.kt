@@ -70,6 +70,10 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Loading -> "Loading..."
             StaticTextId.UiId.Yes -> "Yes"
             StaticTextId.UiId.No -> "No"
+            StaticTextId.UiId.Delete -> "Delete"
+            StaticTextId.UiId.Replace -> "Replace"
+            StaticTextId.UiId.Cancel -> "Cancel"
+
             StaticTextId.UiId.WelcomeText ->
                 "Welcome to Padabajka! " +
                     "We’re glad to have you here. Let’s get to know each other.\n\n" +
@@ -109,6 +113,8 @@ class EngDictionary : Dictionary() {
                 "Are you sure you want to freeze your account?"
             StaticTextId.UiId.DeleteAccountAlertDialogText ->
                 "Are you sure you want to delete your account?"
+            StaticTextId.UiId.DeleteImageAlertDialogText ->
+                "Are you sure you want to delete this image?"
 
             StaticTextId.UiId.SuperLikeTitle -> "Super like"
             StaticTextId.UiId.SuperLikeBody -> "Write an interesting message, {name} will see it!"

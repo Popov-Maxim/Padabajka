@@ -208,7 +208,7 @@ private fun ImageFields(
                         image = image,
                         modifier = fieldModifier,
                         onChange = {
-                            component.onEvent(ImageAddEvent(it))
+                            component.onEvent(ImageAddEvent(it, i))
                         },
                         delete = {
                             if (image != null) {
@@ -236,7 +236,8 @@ fun ImageField(
         ProfileImage(
             modifier = fieldModifier,
             image = image,
-            delete = delete
+            delete = delete,
+            onChange = onChange
         )
     } else {
         ImageField(
@@ -245,10 +246,9 @@ fun ImageField(
                     color = Color(color = 0xFFA1A1A1),
                     shape = RoundedCornerShape(10.dp)
                 ),
-            iconSize = iconSize
-        ) {
-            onChange(it)
-        }
+            iconSize = iconSize,
+            onChange = onChange
+        )
     }
 }
 
@@ -256,9 +256,18 @@ fun ImageField(
 private fun ProfileImage(
     modifier: Modifier,
     image: Image,
-    delete: () -> Unit
+    delete: () -> Unit,
+    onChange: (Image) -> Unit = {},
 ) {
     var showDialog by remember { mutableStateOf(false) }
+
+    val imagePicker = rememberImagePicker { uri ->
+        uri?.let {
+            onChange(it)
+            showDialog = false
+        }
+    }
+    val coroutineScope = rememberCoroutineScope()
 
     Box(
         modifier = modifier.clickable {
@@ -277,6 +286,11 @@ private fun ProfileImage(
 
     if (showDialog) {
         EditImageDialog(
+            replace = {
+                coroutineScope.launch {
+                    imagePicker.pickImage()
+                }
+            },
             delete = {
                 delete()
             },

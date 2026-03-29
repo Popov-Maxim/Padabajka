@@ -84,7 +84,7 @@ class ProfileEditorScreenComponent(
             is MakeAchievementVisibleClickEvent -> makeAchievementVisible(event.achievement)
             is MakeAchievementMainClickEvent -> makeAchievementMain(event.achievement)
             RemoveMainAchievementClickEvent -> makeAchievementMain(null)
-            is ImageAddEvent -> addImage(event.image)
+            is ImageAddEvent -> addImage(event.image, event.index)
             ConsumeInternalErrorEvent -> consumeInternalError()
             // TODO: add details and images events
             NavigateBackEvent -> navigateBack()
@@ -207,7 +207,7 @@ class ProfileEditorScreenComponent(
         }
     }
 
-    private fun addImage(image: Image) = mapAndReduceException(
+    private fun addImage(image: Image, index: Int) = mapAndReduceException(
         action = {
             val uiImage = if (image is Image.Local) {
                 getLocalImageUseCase(image)
@@ -215,7 +215,7 @@ class ProfileEditorScreenComponent(
                 image
             }
             reduce {
-                it.addImage(uiImage)
+                it.addImage(uiImage, index)
             }
         },
         mapper = { TODO(it.toString()) },

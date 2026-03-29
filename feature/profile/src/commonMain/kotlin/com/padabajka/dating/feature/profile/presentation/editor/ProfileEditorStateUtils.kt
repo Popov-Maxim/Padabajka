@@ -52,8 +52,16 @@ fun ProfileEditorState.updateName(name: String): ProfileEditorState {
     return this.copy(name = this.name.updatedValue(name))
 }
 
-fun ProfileEditorState.addImage(image: Image): ProfileEditorState {
-    return this.copy(images = this.images.updatedValue { it.add(image) })
+fun ProfileEditorState.addImage(image: Image, index: Int): ProfileEditorState {
+    return this.copy(
+        images = this.images.updatedValue {
+            if (index < it.size) {
+                it.add(index, image)
+            } else {
+                it.add(image)
+            }
+        }
+    )
 }
 
 fun ProfileEditorState.deleteImage(image: Image): ProfileEditorState {
