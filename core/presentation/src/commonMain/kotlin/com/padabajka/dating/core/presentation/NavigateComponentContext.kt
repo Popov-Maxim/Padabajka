@@ -1,6 +1,8 @@
 package com.padabajka.dating.core.presentation
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.navigate
@@ -68,4 +70,8 @@ abstract class NavigateComponentContext<Config : Any, Child : Any>(
         configuration: Config,
         context: ComponentContext
     ): Child
+
+    companion object {
+        fun <C : Any, T : Any> defaultAnimation() = stackAnimation<C, T>(fade())
+    }
 }

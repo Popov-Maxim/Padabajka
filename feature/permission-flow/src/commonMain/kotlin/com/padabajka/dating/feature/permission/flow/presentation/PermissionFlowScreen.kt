@@ -12,9 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.presentation.ui.CoreCircularProgressIndicator
 
 @Composable
@@ -22,7 +21,7 @@ fun PermissionFlowScreen(component: PermissionFlowComponent) {
     val childStack by component.childStack.subscribeAsState()
     Children(
         stack = childStack,
-        animation = stackAnimation(slide())
+        animation = NavigateComponentContext.defaultAnimation()
     ) { child ->
         val instance = child.instance
         when (instance) {

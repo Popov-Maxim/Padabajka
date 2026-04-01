@@ -3,9 +3,8 @@ package com.padabajka.dating.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.feature.messenger.presentation.MessengerScreen
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatScreen
 import com.padabajka.dating.feature.profile.presentation.ProfileScreen
@@ -29,7 +28,7 @@ fun MainAuthScopeScreen(component: MainAuthScopeNavigateComponent) {
 
     Children(
         stack = childStack,
-        animation = stackAnimation(slide())
+        animation = NavigateComponentContext.defaultAnimation()
     ) { child ->
         val instance = child.instance
         when (instance) {

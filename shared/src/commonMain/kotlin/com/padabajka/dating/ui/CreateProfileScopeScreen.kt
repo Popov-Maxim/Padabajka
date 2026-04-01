@@ -3,9 +3,8 @@ package com.padabajka.dating.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.feature.profile.presentation.creator.birthday.CreateProfileBirthdayScreen
 import com.padabajka.dating.feature.profile.presentation.creator.finish.CreateProfileFinishScreen
 import com.padabajka.dating.feature.profile.presentation.creator.gender.CreateProfileSexScreen
@@ -21,7 +20,7 @@ fun CreateProfileScopeScreen(component: CreateProfileScopeNavigateComponent) {
     val childStack by component.childStack.subscribeAsState()
     Children(
         stack = childStack,
-        animation = stackAnimation(slide())
+        animation = NavigateComponentContext.defaultAnimation()
     ) { child ->
         val instance = child.instance
         when (instance) {

@@ -12,9 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.FpsMonitor
 import com.padabajka.dating.core.presentation.ui.mainColor
@@ -53,7 +52,7 @@ private fun NavigateApp(rootContext: AuthStateObserverComponent) {
 
         Children(
             stack = childStack,
-            animation = stackAnimation(slide())
+            animation = NavigateComponentContext.defaultAnimation()
         ) { child ->
             val instance = child.instance
             when (instance) {
@@ -73,7 +72,7 @@ private fun UnauthScopeScreen(component: UnauthScopeNavigateComponent) {
     LoginScreen {
         Children(
             stack = childStack,
-            animation = stackAnimation(slide())
+            animation = NavigateComponentContext.defaultAnimation()
         ) { child ->
             val instance = child.instance
 

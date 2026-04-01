@@ -3,9 +3,8 @@ package com.padabajka.dating.settings.presentation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.feature.permission.flow.presentation.PermissionFlowScreen
 import com.padabajka.dating.settings.presentation.setting.LanguageSelectorScreen
 
@@ -15,7 +14,7 @@ fun SettingsScopeScreen(component: SettingsScopeNavigateComponent) {
 
     Children(
         stack = childStack,
-        animation = stackAnimation(slide())
+        animation = NavigateComponentContext.defaultAnimation()
     ) { child ->
         val instance = child.instance
         when (instance) {
