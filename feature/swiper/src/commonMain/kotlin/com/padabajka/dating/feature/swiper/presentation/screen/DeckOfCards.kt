@@ -111,6 +111,7 @@ fun DeckOfCards(
     openSuperLike?.let { cardItem ->
         SuperLikeDialog(
             cardItem = cardItem,
+            subscriptionFeature = state.subscriptionFeature,
             apply = {
                 swiperScreenComponent.onEvent(SuperLikeEvent(cardItem, it))
             },

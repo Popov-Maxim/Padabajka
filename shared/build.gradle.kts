@@ -47,6 +47,7 @@ kotlin {
             implementation(projects.feature.push)
             implementation(projects.feature.permissionFlow)
             implementation(projects.feature.reactionScreen)
+            implementation(projects.feature.subscription)
             implementation(projects.core.platform.permission)
             implementation(projects.core.networking)
             implementation(projects.component.room)

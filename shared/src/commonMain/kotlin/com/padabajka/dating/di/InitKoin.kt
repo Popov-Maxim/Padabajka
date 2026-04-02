@@ -18,6 +18,7 @@ import com.padabajka.dating.feature.permission.flow.di.permissionFlowDIModule
 import com.padabajka.dating.feature.profile.di.profileModules
 import com.padabajka.dating.feature.push.di.pushDiModules
 import com.padabajka.dating.feature.reaction.screen.di.reactionScreenDiModules
+import com.padabajka.dating.feature.subscription.di.subscriptionDIModule
 import com.padabajka.dating.feature.swiper.di.swiperModules
 import com.padabajka.dating.settings.di.metadataDiModules
 import com.padabajka.dating.settings.di.settingDiModules
@@ -43,6 +44,7 @@ fun initKoin(platformModule: Module) {
 //            yandexAdModule,
             *profileModules,
             *reactionScreenDiModules,
+            subscriptionDIModule,
             networkingModule,
             *domainDiModules,
             *presentationDiModules,

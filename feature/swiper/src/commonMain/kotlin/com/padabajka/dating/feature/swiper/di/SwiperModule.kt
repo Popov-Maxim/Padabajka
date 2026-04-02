@@ -152,6 +152,7 @@ private val presentationModule = module {
             updateSearchPrefUseCase = get(),
             searchPreferencesProvider = get(),
             profileRepository = get(),
+            subscriptionRepository = get()
         )
     }
 }

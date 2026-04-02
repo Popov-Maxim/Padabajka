@@ -10,6 +10,7 @@ import com.padabajka.dating.feature.messenger.presentation.chat.ChatScreen
 import com.padabajka.dating.feature.profile.presentation.ProfileScreen
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreen
 import com.padabajka.dating.feature.reaction.screen.presentation.LikesMeScreen
+import com.padabajka.dating.feature.subscription.presentation.SubscriptionScreen
 import com.padabajka.dating.feature.swiper.presentation.screen.SwiperScreen
 import com.padabajka.dating.navigation.MainAuthScopeNavigateComponent
 import com.padabajka.dating.settings.presentation.SettingsScopeScreen
@@ -54,6 +55,9 @@ fun MainAuthScopeScreen(component: MainAuthScopeNavigateComponent) {
 
             is MainAuthScopeNavigateComponent.Child.LikesMeScreen ->
                 LikesMeScreen(instance.component, navigateBar)
+
+            is MainAuthScopeNavigateComponent.Child.SubscriptionScreen ->
+                SubscriptionScreen(instance.component)
         }
     }
 }

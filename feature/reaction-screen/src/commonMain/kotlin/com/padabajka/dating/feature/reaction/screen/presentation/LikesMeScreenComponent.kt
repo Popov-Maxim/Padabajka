@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 
 class LikesMeScreenComponent(
     context: ComponentContext,
+    private val openSubscriptionScreen: () -> Unit,
     private val reactionsToMeUseCase: ReactionsToMeUseCase,
     private val reactionRepository: ReactionRepository,
 ) : BaseComponent<LikesMeState>(
@@ -44,6 +45,7 @@ class LikesMeScreenComponent(
         when (event) {
             is LikesMeEvent.Dislike -> dislike(event.personId)
             is LikesMeEvent.Like -> like(event.personId)
+            LikesMeEvent.OpenSubscription -> openSubscriptionScreen()
         }
     }
 

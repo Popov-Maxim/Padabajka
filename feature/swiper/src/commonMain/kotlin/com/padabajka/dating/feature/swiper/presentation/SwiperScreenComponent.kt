@@ -4,7 +4,9 @@ import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.domain.Factory
 import com.padabajka.dating.core.domain.delegate
 import com.padabajka.dating.core.presentation.BaseComponent
+import com.padabajka.dating.core.presentation.ui.toUI
 import com.padabajka.dating.core.repository.api.ProfileRepository
+import com.padabajka.dating.core.repository.api.SubscriptionRepository
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
 import com.padabajka.dating.core.repository.api.model.swiper.EmptyCard
 import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
@@ -43,12 +45,14 @@ class SwiperScreenComponent(
     private val updateSearchPrefUseCase: UpdateSearchPrefUseCase,
     searchPreferencesProvider: SearchPreferencesProvider,
     private val profileRepository: ProfileRepository,
+    subscriptionRepository: SubscriptionRepository
 ) : BaseComponent<SwiperState>(
     context,
     SwiperState(
         cardDeck = CardDeck(),
         cardDeckState = CardDeckState.Idle,
-        searchPreferences = SearchPreferencesItem.Loading
+        searchPreferences = SearchPreferencesItem.Loading,
+        subscriptionFeature = subscriptionRepository.subscriptionStateValue.toUI()
     )
 ) {
 

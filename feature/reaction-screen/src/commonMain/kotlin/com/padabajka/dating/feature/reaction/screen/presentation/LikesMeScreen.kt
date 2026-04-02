@@ -142,7 +142,8 @@ private fun HasLikesMeScreen(
         ) { gridPlacedItem ->
             val modifier = Modifier.animateItem() // TODO(LikesMe): change animation
             val clickable = {
-                reactionUIState = gridPlacedItem.state
+                component.onEvent(LikesMeEvent.OpenSubscription)
+//                reactionUIState = gridPlacedItem.state
             }
             when (gridPlacedItem.span) {
                 GridSpan.ONE -> {
