@@ -2,7 +2,9 @@ package com.padabajka.dating.feature.reaction.screen.presentation
 
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.BaseComponent
+import com.padabajka.dating.core.presentation.ui.toUI
 import com.padabajka.dating.core.repository.api.ReactionRepository
+import com.padabajka.dating.core.repository.api.SubscriptionRepository
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
 import com.padabajka.dating.feature.reaction.screen.domain.ReactionsToMeUseCase
@@ -19,9 +21,13 @@ class LikesMeScreenComponent(
     private val openSubscriptionScreen: () -> Unit,
     private val reactionsToMeUseCase: ReactionsToMeUseCase,
     private val reactionRepository: ReactionRepository,
+    private val subscriptionRepository: SubscriptionRepository
 ) : BaseComponent<LikesMeState>(
     context,
-    LikesMeState(listReactions = ListReactions.Idle)
+    LikesMeState(
+        listReactions = ListReactions.Idle,
+        subscriptionFeature = subscriptionRepository.subscriptionStateValue.toUI()
+    )
 ) {
 
     init {
@@ -35,6 +41,15 @@ class LikesMeScreenComponent(
                         listReactions = ListReactions.Success(
                             likes = reactionUIState.toPersistentList()
                         )
+                    )
+                }
+            }
+        }
+        componentScope.launch {
+            subscriptionRepository.subscriptionState.collect { newState ->
+                reduce {
+                    it.copy(
+                        subscriptionFeature = newState.toUI()
                     )
                 }
             }

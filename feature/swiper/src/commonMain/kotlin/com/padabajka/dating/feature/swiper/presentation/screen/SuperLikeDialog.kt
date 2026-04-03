@@ -133,7 +133,7 @@ private fun DialogContent(
                 text = StaticTextId.UiId.SuperLikeCountTitle.translate(),
             )
             Text(
-                text = "${subscriptionFeature.supperLikes} суперлайк",
+                text = "${subscriptionFeature.superLikes} суперлайк",
             )
         }
 

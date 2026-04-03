@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
+import com.padabajka.dating.core.presentation.ui.SubscriptionUIItem
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
@@ -81,7 +83,11 @@ fun LikesMeScreen(
             ListReactions.Idle -> {}
             ListReactions.Loading -> {}
             is ListReactions.Error -> ErrorLikesMeScreen(listReactions)
-            is ListReactions.Success -> SuccessLikesMeScreen(component, listReactions)
+            is ListReactions.Success -> SuccessLikesMeScreen(
+                component,
+                listReactions,
+                state.subscriptionFeature
+            )
         }
     }
 }
@@ -97,9 +103,10 @@ private fun ErrorLikesMeScreen(state: ListReactions.Error) {
 private fun SuccessLikesMeScreen(
     component: LikesMeScreenComponent,
     state: ListReactions.Success,
+    subscriptionFeature: SubscriptionUIItem,
 ) {
     if (state.likes.isNotEmpty()) {
-        HasLikesMeScreen(component, state)
+        HasLikesMeScreen(component, state, subscriptionFeature)
     } else {
         EmptyLikesMeScreen()
     }
@@ -122,6 +129,7 @@ private fun EmptyLikesMeScreen() {
 private fun HasLikesMeScreen(
     component: LikesMeScreenComponent,
     state: ListReactions.Success,
+    subscriptionFeature: SubscriptionUIItem
 ) {
     val horizontalSpace = 10.dp
     val horizontalPadding = 10.dp
@@ -150,7 +158,9 @@ private fun HasLikesMeScreen(
                     Box(modifier = modifier) {
                         ProfileImage(
                             image = gridPlacedItem.state.profile.images.first(),
-                            modifier = Modifier.width(cardWidth).clickable(onClick = clickable)
+                            modifier = Modifier.width(cardWidth)
+                                .clickable(onClick = clickable),
+                            blur = if (subscriptionFeature.showLikes.not()) 30.dp else 0.dp
                         )
                     }
                 }
@@ -198,13 +208,17 @@ private fun HasLikesMeScreen(
 private fun ProfileImage(
     image: Image,
     modifier: Modifier = Modifier,
+    blur: Dp = 0.dp
 ) {
     Box(
         modifier = modifier.aspectRatio(ratio = 2.0f / 3)
             .clip(RoundedCornerShape(10.dp))
     ) {
         CoreAsyncImage(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
+                .run {
+                    if (blur != 0.dp) blur(blur) else this
+                },
             model = image.raw(),
         )
     }

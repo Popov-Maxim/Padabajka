@@ -31,7 +31,7 @@ class SubscriptionRepositoryImpl : SubscriptionRepository {
             isActive = true,
             features = SubscriptionState.Features(
                 showLikes = true,
-                supperLikes = 5,
+                superLikes = 5,
                 returns = 5
             )
         )
@@ -39,7 +39,7 @@ class SubscriptionRepositoryImpl : SubscriptionRepository {
             isActive = false,
             features = SubscriptionState.Features(
                 showLikes = false,
-                supperLikes = 0,
+                superLikes = 0,
                 returns = 0
             )
         )

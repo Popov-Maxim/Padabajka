@@ -30,7 +30,6 @@ import com.padabajka.dating.feature.swiper.domain.NextCardUseCase
 import com.padabajka.dating.feature.swiper.domain.ReactToCardUseCase
 import com.padabajka.dating.feature.swiper.domain.search.SearchPreferencesProvider
 import com.padabajka.dating.feature.swiper.domain.search.UpdateSearchPrefUseCase
-import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -144,17 +143,6 @@ private val domainModule = module {
 }
 
 private val presentationModule = module {
-    factory<SwiperScreenComponent> { parameters ->
-        SwiperScreenComponent(
-            context = parameters.get(),
-            reactToCardUseCaseFactory = { get() },
-            nextCardUseCaseFactory = { get() },
-            updateSearchPrefUseCase = get(),
-            searchPreferencesProvider = get(),
-            profileRepository = get(),
-            subscriptionRepository = get()
-        )
-    }
 }
 
 val swiperModules = arrayOf(dataModule, domainModule, presentationModule)

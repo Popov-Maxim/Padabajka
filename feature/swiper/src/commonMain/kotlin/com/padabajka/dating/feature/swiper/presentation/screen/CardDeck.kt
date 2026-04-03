@@ -43,8 +43,8 @@ data class CardDeck(
     }
 
     fun returnLast(): CardDeck {
-        val indexForDelete = max(indexForDelete - 1, 0)
-        return CardDeck(mainCollection, indexForDelete, raised)
+        val newIndexForDelete = max(indexForDelete - 1, 0)
+        return CardDeck(mainCollection, newIndexForDelete, raised)
     }
 
     fun makeStatic(): CardDeck {

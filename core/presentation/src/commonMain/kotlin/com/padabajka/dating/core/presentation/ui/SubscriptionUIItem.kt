@@ -5,7 +5,7 @@ import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionS
 data class SubscriptionUIItem(
     val isActive: Boolean,
     val showLikes: Boolean,
-    val supperLikes: Int,
+    val superLikes: Int,
     val returns: Int
 )
 
@@ -13,7 +13,7 @@ fun SubscriptionState.toUI(): SubscriptionUIItem {
     return SubscriptionUIItem(
         isActive = isActive,
         showLikes = features.showLikes,
-        supperLikes = features.supperLikes,
+        superLikes = features.superLikes,
         returns = features.returns
     )
 }

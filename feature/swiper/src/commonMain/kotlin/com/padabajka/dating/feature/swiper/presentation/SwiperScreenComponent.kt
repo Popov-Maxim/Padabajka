@@ -15,6 +15,7 @@ import com.padabajka.dating.feature.swiper.domain.NextCardUseCase
 import com.padabajka.dating.feature.swiper.domain.ReactToCardUseCase
 import com.padabajka.dating.feature.swiper.domain.search.SearchPreferencesProvider
 import com.padabajka.dating.feature.swiper.domain.search.UpdateSearchPrefUseCase
+import com.padabajka.dating.feature.swiper.presentation.model.ActionReturnEvent
 import com.padabajka.dating.feature.swiper.presentation.model.ApplySearchPrefEvent
 import com.padabajka.dating.feature.swiper.presentation.model.CardDeckState
 import com.padabajka.dating.feature.swiper.presentation.model.CardItem
@@ -22,9 +23,10 @@ import com.padabajka.dating.feature.swiper.presentation.model.DislikeEvent
 import com.padabajka.dating.feature.swiper.presentation.model.EndOfCardAnimationEvent
 import com.padabajka.dating.feature.swiper.presentation.model.EndReturnLastCardEvent
 import com.padabajka.dating.feature.swiper.presentation.model.LikeEvent
+import com.padabajka.dating.feature.swiper.presentation.model.OpenSubscriptionScreen
 import com.padabajka.dating.feature.swiper.presentation.model.PersonItem
 import com.padabajka.dating.feature.swiper.presentation.model.ResetSearchPrefEventToDefault
-import com.padabajka.dating.feature.swiper.presentation.model.ReturnEvent
+import com.padabajka.dating.feature.swiper.presentation.model.ReturnLastCardEvent
 import com.padabajka.dating.feature.swiper.presentation.model.SearchPreferencesConstants
 import com.padabajka.dating.feature.swiper.presentation.model.SearchPreferencesItem
 import com.padabajka.dating.feature.swiper.presentation.model.SuperLikeEvent
@@ -40,12 +42,13 @@ import kotlinx.coroutines.launch
 
 class SwiperScreenComponent(
     context: ComponentContext,
+    private val openSubscriptionScreen: () -> Unit,
     reactToCardUseCaseFactory: Factory<ReactToCardUseCase>,
     nextCardUseCaseFactory: Factory<NextCardUseCase>,
     private val updateSearchPrefUseCase: UpdateSearchPrefUseCase,
     searchPreferencesProvider: SearchPreferencesProvider,
     private val profileRepository: ProfileRepository,
-    subscriptionRepository: SubscriptionRepository
+    private val subscriptionRepository: SubscriptionRepository
 ) : BaseComponent<SwiperState>(
     context,
     SwiperState(
@@ -93,6 +96,13 @@ class SwiperScreenComponent(
                 }
             }
         }
+        componentScope.launch {
+            subscriptionRepository.subscriptionState.collect { newState ->
+                reduce {
+                    it.copy(subscriptionFeature = newState.toUI())
+                }
+            }
+        }
     }
 
     private val reactToCardUseCase: ReactToCardUseCase by reactToCardUseCaseFactory.delegate()
@@ -105,10 +115,12 @@ class SwiperScreenComponent(
             is SuperLikeEvent -> superLikeCard(event.cardItem, event.message)
             is EndOfCardAnimationEvent -> removeCardFromDeck(event.cardItem)
             is ApplySearchPrefEvent -> applySearchPref(event.searchPreferencesItem)
-            ReturnEvent -> returnLastCard()
+            ReturnLastCardEvent -> reduceReturnLastCard()
+            ActionReturnEvent -> returnLastCard()
             EndReturnLastCardEvent -> finishReturnLastCard()
             UnfreezeProfileEvent -> unfreezeProfile()
             ResetSearchPrefEventToDefault -> resetSearchPrefEventToDefault()
+            OpenSubscriptionScreen -> openSubscriptionScreen()
         }
     }
 
@@ -161,7 +173,12 @@ class SwiperScreenComponent(
 
     private fun superLikeCard(cardItem: CardItem, message: String) {
         if (cardItem is PersonItem) {
-            reactPersonAndUpdateCardDeck(PersonReaction.SuperLike(cardItem.id, message))
+            if (subscriptionRepository.subscriptionStateValue.features.superLikes > 0) {
+                reactPersonAndUpdateCardDeck(PersonReaction.SuperLike(cardItem.id, message))
+            } else {
+                reduceReturnLastCard()
+                openSubscriptionScreen()
+            }
         } else {
             updateCardDeck()
         }
@@ -211,19 +228,27 @@ class SwiperScreenComponent(
     }
 
     private fun returnLastCard() {
-        mapAndReduceException(
-            action = {
-                reduce { state ->
-                    state.run { copy(cardDeck = cardDeck.returnLast()) }
+        if (subscriptionRepository.subscriptionStateValue.features.returns <= 0) {
+            openSubscriptionScreen()
+        } else {
+            mapAndReduceException(
+                action = {
+                    reduceReturnLastCard()
+                },
+                mapper = {
+                    it // TODO
+                },
+                update = { swiperState, _ ->
+                    swiperState
                 }
-            },
-            mapper = {
-                it // TODO
-            },
-            update = { swiperState, _ ->
-                swiperState
-            }
-        )
+            )
+        }
+    }
+
+    private fun reduceReturnLastCard() {
+        reduce { state ->
+            state.run { copy(cardDeck = cardDeck.returnLast()) }
+        }
     }
 
     private fun unfreezeProfile() {

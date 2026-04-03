@@ -65,7 +65,16 @@ class MainAuthScopeNavigateComponent(
     ): Child {
         return when (configuration) {
             Configuration.SwiperScreen -> Child.SwiperScreen(
-                component = get { parametersOf(context) }
+                component = SwiperScreenComponent(
+                    context = context,
+                    openSubscriptionScreen = { navigate(Configuration.SubscriptionScreen) },
+                    reactToCardUseCaseFactory = { get() },
+                    nextCardUseCaseFactory = { get() },
+                    updateSearchPrefUseCase = get(),
+                    searchPreferencesProvider = get(),
+                    profileRepository = get(),
+                    subscriptionRepository = get()
+                )
             )
 
             Configuration.ProfileScreen -> Child.ProfileScreen(
@@ -122,7 +131,8 @@ class MainAuthScopeNavigateComponent(
                     context = context,
                     openSubscriptionScreen = { navigate(Configuration.SubscriptionScreen) },
                     reactionsToMeUseCase = get(),
-                    reactionRepository = get()
+                    reactionRepository = get(),
+                    subscriptionRepository = get()
                 )
             )
 
