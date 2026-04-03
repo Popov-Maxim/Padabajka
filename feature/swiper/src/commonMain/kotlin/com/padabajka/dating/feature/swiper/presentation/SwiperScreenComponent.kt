@@ -13,6 +13,7 @@ import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
 import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
 import com.padabajka.dating.feature.swiper.domain.NextCardUseCase
 import com.padabajka.dating.feature.swiper.domain.ReactToCardUseCase
+import com.padabajka.dating.feature.swiper.domain.ReturnLastCardUseCase
 import com.padabajka.dating.feature.swiper.domain.search.SearchPreferencesProvider
 import com.padabajka.dating.feature.swiper.domain.search.UpdateSearchPrefUseCase
 import com.padabajka.dating.feature.swiper.presentation.model.ActionReturnEvent
@@ -37,6 +38,7 @@ import com.padabajka.dating.feature.swiper.presentation.model.toSearchPreference
 import com.padabajka.dating.feature.swiper.presentation.model.toUICardItem
 import com.padabajka.dating.feature.swiper.presentation.model.toUISearchPreferences
 import com.padabajka.dating.feature.swiper.presentation.screen.CardDeck
+import com.padabajka.dating.feature.swiper.presentation.screen.hasDeleted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -48,7 +50,8 @@ class SwiperScreenComponent(
     private val updateSearchPrefUseCase: UpdateSearchPrefUseCase,
     searchPreferencesProvider: SearchPreferencesProvider,
     private val profileRepository: ProfileRepository,
-    private val subscriptionRepository: SubscriptionRepository
+    private val subscriptionRepository: SubscriptionRepository,
+    private val returnLastCardUseCase: ReturnLastCardUseCase
 ) : BaseComponent<SwiperState>(
     context,
     SwiperState(
@@ -230,10 +233,11 @@ class SwiperScreenComponent(
     private fun returnLastCard() {
         if (subscriptionRepository.subscriptionStateValue.features.returns <= 0) {
             openSubscriptionScreen()
-        } else {
+        } else if (state.value.cardDeck.hasDeleted()) {
             mapAndReduceException(
                 action = {
                     reduceReturnLastCard()
+                    returnLastCardUseCase()
                 },
                 mapper = {
                     it // TODO

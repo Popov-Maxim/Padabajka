@@ -23,7 +23,9 @@ object DataStoreUtils {
         }
     }
 
-    fun <T> create(dbName: String, delegate: KSerializer<T>, default: T): DataStore<T> {
+    fun <T> create(dbName: String, delegate: KSerializer<T>, default: T, fake: Boolean = false): DataStore<T> {
+        if (fake) return createFake(default)
+
         return DataStoreFactory.create(
             storage = OkioStorage(
                 fileSystem = PathUtils.fileSystem,

@@ -9,6 +9,6 @@ interface SubscriptionRepository {
 
     suspend fun update(update: (SubscriptionState) -> SubscriptionState)
 
-    suspend fun loadState()
+    suspend fun syncState()
     suspend fun subscribe()
 }

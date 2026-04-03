@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.swiper.presentation.screen
 
+import androidx.compose.runtime.Immutable
 import com.padabajka.dating.core.domain.indexOf
 import com.padabajka.dating.core.presentation.event.StateEvent
 import com.padabajka.dating.core.presentation.event.consumed
@@ -11,6 +12,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlin.math.max
 
+@Immutable
 data class CardDeck(
     private val mainCollection: PersistentList<CardItem> = persistentListOf(),
     private val indexForDelete: Int = 0,
@@ -58,4 +60,8 @@ data class CardDeck(
     fun getCards(): ImmutableCollection<CardItem> {
         return mainCollection
     }
+}
+
+fun CardDeck.hasDeleted(): Boolean {
+    return indexFirstCard != 0
 }

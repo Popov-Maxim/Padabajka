@@ -73,7 +73,8 @@ class MainAuthScopeNavigateComponent(
                     updateSearchPrefUseCase = get(),
                     searchPreferencesProvider = get(),
                     profileRepository = get(),
-                    subscriptionRepository = get()
+                    subscriptionRepository = get(),
+                    returnLastCardUseCase = get(),
                 )
             )
 

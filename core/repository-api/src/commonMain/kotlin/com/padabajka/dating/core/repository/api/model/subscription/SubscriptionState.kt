@@ -9,6 +9,17 @@ data class SubscriptionState(
         val superLikes: Int,
         val returns: Int
     )
+
+    companion object {
+        val DEFAULT = SubscriptionState(
+            isActive = false,
+            features = Features(
+                showLikes = false,
+                superLikes = 0,
+                returns = 0
+            )
+        )
+    }
 }
 
 fun SubscriptionState.updateFeatures(update: (SubscriptionState.Features) -> SubscriptionState.Features) = copy(

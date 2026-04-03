@@ -28,6 +28,7 @@ import com.padabajka.dating.feature.swiper.data.search.source.LocalSearchPrefere
 import com.padabajka.dating.feature.swiper.data.search.source.LocalSearchPreferencesDataSourceImpl
 import com.padabajka.dating.feature.swiper.domain.NextCardUseCase
 import com.padabajka.dating.feature.swiper.domain.ReactToCardUseCase
+import com.padabajka.dating.feature.swiper.domain.ReturnLastCardUseCase
 import com.padabajka.dating.feature.swiper.domain.search.SearchPreferencesProvider
 import com.padabajka.dating.feature.swiper.domain.search.UpdateSearchPrefUseCase
 import org.koin.core.module.dsl.bind
@@ -116,11 +117,8 @@ private val dataModule = module {
 }
 
 private val domainModule = module {
-    factory<ReactToCardUseCase> {
-        ReactToCardUseCase(
-            cardRepository = get()
-        )
-    }
+    factoryOf(::ReactToCardUseCase)
+    factoryOf(::ReturnLastCardUseCase)
 
     factory<NextCardUseCase> {
         NextCardUseCase(

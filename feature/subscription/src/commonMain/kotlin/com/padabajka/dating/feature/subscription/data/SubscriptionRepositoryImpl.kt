@@ -2,46 +2,60 @@ package com.padabajka.dating.feature.subscription.data
 
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionState
+import com.padabajka.dating.feature.subscription.data.source.LocalSubscriptionDataSource
+import com.padabajka.dating.feature.subscription.data.source.RemoteSubscriptionDataSource
+import com.padabajka.dating.feature.subscription.data.source.model.PurchaseRequest
+import com.padabajka.dating.feature.subscription.data.source.model.toDomain
+import com.padabajka.dating.feature.subscription.data.source.model.toDto
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
-class SubscriptionRepositoryImpl : SubscriptionRepository {
+class SubscriptionRepositoryImpl(
+    coroutineScope: CoroutineScope,
+    private val localSubscriptionDataSource: LocalSubscriptionDataSource,
+    private val remoteSubscriptionDataSource: RemoteSubscriptionDataSource
+) : SubscriptionRepository {
 
-    private val _subscriptionState = MutableStateFlow(defaultState)
+    private val _subscriptionState = localSubscriptionDataSource.subscriptionState
+        .map {
+            it.toDomain()
+        }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null
+        )
     override val subscriptionState: Flow<SubscriptionState>
-        get() = _subscriptionState
+        get() = _subscriptionState.filterNotNull()
     override val subscriptionStateValue: SubscriptionState
-        get() = _subscriptionState.value
+        get() = _subscriptionState.value ?: SubscriptionState.DEFAULT
 
     override suspend fun update(update: (SubscriptionState) -> SubscriptionState) {
-        _subscriptionState.update(update)
+        localSubscriptionDataSource.update {
+            update(it.toDomain()).toDto()
+        }
     }
 
-    override suspend fun loadState() {
-        // TODO("Not yet implemented")
+    override suspend fun syncState() {
+        val subscriptionStateResponse = remoteSubscriptionDataSource.loadSubscriptionState()
+        localSubscriptionDataSource.update {
+            subscriptionStateResponse.toDto()
+        }
     }
 
     override suspend fun subscribe() {
-        _subscriptionState.value = premiumState
-    }
-
-    private companion object {
-        private val premiumState = SubscriptionState(
-            isActive = true,
-            features = SubscriptionState.Features(
-                showLikes = true,
-                superLikes = 5,
-                returns = 5
+        val subscriptionStateResponse = remoteSubscriptionDataSource.subscribe(
+            PurchaseRequest(
+                purchaseToken = "todo",
+                service = "todo"
             )
         )
-        private val defaultState = SubscriptionState(
-            isActive = false,
-            features = SubscriptionState.Features(
-                showLikes = false,
-                superLikes = 0,
-                returns = 0
-            )
-        )
+        localSubscriptionDataSource.update {
+            subscriptionStateResponse.toDto()
+        }
     }
 }
