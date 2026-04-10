@@ -121,6 +121,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.HintSuperLikeMessage -> "How about starting with a compliment?"
             StaticTextId.UiId.MessageTitle -> "message:"
             StaticTextId.UiId.SuperLikeCountTitle -> "you have available:"
+            StaticTextId.UiId.SuperLikeCountText -> "super like(-s)"
             StaticTextId.UiId.EmptyReactionsScreen -> "No reactions yet, be the first!"
             StaticTextId.UiId.Smoking -> "Smoking"
             StaticTextId.UiId.SmokingHint -> "Tell us about your attitude toward smoking"

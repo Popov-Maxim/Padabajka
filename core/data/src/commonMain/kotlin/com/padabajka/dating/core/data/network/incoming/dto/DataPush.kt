@@ -30,6 +30,18 @@ sealed interface DataPush {
         val reaction: ReactionType,
         val message: String? = null
     ) : DataPush
+
+    @Serializable
+    @SerialName("subscription_plan")
+    data class SubscriptionPlan(
+        val plan: SubscriptionPlanDto
+    ) : DataPush
+
+    @Serializable
+    @SerialName("feature_usage")
+    data class FeatureUsage(
+        val featureUsage: FeatureUsageDto
+    ) : DataPush
 }
 
 sealed interface MatchDataPush : DataPush {

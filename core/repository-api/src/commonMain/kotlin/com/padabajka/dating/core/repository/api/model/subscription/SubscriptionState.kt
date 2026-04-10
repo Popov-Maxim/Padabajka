@@ -21,7 +21,3 @@ data class SubscriptionState(
         )
     }
 }
-
-fun SubscriptionState.updateFeatures(update: (SubscriptionState.Features) -> SubscriptionState.Features) = copy(
-    features = update(features)
-)

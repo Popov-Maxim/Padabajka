@@ -17,6 +17,7 @@ import com.padabajka.dating.feature.push.data.domain.HandleNewReactionToMeUseCas
 import com.padabajka.dating.feature.push.data.domain.HandleNotificationPayloadUseCase
 import com.padabajka.dating.feature.push.data.domain.HandlePushUseCase
 import com.padabajka.dating.feature.push.data.domain.HandleReadMessageEventUseCase
+import com.padabajka.dating.feature.push.data.domain.HandleSubscriptionUseCase
 import com.padabajka.dating.feature.push.data.domain.HandleUpdateMatchUseCase
 import com.padabajka.dating.feature.push.data.domain.HandleUsersPresenceUseCase
 import com.padabajka.dating.feature.push.data.domain.SaveTokenUseCase
@@ -61,6 +62,7 @@ val dataPushDiModule = module {
     factoryOf(::HandleEditedMessageUseCase)
     factoryOf(::HandleUsersPresenceUseCase)
     factoryOf(::HandleNewReactionToMeUseCase)
+    factoryOf(::HandleSubscriptionUseCase)
     factoryOf(::HandleReadMessageEventUseCase)
     factoryOf(::HandleDeleteChatEventUseCase)
     factoryOf(::HandleDeleteMatchUseCase)

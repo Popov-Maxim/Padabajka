@@ -13,12 +13,14 @@ class HandlePushUseCase(
     private val handleEditedMessageUseCase: HandleEditedMessageUseCase,
     private val handleUsersPresenceUseCase: HandleUsersPresenceUseCase,
     private val handleNewReactionToMeUseCase: HandleNewReactionToMeUseCase,
+    private val handleSubscriptionUseCase: HandleSubscriptionUseCase,
     private val handleReadMessageEventUseCase: HandleReadMessageEventUseCase,
     private val handleDeleteChatEventUseCase: HandleDeleteChatEventUseCase,
     private val handleDeleteMatchUseCase: HandleDeleteMatchUseCase,
     private val handleUpdateMatchUseCase: HandleUpdateMatchUseCase,
     private val handleNotificationPayloadUseCase: HandleNotificationPayloadUseCase,
 ) {
+    @Suppress("CyclomaticComplexMethod")
     suspend operator fun invoke(rawPush: MessagePush) {
         println("HandlePushUseCase: rawPush = ${rawPush.dataJson}")
         val pushMessage = dataPushParser.parse(rawPush) ?: return
@@ -28,6 +30,8 @@ class HandlePushUseCase(
             is DataPush.UsersPresence -> handleUsersPresenceUseCase(dataPush)
             is DataPush.UserPresence -> handleUsersPresenceUseCase(dataPush)
             is DataPush.NewReactionToMe -> handleNewReactionToMeUseCase(dataPush)
+            is DataPush.FeatureUsage -> handleSubscriptionUseCase(dataPush)
+            is DataPush.SubscriptionPlan -> handleSubscriptionUseCase(dataPush)
 
             is MessageDataPush.NewMessage -> handleNewMessageUseCase(dataPush)
             is MessageDataPush.DeleteMessage -> handleDeleteMessageUseCase(dataPush)
