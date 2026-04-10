@@ -39,6 +39,7 @@ kotlin {
             implementation(projects.feature.match)
             implementation(projects.component.room)
             implementation(projects.feature.image)
+            implementation(projects.feature.subscription)
 
             implementation(libs.gitlive.firebase.messaging)
         }

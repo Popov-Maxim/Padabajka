@@ -28,9 +28,9 @@ import com.padabajka.dating.feature.swiper.data.search.source.LocalSearchPrefere
 import com.padabajka.dating.feature.swiper.data.search.source.LocalSearchPreferencesDataSourceImpl
 import com.padabajka.dating.feature.swiper.domain.NextCardUseCase
 import com.padabajka.dating.feature.swiper.domain.ReactToCardUseCase
+import com.padabajka.dating.feature.swiper.domain.ReturnLastCardUseCase
 import com.padabajka.dating.feature.swiper.domain.search.SearchPreferencesProvider
 import com.padabajka.dating.feature.swiper.domain.search.UpdateSearchPrefUseCase
-import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -117,11 +117,8 @@ private val dataModule = module {
 }
 
 private val domainModule = module {
-    factory<ReactToCardUseCase> {
-        ReactToCardUseCase(
-            cardRepository = get()
-        )
-    }
+    factoryOf(::ReactToCardUseCase)
+    factoryOf(::ReturnLastCardUseCase)
 
     factory<NextCardUseCase> {
         NextCardUseCase(
@@ -144,16 +141,6 @@ private val domainModule = module {
 }
 
 private val presentationModule = module {
-    factory<SwiperScreenComponent> { parameters ->
-        SwiperScreenComponent(
-            context = parameters.get(),
-            reactToCardUseCaseFactory = { get() },
-            nextCardUseCaseFactory = { get() },
-            updateSearchPrefUseCase = get(),
-            searchPreferencesProvider = get(),
-            profileRepository = get(),
-        )
-    }
 }
 
 val swiperModules = arrayOf(dataModule, domainModule, presentationModule)

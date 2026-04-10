@@ -4,15 +4,19 @@ import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.domain.Factory
 import com.padabajka.dating.core.domain.delegate
 import com.padabajka.dating.core.presentation.BaseComponent
+import com.padabajka.dating.core.presentation.ui.toUI
 import com.padabajka.dating.core.repository.api.ProfileRepository
+import com.padabajka.dating.core.repository.api.SubscriptionRepository
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
 import com.padabajka.dating.core.repository.api.model.swiper.EmptyCard
 import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
 import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
 import com.padabajka.dating.feature.swiper.domain.NextCardUseCase
 import com.padabajka.dating.feature.swiper.domain.ReactToCardUseCase
+import com.padabajka.dating.feature.swiper.domain.ReturnLastCardUseCase
 import com.padabajka.dating.feature.swiper.domain.search.SearchPreferencesProvider
 import com.padabajka.dating.feature.swiper.domain.search.UpdateSearchPrefUseCase
+import com.padabajka.dating.feature.swiper.presentation.model.ActionReturnEvent
 import com.padabajka.dating.feature.swiper.presentation.model.ApplySearchPrefEvent
 import com.padabajka.dating.feature.swiper.presentation.model.CardDeckState
 import com.padabajka.dating.feature.swiper.presentation.model.CardItem
@@ -20,9 +24,10 @@ import com.padabajka.dating.feature.swiper.presentation.model.DislikeEvent
 import com.padabajka.dating.feature.swiper.presentation.model.EndOfCardAnimationEvent
 import com.padabajka.dating.feature.swiper.presentation.model.EndReturnLastCardEvent
 import com.padabajka.dating.feature.swiper.presentation.model.LikeEvent
+import com.padabajka.dating.feature.swiper.presentation.model.OpenSubscriptionScreen
 import com.padabajka.dating.feature.swiper.presentation.model.PersonItem
 import com.padabajka.dating.feature.swiper.presentation.model.ResetSearchPrefEventToDefault
-import com.padabajka.dating.feature.swiper.presentation.model.ReturnEvent
+import com.padabajka.dating.feature.swiper.presentation.model.ReturnLastCardEvent
 import com.padabajka.dating.feature.swiper.presentation.model.SearchPreferencesConstants
 import com.padabajka.dating.feature.swiper.presentation.model.SearchPreferencesItem
 import com.padabajka.dating.feature.swiper.presentation.model.SuperLikeEvent
@@ -33,22 +38,27 @@ import com.padabajka.dating.feature.swiper.presentation.model.toSearchPreference
 import com.padabajka.dating.feature.swiper.presentation.model.toUICardItem
 import com.padabajka.dating.feature.swiper.presentation.model.toUISearchPreferences
 import com.padabajka.dating.feature.swiper.presentation.screen.CardDeck
+import com.padabajka.dating.feature.swiper.presentation.screen.hasDeleted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class SwiperScreenComponent(
     context: ComponentContext,
+    private val openSubscriptionScreen: () -> Unit,
     reactToCardUseCaseFactory: Factory<ReactToCardUseCase>,
     nextCardUseCaseFactory: Factory<NextCardUseCase>,
     private val updateSearchPrefUseCase: UpdateSearchPrefUseCase,
     searchPreferencesProvider: SearchPreferencesProvider,
     private val profileRepository: ProfileRepository,
+    private val subscriptionRepository: SubscriptionRepository,
+    private val returnLastCardUseCase: ReturnLastCardUseCase
 ) : BaseComponent<SwiperState>(
     context,
     SwiperState(
         cardDeck = CardDeck(),
         cardDeckState = CardDeckState.Idle,
-        searchPreferences = SearchPreferencesItem.Loading
+        searchPreferences = SearchPreferencesItem.Loading,
+        subscriptionFeature = subscriptionRepository.subscriptionStateValue.toUI()
     )
 ) {
 
@@ -89,6 +99,13 @@ class SwiperScreenComponent(
                 }
             }
         }
+        componentScope.launch {
+            subscriptionRepository.subscriptionState.collect { newState ->
+                reduce {
+                    it.copy(subscriptionFeature = newState.toUI())
+                }
+            }
+        }
     }
 
     private val reactToCardUseCase: ReactToCardUseCase by reactToCardUseCaseFactory.delegate()
@@ -101,10 +118,12 @@ class SwiperScreenComponent(
             is SuperLikeEvent -> superLikeCard(event.cardItem, event.message)
             is EndOfCardAnimationEvent -> removeCardFromDeck(event.cardItem)
             is ApplySearchPrefEvent -> applySearchPref(event.searchPreferencesItem)
-            ReturnEvent -> returnLastCard()
+            ReturnLastCardEvent -> reduceReturnLastCard()
+            ActionReturnEvent -> returnLastCard()
             EndReturnLastCardEvent -> finishReturnLastCard()
             UnfreezeProfileEvent -> unfreezeProfile()
             ResetSearchPrefEventToDefault -> resetSearchPrefEventToDefault()
+            OpenSubscriptionScreen -> openSubscriptionScreen()
         }
     }
 
@@ -157,7 +176,12 @@ class SwiperScreenComponent(
 
     private fun superLikeCard(cardItem: CardItem, message: String) {
         if (cardItem is PersonItem) {
-            reactPersonAndUpdateCardDeck(PersonReaction.SuperLike(cardItem.id, message))
+            if (subscriptionRepository.subscriptionStateValue.features.superLikes > 0) {
+                reactPersonAndUpdateCardDeck(PersonReaction.SuperLike(cardItem.id, message))
+            } else {
+                reduceReturnLastCard()
+                openSubscriptionScreen()
+            }
         } else {
             updateCardDeck()
         }
@@ -207,19 +231,28 @@ class SwiperScreenComponent(
     }
 
     private fun returnLastCard() {
-        mapAndReduceException(
-            action = {
-                reduce { state ->
-                    state.run { copy(cardDeck = cardDeck.returnLast()) }
+        if (subscriptionRepository.subscriptionStateValue.features.returns <= 0) {
+            openSubscriptionScreen()
+        } else if (state.value.cardDeck.hasDeleted()) {
+            mapAndReduceException(
+                action = {
+                    reduceReturnLastCard()
+                    returnLastCardUseCase()
+                },
+                mapper = {
+                    it // TODO
+                },
+                update = { swiperState, _ ->
+                    swiperState
                 }
-            },
-            mapper = {
-                it // TODO
-            },
-            update = { swiperState, _ ->
-                swiperState
-            }
-        )
+            )
+        }
+    }
+
+    private fun reduceReturnLastCard() {
+        reduce { state ->
+            state.run { copy(cardDeck = cardDeck.returnLast()) }
+        }
     }
 
     private fun unfreezeProfile() {

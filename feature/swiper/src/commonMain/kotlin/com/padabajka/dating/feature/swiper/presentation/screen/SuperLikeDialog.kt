@@ -29,6 +29,7 @@ import com.padabajka.dating.core.presentation.ui.CoreCallToActionButton
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CoreTextEditField
 import com.padabajka.dating.core.presentation.ui.ProfileAvatar
+import com.padabajka.dating.core.presentation.ui.SubscriptionUIItem
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
@@ -40,6 +41,7 @@ import com.padabajka.dating.feature.swiper.presentation.model.PersonItem
 @Composable
 fun SuperLikeDialog(
     cardItem: PersonItem,
+    subscriptionFeature: SubscriptionUIItem,
     apply: (String) -> Unit,
     cancel: () -> Unit,
     onDismissRequest: () -> Unit,
@@ -57,6 +59,7 @@ fun SuperLikeDialog(
     ) {
         DialogContent(
             modifier = Modifier.hideKeyboardOnTap(),
+            subscriptionFeature = subscriptionFeature,
             cardItem = cardItem,
             apply = {
                 apply(it)
@@ -69,6 +72,7 @@ fun SuperLikeDialog(
 @Composable
 private fun DialogContent(
     cardItem: PersonItem,
+    subscriptionFeature: SubscriptionUIItem,
     apply: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -129,7 +133,7 @@ private fun DialogContent(
                 text = StaticTextId.UiId.SuperLikeCountTitle.translate(),
             )
             Text(
-                text = "1 суперлайк",
+                text = "${subscriptionFeature.superLikes} ${StaticTextId.UiId.SuperLikeCountText.translate()}",
             )
         }
 

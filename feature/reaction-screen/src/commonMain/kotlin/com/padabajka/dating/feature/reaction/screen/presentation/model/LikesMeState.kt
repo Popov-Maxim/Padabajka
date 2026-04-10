@@ -2,6 +2,7 @@ package com.padabajka.dating.feature.reaction.screen.presentation.model
 
 import androidx.compose.runtime.Stable
 import com.padabajka.dating.core.presentation.State
+import com.padabajka.dating.core.presentation.ui.SubscriptionUIItem
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.feature.profile.presentation.model.ProfileViewUIItem
 import com.padabajka.dating.feature.profile.presentation.model.toPersonView
@@ -9,7 +10,8 @@ import com.padabajka.dating.feature.reaction.screen.domain.ReactionsToMe
 import kotlinx.collections.immutable.PersistentList
 
 data class LikesMeState(
-    val listReactions: ListReactions = ListReactions.Idle
+    val listReactions: ListReactions = ListReactions.Idle,
+    val subscriptionFeature: SubscriptionUIItem
 ) : State
 
 sealed interface ListReactions {

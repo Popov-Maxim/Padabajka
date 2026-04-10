@@ -11,6 +11,7 @@ import com.padabajka.dating.feature.messenger.presentation.model.MatchItem
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
 import com.padabajka.dating.feature.reaction.screen.presentation.LikesMeScreenComponent
+import com.padabajka.dating.feature.subscription.presentation.SubscriptionScreenComponent
 import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
 import com.padabajka.dating.settings.presentation.SettingsScopeNavigateComponent
 import kotlinx.serialization.Serializable
@@ -64,7 +65,17 @@ class MainAuthScopeNavigateComponent(
     ): Child {
         return when (configuration) {
             Configuration.SwiperScreen -> Child.SwiperScreen(
-                component = get { parametersOf(context) }
+                component = SwiperScreenComponent(
+                    context = context,
+                    openSubscriptionScreen = { navigate(Configuration.SubscriptionScreen) },
+                    reactToCardUseCaseFactory = { get() },
+                    nextCardUseCaseFactory = { get() },
+                    updateSearchPrefUseCase = get(),
+                    searchPreferencesProvider = get(),
+                    profileRepository = get(),
+                    subscriptionRepository = get(),
+                    returnLastCardUseCase = get(),
+                )
             )
 
             Configuration.ProfileScreen -> Child.ProfileScreen(
@@ -119,8 +130,18 @@ class MainAuthScopeNavigateComponent(
             Configuration.LikesMeScreen -> Child.LikesMeScreen(
                 component = LikesMeScreenComponent(
                     context = context,
+                    openSubscriptionScreen = { navigate(Configuration.SubscriptionScreen) },
                     reactionsToMeUseCase = get(),
-                    reactionRepository = get()
+                    reactionRepository = get(),
+                    subscriptionRepository = get()
+                )
+            )
+
+            Configuration.SubscriptionScreen -> Child.SubscriptionScreen(
+                component = SubscriptionScreenComponent(
+                    context = context,
+                    navigateBack = ::navigateBack,
+                    subscriptionRepository = get()
                 )
             )
         }
@@ -129,6 +150,7 @@ class MainAuthScopeNavigateComponent(
     sealed interface Child {
         data class ProfileEditorScreen(val component: ProfileEditorScreenComponent) : Child
         data class SettingScreen(val component: SettingsScopeNavigateComponent) : Child
+        data class SubscriptionScreen(val component: SubscriptionScreenComponent) : Child
 
         data class SwiperScreen(val component: SwiperScreenComponent) : Child
         data class ProfileScreen(val component: ProfileScreenComponent) : Child
@@ -162,5 +184,8 @@ class MainAuthScopeNavigateComponent(
 
         @Serializable
         data object LikesMeScreen : Configuration
+
+        @Serializable
+        data object SubscriptionScreen : Configuration
     }
 }

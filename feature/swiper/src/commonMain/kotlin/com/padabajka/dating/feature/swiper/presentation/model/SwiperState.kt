@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.swiper.presentation.model
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.padabajka.dating.core.presentation.State
+import com.padabajka.dating.core.presentation.ui.SubscriptionUIItem
 import com.padabajka.dating.core.repository.api.model.ads.PlatformNativeAd
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Age
@@ -30,7 +31,8 @@ import kotlinx.collections.immutable.toPersistentList
 data class SwiperState(
     val cardDeck: CardDeck,
     val cardDeckState: CardDeckState = CardDeckState.Idle,
-    val searchPreferences: SearchPreferencesItem
+    val searchPreferences: SearchPreferencesItem,
+    val subscriptionFeature: SubscriptionUIItem
 ) : State
 
 sealed interface CardDeckState {

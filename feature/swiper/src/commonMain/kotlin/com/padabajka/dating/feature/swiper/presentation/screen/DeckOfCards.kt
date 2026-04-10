@@ -21,12 +21,13 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.event.StateEvent
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
 import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
+import com.padabajka.dating.feature.swiper.presentation.model.ActionReturnEvent
 import com.padabajka.dating.feature.swiper.presentation.model.DislikeEvent
 import com.padabajka.dating.feature.swiper.presentation.model.EndOfCardAnimationEvent
 import com.padabajka.dating.feature.swiper.presentation.model.EndReturnLastCardEvent
 import com.padabajka.dating.feature.swiper.presentation.model.LikeEvent
 import com.padabajka.dating.feature.swiper.presentation.model.PersonItem
-import com.padabajka.dating.feature.swiper.presentation.model.ReturnEvent
+import com.padabajka.dating.feature.swiper.presentation.model.ReturnLastCardEvent
 import com.padabajka.dating.feature.swiper.presentation.model.SuperLikeEvent
 import com.padabajka.dating.feature.swiper.presentation.screen.card.CardDeckPlaceholder
 import com.padabajka.dating.feature.swiper.presentation.screen.card.CardReaction
@@ -76,7 +77,7 @@ fun DeckOfCards(
                                 CardReaction.Dislike -> controller.swipeLeft()
                                 CardReaction.Like -> controller.swipeRight()
                                 CardReaction.Return -> {
-                                    swiperScreenComponent.onEvent(ReturnEvent)
+                                    swiperScreenComponent.onEvent(ActionReturnEvent)
                                 }
                                 CardReaction.SuperLike -> controller.swipeUp()
                             }
@@ -111,11 +112,12 @@ fun DeckOfCards(
     openSuperLike?.let { cardItem ->
         SuperLikeDialog(
             cardItem = cardItem,
+            subscriptionFeature = state.subscriptionFeature,
             apply = {
                 swiperScreenComponent.onEvent(SuperLikeEvent(cardItem, it))
             },
             cancel = {
-                swiperScreenComponent.onEvent(ReturnEvent)
+                swiperScreenComponent.onEvent(ReturnLastCardEvent)
             },
             onDismissRequest = {
                 openSuperLike = null

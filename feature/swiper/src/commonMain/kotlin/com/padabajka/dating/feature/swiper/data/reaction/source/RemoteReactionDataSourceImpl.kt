@@ -30,6 +30,10 @@ class RemoteReactionDataSourceImpl(
         }
     }
 
+    override suspend fun deleteReaction() {
+        reactionApi.deleteReaction()
+    }
+
     override suspend fun forceSendReactions() {
         postReactions().join()
     }

@@ -118,6 +118,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.HintSuperLikeMessage -> "Может, начать с комплимента?"
             StaticTextId.UiId.MessageTitle -> "сообщение:"
             StaticTextId.UiId.SuperLikeCountTitle -> "вам доступно:"
+            StaticTextId.UiId.SuperLikeCountText -> "суперлайк(ов)"
             StaticTextId.UiId.EmptyReactionsScreen -> "Пока тут пусто"
             StaticTextId.UiId.Smoking -> "Курение"
             StaticTextId.UiId.SmokingHint -> "Расскажите о вашем отношении к курению"

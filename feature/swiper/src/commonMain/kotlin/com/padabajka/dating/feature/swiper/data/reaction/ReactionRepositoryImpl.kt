@@ -34,6 +34,10 @@ class ReactionRepositoryImpl(
         remoteReactionDataSource.sendReaction(reaction) // TODO: add local data source
     }
 
+    override suspend fun deleteReaction() {
+        remoteReactionDataSource.deleteReaction()
+    }
+
     override suspend fun syncReactionsToMe() {
         val reactionsToMe = remoteReactionDataSource.reactionsToMe()
         localReactionDataSource.addReactionsToMe(reactionsToMe)

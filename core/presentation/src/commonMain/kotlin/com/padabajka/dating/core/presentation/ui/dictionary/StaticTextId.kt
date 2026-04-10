@@ -166,6 +166,7 @@ sealed interface StaticTextId {
 
         MessageTitle(rawId = "message_title"),
         SuperLikeCountTitle(rawId = "super_like_count_title"),
+        SuperLikeCountText(rawId = "super_like_count_text"),
 
         // -------------- Super Like Dialog
 
