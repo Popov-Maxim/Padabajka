@@ -1,20 +1,16 @@
 package com.padabajka.dating.settings.presentation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.permission.NotificationPermissionController
 import com.padabajka.dating.core.presentation.isDebugBuild
-import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.SimpleConfirmDialog
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
@@ -39,9 +34,7 @@ import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.drawable.icon.Icon
 import com.padabajka.dating.core.presentation.ui.drawable.icon.IconData
 import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
-import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
-import com.padabajka.dating.core.presentation.ui.mainColor
-import com.padabajka.dating.core.presentation.ui.textColor
+import com.padabajka.dating.core.presentation.ui.layout.SimpleTopBar
 import com.padabajka.dating.core.repository.api.model.dictionary.Language
 import com.padabajka.dating.settings.presentation.model.DeleteAccountEvent
 import com.padabajka.dating.settings.presentation.model.FreezeAccountEvent
@@ -304,32 +297,10 @@ private fun SettingButton(
 
 @Composable
 private fun TopBar(onEvent: (SettingsEvent) -> Unit) {
-    Box(
-        modifier = Modifier.background(CoreColors.background.mainColor)
-            .padding(vertical = 10.dp, horizontal = 10.dp)
-    ) {
-        Row(
-            modifier = Modifier.align(Alignment.CenterStart),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = { onEvent(NavigateBackEvent) },
-            ) {
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    painter = CoreIcons.BackArrow,
-                    contentDescription = "Back",
-                )
-            }
-            Spacer(modifier = Modifier.width(5.dp))
-            Text(
-                text = StaticTextId.UiId.Settings.translate(),
-                fontSize = 30.sp,
-                color = CoreColors.background.textColor,
-                fontFamily = PlayfairDisplay
-            )
-        }
-    }
+    SimpleTopBar(
+        title = StaticTextId.UiId.Settings.translate(),
+        navigateBack = { onEvent(NavigateBackEvent) }
+    )
 }
 
 private fun Language.Static.uiText(): String {

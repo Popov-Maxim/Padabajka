@@ -149,6 +149,21 @@ class RuDictionary : Dictionary() {
                 "Ваш профиль заморожен. Разморозьте его и продолжайте знакомиться"
 
             StaticTextId.UiId.Unfreeze -> "Разморозить"
+
+            StaticTextId.UiId.SubscriptionFootnote ->
+                "Подписка продлевается автоматически.\n" +
+                    "Отменить можно в любое время."
+            StaticTextId.UiId.Month -> "месяц"
+            StaticTextId.UiId.Discount -> "Скидка"
+            StaticTextId.UiId.Until -> "До"
+            StaticTextId.UiId.BenefitSuperLikeTitle -> "10 суперлайков в день"
+            StaticTextId.UiId.BenefitSuperLikeBody -> "Выделитесь среди остальных и получите больше внимания"
+            StaticTextId.UiId.BenefitReturnsTitle -> "Вернуться назад"
+            StaticTextId.UiId.BenefitReturnsBody ->
+                "Передумали после свайпа? Верните профиль и дайте второй шанс\n" +
+                    "(Доступно 20 раз в день)"
+            StaticTextId.UiId.BenefitShowLikesTitle -> "Просмотр лайков"
+            StaticTextId.UiId.BenefitShowLikesBody -> "Узнай, кто вас лайкнул"
         }
     }
 

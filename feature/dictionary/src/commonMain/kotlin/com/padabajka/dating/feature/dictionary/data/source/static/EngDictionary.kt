@@ -153,6 +153,19 @@ class EngDictionary : Dictionary() {
                 "Your profile is frozen. Unfreeze it to continue swiping and finding new matches"
 
             StaticTextId.UiId.Unfreeze -> "Unfreeze"
+
+            StaticTextId.UiId.SubscriptionFootnote ->
+                "Subscription renews automatically.\n" +
+                    "You can cancel anytime."
+            StaticTextId.UiId.Month -> "month"
+            StaticTextId.UiId.Discount -> "Discount"
+            StaticTextId.UiId.Until -> "Until"
+            StaticTextId.UiId.BenefitSuperLikeTitle -> "10 Super Likes per day"
+            StaticTextId.UiId.BenefitSuperLikeBody -> "Stand out and get more attention"
+            StaticTextId.UiId.BenefitReturnsTitle -> "Rewind"
+            StaticTextId.UiId.BenefitReturnsBody -> "Made a mistake? Go back and give them another chance"
+            StaticTextId.UiId.BenefitShowLikesTitle -> "Who liked you"
+            StaticTextId.UiId.BenefitShowLikesBody -> "See who likes you"
         }
     }
 

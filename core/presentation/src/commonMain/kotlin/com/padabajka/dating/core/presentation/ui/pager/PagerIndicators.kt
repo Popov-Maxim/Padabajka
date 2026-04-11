@@ -21,10 +21,14 @@ import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.mainColor
 
 @Composable
-fun PagerIndicators(modifier: Modifier, pagerData: PagerData) {
+fun PagerIndicators(
+    modifier: Modifier,
+    pagerData: PagerData,
+    color: Color = CoreColors.background.mainColor
+) {
     Row(modifier = modifier) {
         pagerData.getPageTypes(RADIUS).onEach {
-            AnimatedPageIndicator(it)
+            AnimatedPageIndicator(it, color)
             Spacer(Modifier.width(2.dp))
         }
     }
@@ -67,7 +71,7 @@ private enum class PageType {
 }
 
 @Composable
-private fun AnimatedPageIndicator(pageType: PageType) {
+private fun AnimatedPageIndicator(pageType: PageType, color: Color) {
     val targetWidth = when (pageType) {
         PageType.Selected -> 50.dp
         PageType.Unselected -> 15.dp
@@ -80,9 +84,9 @@ private fun AnimatedPageIndicator(pageType: PageType) {
     )
 
     val targetColor = when (pageType) {
-        PageType.Selected -> CoreColors.background.mainColor
+        PageType.Selected -> color
         PageType.Unselected,
-        PageType.Fars -> CoreColors.background.mainColor.copy(alpha = 0.5f)
+        PageType.Fars -> color.copy(alpha = 0.5f)
     }
 
     val animatedColor by animateColorAsState(
