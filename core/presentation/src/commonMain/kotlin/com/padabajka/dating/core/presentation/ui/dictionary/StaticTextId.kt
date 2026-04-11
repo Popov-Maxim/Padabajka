@@ -180,6 +180,19 @@ sealed interface StaticTextId {
         CardDeckEmptyProfiles(rawId = "card_deck_empty_profiles"),
         CardDeckFrozenProfile(rawId = "card_deck_frozen_profile"),
         Unfreeze(rawId = "unfreeze"),
+
+        // Subscription
+        SubscriptionFootnote(rawId = "subscription_footnote"),
+        Month(rawId = "month"),
+        Discount(rawId = "discount"),
+        Until(rawId = "until"),
+
+        BenefitSuperLikeTitle(rawId = "benefit_super_like_title"),
+        BenefitSuperLikeBody(rawId = "benefit_super_like_body"),
+        BenefitReturnsTitle(rawId = "benefit_returns_title"),
+        BenefitReturnsBody(rawId = "benefit_returns_body"),
+        BenefitShowLikesTitle(rawId = "benefit_show_likes_title"),
+        BenefitShowLikesBody(rawId = "benefit_show_likes_body"),
         ;
         override val id: String = listOfNotNull(rawId, "ui_id")
             .joinToString(separator = "_")

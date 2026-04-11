@@ -15,7 +15,9 @@ class SubscriptionScreenComponent(
     context,
     SubscriptionScreenState(
         monthSub = SubscriptionInfo(
-            price = "4.99$" // TODO: value for test
+            oldPrice = "4.99 $",
+            discount = 60,
+            price = "1.99 $" // TODO: value for test
         )
     )
 ) {
@@ -23,6 +25,7 @@ class SubscriptionScreenComponent(
     fun onEvent(event: SubscriptionEvent) {
         when (event) {
             SubscriptionEvent.Apply -> subscription()
+            SubscriptionEvent.NavigateBack -> navigateBack()
         }
     }
 

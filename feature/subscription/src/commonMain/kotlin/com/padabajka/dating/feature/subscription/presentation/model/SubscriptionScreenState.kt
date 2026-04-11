@@ -7,5 +7,7 @@ data class SubscriptionScreenState(
 ) : State
 
 data class SubscriptionInfo(
+    val oldPrice: String,
+    val discount: Int,
     val price: String
 )
