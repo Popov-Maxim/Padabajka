@@ -11,6 +11,9 @@ class LocalReactionDataSource {
     private val _reactionsToMe: MutableStateFlow<List<PersonReaction>> = MutableStateFlow(listOf())
     val reactionsToMe: Flow<List<PersonReaction>> = _reactionsToMe.asStateFlow()
 
+    fun setReactionsToMe(reactions: List<PersonReaction>) {
+        _reactionsToMe.value = reactions
+    }
     fun addReactionsToMe(reactions: List<PersonReaction>) {
         _reactionsToMe.update {
             it + reactions

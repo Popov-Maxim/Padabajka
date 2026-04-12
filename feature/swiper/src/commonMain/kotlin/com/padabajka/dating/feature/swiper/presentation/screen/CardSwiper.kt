@@ -14,13 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +29,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
+import com.padabajka.dating.core.presentation.ui.drawable.icon.Icon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.pager.ImagePager
 import com.padabajka.dating.core.presentation.ui.pager.PagerData
@@ -159,8 +156,8 @@ private fun PersonCard(
                         }
                     ) {
                         Icon(
-                            modifier = Modifier.size(34.dp),
-                            imageVector = Icons.Default.Refresh,
+                            modifier = Modifier.size(20.dp),
+                            iconData = CoreIcons.Swiper.Rewind.toData(),
                             contentDescription = "Return",
                         )
                     }
@@ -171,8 +168,8 @@ private fun PersonCard(
                         onClick = { onReaction(CardReaction.Dislike) }
                     ) {
                         Icon(
-                            modifier = Modifier.size(34.dp),
-                            imageVector = Icons.Default.Close,
+                            modifier = Modifier.size(28.dp),
+                            iconData = CoreIcons.Swiper.Dislike.toData(),
                             contentDescription = "Dislike",
                         )
                     }
@@ -184,7 +181,7 @@ private fun PersonCard(
                     ) {
                         Icon(
                             modifier = Modifier.size(34.dp),
-                            imageVector = Icons.Default.Favorite,
+                            iconData = CoreIcons.Swiper.Like.toData(),
                             tint = Color(color = 0xFF47C04C),
                             contentDescription = "Like",
                         )
@@ -198,8 +195,8 @@ private fun PersonCard(
                         }
                     ) {
                         Icon(
-                            modifier = Modifier.size(34.dp),
-                            imageVector = Icons.Default.Star,
+                            modifier = Modifier.size(25.dp),
+                            iconData = CoreIcons.Swiper.SuperLike.toData(),
                             tint = Color(color = 0xFF6C2D85),
                             contentDescription = "SuperLike",
                         )

@@ -119,3 +119,19 @@ internal val CoreRes.svg.notification_icon: String
 @OptIn(ExperimentalResourceApi::class)
 internal val CoreRes.svg.snowman: String
     get() = Res.getUri("drawable/snowman.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.cancel_icon: String
+    get() = Res.getUri("drawable/cancel_icon.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.rewind_icon: String
+    get() = Res.getUri("drawable/rewind_icon.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.swiper_like_icon: String
+    get() = Res.getUri("drawable/swiper_like_icon.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.swiper_super_like_icon: String
+    get() = Res.getUri("drawable/swiper_super_like_icon.svg")

@@ -8,10 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
@@ -38,6 +34,7 @@ import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
+import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
 import com.padabajka.dating.core.presentation.ui.layout.SimpleTopBar
 import com.padabajka.dating.core.presentation.ui.mainColor
@@ -125,19 +122,19 @@ private fun CardsBlock(modifier: Modifier = Modifier) {
     ) {
         val subBenefits = listOf(
             SubBenefitUiItem(
-                Icons.Default.Star.toData(),
+                CoreIcons.Swiper.SuperLike.toData(),
                 Color(color = 0xFF6C2D85),
                 StaticTextId.UiId.BenefitSuperLikeTitle.translate(),
                 StaticTextId.UiId.BenefitSuperLikeBody.translate()
             ),
             SubBenefitUiItem(
-                Icons.Default.Refresh.toData(),
+                CoreIcons.Swiper.Rewind.toData(),
                 LocalContentColor.current,
                 StaticTextId.UiId.BenefitReturnsTitle.translate(),
                 StaticTextId.UiId.BenefitReturnsBody.translate()
             ),
             SubBenefitUiItem(
-                Icons.Default.Favorite.toData(),
+                CoreIcons.Swiper.Like.toData(),
                 Color(color = 0xFF47C04C),
                 StaticTextId.UiId.BenefitShowLikesTitle.translate(),
                 StaticTextId.UiId.BenefitShowLikesBody.translate()
