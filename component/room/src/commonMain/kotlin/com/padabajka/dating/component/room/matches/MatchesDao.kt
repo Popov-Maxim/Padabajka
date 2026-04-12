@@ -15,7 +15,7 @@ interface MatchesDao {
     fun matches(): Flow<List<MatchEntry>>
 
     @Query("SELECT * FROM matches WHERE chatId = :chatId LIMIT 1")
-    fun findMatch(chatId: String): Flow<MatchEntry>
+    fun findMatch(chatId: String): Flow<MatchEntry> // TODO: can be nullable
 
     @Query("SELECT * FROM matches WHERE id = :id LIMIT 1")
     suspend fun getMatch(id: String): MatchEntry?

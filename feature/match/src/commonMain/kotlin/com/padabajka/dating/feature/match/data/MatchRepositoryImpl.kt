@@ -20,7 +20,7 @@ class MatchRepositoryImpl(
     private val remoteMatchDataSource: RemoteMatchDataSource,
     private val personRepository: PersonRepository
 ) : MatchRepository {
-    override suspend fun matches(): Flow<List<Match>> {
+    override fun matches(): Flow<List<Match>> {
         return localMatchDataSource.matches().map {
             it.mapNotNull { match ->
                 val personId = PersonId(match.personId)
