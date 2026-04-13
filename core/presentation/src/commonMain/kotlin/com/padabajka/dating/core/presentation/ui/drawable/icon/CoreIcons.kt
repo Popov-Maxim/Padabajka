@@ -9,6 +9,7 @@ import com.padabajka.dating.core.presentation.ui.resource.drawable.app_logo
 import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_left_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_right_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.camera_icon
+import com.padabajka.dating.core.presentation.ui.resource.drawable.cancel_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.faq_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.google_logo
 import com.padabajka.dating.core.presentation.ui.resource.drawable.language_icon
@@ -27,10 +28,13 @@ import com.padabajka.dating.core.presentation.ui.resource.drawable.message_sent
 import com.padabajka.dating.core.presentation.ui.resource.drawable.notification_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.profile_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.reaction_like
+import com.padabajka.dating.core.presentation.ui.resource.drawable.rewind_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.search_pref_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.smoking_lifestyle
 import com.padabajka.dating.core.presentation.ui.resource.drawable.snowman
 import com.padabajka.dating.core.presentation.ui.resource.drawable.swiper_icon
+import com.padabajka.dating.core.presentation.ui.resource.drawable.swiper_like_icon
+import com.padabajka.dating.core.presentation.ui.resource.drawable.swiper_super_like_icon
 import com.padabajka.dating.core.presentation.ui.resource.painterResource
 
 object CoreIcons {
@@ -154,6 +158,24 @@ object CoreIcons {
         val Snowman
             @Composable
             get() = painterResource(CoreRes.svg.snowman)
+    }
+
+    object Swiper {
+        val Rewind
+            @Composable
+            get() = painterResource(CoreRes.svg.rewind_icon)
+
+        val Dislike
+            @Composable
+            get() = painterResource(CoreRes.svg.cancel_icon)
+
+        val Like
+            @Composable
+            get() = painterResource(CoreRes.svg.swiper_like_icon)
+
+        val SuperLike
+            @Composable
+            get() = painterResource(CoreRes.svg.swiper_super_like_icon)
     }
 
     val AppLogo

@@ -68,7 +68,8 @@ private val dataModule = module {
             scope = get(),
             remoteReactionDataSource = get(),
             localReactionDataSource = get(),
-            authRepository = get()
+            authRepository = get(),
+            matchRepository = get()
         )
     }
 
