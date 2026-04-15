@@ -48,12 +48,12 @@ import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
 import com.padabajka.dating.core.presentation.ui.image.CoreAsyncImage
+import com.padabajka.dating.core.presentation.ui.image.raw
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
-import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.image.rememberImagePicker
 import com.padabajka.dating.feature.profile.presentation.ProfileViewBottomSheet
 import com.padabajka.dating.feature.profile.presentation.editor.asset.DetailsBlock
@@ -66,7 +66,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.AboutMeFie
 import com.padabajka.dating.feature.profile.presentation.editor.model.DeleteImageEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.DetailFields
 import com.padabajka.dating.feature.profile.presentation.editor.model.DiscardProfileUpdatesClickEvent
-import com.padabajka.dating.feature.profile.presentation.editor.model.ImageAddEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.ImageSelectedEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.LookingForUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.NavigateBackEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorEvent
@@ -208,7 +208,7 @@ private fun ImageFields(
                         image = image,
                         modifier = fieldModifier,
                         onChange = {
-                            component.onEvent(ImageAddEvent(it, i))
+                            component.onEvent(ImageSelectedEvent(it, i))
                         },
                         delete = {
                             if (image != null) {
@@ -227,7 +227,7 @@ fun ImageField(
     image: Image?,
     modifier: Modifier = Modifier,
     iconSize: Dp = 50.dp,
-    onChange: (Image) -> Unit = {},
+    onChange: (Image.Local) -> Unit = {},
     delete: () -> Unit = {}
 ) {
     val fieldModifier = modifier.aspectRatio(ratio = 3f / 4)
@@ -257,7 +257,7 @@ private fun ProfileImage(
     modifier: Modifier,
     image: Image,
     delete: () -> Unit,
-    onChange: (Image) -> Unit = {},
+    onChange: (Image.Local) -> Unit = {},
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
@@ -305,7 +305,7 @@ private fun ProfileImage(
 private fun ImageField(
     modifier: Modifier = Modifier,
     iconSize: Dp = 50.dp, // TODO: change on padding for icon size
-    onChange: (Image) -> Unit
+    onChange: (Image.Local) -> Unit
 ) {
     val imagePicker = rememberImagePicker { uri ->
         uri?.let {

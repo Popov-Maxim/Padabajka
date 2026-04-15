@@ -52,10 +52,10 @@ import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.drawable.icon.Icon
 import com.padabajka.dating.core.presentation.ui.drawable.icon.IconData
 import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
+import com.padabajka.dating.core.presentation.ui.image.raw
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
-import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.core.utils.safeCast
 import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent

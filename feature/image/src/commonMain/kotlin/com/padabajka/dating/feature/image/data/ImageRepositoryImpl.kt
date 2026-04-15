@@ -15,7 +15,7 @@ class ImageRepositoryImpl(
     }
 
     override suspend fun getLocalImage(image: Image.Local): Image.ByteArray {
-        val array = localImageDataSource.getImage(image.data)
+        val array = localImageDataSource.getImage(image.data, image.rect)
         return Image.ByteArray(array)
     }
 }

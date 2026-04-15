@@ -13,6 +13,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Matches -> "Matches"
             StaticTextId.UiId.Chats -> "Chats"
             StaticTextId.UiId.Likes -> "Likes"
+            StaticTextId.UiId.CropPhoto -> "Crop photo"
             StaticTextId.UiId.Name -> "Name"
             StaticTextId.UiId.LogOut -> "Logout"
             StaticTextId.UiId.General -> "General"

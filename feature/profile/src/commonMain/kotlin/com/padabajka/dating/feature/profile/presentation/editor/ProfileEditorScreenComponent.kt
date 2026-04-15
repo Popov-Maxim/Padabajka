@@ -26,6 +26,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.DiscardPro
 import com.padabajka.dating.feature.profile.presentation.editor.model.FoundedAssets
 import com.padabajka.dating.feature.profile.presentation.editor.model.HideAchievementClickEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ImageAddEvent
+import com.padabajka.dating.feature.profile.presentation.editor.model.ImageSelectedEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.InterestSearchQueryChangedEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.InterestUpdateEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.LangSearchQueryChangedEvent
@@ -57,6 +58,7 @@ import kotlinx.collections.immutable.toPersistentList
 class ProfileEditorScreenComponent(
     context: ComponentContext,
     private val navigateBack: () -> Unit,
+    private val cropImage: (image: Image.Local, index: Int) -> Unit,
     private val profileRepository: ProfileRepository,
     saveUpdatedProfileUseCaseFactory: Factory<SaveUpdatedProfileUseCase>,
     getLocalImageUseCaseFactory: Factory<GetLocalImageUseCase>,
@@ -85,6 +87,7 @@ class ProfileEditorScreenComponent(
             is MakeAchievementMainClickEvent -> makeAchievementMain(event.achievement)
             RemoveMainAchievementClickEvent -> makeAchievementMain(null)
             is ImageAddEvent -> addImage(event.image, event.index)
+            is ImageSelectedEvent -> cropImage(event.image, event.index)
             ConsumeInternalErrorEvent -> consumeInternalError()
             // TODO: add details and images events
             NavigateBackEvent -> navigateBack()

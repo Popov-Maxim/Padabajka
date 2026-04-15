@@ -8,4 +8,4 @@ interface ImagePicker {
 }
 
 @Composable
-expect fun rememberImagePicker(onResult: (Image?) -> Unit): ImagePicker
+expect fun rememberImagePicker(onResult: (Image.Local?) -> Unit): ImagePicker

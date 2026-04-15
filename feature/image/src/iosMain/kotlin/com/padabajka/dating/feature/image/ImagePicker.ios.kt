@@ -3,7 +3,6 @@ package com.padabajka.dating.feature.image
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.padabajka.dating.core.repository.api.model.profile.Image
-import com.padabajka.dating.core.repository.api.model.profile.ImageData
 import platform.UIKit.UIApplication
 import platform.UIKit.UIImage
 import platform.UIKit.UIImagePickerController
@@ -23,7 +22,7 @@ class ImagePickerImpl(
 }
 
 @Composable
-actual fun rememberImagePicker(onResult: (Image?) -> Unit): ImagePicker {
+actual fun rememberImagePicker(onResult: (Image.Local?) -> Unit): ImagePicker {
     val imagePicker = remember {
         UIImagePickerController()
     }
@@ -40,7 +39,7 @@ actual fun rememberImagePicker(onResult: (Image?) -> Unit): ImagePicker {
                     UIImagePickerControllerOriginalImage
                 ) as? UIImage
                 val image = uiImage
-                    ?.run { ImageData(this) }
+                    ?.run { ImageDataImpl(this) }
                     ?.run { Image.Local(this) }
 
                 onResult.invoke(image)

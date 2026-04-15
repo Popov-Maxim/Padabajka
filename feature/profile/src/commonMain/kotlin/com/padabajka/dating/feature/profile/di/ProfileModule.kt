@@ -46,7 +46,6 @@ import com.padabajka.dating.feature.profile.domain.update.UpdateLookingForUseCas
 import com.padabajka.dating.feature.profile.domain.update.UpdateMainImageUseCase
 import com.padabajka.dating.feature.profile.domain.update.UpdateUserGenderUseCase
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
-import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -176,19 +175,6 @@ private val presentationModule = module {
             openEditor = parameters.get(),
             openLikesMeScreen = parameters.get(),
             profileRepository = get()
-        )
-    }
-
-    factory<ProfileEditorScreenComponent> { parameters ->
-        ProfileEditorScreenComponent(
-            context = parameters.get(),
-            navigateBack = parameters.get(),
-            profileRepository = get(),
-            saveUpdatedProfileUseCaseFactory = { get() },
-            getLocalImageUseCaseFactory = { get() },
-            findCitiesUseCase = get(),
-            findLanguageAssetsUseCase = get(),
-            findInterestAssetsUseCase = get()
         )
     }
 }

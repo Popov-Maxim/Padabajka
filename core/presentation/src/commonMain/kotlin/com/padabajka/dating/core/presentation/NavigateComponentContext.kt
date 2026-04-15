@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.active
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
@@ -63,6 +64,15 @@ abstract class NavigateComponentContext<Config : Any, Child : Any>(
     protected fun navigateBack() {
         navigateScope.launch {
             navigation.pop()
+        }
+    }
+
+    protected fun navigateBackWithResult(onPopFinish: (Child) -> Unit) {
+        navigateScope.launch {
+            navigation.pop {
+                val newActive = childStack.active.instance
+                onPopFinish(newActive)
+            }
         }
     }
 

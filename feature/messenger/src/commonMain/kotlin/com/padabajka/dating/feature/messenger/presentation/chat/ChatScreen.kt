@@ -23,8 +23,8 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.ProfileAvatar
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
+import com.padabajka.dating.core.presentation.ui.image.raw
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
-import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteChatEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteMatchEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.Field
