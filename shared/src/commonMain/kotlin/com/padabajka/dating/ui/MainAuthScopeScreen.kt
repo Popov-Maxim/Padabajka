@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.NavigateComponentContext
+import com.padabajka.dating.feature.image.presentation.ImageCropScreen
 import com.padabajka.dating.feature.messenger.presentation.MessengerScreen
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatScreen
 import com.padabajka.dating.feature.profile.presentation.ProfileScreen
@@ -58,6 +59,9 @@ fun MainAuthScopeScreen(component: MainAuthScopeNavigateComponent) {
 
             is MainAuthScopeNavigateComponent.Child.SubscriptionScreen ->
                 SubscriptionScreen(instance.component)
+
+            is MainAuthScopeNavigateComponent.Child.ImageCropScreen ->
+                ImageCropScreen(instance.component)
         }
     }
 }

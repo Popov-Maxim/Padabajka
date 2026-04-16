@@ -4,12 +4,15 @@ import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
+import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.deeplink.AppDeeplink
+import com.padabajka.dating.feature.image.presentation.ImageCropScreenComponent
 import com.padabajka.dating.feature.messenger.presentation.MessengerComponent
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatComponent
 import com.padabajka.dating.feature.messenger.presentation.model.MatchItem
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
+import com.padabajka.dating.feature.profile.presentation.editor.model.ImageAddEvent
 import com.padabajka.dating.feature.reaction.screen.presentation.LikesMeScreenComponent
 import com.padabajka.dating.feature.subscription.presentation.SubscriptionScreenComponent
 import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
@@ -54,6 +57,7 @@ class MainAuthScopeNavigateComponent(
             is AppDeeplink.OpenChat -> {
                 navigate(Configuration.ChatScreen(deeplink.chatId))
             }
+
             AppDeeplink.OpenLikes -> openLikes()
         }
     }
@@ -89,12 +93,19 @@ class MainAuthScopeNavigateComponent(
             )
 
             Configuration.ProfileEditorScreen -> Child.ProfileEditorScreen(
-                component = get {
-                    parametersOf(
-                        context,
-                        ::navigateBack
-                    )
-                }
+                component = ProfileEditorScreenComponent(
+                    context = context,
+                    navigateBack = ::navigateBack,
+                    cropImage = { image, index ->
+                        navigate(Configuration.ImageCropScreen(image, index))
+                    },
+                    profileRepository = get(),
+                    saveUpdatedProfileUseCaseFactory = { get() },
+                    getLocalImageUseCaseFactory = { get() },
+                    findCitiesUseCase = get(),
+                    findLanguageAssetsUseCase = get(),
+                    findInterestAssetsUseCase = get(),
+                )
             )
 
             Configuration.SettingScreen -> Child.SettingScreen(
@@ -144,6 +155,23 @@ class MainAuthScopeNavigateComponent(
                     subscriptionRepository = get()
                 )
             )
+
+            is Configuration.ImageCropScreen -> Child.ImageCropScreen(
+                component = ImageCropScreenComponent(
+                    componentContext = context,
+                    image = configuration.image,
+                    navigateBack = ::navigateBack,
+                    onImageCropped = { rect ->
+                        navigateBackWithResult { child ->
+                            if (child is Child.ProfileEditorScreen) {
+                                val image = configuration.image.copy(rect = rect)
+
+                                child.component.onEvent(ImageAddEvent(image, configuration.index))
+                            }
+                        }
+                    }
+                )
+            )
         }
     }
 
@@ -151,6 +179,7 @@ class MainAuthScopeNavigateComponent(
         data class ProfileEditorScreen(val component: ProfileEditorScreenComponent) : Child
         data class SettingScreen(val component: SettingsScopeNavigateComponent) : Child
         data class SubscriptionScreen(val component: SubscriptionScreenComponent) : Child
+        data class ImageCropScreen(val component: ImageCropScreenComponent) : Child
 
         data class SwiperScreen(val component: SwiperScreenComponent) : Child
         data class ProfileScreen(val component: ProfileScreenComponent) : Child
@@ -187,5 +216,8 @@ class MainAuthScopeNavigateComponent(
 
         @Serializable
         data object SubscriptionScreen : Configuration
+
+        @Serializable
+        data class ImageCropScreen(val image: Image.Local, val index: Int) : Configuration
     }
 }

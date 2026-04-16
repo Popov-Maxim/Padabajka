@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import com.padabajka.dating.core.presentation.ui.image.CoreAsyncImage
+import com.padabajka.dating.core.presentation.ui.image.raw
 import com.padabajka.dating.core.repository.api.model.profile.Image
-import com.padabajka.dating.core.repository.api.model.profile.raw
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.launch
 

@@ -1,5 +1,6 @@
 package com.padabajka.dating.core.repository.api.model.profile
 
+import com.padabajka.dating.core.repository.api.model.common.CoreRect
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -8,14 +9,13 @@ sealed interface Image {
     data class Url(val value: String) : Image
 
     // TODO(Image): create ui image and move local in ui?
-    data class Local(val data: ImageData) : Image
+    @Serializable
+    data class Local(val data: ImageData, val rect: CoreRect? = null) : Image
     data class ByteArray(val value: kotlin.ByteArray) : Image
 }
 
-fun Image.raw(): Any? {
-    return when (this) {
-        is Image.ByteArray -> value
-        is Image.Local -> null
-        is Image.Url -> value
-    }
-}
+@Serializable
+data class Size(
+    val width: Int,
+    val height: Int
+)

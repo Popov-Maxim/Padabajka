@@ -12,6 +12,7 @@ sealed interface StaticTextId {
         Matches(rawId = "matches"),
         Chats(rawId = "chats"),
         Likes(rawId = "likes"),
+        CropPhoto(rawId = "crop_photo"),
 
         // Setting screen
         Name(rawId = "name"),

@@ -13,6 +13,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Matches -> "Метчи"
             StaticTextId.UiId.Chats -> "Чаты"
             StaticTextId.UiId.Likes -> "Лайки"
+            StaticTextId.UiId.CropPhoto -> "Обрезать фото"
             StaticTextId.UiId.Name -> "Имя"
             StaticTextId.UiId.LogOut -> "Выйти"
             StaticTextId.UiId.General -> "Общее"

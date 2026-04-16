@@ -1,10 +1,13 @@
 package com.padabajka.dating.feature.image
 
+import com.padabajka.dating.core.repository.api.model.common.CoreRect
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.useContents
 import kotlinx.cinterop.usePinned
+import platform.CoreGraphics.CGRect
+import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGSize
 import platform.Foundation.NSData
 import platform.Foundation.dataWithBytes
@@ -30,6 +33,20 @@ private fun NSData.toByteArray(): ByteArray {
             memcpy(it.addressOf(0), this@toByteArray.bytes, this@toByteArray.length)
         }
     }
+}
+
+@OptIn(ExperimentalForeignApi::class)
+fun CoreRect.toImageRect(
+    imageScale: Double
+): CValue<CGRect> {
+    val scale = imageScale
+
+    return CGRectMake(
+        x = left * scale,
+        y = top * scale,
+        width = (right - left) * scale,
+        height = (bottom - top) * scale
+    )
 }
 
 @OptIn(ExperimentalForeignApi::class)

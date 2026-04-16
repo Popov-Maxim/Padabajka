@@ -19,6 +19,7 @@ data class LookingForUpdateEvent(val data: LookingForData) : ProfileEditorEvent
 
 data class ImageAddEvent(val image: Image, val index: Int) : ProfileEditorEvent
 data class DeleteImageEvent(val image: Image) : ProfileEditorEvent
+data class ImageSelectedEvent(val image: Image.Local, val index: Int) : ProfileEditorEvent
 
 data class HideAchievementClickEvent(val achievement: Achievement) : ProfileEditorEvent
 data class MakeAchievementVisibleClickEvent(val achievement: Achievement) : ProfileEditorEvent

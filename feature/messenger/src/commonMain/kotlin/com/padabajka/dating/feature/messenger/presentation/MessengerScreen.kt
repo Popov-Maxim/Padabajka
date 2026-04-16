@@ -38,9 +38,9 @@ import com.padabajka.dating.core.presentation.ui.ProfileAvatar
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
+import com.padabajka.dating.core.presentation.ui.image.raw
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
-import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.messenger.presentation.model.ChatItem
 import com.padabajka.dating.feature.messenger.presentation.model.EmptyChatItem
 import com.padabajka.dating.feature.messenger.presentation.model.MessengerEvent

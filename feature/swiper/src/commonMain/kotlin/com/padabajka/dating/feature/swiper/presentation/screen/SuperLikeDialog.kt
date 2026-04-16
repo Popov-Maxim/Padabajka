@@ -32,9 +32,9 @@ import com.padabajka.dating.core.presentation.ui.ProfileAvatar
 import com.padabajka.dating.core.presentation.ui.SubscriptionUIItem
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
+import com.padabajka.dating.core.presentation.ui.image.raw
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.hideKeyboardOnTap
-import com.padabajka.dating.core.repository.api.model.profile.raw
 import com.padabajka.dating.feature.swiper.presentation.model.PersonItem
 
 @OptIn(ExperimentalMaterial3Api::class)
