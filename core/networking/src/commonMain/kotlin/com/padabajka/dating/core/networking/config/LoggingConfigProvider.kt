@@ -18,6 +18,7 @@ class LoggingConfigProvider : KtorConfigProvider.Static {
 
     override val config: HttpClientConfig<HttpClientEngineConfig>
         get() = httpClientConfig {
+            install(FirebasePlugin)
             install(requestLoggingPlugin)
 
             install(ResponseObserver) {
