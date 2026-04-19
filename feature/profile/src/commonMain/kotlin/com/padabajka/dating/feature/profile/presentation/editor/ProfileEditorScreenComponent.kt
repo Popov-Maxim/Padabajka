@@ -67,6 +67,7 @@ class ProfileEditorScreenComponent(
     private val findInterestAssetsUseCase: FindInterestAssetsUseCase
 ) : BaseComponent<ProfileEditorState>(
     context,
+    "profile_editor",
     initProfileState(profileRepository)
 ) {
 

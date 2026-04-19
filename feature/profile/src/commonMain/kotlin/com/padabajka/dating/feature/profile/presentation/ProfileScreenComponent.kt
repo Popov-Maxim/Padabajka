@@ -19,6 +19,7 @@ class ProfileScreenComponent(
     private val profileRepository: ProfileRepository
 ) : BaseComponent<ProfileState>(
     context,
+    "profile",
     ProfileState(value = initProfileState(profileRepository))
 ) {
 

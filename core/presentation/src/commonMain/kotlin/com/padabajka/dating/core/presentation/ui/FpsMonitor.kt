@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Modifier
@@ -18,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.padabajka.dating.core.repository.api.AppSettingsRepository
 import com.padabajka.dating.core.repository.api.model.settings.DebugAppSettings
+import com.padabajka.dating.feature.infra.FrameObserver
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import kotlin.math.min
 
@@ -30,11 +33,12 @@ fun FpsMonitor(
     val settings: AppSettingsRepository = koinInject()
     val debugAppSettings by settings.debugAppSettings.collectAsState(initial = DebugAppSettings())
     val showFps = debugAppSettings.showFps
-    if (showFps.not()) return
 
     var fps: Int? by remember { mutableStateOf(null) }
     var minFps: Int? by remember { mutableStateOf(null) }
     var cFps: Int? by remember { mutableStateOf(null) }
+    val frameObserver: FrameObserver = koinInject()
+    val coroutineContext = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         var frameCount = 0
@@ -44,7 +48,13 @@ fun FpsMonitor(
         while (true) {
             withFrameMillis { millis ->
                 lastTime = lastTime?.let {
-                    cFps = SECOND_IN_MILLIS / (millis - it).toInt()
+                    val frameTime = millis - it
+                    if (frameTime != 0L) {
+                        coroutineContext.launch {
+                            frameObserver.onFrame(millis - it)
+                        }
+                        cFps = SECOND_IN_MILLIS / (millis - it).toInt()
+                    }
                     millis
                 } ?: millis
 
@@ -64,6 +74,7 @@ fun FpsMonitor(
             }
         }
     }
+    if (showFps.not()) return
 
     Box(
         modifier = modifier

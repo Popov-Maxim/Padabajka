@@ -54,6 +54,7 @@ class SwiperScreenComponent(
     private val returnLastCardUseCase: ReturnLastCardUseCase
 ) : BaseComponent<SwiperState>(
     context,
+    "swiper",
     SwiperState(
         cardDeck = CardDeck(),
         cardDeckState = CardDeckState.Idle,

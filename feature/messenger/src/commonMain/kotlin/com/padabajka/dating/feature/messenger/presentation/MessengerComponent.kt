@@ -31,6 +31,7 @@ class MessengerComponent(
     private val userPresenceRepository: UserPresenceRepository
 ) : BaseComponent<MessengerState>(
     context,
+    "messenger",
     MessengerState(persistentListOf(), persistentListOf())
 ) {
 

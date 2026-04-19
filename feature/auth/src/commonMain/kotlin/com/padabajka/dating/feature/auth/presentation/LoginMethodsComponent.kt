@@ -11,7 +11,7 @@ class LoginMethodsComponent(
     private val goToEmailMethodScreen: () -> Unit,
     private val goToDebugMethodScreen: () -> Unit,
     private val googleLoginUseCase: GoogleLoginUseCase,
-) : BaseComponent<EmptyState>(context, EmptyState) {
+) : BaseComponent<EmptyState>(context, "login_methods", EmptyState) {
     fun onEvent(event: LoginMethodEvent) {
         when (event) {
             LoginMethodEvent.SelectEmailMethod -> goToEmailMethodScreen()

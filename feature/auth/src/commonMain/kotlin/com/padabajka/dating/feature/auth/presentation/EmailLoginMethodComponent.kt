@@ -18,7 +18,7 @@ class EmailLoginMethodComponent(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val loginEmailOnlyUseCase: LoginEmailOnlyUseCase,
     private val openMailAppUseCase: OpenMailAppUseCase
-) : BaseComponent<LoggingInState>(context, LoggingInState()) {
+) : BaseComponent<LoggingInState>(context, "email_login_method", LoggingInState()) {
 
     fun onEvent(event: EmailLoginMethodEvent) {
         when (event) {

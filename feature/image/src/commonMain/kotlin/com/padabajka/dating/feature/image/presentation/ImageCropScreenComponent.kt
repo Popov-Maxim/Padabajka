@@ -19,6 +19,7 @@ class ImageCropScreenComponent(
     private val onImageCropped: (CoreRect) -> Unit
 ) : BaseComponent<ImageCropState>(
     componentContext,
+    "image_crop",
     ImageCropState(image)
 ) {
     fun onEvent(event: ImageCropEvent) {

@@ -17,7 +17,7 @@ class VerificationComponent(
     context: ComponentContext,
     sendEmailVerificationUseCaseFactory: Factory<SendEmailVerificationUseCase>,
     reloadUserUseCaseFactory: Factory<ReloadUserUseCase>
-) : BaseComponent<VerificationState>(context, VerificationState(ResendState.Available)) {
+) : BaseComponent<VerificationState>(context, "verification", VerificationState(ResendState.Available)) {
 
     private val sendEmailVerificationUseCase by sendEmailVerificationUseCaseFactory.delegate()
     private val reloadUserUseCase by reloadUserUseCaseFactory.delegate()

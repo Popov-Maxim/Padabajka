@@ -18,6 +18,7 @@ class CreateProfileNameScreenComponent(
     private val toNext: () -> Unit
 ) : BaseComponent<CreateProfileNameState>(
     context,
+    "create_profile_name",
     initState(draftProfileProvider)
 ) {
 

@@ -35,6 +35,7 @@ class SettingScreenComponent(
     settingsComponentProvider: AppSettingsComponentProvider
 ) : BaseComponent<SettingsState>(
     context,
+    "setting",
     SettingsState(
         selectedLanguage = Language.Static.EN
     )

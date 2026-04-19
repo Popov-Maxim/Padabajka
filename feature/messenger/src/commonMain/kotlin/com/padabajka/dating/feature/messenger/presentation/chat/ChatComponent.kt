@@ -70,7 +70,11 @@ class ChatComponent(
     private val matchRepository: MatchRepository,
     private val userPresenceRepository: UserPresenceRepository,
     private val toggleMessageReactionUseCase: ToggleMessageReactionUseCase
-) : BaseComponent<ChatState>(context, initChatState(matchItem, userPresenceRepository)) {
+) : BaseComponent<ChatState>(
+    context,
+    "chat",
+    initChatState(matchItem, userPresenceRepository)
+) {
 
     private val chatMessagesUseCase by chatMessagesUseCaseFactory.delegate()
     private val sendMessageUseCase by sendMessageUseCaseFactory.delegate()
