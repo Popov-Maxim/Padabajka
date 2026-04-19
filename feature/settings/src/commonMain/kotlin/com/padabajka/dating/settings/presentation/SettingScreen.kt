@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.permission.NotificationPermissionController
-import com.padabajka.dating.core.presentation.isDebugBuild
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.SimpleConfirmDialog
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
@@ -36,6 +35,7 @@ import com.padabajka.dating.core.presentation.ui.drawable.icon.IconData
 import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
 import com.padabajka.dating.core.presentation.ui.layout.SimpleTopBar
 import com.padabajka.dating.core.repository.api.model.dictionary.Language
+import com.padabajka.dating.core.utils.isDebugBuild
 import com.padabajka.dating.settings.presentation.model.DeleteAccountEvent
 import com.padabajka.dating.settings.presentation.model.FreezeAccountEvent
 import com.padabajka.dating.settings.presentation.model.LogOutEvent
@@ -96,7 +96,7 @@ private fun GeneralSetting(
             text = "AppSettings",
             secondText = null,
             onClick = { showDialog = true }
-        ).takeIf { isDebugBuild() },
+        ).takeIf { isDebugBuild },
         SettingButtonData(
             iconData = IconData.Empty,
             text = StaticTextId.UiId.Subscription.translate(),

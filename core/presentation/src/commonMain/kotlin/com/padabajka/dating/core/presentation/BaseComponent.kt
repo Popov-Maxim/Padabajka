@@ -8,6 +8,7 @@ import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.lifecycle.doOnPause
 import com.arkivanov.essenty.lifecycle.doOnResume
 import com.arkivanov.essenty.lifecycle.doOnStop
+import com.padabajka.dating.core.utils.isDebugBuild
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.crashlytics.crashlytics
 import kotlinx.coroutines.CoroutineScope
@@ -76,7 +77,7 @@ abstract class BaseComponent<T : State>(
         } catch (e: Throwable) {
             println("${this::class.simpleName} exception in mapAndReduce: ${e.message}")
             e.printStackTrace()
-            if (isDebugBuild()) {
+            if (isDebugBuild) {
                 throw e
             } else {
                 Firebase.crashlytics.recordException(e)

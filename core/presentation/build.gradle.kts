@@ -32,7 +32,7 @@ kotlin {
             implementation(projects.core.networking)
             implementation(projects.core.repositoryApi)
             implementation(projects.core.domain)
-            implementation(projects.core.utils)
+            api(projects.core.utils)
             implementation(projects.feature.infra)
             api(compose.runtime)
             api(compose.foundation)

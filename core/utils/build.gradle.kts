@@ -13,6 +13,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
+    jvmToolchain(11)
 
     listOf(
         iosX64(),
@@ -38,4 +39,5 @@ android {
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()
     }
+    buildFeatures.buildConfig = true
 }
