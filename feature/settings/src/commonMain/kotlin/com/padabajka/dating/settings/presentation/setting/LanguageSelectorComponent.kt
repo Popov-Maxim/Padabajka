@@ -15,6 +15,7 @@ class LanguageSelectorComponent(
     private val appSettingsComponentProvider: AppSettingsComponentProvider
 ) : BaseComponent<LanguageState>(
     context,
+    "language_selector",
     LanguageState(Language.Static.EN)
 ) {
 

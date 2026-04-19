@@ -24,6 +24,7 @@ class LikesMeScreenComponent(
     private val subscriptionRepository: SubscriptionRepository
 ) : BaseComponent<LikesMeState>(
     context,
+    "likes_me",
     LikesMeState(
         listReactions = ListReactions.Idle,
         subscriptionFeature = subscriptionRepository.subscriptionStateValue.toUI()

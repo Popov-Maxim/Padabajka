@@ -13,6 +13,7 @@ class SubscriptionScreenComponent(
     private val subscriptionRepository: SubscriptionRepository
 ) : BaseComponent<SubscriptionScreenState>(
     context,
+    "subscription",
     SubscriptionScreenState(
         monthSub = SubscriptionInfo(
             oldPrice = "4.99 $",

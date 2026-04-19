@@ -53,6 +53,7 @@ kotlin {
             implementation(projects.component.room)
             implementation(projects.core.platform.systemIntent)
             implementation(projects.core.sync)
+            implementation(projects.feature.infra)
 
             implementation(libs.gitlive.firebase.auth)
             implementation(libs.gitlive.firebase.perf)

@@ -17,6 +17,7 @@ class CreateProfileImageScreenComponent(
     private val toNext: () -> Unit
 ) : BaseComponent<CreateProfileImageState>(
     context = context,
+    screenName = "create_profile_image",
     initialState = initState(draftProfileProvider)
 ) {
 

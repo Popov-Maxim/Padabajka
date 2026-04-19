@@ -13,6 +13,7 @@ class PermissionComponent(
     private val onSkipped: () -> Unit,
 ) : BaseComponent<EmptyState>(
     context,
+    "permission",
     EmptyState
 ) {
     fun onEvent(event: PermissionEvent) {

@@ -5,6 +5,8 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnDestroy
+import com.arkivanov.essenty.lifecycle.doOnPause
+import com.arkivanov.essenty.lifecycle.doOnResume
 import com.arkivanov.essenty.lifecycle.doOnStop
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.crashlytics.crashlytics
@@ -14,9 +16,20 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.parameter.parametersOf
 import kotlin.coroutines.cancellation.CancellationException
 
-abstract class BaseComponent<T : State>(context: ComponentContext, initialState: T) :
+abstract class BaseComponent<T : State>(
+    context: ComponentContext,
+    screenName: String,
+    initialState: T,
+    koinComponent: KoinComponent = object : KoinComponent {},
+    private val lifecycleListener: ComponentLifecycleListener = koinComponent.get {
+        parametersOf(screenName)
+    }
+) :
     ComponentContext by context {
 
     protected val componentScope: CoroutineScope =
@@ -32,7 +45,15 @@ abstract class BaseComponent<T : State>(context: ComponentContext, initialState:
         context.lifecycle.doOnDestroy {
             componentScope.cancel("Component destroyed")
         }
-        context.lifecycle.doOnStop { onStopped() }
+        context.lifecycle.doOnResume {
+            lifecycleListener.onResume()
+        }
+        context.lifecycle.doOnPause {
+            lifecycleListener.onPause()
+        }
+        context.lifecycle.doOnStop {
+            onStopped()
+        }
     }
 
     protected fun reduce(update: (state: T) -> T): Job = reducerScope.launch {

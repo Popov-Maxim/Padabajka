@@ -22,6 +22,7 @@ class CreateProfileBirthdayScreenComponent(
     private val toNext: () -> Unit
 ) : BaseComponent<CreateProfileBirthdayState>(
     context,
+    "create_profile_birthday",
     initState(draftProfileProvider)
 ) {
 

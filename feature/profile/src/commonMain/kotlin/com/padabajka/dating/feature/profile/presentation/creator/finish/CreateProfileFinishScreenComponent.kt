@@ -10,6 +10,7 @@ class CreateProfileFinishScreenComponent(
     private val createProfileFromDraftUseCase: CreateProfileFromDraftUseCase
 ) : BaseComponent<EmptyState>(
     context,
+    "create_profile_finish",
     EmptyState
 ) {
     init {

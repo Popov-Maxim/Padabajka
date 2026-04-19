@@ -21,6 +21,7 @@ class CreateProfileSexScreenComponent(
     private val toNext: () -> Unit
 ) : BaseComponent<GenderSelectorState>(
     context = context,
+    screenName = "create_profile_sex",
     initialState = initState(draftProfileProvider)
 ) {
 

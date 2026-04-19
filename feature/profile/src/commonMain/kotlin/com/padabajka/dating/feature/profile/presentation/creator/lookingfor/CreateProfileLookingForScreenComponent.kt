@@ -17,6 +17,7 @@ class CreateProfileLookingForScreenComponent(
     private val toNext: () -> Unit
 ) : BaseComponent<CreateProfileLookingForState>(
     context,
+    "create_profile_looking_for",
     CreateProfileLookingForState(selectedType)
 ) {
     fun onEvent(event: CreateProfileLookingForEvent) {

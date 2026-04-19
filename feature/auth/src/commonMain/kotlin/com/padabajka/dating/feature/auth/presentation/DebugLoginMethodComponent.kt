@@ -10,7 +10,7 @@ class DebugLoginMethodComponent(
     context: ComponentContext,
     private val goToLoginMethodScreen: () -> Unit,
     private val authRepository: AuthRepository
-) : BaseComponent<DebugLoggingInState>(context, DebugLoggingInState()) {
+) : BaseComponent<DebugLoggingInState>(context, "debug_login_method", DebugLoggingInState()) {
 
     fun onEvent(event: DebugLoginMethodEvent) {
         when (event) {
