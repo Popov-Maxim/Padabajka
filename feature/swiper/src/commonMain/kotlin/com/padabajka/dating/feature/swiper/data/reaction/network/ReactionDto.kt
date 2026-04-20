@@ -37,6 +37,6 @@ fun ReactionDto.ToMeResponse.toDomain(): PersonReaction {
     return when (reaction) {
         ReactionType.SuperLike -> PersonReaction.SuperLike(fromPersonId, message ?: "")
         ReactionType.Like -> PersonReaction.Like(fromPersonId)
-        ReactionType.Dislike -> TODO("bad reaction format")
+        ReactionType.Dislike -> TODO("bad reaction format") // TODO(P2): add exception
     }
 }

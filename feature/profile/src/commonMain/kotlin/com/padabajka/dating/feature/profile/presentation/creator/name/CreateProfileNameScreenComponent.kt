@@ -50,7 +50,7 @@ class CreateProfileNameScreenComponent(
             )
         } else {
             reduce { state ->
-                val issue = Issue.StringValue("error") // TODO: add issue
+                val issue = Issue.StringValue("error") // TODO(P1): add issue
                 state.copy(nameField = state.nameField.updatedIssues { it + (name to issue) })
             }
         }

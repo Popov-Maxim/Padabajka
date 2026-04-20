@@ -38,7 +38,7 @@ private val comparator: Comparator<ReactionsToMe>
 
 fun PersonReaction.toReactionsToMe(profile: Profile): ReactionsToMe {
     return when (this) {
-        is PersonReaction.Dislike -> TODO()
+        is PersonReaction.Dislike -> TODO() // TODO(P1)
         is PersonReaction.Like -> toMe(profile)
         is PersonReaction.SuperLike -> toMe(profile)
     }

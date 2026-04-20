@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.swiper.data.reaction.network
 
 import com.padabajka.dating.core.networking.KtorClientProvider
+import com.padabajka.dating.core.networking.utils.takeIfHasContent
 import com.padabajka.dating.core.networking.utils.throwIfNotSuccessful
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
@@ -38,7 +39,7 @@ class KtorReactionApi(
             }
         }
 
-        return response.body()
+        return response.takeIfHasContent()?.body() ?: setOf()
     }
 
     override suspend fun deleteReaction() {

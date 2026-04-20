@@ -98,7 +98,9 @@ class MessengerComponent(
                     }
                 }
             },
-            mapper = { TODO(it.toString()) },
+            mapper = {
+                it
+            },
             update = { state, _ -> state }
         )
     }

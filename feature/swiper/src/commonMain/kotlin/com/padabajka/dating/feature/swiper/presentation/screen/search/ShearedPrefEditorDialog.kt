@@ -68,7 +68,7 @@ fun ShearedPrefEditorDialog(
         tonalElevation = 0.dp,
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         onDismissRequest = onDismissRequest,
-        dragHandle = null // TODO add dragHandle
+        dragHandle = null // TODO(P3) add dragHandle
     ) {
         when (val searchPref = searchPreferencesItem) {
             SearchPreferencesItem.Loading -> {}

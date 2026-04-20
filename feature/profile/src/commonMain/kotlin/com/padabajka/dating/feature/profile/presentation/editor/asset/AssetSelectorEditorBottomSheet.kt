@@ -59,7 +59,7 @@ fun AssetSelectorEditorBottomSheet(
 //        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         onDismissRequest = onDismissRequest,
         contentWindowInsets = { WindowInsets.safeDrawing },
-        dragHandle = null // TODO add dragHandle
+        dragHandle = null // TODO(P2) add dragHandle
     ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(top = 30.dp),

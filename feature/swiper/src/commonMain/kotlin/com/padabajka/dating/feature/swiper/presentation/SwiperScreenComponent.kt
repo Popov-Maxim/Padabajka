@@ -146,7 +146,7 @@ class SwiperScreenComponent(
             updateSearchPrefUseCase.invoke { searchPreferences }
         },
         mapper = {
-            it // TODO
+            it
         },
         update = { swiperState, _ ->
             swiperState
@@ -195,7 +195,7 @@ class SwiperScreenComponent(
                 updateCardDeck()
             },
             mapper = {
-                it // TODO
+                it
             },
             update = { swiperState, _ ->
                 swiperState
@@ -217,7 +217,7 @@ class SwiperScreenComponent(
                 }
             },
             mapper = {
-                it // TODO
+                it
             },
             update = { swiperState, exception ->
                 if (exception != null) {
@@ -241,7 +241,7 @@ class SwiperScreenComponent(
                     returnLastCardUseCase()
                 },
                 mapper = {
-                    it // TODO
+                    it
                 },
                 update = { swiperState, _ ->
                     swiperState
@@ -262,7 +262,7 @@ class SwiperScreenComponent(
                 profileRepository.setFreeze(false)
             },
             mapper = {
-                it // TODO
+                it
             },
             update = { swiperState, _ ->
                 swiperState

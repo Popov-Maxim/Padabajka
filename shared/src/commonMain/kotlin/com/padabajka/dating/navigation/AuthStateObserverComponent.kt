@@ -54,7 +54,7 @@ class AuthStateObserverComponent(
                 LoggedOut -> {
                     navigateNewStack(Configuration.UnauthScope)
                     backgroundScope.launch {
-                        socketRepository.disconnect() // TODO: can be crash in request with auth
+                        socketRepository.disconnect() // TODO(P1): can be crash in request with auth
                         pushRepository.deleteToken()
                     }
                 }

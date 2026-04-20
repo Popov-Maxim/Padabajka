@@ -42,7 +42,7 @@ internal class AuthRepositoryImpl(
 
     override suspend fun loginWithoutPassword(email: String) {
         val actionCodeSettings = ActionCodeSettings(
-            url = "https://padabajka-96c95.firebaseapp.com", // TODO: change url after updating gitlive firebase
+            url = "https://padabajka-96c95.firebaseapp.com", // TODO(P0): change url after updating gitlive firebase
             androidPackageName = AndroidPackageName("com.padabajka.dating", installIfNotAvailable = false),
             canHandleCodeInApp = true,
             iOSBundleId = "com.padabajka.dating.ios"
@@ -52,7 +52,7 @@ internal class AuthRepositoryImpl(
     }
 
     override suspend fun signInWithEmailLink(link: String) {
-        val email = localAuthDataSource.authPreferences.first().email ?: TODO()
+        val email = localAuthDataSource.authPreferences.first().email ?: TODO() // TODO(P0)
 
         remoteAuthDataSource.signInWithEmailLink(email, link)
     }
@@ -85,7 +85,7 @@ internal class AuthRepositoryImpl(
         return when {
             this == null -> LoggedOut
             email != null && email != "" && isEmailVerified.not() ->
-                WaitingForEmailValidation(getUserId()) // TODO: Implement email verification
+                WaitingForEmailValidation(getUserId())
             else -> LoggedIn(getUserId())
         }
     }

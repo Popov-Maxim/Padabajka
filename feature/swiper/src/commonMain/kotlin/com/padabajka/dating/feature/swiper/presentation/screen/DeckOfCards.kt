@@ -89,7 +89,7 @@ fun DeckOfCards(
                             Swipe.Right -> LikeEvent(card)
                             Swipe.Up -> {
                                 openSuperLike = card as? PersonItem
-                                return@AnimationCard // TODO
+                                return@AnimationCard
                             }
                         }
                         println("LOG UI: onSwipe $it")

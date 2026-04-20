@@ -30,7 +30,7 @@ private fun LocalDateTime.formatEditedTime(now: LocalDateTime): String =
     }
 
 @Stable
-val LocalDateTime.compactText: String // TODO: improve for english
+val LocalDateTime.compactText: String // TODO(P0): improve for english
     get() {
         val a = LocalDateTime.now()
         return formatEditedTime(a)

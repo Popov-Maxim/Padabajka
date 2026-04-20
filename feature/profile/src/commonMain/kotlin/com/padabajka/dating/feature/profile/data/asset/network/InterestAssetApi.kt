@@ -1,11 +1,11 @@
 package com.padabajka.dating.feature.profile.data.asset.network
 
 import com.padabajka.dating.core.networking.KtorClientProvider
+import com.padabajka.dating.core.networking.utils.takeIfHasContent
 import com.padabajka.dating.feature.profile.data.asset.model.AssetsDto
 import com.padabajka.dating.feature.profile.data.asset.model.InterestAssetDto
 import io.ktor.client.call.body
 import io.ktor.client.request.get
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.path
 
 class InterestAssetApi(
@@ -21,7 +21,7 @@ class InterestAssetApi(
         }
 
         return response
-            .takeIf { it.status != HttpStatusCode.NoContent }
+            .takeIfHasContent()
             ?.body()
     }
 

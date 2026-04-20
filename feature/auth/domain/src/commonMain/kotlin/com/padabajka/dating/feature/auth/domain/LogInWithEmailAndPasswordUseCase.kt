@@ -4,7 +4,6 @@ import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.model.auth.InvalidCredentialsAuthException
 import kotlin.coroutines.cancellation.CancellationException
 
-// TODO Add tests when I got implemented
 class LogInWithEmailAndPasswordUseCase(
     private val authRepository: AuthRepository
 ) {
@@ -33,6 +32,5 @@ sealed class LogInWithEmailAndPasswordException(message: String) : Throwable(mes
 data object InvalidCredentialsLogInException :
     LogInWithEmailAndPasswordException("Invalid email or password!")
 
-// TODO Add other exceptions
 data class UnexpectedLoginException(override val cause: Throwable) :
     LogInWithEmailAndPasswordException("Unexpected $cause!")

@@ -41,7 +41,7 @@ class ReactionRepositoryImpl(
         }
 
     override suspend fun react(reaction: PersonReaction) {
-        remoteReactionDataSource.sendReaction(reaction) // TODO: add local data source
+        remoteReactionDataSource.sendReaction(reaction) // TODO(P0): add local data source
     }
 
     override suspend fun deleteReaction() {

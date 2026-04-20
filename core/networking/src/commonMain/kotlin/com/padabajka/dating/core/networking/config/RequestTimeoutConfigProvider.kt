@@ -15,6 +15,6 @@ class RequestTimeoutConfigProvider : KtorConfigProvider.Static {
         }
 
     private companion object {
-        private val TIMEOUT = Duration.INFINITE.inWholeMilliseconds // TODO: change for prod
+        private val TIMEOUT = Duration.INFINITE.inWholeMilliseconds // TODO(P0): change for prod
     }
 }

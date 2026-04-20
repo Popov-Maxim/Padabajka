@@ -8,7 +8,7 @@ sealed interface Image {
     @Serializable
     data class Url(val value: String) : Image
 
-    // TODO(Image): create ui image and move local in ui?
+    // TODO(P2)(Image): create ui image and move local in ui?
     @Serializable
     data class Local(val data: ImageData, val rect: CoreRect? = null) : Image
     data class ByteArray(val value: kotlin.ByteArray) : Image

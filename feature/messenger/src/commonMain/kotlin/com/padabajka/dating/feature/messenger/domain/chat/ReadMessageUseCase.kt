@@ -5,7 +5,7 @@ import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 
 class ReadMessageUseCase(private val messageRepository: MessageRepository) {
     suspend operator fun invoke(messageId: MessageId) {
-        // TODO: Add error handling
+        // TODO(P2): Add error handling
         messageRepository.readMessage(messageId)
     }
 }

@@ -17,7 +17,7 @@ internal class AuthenticatedConfigProvider(
                 bearer {
                     loadTokens {
                         val authToken = authRepository.authToken()
-                            ?: TODO("Ktor: add auth exception")
+                            ?: TODO("Ktor: add auth exception") // TODO(P1)
                         BearerTokens(authToken, "")
                     }
                 }

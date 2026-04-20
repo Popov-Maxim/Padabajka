@@ -178,7 +178,7 @@ private fun ProfileScreen(
             }
         }
 
-        CoreCallToActionButton( // TODO: need delete
+        CoreCallToActionButton( // TODO(P0): need delete
             text = "LikesMe",
             onClick = { component.onEvent(OpenLikesMeEvent) },
             modifier = Modifier.fillMaxWidth()

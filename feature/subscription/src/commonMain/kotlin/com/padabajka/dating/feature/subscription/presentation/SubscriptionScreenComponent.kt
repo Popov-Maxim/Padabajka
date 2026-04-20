@@ -18,7 +18,7 @@ class SubscriptionScreenComponent(
         monthSub = SubscriptionInfo(
             oldPrice = "4.99 $",
             discount = 60,
-            price = "1.99 $" // TODO: value for test
+            price = "1.99 $" // TODO(P0): value for test
         )
     )
 ) {

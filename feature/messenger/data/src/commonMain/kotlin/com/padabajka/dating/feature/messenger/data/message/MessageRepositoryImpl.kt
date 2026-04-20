@@ -106,7 +106,7 @@ internal class MessageRepositoryImpl(
     override suspend fun deleteMessage(chatId: ChatId, messageId: MessageId) {
         runCatching {
             remoteMessageDataSource.deleteMessage(chatId, messageId)
-        } // TODO(message): add exception handling
+        } // TODO(P0): add exception handling
         localMessageDataSource.deleteMessage(messageId.raw)
     }
 
@@ -157,7 +157,7 @@ internal class MessageRepositoryImpl(
         }
 
         try {
-            val chatId = updatedMessage.chatId.let(::ChatId) // TODO: add chatId in method
+            val chatId = updatedMessage.chatId.let(::ChatId) // TODO(P1): add chatId in method
 
             val updatedReaction =
                 remoteMessageDataSource.sendReaction(chatId, messageId, reaction.toSendRequestDto())
@@ -166,7 +166,7 @@ internal class MessageRepositoryImpl(
                 it.copy(reactions = it.reactions?.replaced(reaction, updatedReaction.toEntity()))
             }
         } catch (e: Throwable) {
-            // TODO: retry sending reaction
+            // TODO(P1): retry sending reaction
         }
     }
 
@@ -176,14 +176,14 @@ internal class MessageRepositoryImpl(
     ) {
         val updatedMessage = localMessageDataSource.updateMessage(messageId.raw) { message ->
             message.removeReaction { it.author == myPersonId.raw }
-        } // TODO(messenger): add safely remove reaction
+        } // TODO(P1)(messenger): add safely remove reaction
 
         try {
             val chatId = updatedMessage.chatId.let(::ChatId)
 
             remoteMessageDataSource.removeReaction(chatId, messageId)
         } catch (e: Throwable) {
-            // TODO: retry sending reaction
+            // TODO(P1): retry sending reaction
         }
     }
 
@@ -252,7 +252,7 @@ internal class MessageRepositoryImpl(
 
             localMessageDataSource.updateMessage(messageEntry.id) { updatedMessageDto.toEntity() }
         } catch (e: Throwable) {
-            // TODO: retry sending
+            // TODO(P1): retry sending
             localMessageDataSource.updateMessage(messageEntry.id) {
                 it.copy(messageStatus = MessageStatus.FailedToSend)
             }
@@ -298,7 +298,7 @@ internal class MessageRepositoryImpl(
 
     private suspend fun MessageReactionEntity.toDomain(): MessageReaction {
         val personId = PersonId(this.author)
-        val person = personRepository.getPerson(personId) ?: TODO()
+        val person = personRepository.getPerson(personId) ?: TODO() // TODO(P1)
         return MessageReaction(
             author = person,
             value = this.value,

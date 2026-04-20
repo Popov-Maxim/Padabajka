@@ -58,7 +58,7 @@ fun ArrowDownCounterButton(
                     .size(52.dp)
                     .background(Color.White, CircleShape)
                     .clickable(onClick = onClick)
-                    .padding(10.dp), // TODO: need 15.dp
+                    .padding(10.dp), // TODO(P1): need 15.dp
             ) {
                 Icon(
                     modifier = Modifier.matchParentSize(),

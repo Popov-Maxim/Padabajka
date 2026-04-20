@@ -304,7 +304,7 @@ private fun ProfileImage(
 @Composable
 private fun ImageField(
     modifier: Modifier = Modifier,
-    iconSize: Dp = 50.dp, // TODO: change on padding for icon size
+    iconSize: Dp = 50.dp, // TODO(P3): change on padding for icon size
     onChange: (Image.Local) -> Unit
 ) {
     val imagePicker = rememberImagePicker { uri ->

@@ -90,7 +90,6 @@ class ProfileEditorScreenComponent(
             is ImageAddEvent -> addImage(event.image, event.index)
             is ImageSelectedEvent -> cropImage(event.image, event.index)
             ConsumeInternalErrorEvent -> consumeInternalError()
-            // TODO: add details and images events
             NavigateBackEvent -> navigateBack()
             is DeleteImageEvent -> deleteImage(event.image)
             is LookingForUpdateEvent -> updateLoockingForData(event.data)
@@ -155,7 +154,7 @@ class ProfileEditorScreenComponent(
                 reduce { it.copy(saveState = ProfileEditorState.SaveState.Idle) }
             },
             mapper = {
-                it // TODO
+                it
             },
             update = { profileState, _ ->
                 profileState
@@ -222,7 +221,7 @@ class ProfileEditorScreenComponent(
                 it.addImage(uiImage, index)
             }
         },
-        mapper = { TODO(it.toString()) },
+        mapper = { it },
         update = { state, _ -> state }
     )
 
@@ -244,7 +243,7 @@ class ProfileEditorScreenComponent(
                             type = Text.Type.City,
                             default = it.name
                         )
-                    } // TODO add mapper
+                    }
                     .toPersistentList()
                 reduce {
                     it.updateDetailCity {
@@ -252,7 +251,7 @@ class ProfileEditorScreenComponent(
                     }
                 }
             },
-            mapper = { TODO(it.toString()) },
+            mapper = { it },
             update = { state, _ -> state }
         )
     }
@@ -285,7 +284,7 @@ class ProfileEditorScreenComponent(
                     }
                 }
             },
-            mapper = { TODO(it.toString()) },
+            mapper = { it },
             update = { state, _ -> state }
         )
     }
@@ -309,7 +308,7 @@ class ProfileEditorScreenComponent(
                     }
                 }
             },
-            mapper = { TODO(it.toString()) },
+            mapper = { it },
             update = { state, _ -> state }
         )
     }
@@ -330,7 +329,7 @@ class ProfileEditorScreenComponent(
 
     companion object {
         private fun initProfileState(profileRepository: ProfileRepository): ProfileEditorState {
-            return profileRepository.profileValue?.toEditorState() ?: TODO()
+            return profileRepository.profileValue?.toEditorState() ?: TODO() // TODO(P1)
         }
     }
 }

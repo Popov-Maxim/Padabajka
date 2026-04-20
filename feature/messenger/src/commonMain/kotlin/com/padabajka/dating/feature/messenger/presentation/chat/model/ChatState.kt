@@ -19,7 +19,7 @@ data class ChatState(
     val field: Field = Field.NewMessage(),
     val messengerItems: PersistentList<MessengerItem> = persistentListOf(),
     val chatLoadingState: ChatLoadingState = ChatLoadingState.Loading,
-    val internalErrorStateEvent: StateEvent = consumed
+    val internalErrorStateEvent: StateEvent = consumed // TODO(P1): fix
 ) : State
 
 sealed interface Field {

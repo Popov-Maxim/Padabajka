@@ -75,7 +75,7 @@ private val dataModule = module {
 
     factoryOf(::LocalReactionDataSource)
 
-    singleOf(::RemoteReactionDataSourceImpl) { // TODO
+    singleOf(::RemoteReactionDataSourceImpl) {
         bind<RemoteReactionDataSource>()
     }
 
@@ -83,11 +83,6 @@ private val dataModule = module {
         KtorReactionApi(
             ktorClientProvider = get()
         )
-//        FakeReactionApi(
-//            matchRepository = get(),
-//            personRepository = get(),
-//            notificationService = get()
-//        )
     }
 
     factory<CardSelectorProvider> {

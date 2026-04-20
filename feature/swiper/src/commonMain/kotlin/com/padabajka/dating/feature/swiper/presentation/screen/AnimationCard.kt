@@ -22,9 +22,9 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.padabajka.dating.core.presentation.isDebugBuild
 import com.padabajka.dating.core.presentation.ui.ScreenSizeProvider
 import com.padabajka.dating.core.presentation.ui.toIntOffset
+import com.padabajka.dating.core.utils.isDebugBuild
 import com.padabajka.dating.feature.swiper.presentation.screen.card.CardController
 import com.padabajka.dating.feature.swiper.presentation.screen.card.rememberCardController
 import kotlin.math.sqrt
@@ -63,7 +63,7 @@ fun AnimationCard(
         onSwipe(swipe)
     }
 
-    if (isDebugBuild()) {
+    if (isDebugBuild) {
         BorderForTest(rectForMinOffset)
     }
     if (rectForMinOffset == Rect.Zero || rectForMinOffset.containsIn(animationOffset)) {

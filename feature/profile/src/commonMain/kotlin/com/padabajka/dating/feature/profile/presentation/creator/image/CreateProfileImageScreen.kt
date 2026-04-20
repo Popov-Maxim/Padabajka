@@ -30,7 +30,7 @@ fun CreateProfileImageScreen(component: CreateProfileImageScreenComponent) {
         Column(
             modifier = Modifier.fillMaxSize(),
         ) {
-            Spacer(Modifier.size(45.dp)) // TODO: add head
+            Spacer(Modifier.size(45.dp)) // TODO(P3): add head
 
             val state by component.state.subscribeAsState()
 

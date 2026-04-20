@@ -48,7 +48,7 @@ private fun CoreSmallAssetsSelection(
                 if (isSelected) {
                     background(CoreColors.secondary.mainColor)
                 } else if (enabledUnselected.not()) {
-                    background(Color.LightGray) // TODO: change color
+                    background(Color.LightGray) // TODO(P3): change color
                 } else {
                     this
                 }

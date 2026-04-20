@@ -3,17 +3,17 @@ package com.padabajka.dating.feature.profile.data.network
 import com.padabajka.dating.core.data.network.model.PersonResponse
 import com.padabajka.dating.core.networking.KtorClientProvider
 import com.padabajka.dating.core.networking.utils.appendNotNull
+import com.padabajka.dating.core.networking.utils.takeIfHasContent
+import com.padabajka.dating.core.networking.utils.throwIfNotSuccessful
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.http.path
 
-// TODO(network): need to separate?
 class KtorProfileApi(
     private val ktorClientProvider: KtorClientProvider
 ) : ProfileApi {
@@ -28,7 +28,7 @@ class KtorProfileApi(
             }
         }
 
-        return response.takeIf { it.status != HttpStatusCode.NoContent }
+        return response.takeIfHasContent()
             ?.body()
     }
 
@@ -41,7 +41,7 @@ class KtorProfileApi(
             }
         }
 
-        return response.takeIf { it.status != HttpStatusCode.NoContent }
+        return response.takeIfHasContent()
             ?.body()
     }
 
@@ -61,7 +61,7 @@ class KtorProfileApi(
             }
         }
 
-        if (response.status != HttpStatusCode.OK) TODO()
+        response.throwIfNotSuccessful()
     }
 
     override suspend fun create(profile: ProfileRequest) {
@@ -76,6 +76,6 @@ class KtorProfileApi(
             setBody(profile)
         }
 
-        if (response.status != HttpStatusCode.OK) TODO()
+        response.throwIfNotSuccessful()
     }
 }

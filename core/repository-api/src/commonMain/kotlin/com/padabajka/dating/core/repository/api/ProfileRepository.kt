@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface ProfileRepository {
     val profile: Flow<Profile>
     val profileValue: Profile?
-    val profileState: Flow<ProfileState> // TODO: use only profileState, now use for start navigation
+    val profileState: Flow<ProfileState> // TODO(P2): use only profileState, now use for start navigation
     suspend fun updateProfile()
     suspend fun replace(profile: Profile)
     suspend fun create(profile: Profile, gender: Gender)

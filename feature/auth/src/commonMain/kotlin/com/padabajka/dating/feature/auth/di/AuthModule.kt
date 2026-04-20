@@ -13,11 +13,9 @@ import com.padabajka.dating.feature.auth.domain.LogInWithEmailAndPasswordUseCase
 import com.padabajka.dating.feature.auth.domain.LogOutUseCase
 import com.padabajka.dating.feature.auth.domain.LoginEmailOnlyUseCase
 import com.padabajka.dating.feature.auth.domain.OpenMailAppUseCase
-import com.padabajka.dating.feature.auth.domain.RegisterWithEmailAndPasswordUseCase
 import com.padabajka.dating.feature.auth.domain.ReloadUserUseCase
 import com.padabajka.dating.feature.auth.domain.SendEmailVerificationUseCase
 import com.padabajka.dating.feature.auth.domain.ValidateEmailUseCase
-import com.padabajka.dating.feature.auth.domain.ValidatePasswordsUseCase
 import com.padabajka.dating.feature.auth.domain.method.GoogleLoginUseCase
 import com.padabajka.dating.feature.auth.presentation.EmailLoginMethodComponent
 import com.padabajka.dating.feature.auth.presentation.LoginMethodsComponent
@@ -63,18 +61,8 @@ private val authDomainModule = module {
     }
 
     factory {
-        ValidatePasswordsUseCase()
-    }
-    factory {
         LogInWithEmailAndPasswordUseCase(
             authRepository = get()
-        )
-    }
-    factory {
-        RegisterWithEmailAndPasswordUseCase(
-            authRepository = get(),
-            validateEmailUseCase = { get() },
-            validatePasswordsUseCase = { get() }
         )
     }
 

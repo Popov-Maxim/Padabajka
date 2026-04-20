@@ -90,7 +90,7 @@ class ReadMessageManager(
                 it.copy(readSynced = true)
             }
         } catch (e: Throwable) {
-            // TODO: retry read updating
+            // TODO(P1): retry read updating
         }
     }
 
