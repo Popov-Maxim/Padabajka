@@ -134,11 +134,7 @@ class ChatComponent(
                         }
                     }
             },
-            mapper = {
-                println("Init messengerComponent: $it")
-                // TODO: Track unexpected error
-                // TODO: Add option to resubscribe
-            },
+            mapper = {},
             update = { state, _ ->
                 state.copy(internalErrorStateEvent = raised)
             }

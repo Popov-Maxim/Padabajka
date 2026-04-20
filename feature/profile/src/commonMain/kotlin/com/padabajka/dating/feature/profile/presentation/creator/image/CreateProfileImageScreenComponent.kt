@@ -40,7 +40,7 @@ class CreateProfileImageScreenComponent(
                 it.copy(image = uiImage)
             }
         },
-        mapper = { TODO(it.toString()) },
+        mapper = { it },
         update = { state, _ -> state }
     )
 

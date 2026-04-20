@@ -17,7 +17,7 @@ class LocalChatDataSource(
     }
 
     suspend fun updateChat(chatId: ChatId, updated: (ChatEntry) -> ChatEntry) {
-        val chat = getChat(chatId) ?: TODO()
+        val chat = getChat(chatId) ?: TODO() // TODO(P1)
         val updatedChat = updated(chat)
         setChat(updatedChat)
     }

@@ -28,7 +28,6 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.NextMessag
 import com.padabajka.dating.feature.messenger.presentation.chat.model.NextMessageTextUpdateEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.SendMessageClickEvent
 
-// TODO: implement proper ui
 @Composable
 fun MessageField(
     modifier: Modifier = Modifier,

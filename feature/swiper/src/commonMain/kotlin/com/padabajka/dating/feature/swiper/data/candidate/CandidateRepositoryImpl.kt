@@ -45,7 +45,7 @@ class CandidateRepositoryImpl(
         return obtainPerson(searchPreferences)
     }
 
-    // TODO: Rename me, please:(
+    // TODO(P3): Rename me, please:(
     override suspend fun setUsed(personId: PersonId) {
         sharedPersons {
             removeAll { it.id == personId }
@@ -107,7 +107,7 @@ class CandidateRepositoryImpl(
         searchPreferences: SearchPreferences
     ): List<Person> {
         remoteReactionDataSource.forceSendReactions()
-        val location = geoRepository.location.first() // TODO: show message about permission
+        val location = geoRepository.location.first() // TODO(P0): show message about permission
         geoRepository.sendLocation(location)
         val newPersons = remoteCandidateDataSource.getPersons(
             count = LOADING_COUNT,

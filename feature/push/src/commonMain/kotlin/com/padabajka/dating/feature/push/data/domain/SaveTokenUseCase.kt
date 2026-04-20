@@ -7,7 +7,7 @@ class SaveTokenUseCase(
     private val updateTokenUseCase: UpdateTokenUseCase,
 ) {
     suspend operator fun invoke() {
-        // TODO(push token): fix sending token to server for ios
+        // TODO(P1)(push token): fix sending token to server for ios
         val token = runCatching { Firebase.messaging.getToken() }.onFailure { exception ->
             println("LOG: push failed ${exception.message}")
         }.getOrNull() ?: return

@@ -32,7 +32,7 @@ class CreateProfileFromDraftUseCase(
         return copy(images = newImages)
     }
 
-    private fun DraftProfile.toProfile(): Profile { // TODO: add check if null
+    private fun DraftProfile.toProfile(): Profile { // TODO(P1): add check if null
         return Profile(
             name = name!!,
             birthday = birthday!!,

@@ -51,7 +51,7 @@ fun AppSettingsDialog(
     }
     val currentShowFps = debugAppSettings.showFps
     var showFps by remember(currentShowFps) { mutableStateOf(currentShowFps) }
-    val coroutineScope: CoroutineScope = koinInject() // TODO: move to use case
+    val coroutineScope: CoroutineScope = koinInject() // TODO(P3): move to use case
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(

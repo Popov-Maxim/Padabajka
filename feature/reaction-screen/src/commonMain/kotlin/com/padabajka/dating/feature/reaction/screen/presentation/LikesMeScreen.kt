@@ -148,7 +148,7 @@ private fun HasLikesMeScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalArrangement = Arrangement.spacedBy(horizontalSpace)
         ) { gridPlacedItem ->
-            val modifier = Modifier.animateItem() // TODO(LikesMe): change animation
+            val modifier = Modifier.animateItem() // TODO(P2): change animation
             val clickable = {
                 if (subscriptionFeature.showLikes) {
                     reactionUIState = gridPlacedItem.state
@@ -326,7 +326,7 @@ private fun FullGridItem(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = "12:45", // TODO: add message.sentTime.hourMinutes,
+                            text = "12:45", // TODO(P0): add message.sentTime.hourMinutes,
                             fontSize = 12.sp,
                             maxLines = 1
                         )
@@ -367,7 +367,7 @@ private fun ProfileHeader(profile: ProfileViewUIItem) {
     }
 }
 
-private val gradient = listOf( // TODO: move to object Gradient
+private val gradient = listOf( // TODO(P1): move to object Gradient
     Color(color = 0xff890F74),
     Color(color = 0xff4C2383)
 )

@@ -34,6 +34,6 @@ internal class ChatRepositoryImpl(
     }
 
     override suspend fun deleteLocalChat(chatId: ChatId) {
-        TODO("Not yet implemented")
+        TODO("Not yet implemented") // TODO(P1)
     }
 }

@@ -177,7 +177,7 @@ private val defaultSexualOrientationField = DetailUIItem.Asset(
 
 private val defaultEducationField = DetailUIItem.Asset(
     value = null,
-    possibleAssets = persistentListOf(), // TODO fill
+    possibleAssets = persistentListOf(), // TODO(P3) fill
 )
 
 private val defaultProfessionField = DetailUIItem.TextField(
@@ -194,10 +194,10 @@ private val defaultCharacterField = DetailUIItem.Asset(
         StaticTextId.AssetId.Extrovert,
         StaticTextId.AssetId.Introvert,
         StaticTextId.AssetId.Ambidextrous,
-    ), // TODO fill
+    ),
 )
 
 private val defaultLanguageField = DetailUIItem.Asset(
     value = null,
-    possibleAssets = persistentListOf(), // TODO fill
+    possibleAssets = persistentListOf(), // TODO(P3) delete Language, has in other field
 )

@@ -25,7 +25,7 @@ interface TimeItem : MessengerItem {
     }
 }
 
-// TODO: Add resources handling
+// TODO(P0): Add resources handling
 @Immutable
 open class StringTimeItem(private val text: String) : TimeItem {
     @Composable
@@ -35,7 +35,7 @@ open class StringTimeItem(private val text: String) : TimeItem {
         get() = text.hashCode()
 }
 
-// TODO: Remove strings hardcode
+// TODO(P0): Remove strings hardcode
 data object YesterdayTimeItem : StringTimeItem("Yesterday")
 data object TodayTimeItem : StringTimeItem("Today")
 

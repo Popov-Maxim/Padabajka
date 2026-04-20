@@ -4,7 +4,6 @@ import androidx.datastore.core.DataStore
 import com.padabajka.dating.core.repository.api.model.profile.DraftProfile
 import kotlinx.coroutines.flow.Flow
 
-// TODO Add in memory update and debounced save
 class DataStoreLocalDraftProfileDataSource(
     private val dataStore: DataStore<DraftProfile>
 ) : LocalDraftProfileDataSource {

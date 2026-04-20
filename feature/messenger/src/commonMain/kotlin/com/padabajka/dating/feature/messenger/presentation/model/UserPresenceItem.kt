@@ -20,7 +20,7 @@ sealed interface UserPresenceItem {
 fun UserPresenceItem.text(): String {
     return when (this) {
         is UserPresenceItem.Has -> description
-        UserPresenceItem.None -> "wait..." // TODO: add translate
+        UserPresenceItem.None -> "wait..." // TODO(P0): add translate
     }
 }
 

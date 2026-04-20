@@ -78,10 +78,10 @@ class LikesMeScreenComponent(
     private fun reactPersonAndUpdateCardDeck(reaction: PersonReaction) =
         mapAndReduceException(
             action = {
-                reactionRepository.react(reaction) // TODO()
+                reactionRepository.react(reaction)
             },
             mapper = {
-                it // TODO()
+                it
             },
             update = { swiperState, exception ->
                 if (exception == null) {
@@ -91,7 +91,7 @@ class LikesMeScreenComponent(
 
                     swiperState.copy(listReactions = ListReactions.Success(newList))
                 } else {
-                    swiperState // TODO()
+                    swiperState
                 }
             }
         )

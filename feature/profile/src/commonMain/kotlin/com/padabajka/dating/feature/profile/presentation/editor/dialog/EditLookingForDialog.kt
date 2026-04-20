@@ -58,7 +58,7 @@ fun EditLookingForDialog(
         containerColor = CoreColors.background.mainColor,
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         onDismissRequest = onDismissRequest,
-        dragHandle = null // TODO add dragHandle
+        dragHandle = null // TODO(P2) add dragHandle
     ) {
         DialogContent {
             apply(it)

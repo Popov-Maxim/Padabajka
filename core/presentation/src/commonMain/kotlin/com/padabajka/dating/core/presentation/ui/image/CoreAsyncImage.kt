@@ -27,7 +27,7 @@ import com.padabajka.dating.core.presentation.ui.utils.rememberImageLoader
 fun CoreAsyncImage(
     model: Any?,
     modifier: Modifier = Modifier,
-    modifierForPlaceholder: Modifier = Modifier // TODO: add config for placeholder
+    modifierForPlaceholder: Modifier = Modifier // TODO(P2): add config for placeholder
 ) {
     val imageLoader = rememberImageLoader()
     Box(modifier = modifier) {
@@ -60,7 +60,7 @@ fun CoreAsyncImage(
 fun ShimmerPlaceholder(modifier: Modifier = Modifier) {
     val transition = rememberInfiniteTransition()
     val translateAnim by transition.animateFloat(
-        initialValue = -600f, // TODO: get size container
+        initialValue = -600f, // TODO(P1): get size container
         targetValue = 800f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 1800, easing = LinearEasing)

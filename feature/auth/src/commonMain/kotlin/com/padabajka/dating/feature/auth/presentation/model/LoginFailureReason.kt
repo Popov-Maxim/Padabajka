@@ -1,6 +1,6 @@
 package com.padabajka.dating.feature.auth.presentation.model
 
-// TODO Add other reasons
+// TODO(P0) Add other reasons
 enum class LoginFailureReason {
     InvalidCredentials, UnknownReason
 }

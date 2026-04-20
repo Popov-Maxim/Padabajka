@@ -28,7 +28,7 @@ fun CreateProfileSexScreen(component: CreateProfileSexScreenComponent) {
         Column(
             modifier = Modifier.fillMaxSize(),
         ) {
-            Spacer(Modifier.size(60.dp)) // TODO: add head
+            Spacer(Modifier.size(60.dp)) // TODO(P3): add head
 
             MainContent(
                 modifier = Modifier.weight(1f),

@@ -11,7 +11,7 @@ interface KtorClientProvider {
     suspend fun client(): HttpClient
 }
 
-interface UnauthKtorClientProvider { // TODO: delete for prod
+interface UnauthKtorClientProvider {
     suspend fun client(): HttpClient
 }
 

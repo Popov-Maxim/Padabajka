@@ -71,7 +71,7 @@ fun LifestylesEditorBottomSheet(
 //        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         onDismissRequest = onDismissRequest,
         contentWindowInsets = { WindowInsets.safeDrawing },
-        dragHandle = null // TODO add dragHandle
+        dragHandle = null // TODO(P2) add dragHandle
     ) {
         var supportedDetailsState by remember(key1 = tabsState, key2 = supportedDetails) {
             mutableStateOf(supportedDetails)
@@ -114,7 +114,7 @@ fun LifestylesEditorBottomSheet(
 }
 
 @Composable
-private fun NavigateTabs( // TODO: copy from DetailsEditorBottomSheet.kt
+private fun NavigateTabs( // TODO(P2): copy from DetailsEditorBottomSheet.kt
     tabsState: LifestyleTab,
     changeState: (LifestyleTab) -> Unit
 ) {

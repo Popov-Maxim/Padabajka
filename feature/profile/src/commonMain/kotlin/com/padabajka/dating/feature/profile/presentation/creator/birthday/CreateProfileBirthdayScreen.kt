@@ -44,7 +44,7 @@ fun CreateProfileBirthdayScreen(component: CreateProfileBirthdayScreenComponent)
         Column(
             modifier = Modifier.fillMaxSize(),
         ) {
-            Spacer(Modifier.size(60.dp)) // TODO: add head
+            Spacer(Modifier.size(60.dp)) // TODO(P3): add head
 
             MainContent(
                 component = component,
@@ -161,7 +161,7 @@ private fun DatePickerModal(
                     onDateSelected(selectedDateMillis)
                     onDismiss()
                 }) {
-                    Text("OK") // TODO: improve date picker
+                    Text("OK") // TODO(P1): improve date picker
                 }
             }
         },

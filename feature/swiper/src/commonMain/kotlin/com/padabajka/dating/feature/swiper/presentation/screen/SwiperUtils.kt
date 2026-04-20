@@ -6,7 +6,7 @@ import androidx.compose.ui.geometry.Rect
 fun AnimationOffset.getOffsetForSwipe(swipe: Swipe?, rectForMinOffset: Rect = Rect.Zero): Offset =
     offset.getOffsetForSwipe(swipe, rectForMinOffset)
 
-// TODO(swiper): improve logic
+// TODO(P2): improve logic
 private fun Offset.getOffsetForSwipe(swipe: Swipe?, rectForMinOffset: Rect): Offset {
     return if (swipe == null) {
         Offset.Zero

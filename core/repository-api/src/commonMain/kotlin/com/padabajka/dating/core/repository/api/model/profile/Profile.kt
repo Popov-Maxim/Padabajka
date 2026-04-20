@@ -30,7 +30,7 @@ data class Profile(
 
             return birthday.periodUntil(now).years.toAge()
         }
-} // TODO: add override equals()
+}
 
 val LocalDate.age: Age
     get() {

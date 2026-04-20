@@ -19,7 +19,7 @@ class IosLocalImageDataSource : LocalImageDataSource {
             val rect = cropRect.toImageRect(data.uiImage.scale)
             data.uiImage.crop(rect)
         }
-        val byteArray = croppedImage.toByteArray() ?: TODO("Image: handle null input stream")
+        val byteArray = croppedImage.toByteArray() ?: TODO("Image: handle null input stream") // TODO(P1)
         return byteArray
     }
 }

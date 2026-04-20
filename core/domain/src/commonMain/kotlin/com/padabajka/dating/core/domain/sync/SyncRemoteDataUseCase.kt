@@ -15,7 +15,7 @@ class SyncRemoteDataUseCase(
     private val reactionRepository: ReactionRepository,
     private val subscriptionRepository: SubscriptionRepository
 ) {
-    suspend operator fun invoke() = coroutineScope { // TODO: handle error
+    suspend operator fun invoke() = coroutineScope { // TODO(P1): handle error
         runCatching {
             launch {
                 matchRepository.sync()

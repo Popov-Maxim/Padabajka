@@ -33,7 +33,7 @@ class VerificationComponent(
         action = {
             reloadUserUseCase()
         },
-        mapper = { TODO(it.toString()) },
+        mapper = { it },
         update = { state, _ ->
             state
         }
@@ -44,7 +44,7 @@ class VerificationComponent(
             sendEmailVerificationUseCase()
             makeResendUnavailable()
         },
-        mapper = { TODO(it.toString()) },
+        mapper = { it },
         update = { state, _ ->
             state
         }

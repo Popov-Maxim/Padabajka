@@ -57,7 +57,7 @@ abstract class PadabajkaDB : RoomDatabase() {
 
 internal const val DB_NAME = "padabajka.db"
 
-// TODO(): improve
+// TODO(P10): improve
 @Suppress("NO_ACTUAL_FOR_EXPECT")
 expect object PadabajkaDBConstructor : RoomDatabaseConstructor<PadabajkaDB> {
     override fun initialize(): PadabajkaDB

@@ -47,7 +47,7 @@ internal class FirebaseRemoteAuthDataSource(
         if (firebaseAuth.isSignInWithEmailLink(link)) {
             firebaseAuth.signInWithEmailLink(email, link)
         } else {
-            TODO()
+            TODO() // TODO(P0)
         }
     }
 
@@ -103,6 +103,6 @@ internal class FirebaseRemoteAuthDataSource(
     }
 }
 
-// TODO: delete after updating gitlive firebase
+// TODO(P10): delete after updating gitlive firebase
 @Suppress("FunctionName")
 expect suspend fun _loginWithoutPassword(email: String, actionCodeSettings: ActionCodeSettings)

@@ -30,6 +30,6 @@ private fun HttpMethod.toFIRHTTPMethod(): FIRHTTPMethod {
         HttpMethod.DELETE -> FIRHTTPMethod.FIRHTTPMethodDELETE
         HttpMethod.POST -> FIRHTTPMethod.FIRHTTPMethodPOST
         HttpMethod.HEAD -> FIRHTTPMethod.FIRHTTPMethodHEAD
-        HttpMethod.UNKNOWN -> TODO()
+        HttpMethod.UNKNOWN -> TODO() // TODO(P2): add exception
     }
 }

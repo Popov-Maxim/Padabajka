@@ -56,7 +56,7 @@ private fun TypeSelectorScreen(
     Column(
         modifier = modifier.fillMaxSize(),
     ) {
-        Spacer(Modifier.size(60.dp)) // TODO: add head
+        Spacer(Modifier.size(60.dp)) // TODO(P3): add head
 
         Column(
             modifier = Modifier.weight(1f).fillMaxSize().padding(vertical = 50.dp),
@@ -88,7 +88,7 @@ private fun DetailSelectorScreen(
     Column(
         modifier = modifier.fillMaxSize(),
     ) {
-        Spacer(Modifier.size(60.dp)) // TODO: add head
+        Spacer(Modifier.size(60.dp)) // TODO(P3): add head
 
         Column(
             modifier = Modifier.fillMaxSize().weight(1f).padding(vertical = 50.dp),

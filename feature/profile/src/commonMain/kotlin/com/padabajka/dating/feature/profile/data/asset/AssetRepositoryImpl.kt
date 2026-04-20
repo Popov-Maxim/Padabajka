@@ -27,7 +27,7 @@ class AssetRepositoryImpl(
 
     private val cityRepository: CityRepositoryImpl
 ) : AssetRepository {
-    override suspend fun loadAssets(): Unit = coroutineScope { // TODO: add try catch for launch
+    override suspend fun loadAssets(): Unit = coroutineScope { // TODO(P0): add try catch for launch
         val versions = localAssetVersionsDataSource.versions()
 
         val cityJob = launch {

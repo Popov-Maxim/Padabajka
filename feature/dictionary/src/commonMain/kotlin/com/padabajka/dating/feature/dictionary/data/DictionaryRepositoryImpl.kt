@@ -11,7 +11,7 @@ class DictionaryRepositoryImpl(
     private val assetRepository: AssetRepository,
 ) : DictionaryRepository {
     override suspend fun loadDictionaries(selectedLang: String) {
-        TODO("Not yet implemented")
+        // TODO(P2)
     }
 
     override suspend fun getText(id: String, type: String, lang: Language): String? {

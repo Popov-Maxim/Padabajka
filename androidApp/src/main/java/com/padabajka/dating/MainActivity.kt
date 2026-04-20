@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        WindowCompat.setDecorFitsSystemWindows(window, true)
-        addActivity(this) // TODO: fix leak?
+        addActivity(this) // TODO(P3): fix leak?
         val permissionRequestHandler = PermissionRequestHandler { permissions ->
             val result = requestPermissionsSuspend(*permissions)
             result.any { it.value }
