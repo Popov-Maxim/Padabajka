@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed interface IconData {
     data class Painter(val painter: androidx.compose.ui.graphics.painter.Painter) : IconData
-    data class Vector(val vector: ImageVector) : IconData
+    data class Vector(val vector: ImageVector ) : IconData
     data object Empty : IconData
 }
 
