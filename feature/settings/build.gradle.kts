@@ -38,6 +38,7 @@ kotlin {
             implementation(projects.feature.auth.domain)
             implementation(projects.feature.push)
             implementation(projects.feature.permissionFlow)
+            implementation(projects.feature.subscription)
         }
     }
 }

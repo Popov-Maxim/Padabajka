@@ -5,4 +5,6 @@ import com.padabajka.dating.core.repository.api.model.dictionary.Language
 
 data class SettingsState(
     val selectedLanguage: Language.Static,
+    val subscriptionActive: Boolean,
+    val profileFrozen: Boolean
 ) : State

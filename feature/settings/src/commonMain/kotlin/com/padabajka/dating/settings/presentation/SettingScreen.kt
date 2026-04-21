@@ -43,6 +43,7 @@ import com.padabajka.dating.settings.presentation.model.NavigateBackEvent
 import com.padabajka.dating.settings.presentation.model.OpenLanguageSelectorEvent
 import com.padabajka.dating.settings.presentation.model.RequestPermissionEvent
 import com.padabajka.dating.settings.presentation.model.SettingsEvent
+import com.padabajka.dating.settings.presentation.model.UnfreezeAccountEvent
 import com.padabajka.dating.settings.presentation.model.language.supportedLanguagesMap
 import com.padabajka.dating.settings.presentation.setting.AppSettingsDialog
 import org.koin.compose.koinInject
@@ -85,12 +86,6 @@ private fun GeneralSetting(
     var showFreezingDialog: Boolean by remember { mutableStateOf(false) }
 
     val settingsButtonData = listOfNotNull(
-//            SettingButtonData(
-//                iconData = CoreIcons.NavigationBar.Profile.toData(),
-//                text = StaticTextId.UiId.Name.translate(),
-//                secondText = null,
-//                onClick = {}
-//            ),
         SettingButtonData(
             iconData = Icons.Filled.Settings.toData(),
             text = "AppSettings",
@@ -100,8 +95,12 @@ private fun GeneralSetting(
         SettingButtonData(
             iconData = IconData.Empty,
             text = StaticTextId.UiId.Subscription.translate(),
-            secondText = "не активирована",
-            onClick = { }
+            secondText = if (state.subscriptionActive) {
+                StaticTextId.UiId.SubscriptionActive.translate()
+            } else {
+                StaticTextId.UiId.SubscriptionInactive.translate()
+            },
+            onClick = { component.onEvent(SettingsEvent.OpenSubscription) }
         ),
         SettingButtonData(
             iconData = CoreIcons.Settings.Language.toData(),
@@ -112,7 +111,7 @@ private fun GeneralSetting(
         SettingButtonData(
             iconData = CoreIcons.Settings.Notification.toData(),
             text = StaticTextId.UiId.Notification.translate(),
-            secondText = "permissionAllow: $permissionAllow",
+            secondText = "permissionAllow: $permissionAllow", // TODO(P0)
             onClick = { component.onEvent(RequestPermissionEvent) }
         ),
         SettingButtonData(
@@ -124,7 +123,11 @@ private fun GeneralSetting(
         SettingButtonData(
             iconData = CoreIcons.Settings.Snowman.toData(),
             text = StaticTextId.UiId.FreezeProfile.translate(),
-            secondText = "account is active",
+            secondText = if (state.profileFrozen) {
+                StaticTextId.UiId.ProfileFrozen.translate()
+            } else {
+                StaticTextId.UiId.ProfileActive.translate()
+            },
             onClick = { showFreezingDialog = true }
         ),
         SettingButtonData(
@@ -134,16 +137,6 @@ private fun GeneralSetting(
             onClick = { showLogoutDialog = true }
         ),
 
-//            SettingButtonData(
-//                iconData = IconData.Empty,
-//                text = "request permission",
-//                secondText = "permissionAllow: $permissionAllow",
-//                onClick = {
-//                    coroutineScope.launch {
-//                        component.onEvent(RequestPermissionEvent)
-//                    }
-//                }
-//            ),
 //            SettingButtonData(
 //                iconData = IconData.Empty,
 //                text = "refresh push token",
@@ -187,16 +180,26 @@ private fun GeneralSetting(
 
     if (showFreezingDialog) {
         SimpleConfirmDialog(
-            text = StaticTextId.UiId.FreezeAccountAlertDialogText.translate(),
+            text = if (state.profileFrozen) {
+                StaticTextId.UiId.UnfreezeAccountAlertDialogText.translate()
+            } else {
+                StaticTextId.UiId.FreezeAccountAlertDialogText.translate()
+            },
             confirmText = StaticTextId.UiId.Yes.translate(),
-            onConfirm = { component.onEvent(FreezeAccountEvent) },
+            onConfirm = {
+                if (state.profileFrozen) {
+                    component.onEvent(UnfreezeAccountEvent)
+                } else {
+                    component.onEvent(FreezeAccountEvent)
+                }
+                showFreezingDialog = false
+            },
             dismissText = StaticTextId.UiId.No.translate(),
             onDismiss = { showFreezingDialog = false },
         )
     }
 }
 
-@Suppress("UnusedParameter")
 @Composable
 private fun LittleSetting(
     component: SettingScreenComponent,

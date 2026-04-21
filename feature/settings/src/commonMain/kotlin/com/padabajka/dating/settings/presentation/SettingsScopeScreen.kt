@@ -6,6 +6,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.feature.permission.flow.presentation.PermissionFlowScreen
+import com.padabajka.dating.feature.subscription.presentation.SubscriptionScreen
 import com.padabajka.dating.settings.presentation.setting.LanguageSelectorScreen
 
 @Composable
@@ -24,6 +25,8 @@ fun SettingsScopeScreen(component: SettingsScopeNavigateComponent) {
                 SettingScreen(instance.component)
             is SettingsScopeNavigateComponent.Child.PermissionFlowScreen ->
                 PermissionFlowScreen(instance.component)
+            is SettingsScopeNavigateComponent.Child.SubscriptionScreen ->
+                SubscriptionScreen(instance.component)
         }
     }
 }

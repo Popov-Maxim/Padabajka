@@ -1,6 +1,8 @@
 package com.padabajka.dating.settings.presentation.model
 
-sealed interface SettingsEvent
+sealed interface SettingsEvent {
+    data object OpenSubscription : SettingsEvent
+}
 
 data object LogOutEvent : SettingsEvent
 data object NavigateBackEvent : SettingsEvent
@@ -10,3 +12,4 @@ data object RequestPermissionEvent : SettingsEvent
 data object OpenLanguageSelectorEvent : SettingsEvent
 data object DeleteAccountEvent : SettingsEvent
 data object FreezeAccountEvent : SettingsEvent
+data object UnfreezeAccountEvent : SettingsEvent

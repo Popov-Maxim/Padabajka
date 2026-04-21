@@ -3,6 +3,7 @@ package com.padabajka.dating.settings.presentation
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.feature.permission.flow.presentation.PermissionFlowComponent
+import com.padabajka.dating.feature.subscription.presentation.SubscriptionScreenComponent
 import com.padabajka.dating.settings.presentation.setting.LanguageSelectorComponent
 import com.padabajka.dating.settings.presentation.setting.SettingNavigator
 import kotlinx.serialization.Serializable
@@ -25,6 +26,10 @@ class SettingsScopeNavigateComponent(
 
         override fun openPermissionFlow() {
             navigate(Configuration.PermissionFlowScreen)
+        }
+
+        override fun openSubscriptionScreen() {
+            navigate(Configuration.SubscriptionScreen)
         }
     }
 
@@ -58,12 +63,21 @@ class SettingsScopeNavigateComponent(
                     notificationPermissionController = get(),
                 )
             )
+
+            Configuration.SubscriptionScreen -> Child.SubscriptionScreen(
+                component = SubscriptionScreenComponent(
+                    context = context,
+                    navigateBack = ::navigateBack,
+                    subscriptionRepository = get()
+                )
+            )
         }
     }
 
     sealed interface Child {
         data class MainSettingScreen(val component: SettingScreenComponent) : Child
         data class LanguageSelectorScreen(val component: LanguageSelectorComponent) : Child
+        data class SubscriptionScreen(val component: SubscriptionScreenComponent) : Child
 
         data class PermissionFlowScreen(val component: PermissionFlowComponent) : Child
     }
@@ -79,5 +93,8 @@ class SettingsScopeNavigateComponent(
 
         @Serializable
         data object PermissionFlowScreen : Configuration
+
+        @Serializable
+        data object SubscriptionScreen : Configuration
     }
 }
