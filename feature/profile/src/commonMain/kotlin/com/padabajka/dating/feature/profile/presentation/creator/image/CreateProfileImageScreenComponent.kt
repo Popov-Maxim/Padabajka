@@ -29,7 +29,7 @@ class CreateProfileImageScreenComponent(
         }
     }
 
-    private fun updateImage(image: Image?) = mapAndReduceException(
+    private fun updateImage(image: Image?) = launchStep(
         action = {
             val uiImage = if (image is Image.Local) {
                 getLocalImageUseCase(image)
@@ -40,20 +40,16 @@ class CreateProfileImageScreenComponent(
                 it.copy(image = uiImage)
             }
         },
-        mapper = { it },
-        update = { state, _ -> state }
     )
 
     private fun continueCreating() {
         val image = state.value.image ?: return
 
-        mapAndReduceException(
+        launchStep(
             action = {
                 updateMainImageUseCase(image)
                 toNext()
             },
-            mapper = { it },
-            update = { state, _ -> state }
         )
     }
 

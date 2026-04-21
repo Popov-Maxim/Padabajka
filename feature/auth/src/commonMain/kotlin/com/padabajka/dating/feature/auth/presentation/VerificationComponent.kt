@@ -29,25 +29,17 @@ class VerificationComponent(
         }
     }
 
-    private fun continueVerification() = mapAndReduceException(
+    private fun continueVerification() = launchStep(
         action = {
             reloadUserUseCase()
         },
-        mapper = { it },
-        update = { state, _ ->
-            state
-        }
     )
 
-    private fun resendVerification() = mapAndReduceException(
+    private fun resendVerification() = launchStep(
         action = {
             sendEmailVerificationUseCase()
             makeResendUnavailable()
         },
-        mapper = { it },
-        update = { state, _ ->
-            state
-        }
     )
 
     @Suppress("MagicNumber")

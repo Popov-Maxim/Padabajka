@@ -20,13 +20,9 @@ class LoginMethodsComponent(
         }
     }
 
-    private fun loginGoogle() = mapAndReduceException(
+    private fun loginGoogle() = launchStep(
         action = {
             googleLoginUseCase.login()
-        },
-        mapper = {
-            it
-        },
-        update = { state, _ -> state }
+        }
     )
 }

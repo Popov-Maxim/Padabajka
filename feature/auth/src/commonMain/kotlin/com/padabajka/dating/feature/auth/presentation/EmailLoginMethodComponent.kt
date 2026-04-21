@@ -34,14 +34,10 @@ class EmailLoginMethodComponent(
         state.copy(emailFieldState = LoggingInState.FieldState.Editor(state.emailFieldState.email()))
     }
 
-    private fun openEmailApp() = mapAndReduceException(
+    private fun openEmailApp() = launchStep(
         action = {
             openMailAppUseCase()
-        },
-        mapper = {
-            it
-        },
-        update = { state, _ -> state }
+        }
     )
 
     private fun updateEmail(email: String) = reduce { state ->
@@ -58,7 +54,7 @@ class EmailLoginMethodComponent(
         }
     }
 
-    private fun login() = mapAndReduceException(
+    private fun login() = launchStep(
         action = {
             when (val emailFieldState = state.value.emailFieldState) {
                 is LoggingInState.FieldState.Editor -> {
@@ -72,26 +68,31 @@ class EmailLoginMethodComponent(
                 }
                 is LoggingInState.FieldState.WaitSignFromEmail -> Unit
             }
-        },
-        mapper = {
-            it
-        },
-        update = { state, _ -> state }
+        }
     )
 
-    private fun validateEmail(email: String, emailFieldState: LoggingInState.FieldState.Editor) = mapAndReduceException(
+    private fun validateEmail(
+        email: String,
+        emailFieldState: LoggingInState.FieldState.Editor
+    ) = launchStep(
         action = {
             validateEmailUseCase(email)
         },
-        mapper = { exception ->
-            when (exception) {
+        onError = { exception ->
+            val emailValidationIssue = when (exception) {
                 EmailIsBlankException -> EmailValidationIssue.EmailIsBlank
                 InvalidEmailException -> EmailValidationIssue.EmailIsInvalid
                 else -> EmailValidationIssue.UnableToValidateEmail
             }
-        },
-        update = { state, emailValidationIssue ->
-            state.copy(emailFieldState = emailFieldState.copy(emailValidationIssue = emailValidationIssue))
+            reduce { state ->
+                state.copy(
+                    emailFieldState = emailFieldState.copy(
+                        emailValidationIssue = emailValidationIssue
+                    )
+                )
+            }
+
+            true
         }
     )
 }

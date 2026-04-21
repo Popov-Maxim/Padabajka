@@ -60,13 +60,11 @@ class CreateProfileBirthdayScreenComponent(
         val issue = birthdayField.currentIssue
         if (birthdayItem == null || issue != null) return
 
-        mapAndReduceException(
+        launchStep(
             action = {
                 birthdayUpdateUseCase(birthdayItem.date)
                 toNext()
             },
-            mapper = { it },
-            update = { state, _ -> state }
         )
     }
 

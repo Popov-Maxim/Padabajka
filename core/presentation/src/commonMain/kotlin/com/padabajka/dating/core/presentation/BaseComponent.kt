@@ -61,15 +61,11 @@ abstract class BaseComponent<T : State>(
         _state.update(update)
     }
 
-    // Should be inlined but doesn't work from other modules. Looks like kotlin bug
     @Suppress("TooGenericExceptionCaught")
-    protected fun <M> mapAndReduceException(
+    protected fun launchStep(
         action: suspend () -> Unit,
-        mapper: (Throwable) -> M,
-        update: (T, M?) -> T
+        onError: (Throwable) -> Boolean = { false }
     ): Job = componentScope.launch {
-        var mappedException: M? = null
-
         try {
             action()
         } catch (ce: CancellationException) {
@@ -77,15 +73,15 @@ abstract class BaseComponent<T : State>(
         } catch (e: Throwable) {
             println("${this::class.simpleName} exception in mapAndReduce: ${e.message}")
             e.printStackTrace()
-            if (isDebugBuild) {
-                throw e
-            } else {
-                Firebase.crashlytics.recordException(e)
+            val handled = onError(e)
+            if (handled.not()) {
+                if (isDebugBuild) {
+                    throw e
+                } else {
+                    Firebase.crashlytics.recordException(e)
+                }
             }
-            mappedException = mapper(e)
         }
-
-        reduce { update(it, mappedException) }
     }
 
     open fun onStopped() {}

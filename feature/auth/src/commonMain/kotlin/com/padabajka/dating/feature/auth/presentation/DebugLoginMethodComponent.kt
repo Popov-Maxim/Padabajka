@@ -24,13 +24,9 @@ class DebugLoginMethodComponent(
         state.copy(uuid = uuid)
     }
 
-    private fun loginDebug() = mapAndReduceException(
+    private fun loginDebug() = launchStep(
         action = {
             authRepository.loginDebug(state.value.uuid)
         },
-        mapper = {
-            it
-        },
-        update = { state, _ -> state }
     )
 }
