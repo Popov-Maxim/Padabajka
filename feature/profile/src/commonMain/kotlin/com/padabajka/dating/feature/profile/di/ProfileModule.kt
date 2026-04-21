@@ -45,7 +45,6 @@ import com.padabajka.dating.feature.profile.domain.update.FirstNameUpdateUseCase
 import com.padabajka.dating.feature.profile.domain.update.UpdateLookingForUseCase
 import com.padabajka.dating.feature.profile.domain.update.UpdateMainImageUseCase
 import com.padabajka.dating.feature.profile.domain.update.UpdateUserGenderUseCase
-import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -169,14 +168,6 @@ private val domainModule = module {
 }
 
 private val presentationModule = module {
-    factory<ProfileScreenComponent> { parameters ->
-        ProfileScreenComponent(
-            context = parameters.get(),
-            openEditor = parameters.get(),
-            openLikesMeScreen = parameters.get(),
-            profileRepository = get()
-        )
-    }
 }
 
 val profileModules = arrayOf(dataModule, domainModule, presentationModule)

@@ -28,6 +28,10 @@ sealed interface StaticTextId {
 //        PrivacyPolicy(rawId = "privacy_policy"),
 
         // Total for Profile
+        Premium(rawId = "premium"),
+        SuperLikes(rawId = "super_likes"),
+        Rewinds(rawId = "rewinds"),
+
         Male(rawId = "male"),
         Female(rawId = "female"),
         Everyone(rawId = "everyone"),

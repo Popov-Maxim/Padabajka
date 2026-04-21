@@ -13,9 +13,10 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.padabajka.dating.core.presentation.ui.CoreColors
 
 fun Modifier.innerShadow(
-    color: Color = Color(color = 0xFFA1A1A1),
+    color: Color = CoreColors.Shadow.main,
     blur: Dp = 16.dp,
     x: Dp = 0.dp,
     y: Dp = 0.dp,
@@ -51,8 +52,8 @@ fun Modifier.innerShadow(
                 drawRect(
                     brush = Brush.linearGradient(
                         colors = listOf(
-                            color.copy(alpha = 0.4f),
-                            color.copy(alpha = 0.1f),
+                            color.copy(alpha = color.alpha * 0.8f),
+                            color.copy(alpha = color.alpha * 0.2f),
                             Color.Transparent
                         ),
                         start = start,

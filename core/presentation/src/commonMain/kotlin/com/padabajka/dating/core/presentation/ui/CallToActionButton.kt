@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.modifier.optionalClickable
@@ -19,6 +20,7 @@ fun CoreCallToActionButton(
     text: String,
     enabled: Boolean = true,
     modifier: Modifier = Modifier,
+    fontFamily: FontFamily? = null,
     onClick: () -> Unit
 ) {
     val shape = RoundedCornerShape(20.dp)
@@ -36,7 +38,8 @@ fun CoreCallToActionButton(
         Text(
             text = text,
             fontSize = 16.sp,
-            color = CoreColors.secondary.textColor
+            color = CoreColors.secondary.textColor,
+            fontFamily = fontFamily
         )
     }
 }

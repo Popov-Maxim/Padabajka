@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.profile.presentation.model
 
 import com.padabajka.dating.core.presentation.State
+import com.padabajka.dating.core.presentation.ui.SubscriptionUIItem
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Detail
 import com.padabajka.dating.core.repository.api.model.profile.Image
@@ -11,7 +12,8 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.datetime.LocalDate
 
 data class ProfileState(
-    val value: ProfileValue
+    val value: ProfileValue,
+    val subscriptionFeature: SubscriptionUIItem
 ) : State
 
 sealed interface ProfileValue {

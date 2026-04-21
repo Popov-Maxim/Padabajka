@@ -135,3 +135,11 @@ internal val CoreRes.svg.swiper_like_icon: String
 @OptIn(ExperimentalResourceApi::class)
 internal val CoreRes.svg.swiper_super_like_icon: String
     get() = Res.getUri("drawable/swiper_super_like_icon.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.edit_profile_icon: String
+    get() = Res.getUri("drawable/edit_profile_icon.svg")
+
+@OptIn(ExperimentalResourceApi::class)
+internal val CoreRes.svg.settings_icon: String
+    get() = Res.getUri("drawable/settings_icon.svg")

@@ -16,7 +16,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
@@ -79,9 +78,7 @@ fun ChatScreen(component: ChatComponent) {
     ) {
         Chat(
             modifier = Modifier
-                .fillMaxWidth().innerShadow(
-                    color = Color(color = 0xFFA1A1A1),
-                ),
+                .fillMaxWidth().innerShadow(),
             items = state.messengerItems,
             loadingState = state.chatLoadingState,
             followNewItems = followNewItems,

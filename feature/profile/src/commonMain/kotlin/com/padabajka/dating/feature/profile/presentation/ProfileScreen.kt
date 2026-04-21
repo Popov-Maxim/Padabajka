@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.profile.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,27 +13,30 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreCallToActionButton
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.ProfileAvatar
+import com.padabajka.dating.core.presentation.ui.SubscriptionUIItem
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
+import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
+import com.padabajka.dating.core.presentation.ui.drawable.icon.Icon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
 import com.padabajka.dating.core.presentation.ui.image.raw
 import com.padabajka.dating.core.presentation.ui.mainColor
@@ -40,7 +44,8 @@ import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
 import com.padabajka.dating.core.presentation.ui.textColor
 import com.padabajka.dating.core.repository.api.model.profile.age
 import com.padabajka.dating.feature.profile.presentation.model.OpenEditorEvent
-import com.padabajka.dating.feature.profile.presentation.model.OpenLikesMeEvent
+import com.padabajka.dating.feature.profile.presentation.model.ProfileEvent
+import com.padabajka.dating.feature.profile.presentation.model.ProfileState
 import com.padabajka.dating.feature.profile.presentation.model.ProfileValue
 import com.padabajka.dating.feature.profile.presentation.model.UpdateProfileEvent
 
@@ -70,7 +75,8 @@ fun ProfileScreen(
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Settings,
+                        modifier = Modifier.size(30.dp),
+                        iconData = CoreIcons.Settings.SettingsIcon.toData(),
                         contentDescription = "settings"
                     )
                 }
@@ -79,7 +85,7 @@ fun ProfileScreen(
     ) {
         when (val profile = state.value) {
             ProfileValue.Loading -> LoadingScreen()
-            is ProfileValue.Loaded -> ProfileScreen(component, profile)
+            is ProfileValue.Loaded -> ProfileScreen(component, profile, state)
             ProfileValue.Error -> ErrorScreen(component)
         }
     }
@@ -122,26 +128,43 @@ private fun LoadingScreen() {
 @Composable
 private fun ProfileScreen(
     component: ProfileScreenComponent,
-    profile: ProfileValue.Loaded
+    profile: ProfileValue.Loaded,
+    state: ProfileState
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 15.dp),
-        verticalArrangement = Arrangement.spacedBy(40.dp)
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .innerShadow(
-                    color = Color(color = 0xFFA1A1A1),
-                    shape = RoundedCornerShape(20.dp)
-                )
+        ProfileShortDataBlock(component, profile)
+        SubscriptionBlock(component, state.subscriptionFeature)
+    }
+}
+
+@Composable
+private fun ProfileShortDataBlock(
+    component: ProfileScreenComponent,
+    profile: ProfileValue.Loaded
+) {
+    val profileEditorShape = RoundedCornerShape(20.dp)
+    Box(
+        modifier = Modifier
+            .innerShadow(
+                shape = profileEditorShape
+            )
+            .clip(profileEditorShape)
+            .clickable { component.onEvent(OpenEditorEvent) }
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                .padding(vertical = 30.dp, horizontal = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth().wrapContentHeight()
-                    .padding(vertical = 20.dp, horizontal = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 10.dp),
                     horizontalArrangement = Arrangement.spacedBy(15.dp)
                 ) {
                     ProfileAvatar(
@@ -159,10 +182,16 @@ private fun ProfileScreen(
                         )
                         Box(
                             modifier = Modifier
-                                .background(color = CoreColors.secondary.mainColor, shape = RoundedCornerShape(10.dp))
+                                .background(
+                                    color = CoreColors.secondary.mainColor,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
                         ) {
                             Text(
-                                modifier = Modifier.padding(horizontal = 15.dp, vertical = 2.dp),
+                                modifier = Modifier.padding(
+                                    horizontal = 15.dp,
+                                    vertical = 2.dp
+                                ),
                                 text = profile.lookingFor.type.translate(),
                                 fontSize = 15.sp,
                                 color = CoreColors.secondary.textColor
@@ -170,18 +199,83 @@ private fun ProfileScreen(
                         }
                     }
                 }
-                CoreCallToActionButton(
-                    text = StaticTextId.UiId.OpenProfileEditor.translate(),
-                    onClick = { component.onEvent(OpenEditorEvent) },
-                    modifier = Modifier.fillMaxWidth()
+
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    iconData = CoreIcons.Editor.EditProfile.toData(),
+                    contentDescription = "edit"
                 )
             }
         }
+    }
+}
 
-        CoreCallToActionButton( // TODO(P0): need delete
-            text = "LikesMe",
-            onClick = { component.onEvent(OpenLikesMeEvent) },
-            modifier = Modifier.fillMaxWidth()
+@Composable
+private fun SubscriptionBlock(
+    component: ProfileScreenComponent,
+    subscriptionFeature: SubscriptionUIItem
+) {
+    val profileEditorShape = RoundedCornerShape(20.dp)
+    Column(
+        modifier = Modifier
+            .innerShadow(
+                shape = profileEditorShape
+            )
+            .fillMaxWidth()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        Text(
+            text = StaticTextId.UiId.Premium.translate() + ":",
+            fontSize = 20.sp,
+            fontFamily = PlayfairDisplay
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            val shape = RoundedCornerShape(15.dp)
+            val modifier = Modifier
+                .shadow(
+                    elevation = 8.dp,
+                    shape = shape,
+                    spotColor = CoreColors.Shadow.main.copy(alpha = 1f),
+                )
+                .background(CoreColors.background.mainColor, shape)
+                .padding(15.dp)
+                .weight(1f)
+            FeatureDataBlock(
+                modifier = modifier,
+                text = StaticTextId.UiId.SuperLikes.translate() +
+                    ":\n" +
+                    subscriptionFeature.superLikes,
+            )
+            FeatureDataBlock(
+                modifier = modifier,
+                text = StaticTextId.UiId.Rewinds.translate() +
+                    ":\n" +
+                    subscriptionFeature.returns,
+            )
+        }
+
+        CoreCallToActionButton(
+            text = StaticTextId.UiId.Subscription.translate(),
+            fontFamily = PlayfairDisplay,
+            onClick = { component.onEvent(ProfileEvent.OpenSubscriptionScreen) }
+        )
+    }
+}
+
+@Composable
+private fun FeatureDataBlock(modifier: Modifier, text: String) {
+    Box(
+        modifier = modifier
+    ) {
+        Text(
+            text = text,
+            lineHeight = 1.4.em,
+            fontSize = 20.sp,
+            fontFamily = PlayfairDisplay
         )
     }
 }

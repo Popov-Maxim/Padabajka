@@ -10,6 +10,7 @@ import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_left_ic
 import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_right_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.camera_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.cancel_icon
+import com.padabajka.dating.core.presentation.ui.resource.drawable.edit_profile_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.faq_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.google_logo
 import com.padabajka.dating.core.presentation.ui.resource.drawable.language_icon
@@ -30,6 +31,7 @@ import com.padabajka.dating.core.presentation.ui.resource.drawable.profile_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.reaction_like
 import com.padabajka.dating.core.presentation.ui.resource.drawable.rewind_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.search_pref_icon
+import com.padabajka.dating.core.presentation.ui.resource.drawable.settings_icon
 import com.padabajka.dating.core.presentation.ui.resource.drawable.smoking_lifestyle
 import com.padabajka.dating.core.presentation.ui.resource.drawable.snowman
 import com.padabajka.dating.core.presentation.ui.resource.drawable.swiper_icon
@@ -77,6 +79,10 @@ object CoreIcons {
         val Camera
             @Composable
             get() = painterResource(CoreRes.svg.camera_icon)
+
+        val EditProfile
+            @Composable
+            get() = painterResource(CoreRes.svg.edit_profile_icon)
     }
 
     object Reaction {
@@ -139,6 +145,10 @@ object CoreIcons {
     }
 
     object Settings {
+        val SettingsIcon
+            @Composable
+            get() = painterResource(CoreRes.svg.settings_icon)
+
         val FAQ
             @Composable
             get() = painterResource(CoreRes.svg.faq_icon)
