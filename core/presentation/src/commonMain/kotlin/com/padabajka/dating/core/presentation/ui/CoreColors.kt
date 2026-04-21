@@ -45,6 +45,10 @@ object CoreColors {
             totalVariant,
         )
     }
+
+    object Shadow {
+        val main = Color(0x40A1A1A1)
+    }
 }
 
 data class ColorGroup(

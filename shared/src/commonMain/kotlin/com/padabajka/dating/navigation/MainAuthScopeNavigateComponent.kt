@@ -83,13 +83,14 @@ class MainAuthScopeNavigateComponent(
             )
 
             Configuration.ProfileScreen -> Child.ProfileScreen(
-                component = get {
-                    parametersOf(
-                        context,
-                        { navigate(Configuration.ProfileEditorScreen) },
-                        { navigate(Configuration.LikesMeScreen) }
-                    )
-                }
+                component = ProfileScreenComponent(
+                    context = context,
+                    openEditor = { navigate(Configuration.ProfileEditorScreen) },
+                    openLikesMeScreen = { navigate(Configuration.LikesMeScreen) },
+                    openSubscriptionScreen = { navigate(Configuration.SubscriptionScreen) },
+                    profileRepository = get(),
+                    subscriptionRepository = get()
+                )
             )
 
             Configuration.ProfileEditorScreen -> Child.ProfileEditorScreen(

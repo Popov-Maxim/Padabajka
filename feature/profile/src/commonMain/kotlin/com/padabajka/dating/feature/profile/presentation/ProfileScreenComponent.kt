@@ -2,7 +2,9 @@ package com.padabajka.dating.feature.profile.presentation
 
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.BaseComponent
+import com.padabajka.dating.core.presentation.ui.toUI
 import com.padabajka.dating.core.repository.api.ProfileRepository
+import com.padabajka.dating.core.repository.api.SubscriptionRepository
 import com.padabajka.dating.feature.profile.presentation.model.OpenEditorEvent
 import com.padabajka.dating.feature.profile.presentation.model.OpenLikesMeEvent
 import com.padabajka.dating.feature.profile.presentation.model.ProfileEvent
@@ -16,11 +18,16 @@ class ProfileScreenComponent(
     context: ComponentContext,
     private val openEditor: () -> Unit,
     private val openLikesMeScreen: () -> Unit,
-    private val profileRepository: ProfileRepository
+    private val openSubscriptionScreen: () -> Unit,
+    private val profileRepository: ProfileRepository,
+    private val subscriptionRepository: SubscriptionRepository
 ) : BaseComponent<ProfileState>(
     context,
     "profile",
-    ProfileState(value = initProfileState(profileRepository))
+    ProfileState(
+        value = initProfileState(profileRepository),
+        subscriptionFeature = subscriptionRepository.subscriptionStateValue.toUI()
+    )
 ) {
 
     init {
@@ -33,6 +40,15 @@ class ProfileScreenComponent(
             }
         }
 //        updateProfile()
+        componentScope.launch {
+            subscriptionRepository.subscriptionState.collect { newState ->
+                reduce {
+                    it.copy(
+                        subscriptionFeature = newState.toUI()
+                    )
+                }
+            }
+        }
     }
 
     fun onEvent(event: ProfileEvent) {
@@ -40,6 +56,7 @@ class ProfileScreenComponent(
             OpenEditorEvent -> openEditor()
             UpdateProfileEvent -> updateProfile()
             OpenLikesMeEvent -> openLikesMeScreen()
+            ProfileEvent.OpenSubscriptionScreen -> openSubscriptionScreen()
         }
     }
 

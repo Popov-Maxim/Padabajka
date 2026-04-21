@@ -243,7 +243,6 @@ fun ImageField(
         ImageField(
             modifier = fieldModifier.background(Color(color = 0xFFD9D9D9))
                 .innerShadow(
-                    color = Color(color = 0xFFA1A1A1),
                     shape = RoundedCornerShape(10.dp)
                 ),
             iconSize = iconSize,
@@ -278,7 +277,6 @@ private fun ProfileImage(
             modifier = Modifier,
             model = image.raw(),
             modifierForPlaceholder = Modifier.innerShadow(
-                color = Color(color = 0xFFA1A1A1),
                 shape = RoundedCornerShape(10.dp)
             )
         )

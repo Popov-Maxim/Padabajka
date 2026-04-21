@@ -33,7 +33,6 @@ fun CoreTextEditField(
         enabled = enabled,
         modifier = modifier
             .innerShadow(
-                color = Color(color = 0xFFA1A1A1),
                 shape = shape
             ).clip(shape).optionalClickable(onClick)
             .then(modifierAfter),

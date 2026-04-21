@@ -1,6 +1,8 @@
 package com.padabajka.dating.feature.profile.presentation.model
 
-sealed interface ProfileEvent
+sealed interface ProfileEvent {
+    data object OpenSubscriptionScreen : ProfileEvent
+}
 
 data object UpdateProfileEvent : ProfileEvent
 data object OpenEditorEvent : ProfileEvent
