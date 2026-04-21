@@ -81,7 +81,8 @@ private fun Language(
     Row(
         modifier = Modifier.fillMaxWidth()
             .height(60.dp)
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
+            .padding(horizontal = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

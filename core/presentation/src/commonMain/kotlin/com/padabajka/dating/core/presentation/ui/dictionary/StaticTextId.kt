@@ -27,6 +27,11 @@ sealed interface StaticTextId {
         DeleteAccount(rawId = "delete_account"),
 //        PrivacyPolicy(rawId = "privacy_policy"),
 
+        SubscriptionActive(rawId = "subscription_active"),
+        SubscriptionInactive(rawId = "subscription_inactive"),
+        ProfileActive(rawId = "profile_active"),
+        ProfileFrozen(rawId = "profile_frozen"),
+
         // Total for Profile
         Premium(rawId = "premium"),
         SuperLikes(rawId = "super_likes"),
@@ -159,6 +164,7 @@ sealed interface StaticTextId {
         FinishScreenTitle(rawId = "finish_screen_title"),
         LogoutAlertDialogText(rawId = "logout_alert_dialog_text"),
         FreezeAccountAlertDialogText(rawId = "freeze_account_alert_dialog_text"),
+        UnfreezeAccountAlertDialogText(rawId = "unfreeze_account_alert_dialog_text"),
         DeleteAccountAlertDialogText(rawId = "delete_account_alert_dialog_text"),
         DeleteImageAlertDialogText(rawId = "delete_image_alert_dialog_text"),
 

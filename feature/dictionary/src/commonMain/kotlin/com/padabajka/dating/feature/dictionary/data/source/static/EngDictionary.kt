@@ -23,6 +23,11 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.FreezeProfile -> "Freeze profile"
             StaticTextId.UiId.TermsOfUse -> "Terms of use"
             StaticTextId.UiId.DeleteAccount -> "Delete account"
+            StaticTextId.UiId.SubscriptionActive -> "active"
+            StaticTextId.UiId.SubscriptionInactive -> "not subscribed"
+            StaticTextId.UiId.ProfileActive -> "profile active"
+            StaticTextId.UiId.ProfileFrozen -> "profile frozen"
+
             StaticTextId.UiId.Premium -> "Premium"
             StaticTextId.UiId.SuperLikes -> "Super Likes"
             StaticTextId.UiId.Rewinds -> "Rewinds"
@@ -115,6 +120,8 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.LogoutAlertDialogText -> "Are you sure you want to log out?"
             StaticTextId.UiId.FreezeAccountAlertDialogText ->
                 "Are you sure you want to freeze your account?"
+            StaticTextId.UiId.UnfreezeAccountAlertDialogText ->
+                "Are you sure you want to unfreeze your account?"
             StaticTextId.UiId.DeleteAccountAlertDialogText ->
                 "Are you sure you want to delete your account?"
             StaticTextId.UiId.DeleteImageAlertDialogText ->

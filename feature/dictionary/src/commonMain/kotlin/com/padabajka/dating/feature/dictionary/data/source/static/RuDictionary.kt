@@ -23,6 +23,10 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.FreezeProfile -> "Заморозить профиль"
             StaticTextId.UiId.TermsOfUse -> "Пользовательское соглашение"
             StaticTextId.UiId.DeleteAccount -> "Удалить аккаунт"
+            StaticTextId.UiId.SubscriptionActive -> "активна"
+            StaticTextId.UiId.SubscriptionInactive -> "не оформлена"
+            StaticTextId.UiId.ProfileActive -> "профиль активен"
+            StaticTextId.UiId.ProfileFrozen -> "профиль заморожен"
             StaticTextId.UiId.Premium -> "Премиум"
             StaticTextId.UiId.SuperLikes -> "Супер лайки"
             StaticTextId.UiId.Rewinds -> "Возвраты"
@@ -112,6 +116,8 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.LogoutAlertDialogText -> "Вы уверены, что хотите выйти?"
             StaticTextId.UiId.FreezeAccountAlertDialogText ->
                 "Вы уверены, что хотите заморозить аккаунт?"
+            StaticTextId.UiId.UnfreezeAccountAlertDialogText ->
+                "Вы уверены, что хотите разморозить аккаунт?"
             StaticTextId.UiId.DeleteAccountAlertDialogText ->
                 "Вы уверены, что хотите удалить аккаунт?"
             StaticTextId.UiId.DeleteImageAlertDialogText ->
