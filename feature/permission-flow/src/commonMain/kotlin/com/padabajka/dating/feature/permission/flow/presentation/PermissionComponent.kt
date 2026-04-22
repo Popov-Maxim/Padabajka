@@ -23,16 +23,12 @@ class PermissionComponent(
         }
     }
 
-    private fun apply() = mapAndReduceException(
+    private fun apply() = launchStep(
         action = {
             val result = permissionController.requestPermission()
             if (result) {
                 onApplied()
             }
         },
-        mapper = {
-            it
-        },
-        update = { state, _ -> state }
     )
 }

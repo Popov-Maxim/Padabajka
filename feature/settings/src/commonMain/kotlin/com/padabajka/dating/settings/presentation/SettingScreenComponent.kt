@@ -93,58 +93,38 @@ class SettingScreenComponent(
         }
     }
 
-    private fun logout() = mapAndReduceException(
+    private fun logout() = launchStep(
         action = {
             logoutUseCase()
         },
-        mapper = { it },
-        update = { state, m ->
-            state
-        }
     )
 
-    private fun sendPushToken() = mapAndReduceException(
+    private fun sendPushToken() = launchStep(
         action = {
             saveTokenUseCase()
         },
-        mapper = { it },
-        update = { state, m ->
-            state
-        }
     )
 
-    private fun syncRemoteData() = mapAndReduceException(
+    private fun syncRemoteData() = launchStep(
         action = {
             syncRemoteDataUseCase()
         },
-        mapper = { it },
-        update = { state, m ->
-            state
-        }
     )
 
-    private fun deleteAccount() = mapAndReduceException(
+    private fun deleteAccount() = launchStep(
         action = {
             deleteAccountUseCase()
         },
-        mapper = { it },
-        update = { state, m ->
-            state
-        }
     )
 
-    private fun changeFreeze(freeze: Boolean) = mapAndReduceException(
+    private fun changeFreeze(freeze: Boolean) = launchStep(
         action = {
             profileRepository.setFreeze(freeze)
         },
-        mapper = { it },
-        update = { state, m ->
-            state
-        }
     )
 
     private fun init(settingsComponentProvider: AppSettingsComponentProvider) =
-        mapAndReduceException(
+        launchStep(
             action = {
                 settingsComponentProvider.languages.collect { lang ->
                     reduce {
@@ -152,9 +132,5 @@ class SettingScreenComponent(
                     }
                 }
             },
-            mapper = { it },
-            update = { state, m ->
-                state
-            }
         )
 }

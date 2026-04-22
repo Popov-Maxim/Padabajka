@@ -47,7 +47,7 @@ class MessengerComponent(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun init() {
-        mapAndReduceException(
+        launchStep(
             action = {
                 matchWithChatUseCase().flatMapLatest {
                     val matchFlows = it.map { match ->
@@ -97,11 +97,7 @@ class MessengerComponent(
                         )
                     }
                 }
-            },
-            mapper = {
-                it
-            },
-            update = { state, _ -> state }
+            }
         )
     }
 }

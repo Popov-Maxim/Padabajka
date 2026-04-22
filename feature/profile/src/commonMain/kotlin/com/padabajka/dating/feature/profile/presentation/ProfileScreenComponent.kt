@@ -60,19 +60,19 @@ class ProfileScreenComponent(
         }
     }
 
-    private fun updateProfile() = mapAndReduceException(
+    private fun updateProfile() = launchStep(
         action = {
             reduce { state ->
                 state.copy(value = ProfileValue.Loading)
             }
             profileRepository.updateProfile()
         },
-        mapper = {
-            it
+        onError = {
+            reduce { state ->
+                state.copy(value = ProfileValue.Error)
+            }
+            false
         },
-        update = { state, exception ->
-            if (exception != null) state.copy(value = ProfileValue.Error) else state
-        }
     )
 
     companion object {

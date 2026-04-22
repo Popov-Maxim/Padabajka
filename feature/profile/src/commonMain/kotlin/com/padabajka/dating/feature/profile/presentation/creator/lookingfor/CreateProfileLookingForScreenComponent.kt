@@ -31,13 +31,11 @@ class CreateProfileLookingForScreenComponent(
             type = selectedType.toText(type = Text.Type.Default),
             detail = detail.toText(type = Text.Type.Default)
         )
-        mapAndReduceException(
+        launchStep(
             action = {
                 updateLookingForUseCase(lookingFor)
                 toNext()
             },
-            mapper = { it },
-            update = { state, _ -> state }
         )
     }
 }

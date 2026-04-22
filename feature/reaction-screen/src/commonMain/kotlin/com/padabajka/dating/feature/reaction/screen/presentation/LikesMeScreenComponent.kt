@@ -76,23 +76,16 @@ class LikesMeScreenComponent(
     }
 
     private fun reactPersonAndUpdateCardDeck(reaction: PersonReaction) =
-        mapAndReduceException(
+        launchStep(
             action = {
                 reactionRepository.react(reaction)
-            },
-            mapper = {
-                it
-            },
-            update = { swiperState, exception ->
-                if (exception == null) {
+                reduce { swiperState ->
                     val list = (swiperState.listReactions as? ListReactions.Success)?.likes
-                        ?: return@mapAndReduceException swiperState
+                        ?: return@reduce swiperState
                     val newList = list.removeAll { it.personId == reaction.id }
 
                     swiperState.copy(listReactions = ListReactions.Success(newList))
-                } else {
-                    swiperState
                 }
-            }
+            },
         )
 }

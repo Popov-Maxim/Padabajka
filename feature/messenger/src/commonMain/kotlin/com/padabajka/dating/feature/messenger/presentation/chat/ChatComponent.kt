@@ -5,8 +5,6 @@ import com.padabajka.dating.core.domain.Factory
 import com.padabajka.dating.core.domain.delegate
 import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.presentation.event.consumed
-import com.padabajka.dating.core.presentation.event.raised
-import com.padabajka.dating.core.presentation.event.raisedIfNotNull
 import com.padabajka.dating.core.repository.api.MatchRepository
 import com.padabajka.dating.core.repository.api.UserPresenceRepository
 import com.padabajka.dating.core.repository.api.model.match.Match
@@ -30,7 +28,6 @@ import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteMatc
 import com.padabajka.dating.feature.messenger.presentation.chat.model.DeleteMessageEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.EndOfMessagesListReachedEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.Field
-import com.padabajka.dating.feature.messenger.presentation.chat.model.InternalError
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessageGotReadEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessengerEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.NavigateBackEvent
@@ -116,7 +113,7 @@ class ChatComponent(
     }
 
     private fun subscribeOnMessages() {
-        mapAndReduceException(
+        launchStep(
             action = {
                 val messagesFlow = chatMessagesUseCase(chatId)
                 messagesFlow
@@ -134,10 +131,6 @@ class ChatComponent(
                         }
                     }
             },
-            mapper = {},
-            update = { state, _ ->
-                state.copy(internalErrorStateEvent = raised)
-            }
         )
     }
 
@@ -145,7 +138,7 @@ class ChatComponent(
         chatId: ChatId,
         matchItem: MatchItem?
     ) {
-        mapAndReduceException(
+        launchStep(
             action = {
                 var jobSubscribeUserPresence: Job? = matchItem?.run {
                     subscribeUserPresence(matchItem)
@@ -166,12 +159,6 @@ class ChatComponent(
                     }
                 }
             },
-            mapper = {
-                it
-            },
-            update = { state, _ ->
-                state.copy(internalErrorStateEvent = raised)
-            }
         )
     }
 
@@ -186,7 +173,7 @@ class ChatComponent(
     }
 
     private fun subscribeUserPresence(matchItem: MatchItem): Job {
-        return mapAndReduceException(
+        return launchStep(
             action = {
                 userPresenceRepository.userPresenceFlow(matchItem.person.id).collect {
                     val userPresence = it.toUI()
@@ -195,12 +182,6 @@ class ChatComponent(
                     }
                 }
             },
-            mapper = {
-                it
-            },
-            update = { state, _ ->
-                state.copy(internalErrorStateEvent = raised)
-            }
         )
     }
 
@@ -263,60 +244,40 @@ class ChatComponent(
         it.copy(internalErrorStateEvent = consumed)
     }
 
-    private fun readMessage(messageId: MessageId) = mapAndReduceException(
+    private fun readMessage(messageId: MessageId) = launchStep(
         action = {
             readMessageUseCase(messageId)
         },
-        mapper = { InternalError },
-        update = { state, internalError ->
-            state.copy(internalErrorStateEvent = raisedIfNotNull(internalError))
-        }
     )
 
     private fun reactToMessage(messageId: MessageId) =
-        mapAndReduceException(
+        launchStep(
             action = {
                 toggleMessageReactionUseCase(chatId, messageId, MessageReaction.Value.Like)
-            },
-            mapper = { InternalError },
-            update = { state, internalError ->
-                state.copy(internalErrorStateEvent = raisedIfNotNull(internalError))
             }
         )
 
     private fun deleteMessage(messageId: MessageId) =
-        mapAndReduceException(
+        launchStep(
             action = {
                 deleteMessageUseCase(chatId, messageId)
-            },
-            mapper = { InternalError },
-            update = { state, internalError ->
-                state.copy(internalErrorStateEvent = raisedIfNotNull(internalError))
             }
         )
 
     private fun deleteChat() =
-        mapAndReduceException(
+        launchStep(
             action = {
                 deleteChatUseCase(chatId)
-            },
-            mapper = { InternalError },
-            update = { state, internalError ->
-                state.copy(internalErrorStateEvent = raisedIfNotNull(internalError))
             }
         )
 
     private fun deleteMatch() {
         val matchId = matchId ?: return
 
-        mapAndReduceException(
+        launchStep(
             action = {
                 matchRepository.deleteMatch(matchId)
             },
-            mapper = { InternalError },
-            update = { state, internalError ->
-                state.copy(internalErrorStateEvent = raisedIfNotNull(internalError))
-            }
         )
     }
 

@@ -20,7 +20,7 @@ class LanguageSelectorComponent(
 ) {
 
     init {
-        mapAndReduceException(
+        launchStep(
             action = {
                 appSettingsComponentProvider.languages
                     .collect { language ->
@@ -29,8 +29,6 @@ class LanguageSelectorComponent(
                         }
                     }
             },
-            mapper = { it },
-            update = { state, m -> state }
         )
     }
 
@@ -41,11 +39,9 @@ class LanguageSelectorComponent(
         }
     }
 
-    private fun changeLanguage(language: Language.Static) = mapAndReduceException(
+    private fun changeLanguage(language: Language.Static) = launchStep(
         action = {
             changeLanguageUseCase(language)
         },
-        mapper = { it },
-        update = { state, _ -> state }
     )
 }

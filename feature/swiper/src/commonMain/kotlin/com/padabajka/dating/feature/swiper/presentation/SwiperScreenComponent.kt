@@ -141,16 +141,10 @@ class SwiperScreenComponent(
         updateSearchPref(searchPreferences)
     }
 
-    private fun updateSearchPref(searchPreferences: SearchPreferences) = mapAndReduceException(
+    private fun updateSearchPref(searchPreferences: SearchPreferences) = launchStep(
         action = {
             updateSearchPrefUseCase.invoke { searchPreferences }
         },
-        mapper = {
-            it
-        },
-        update = { swiperState, _ ->
-            swiperState
-        }
     )
 
     private fun removeCardFromDeck(cardItem: CardItem) {
@@ -189,21 +183,15 @@ class SwiperScreenComponent(
     }
 
     private fun reactPersonAndUpdateCardDeck(reaction: PersonReaction) =
-        mapAndReduceException(
+        launchStep(
             action = {
                 reactToCardUseCase(reaction)
                 updateCardDeck()
             },
-            mapper = {
-                it
-            },
-            update = { swiperState, _ ->
-                swiperState
-            }
         )
 
     private fun updateCardDeck(count: Int = 1) {
-        mapAndReduceException(
+        launchStep(
             action = {
                 val cards = nextCardUseCase(count)
                 val uiCards = cards.filter { it !is EmptyCard }.map { it.toUICardItem() }
@@ -216,18 +204,12 @@ class SwiperScreenComponent(
                     }
                 }
             },
-            mapper = {
-                it
-            },
-            update = { swiperState, exception ->
-                if (exception != null) {
-                    swiperState.copy(
-                        cardDeckState = CardDeckState.Error
-                    )
-                } else {
-                    swiperState
+            onError = {
+                reduce { state ->
+                    state.copy(cardDeckState = CardDeckState.Error)
                 }
-            }
+                false
+            },
         )
     }
 
@@ -235,17 +217,11 @@ class SwiperScreenComponent(
         if (subscriptionRepository.subscriptionStateValue.features.returns <= 0) {
             openSubscriptionScreen()
         } else if (state.value.cardDeck.hasDeleted()) {
-            mapAndReduceException(
+            launchStep(
                 action = {
                     reduceReturnLastCard()
                     returnLastCardUseCase()
                 },
-                mapper = {
-                    it
-                },
-                update = { swiperState, _ ->
-                    swiperState
-                }
             )
         }
     }
@@ -257,16 +233,10 @@ class SwiperScreenComponent(
     }
 
     private fun unfreezeProfile() {
-        mapAndReduceException(
+        launchStep(
             action = {
                 profileRepository.setFreeze(false)
             },
-            mapper = {
-                it
-            },
-            update = { swiperState, _ ->
-                swiperState
-            }
         )
     }
 

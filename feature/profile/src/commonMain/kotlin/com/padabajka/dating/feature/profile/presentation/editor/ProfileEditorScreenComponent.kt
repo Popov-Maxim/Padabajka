@@ -5,7 +5,6 @@ import com.padabajka.dating.core.domain.Factory
 import com.padabajka.dating.core.domain.delegate
 import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.presentation.event.consumed
-import com.padabajka.dating.core.presentation.event.raisedIfNotNull
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Image
@@ -51,7 +50,6 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.UpdateInte
 import com.padabajka.dating.feature.profile.presentation.editor.model.UpdateLangSearchEvent
 import com.padabajka.dating.feature.profile.presentation.editor.model.toEditorState
 import com.padabajka.dating.feature.profile.presentation.editor.model.updated
-import com.padabajka.dating.feature.profile.presentation.model.InternalError
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 
@@ -130,7 +128,7 @@ class ProfileEditorScreenComponent(
     }
 
     private fun discardUpdates() =
-        mapAndReduceException(
+        launchStep(
             action = {
                 profileRepository.profileValue?.let { profile ->
                     reduce {
@@ -138,27 +136,17 @@ class ProfileEditorScreenComponent(
                     }
                 }
             },
-            mapper = { InternalError },
-            update = { profileState, internalError ->
-                profileState.copy(internalErrorStateEvent = raisedIfNotNull(internalError))
-            }
         )
 
     private fun saveUpdates() {
         reduce { it.copy(saveState = ProfileEditorState.SaveState.Loading) }
-        mapAndReduceException(
+        launchStep(
             action = {
                 saveProfileUseCase {
                     it.updated(state.value)
                 }
                 reduce { it.copy(saveState = ProfileEditorState.SaveState.Idle) }
             },
-            mapper = {
-                it
-            },
-            update = { profileState, _ ->
-                profileState
-            }
         )
     }
 
@@ -210,7 +198,7 @@ class ProfileEditorScreenComponent(
         }
     }
 
-    private fun addImage(image: Image, index: Int) = mapAndReduceException(
+    private fun addImage(image: Image, index: Int) = launchStep(
         action = {
             val uiImage = if (image is Image.Local) {
                 getLocalImageUseCase(image)
@@ -221,8 +209,6 @@ class ProfileEditorScreenComponent(
                 it.addImage(uiImage, index)
             }
         },
-        mapper = { it },
-        update = { state, _ -> state }
     )
 
     private fun searchCity(query: String) {
@@ -234,7 +220,7 @@ class ProfileEditorScreenComponent(
                 )
             }
         }
-        mapAndReduceException(
+        launchStep(
             action = {
                 val cities = findCitiesUseCase(query)
                     .map {
@@ -251,8 +237,6 @@ class ProfileEditorScreenComponent(
                     }
                 }
             },
-            mapper = { it },
-            update = { state, _ -> state }
         )
     }
 
@@ -274,7 +258,7 @@ class ProfileEditorScreenComponent(
                 )
             }
         }
-        mapAndReduceException(
+        launchStep(
             action = {
                 val texts = findLanguageAssetsUseCase(query)
                     .toPersistentList()
@@ -284,8 +268,6 @@ class ProfileEditorScreenComponent(
                     }
                 }
             },
-            mapper = { it },
-            update = { state, _ -> state }
         )
     }
 
@@ -298,7 +280,7 @@ class ProfileEditorScreenComponent(
                 )
             }
         }
-        mapAndReduceException(
+        launchStep(
             action = {
                 val assets = findInterestAssetsUseCase(query)
                     .toPersistentList()
@@ -308,8 +290,6 @@ class ProfileEditorScreenComponent(
                     }
                 }
             },
-            mapper = { it },
-            update = { state, _ -> state }
         )
     }
 

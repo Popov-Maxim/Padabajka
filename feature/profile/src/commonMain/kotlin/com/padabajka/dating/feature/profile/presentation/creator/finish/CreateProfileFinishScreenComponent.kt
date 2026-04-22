@@ -17,11 +17,9 @@ class CreateProfileFinishScreenComponent(
         saveProfile()
     }
 
-    private fun saveProfile() = mapAndReduceException(
+    private fun saveProfile() = launchStep(
         action = {
             createProfileFromDraftUseCase()
         },
-        mapper = { throw it },
-        update = { state, _ -> state }
     )
 }

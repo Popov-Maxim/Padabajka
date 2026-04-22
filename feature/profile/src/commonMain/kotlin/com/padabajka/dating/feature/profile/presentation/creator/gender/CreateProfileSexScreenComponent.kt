@@ -51,7 +51,7 @@ class CreateProfileSexScreenComponent(
         val gender = genderUI.toGender()
         val preferredGender = preferredGenderUI.toLookingGender()
 
-        mapAndReduceException(
+        launchStep(
             action = {
                 updateUserGenderUseCase(gender)
                 searchPreferencesRepository.update {
@@ -59,8 +59,6 @@ class CreateProfileSexScreenComponent(
                 }
                 toNext()
             },
-            mapper = { it },
-            update = { state, _ -> state }
         )
     }
 

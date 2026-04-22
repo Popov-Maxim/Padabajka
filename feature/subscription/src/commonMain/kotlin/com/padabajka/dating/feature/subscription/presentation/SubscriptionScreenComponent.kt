@@ -31,15 +31,11 @@ class SubscriptionScreenComponent(
     }
 
     private fun subscription() {
-        mapAndReduceException(
+        launchStep(
             action = {
                 subscriptionRepository.subscribe()
                 navigateBack()
             },
-            mapper = { it },
-            update = { state, _ ->
-                state
-            }
         )
     }
 }

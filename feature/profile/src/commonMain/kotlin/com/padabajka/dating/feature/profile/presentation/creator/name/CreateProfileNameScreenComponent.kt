@@ -40,13 +40,11 @@ class CreateProfileNameScreenComponent(
         val valid = nameValidator.validate(name)
 
         if (valid) {
-            mapAndReduceException(
+            launchStep(
                 action = {
                     saveNameUseCase(name)
                     toNext()
                 },
-                mapper = { it },
-                update = { state, _ -> state }
             )
         } else {
             reduce { state ->
