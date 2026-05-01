@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.padabajka.dating.core.presentation.State
 import com.padabajka.dating.core.presentation.ui.SubscriptionUIItem
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.repository.api.model.ads.PlatformNativeAd
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Age
@@ -38,7 +39,7 @@ data class SwiperState(
 sealed interface CardDeckState {
     data object Idle : CardDeckState
     data object Loading : CardDeckState
-    data object Error : CardDeckState
+    data class Error(val message: StaticTextId) : CardDeckState
     data object Empty : CardDeckState
     data object Frozen : CardDeckState
 //    data object ProfileNotCreated : CardDeckState
