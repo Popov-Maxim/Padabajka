@@ -188,6 +188,12 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.UnknownErrorDescription ->
                 "Ой… что-то пошло не так\n" +
                     "Сейчас поправим"
+
+            StaticTextId.UiId.InvalidCredentialsDescription -> "Не удалось войти. Попробуйте ещё раз."
+            StaticTextId.UiId.NoCredentialAvailableDescription ->
+                "Не удалось найти доступный аккаунт. Выберите аккаунт и попробуйте снова."
+            StaticTextId.UiId.TooManyRequestsDescription -> "Слишком много попыток. Попробуйте позже."
+            StaticTextId.UiId.UserNotFoundDescription -> "Не удалось найти аккаунт. Попробуйте снова."
         }
     }
 

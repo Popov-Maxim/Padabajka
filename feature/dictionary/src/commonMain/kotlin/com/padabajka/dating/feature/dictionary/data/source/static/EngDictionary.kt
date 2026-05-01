@@ -190,6 +190,12 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.UnknownErrorDescription ->
                 "Oops… something went wrong\n" +
                     "We’ll fix it"
+
+            StaticTextId.UiId.InvalidCredentialsDescription -> "Couldn't sign in. Please try again."
+            StaticTextId.UiId.NoCredentialAvailableDescription ->
+                "No account found. Please choose an account and try again."
+            StaticTextId.UiId.TooManyRequestsDescription -> "Too many attempts. Please try again later."
+            StaticTextId.UiId.UserNotFoundDescription -> "Account not found. Please try again."
         }
     }
 

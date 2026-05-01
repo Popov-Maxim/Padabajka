@@ -24,7 +24,6 @@ import com.padabajka.dating.core.presentation.ui.CoreTextEditField
 import com.padabajka.dating.feature.auth.presentation.EmailLoginMethodComponent
 import com.padabajka.dating.feature.auth.presentation.model.EmailLoginMethodEvent
 import com.padabajka.dating.feature.auth.presentation.model.LoggingInState
-import com.padabajka.dating.feature.auth.presentation.model.email
 
 @Composable
 fun EmailLoginMethodScreen(component: EmailLoginMethodComponent) {
@@ -79,7 +78,7 @@ private fun EmailFieldEditor(
     ) {
         val autofillManager = LocalAutofillManager.current
         EmailField(
-            text = state.email(),
+            text = state.email,
             enabled = true,
             onChange = {
                 component.onEvent(EmailLoginMethodEvent.EmailChanged(it))
@@ -88,6 +87,7 @@ private fun EmailFieldEditor(
 
         CallToActionButton(
             text = "Login",
+            enabled = state.valid,
             onClick = {
                 autofillManager?.commit()
                 component.onEvent(EmailLoginMethodEvent.LoginClick)
@@ -119,7 +119,7 @@ private fun EmailWaitLogin(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         EmailField(
-            text = state.email(),
+            text = state.email,
             enabled = false,
             onClick = {
                 component.onEvent(EmailLoginMethodEvent.ChangeEmail)

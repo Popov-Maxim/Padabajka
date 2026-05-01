@@ -10,7 +10,7 @@ fun SimpleConfirmDialog(
     text: String,
     confirmText: String,
     onConfirm: () -> Unit,
-    dismissText: String,
+    dismissText: String?,
     onDismiss: () -> Unit,
     onDismissRequest: () -> Unit = onDismiss
 ) {
@@ -26,11 +26,13 @@ fun SimpleConfirmDialog(
                 Text(confirmText)
             }
         },
-        dismissButton = {
-            TextButton(
-                onClick = onDismiss
-            ) {
-                Text(dismissText)
+        dismissButton = dismissText?.let {
+            {
+                TextButton(
+                    onClick = onDismiss
+                ) {
+                    Text(dismissText)
+                }
             }
         }
     )

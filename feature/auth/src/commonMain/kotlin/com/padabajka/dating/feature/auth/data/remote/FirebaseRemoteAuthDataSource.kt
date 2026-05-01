@@ -1,13 +1,25 @@
 package com.padabajka.dating.feature.auth.data.remote
 
+import com.padabajka.dating.core.repository.api.exception.AuthCredentialError
 import com.padabajka.dating.core.repository.api.model.auth.InvalidCredentialsAuthException
 import com.padabajka.dating.core.repository.api.model.auth.UnexpectedAuthException
 import com.padabajka.dating.feature.auth.data.model.UserDto
+import dev.gitlive.firebase.FirebaseException
+import dev.gitlive.firebase.FirebaseNetworkException
+import dev.gitlive.firebase.FirebaseTooManyRequestsException
 import dev.gitlive.firebase.auth.ActionCodeSettings
 import dev.gitlive.firebase.auth.AuthCredential
 import dev.gitlive.firebase.auth.FirebaseAuth
+import dev.gitlive.firebase.auth.FirebaseAuthActionCodeException
+import dev.gitlive.firebase.auth.FirebaseAuthEmailException
 import dev.gitlive.firebase.auth.FirebaseAuthException
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
+import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
+import dev.gitlive.firebase.auth.FirebaseAuthMultiFactorException
+import dev.gitlive.firebase.auth.FirebaseAuthRecentLoginRequiredException
+import dev.gitlive.firebase.auth.FirebaseAuthUserCollisionException
+import dev.gitlive.firebase.auth.FirebaseAuthWeakPasswordException
+import dev.gitlive.firebase.auth.FirebaseAuthWebException
 import dev.gitlive.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -56,7 +68,11 @@ internal class FirebaseRemoteAuthDataSource(
     }
 
     override suspend fun loginInWithCredential(credential: AuthCredential) {
-        firebaseAuth.signInWithCredential(credential)
+        try {
+            firebaseAuth.signInWithCredential(credential)
+        } catch (e: FirebaseException) {
+            throw mapFirebaseAuthError(e)
+        }
     }
 
     override suspend fun register(email: String, password: String) = mapFirebaseAuthExceptions {
@@ -100,6 +116,34 @@ internal class FirebaseRemoteAuthDataSource(
             email = email,
             isEmailVerified = isEmailVerified
         )
+    }
+
+    fun mapFirebaseAuthError(e: FirebaseException): AuthCredentialError {
+        return when (e) {
+            is FirebaseAuthInvalidCredentialsException,
+            is FirebaseAuthWeakPasswordException,
+            is FirebaseAuthUserCollisionException,
+            is FirebaseAuthRecentLoginRequiredException,
+            is FirebaseAuthEmailException,
+            is FirebaseAuthMultiFactorException,
+            is FirebaseAuthActionCodeException ->
+                AuthCredentialError.InvalidCredentials()
+
+            is FirebaseAuthInvalidUserException ->
+                AuthCredentialError.UserNotFound()
+
+            is FirebaseNetworkException ->
+                AuthCredentialError.NetworkError()
+
+            is FirebaseTooManyRequestsException ->
+                AuthCredentialError.TooManyRequests()
+
+            is FirebaseAuthWebException ->
+                AuthCredentialError.Unknown(e)
+
+            else ->
+                AuthCredentialError.Unknown(e)
+        }
     }
 }
 

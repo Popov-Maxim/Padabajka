@@ -68,7 +68,7 @@ abstract class BaseComponent<T : State>(
     @Suppress("TooGenericExceptionCaught")
     protected fun launchStep(
         action: suspend () -> Unit,
-        onError: (ExternalDomainError) -> Boolean = { false }
+        onError: suspend (ExternalDomainError) -> Boolean = { false }
     ): Job = componentScope.launch {
         try {
             action()
@@ -89,10 +89,10 @@ abstract class BaseComponent<T : State>(
         }
     }
 
-    private fun handleExternalError(
+    private suspend fun handleExternalError(
         error: ExternalDomainError,
         e: Throwable,
-        onError: (ExternalDomainError) -> Boolean = { false }
+        onError: suspend (ExternalDomainError) -> Boolean = { false }
     ) {
         val handled = onError(error)
         if (handled.not() && error.needLog) {
@@ -113,12 +113,13 @@ sealed interface InternalDomainError : DomainError {
     data class User(val error: UserException) : InternalDomainError
 }
 
-sealed class ExternalDomainError(val needLog: Boolean) : DomainError {
+sealed class ExternalDomainError(open val needLog: Boolean) : DomainError {
 
-    data class TextError(val text: StaticTextId) : ExternalDomainError(false) {
+    data class TextError(val text: StaticTextId, override val needLog: Boolean) : ExternalDomainError(needLog) {
         companion object {
-            val Internet = TextError(StaticTextId.UiId.InternetConnectionErrorDescription)
-            val BadStatusCode = TextError(StaticTextId.UiId.UnknownErrorDescription)
+            val Internet = TextError(StaticTextId.UiId.InternetConnectionErrorDescription, false)
+            val BadStatusCode = TextError(StaticTextId.UiId.UnknownErrorDescription, false)
+            val Unknown = TextError(StaticTextId.UiId.UnknownErrorDescription, true)
         }
     }
 

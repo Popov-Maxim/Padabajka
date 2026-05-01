@@ -9,7 +9,7 @@ class GoogleLoginUseCase(
 ) {
     suspend fun login() {
         val credentialData = googleAuthProvider.getCredentialData()
-        val credential = GoogleAuthProvider.credential(credentialData?.idToken, credentialData?.accessToken)
+        val credential = GoogleAuthProvider.credential(credentialData.idToken, credentialData.accessToken)
         authRepository.loginInWithCredential(credential)
     }
 }

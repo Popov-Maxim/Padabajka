@@ -32,6 +32,7 @@ import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.BottomWaveShape
 import com.padabajka.dating.core.presentation.ui.modifier.Gradient
+import com.padabajka.dating.core.utils.isDebugBuild
 import com.padabajka.dating.settings.presentation.setting.AppSettingsDialog
 
 @Composable
@@ -74,9 +75,11 @@ fun LoginScreen(context: @Composable () -> Unit) {
         Box(
             modifier = Modifier.fillMaxWidth().weight(weight = 1.618f),
         ) {
-            SettingButton(
-                modifier = Modifier.align(Alignment.TopEnd)
-            )
+            if (isDebugBuild) {
+                SettingButton(
+                    modifier = Modifier.align(Alignment.TopEnd)
+                )
+            }
             context()
         }
     }
