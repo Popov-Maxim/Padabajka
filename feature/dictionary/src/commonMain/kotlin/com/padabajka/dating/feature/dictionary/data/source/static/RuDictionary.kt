@@ -113,13 +113,17 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.FinishScreenTitle ->
                 "Все нужные разрешения уже включены \uD83C\uDF89\n\n" +
                     "Можно пользоваться приложением на полную"
+
             StaticTextId.UiId.LogoutAlertDialogText -> "Вы уверены, что хотите выйти?"
             StaticTextId.UiId.FreezeAccountAlertDialogText ->
                 "Вы уверены, что хотите заморозить аккаунт?"
+
             StaticTextId.UiId.UnfreezeAccountAlertDialogText ->
                 "Вы уверены, что хотите разморозить аккаунт?"
+
             StaticTextId.UiId.DeleteAccountAlertDialogText ->
                 "Вы уверены, что хотите удалить аккаунт?"
+
             StaticTextId.UiId.DeleteImageAlertDialogText ->
                 "Вы уверены, что хотите удалить это фото?"
 
@@ -155,6 +159,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.CardDeckEmptyProfiles ->
                 "Похоже, вы просмотрели всех, кто соответствует вашим текущим фильтрам.\n\n" +
                     "Хотите расширить поиск?"
+
             StaticTextId.UiId.CardDeckFrozenProfile ->
                 "Ваш профиль заморожен. Разморозьте его и продолжайте знакомиться"
 
@@ -163,6 +168,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.SubscriptionFootnote ->
                 "Подписка продлевается автоматически.\n" +
                     "Отменить можно в любое время."
+
             StaticTextId.UiId.Month -> "месяц"
             StaticTextId.UiId.Discount -> "Скидка"
             StaticTextId.UiId.Until -> "До"
@@ -172,8 +178,16 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.BenefitReturnsBody ->
                 "Передумали после свайпа? Верните профиль и дайте второй шанс\n" +
                     "(Доступно 20 раз в день)"
+
             StaticTextId.UiId.BenefitShowLikesTitle -> "Просмотр лайков"
             StaticTextId.UiId.BenefitShowLikesBody -> "Узнай, кто вас лайкнул"
+            StaticTextId.UiId.InternetConnectionErrorDescription ->
+                "Интернет пропал \uD83D\uDC40\n" +
+                    "Проверь соединение"
+
+            StaticTextId.UiId.UnknownErrorDescription ->
+                "Ой… что-то пошло не так\n" +
+                    "Сейчас поправим"
         }
     }
 

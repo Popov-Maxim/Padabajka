@@ -117,13 +117,17 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.FinishScreenTitle ->
                 "All required permissions are already enabled \uD83C\uDF89\n\n" +
                     "You can now use the app to its full potential"
+
             StaticTextId.UiId.LogoutAlertDialogText -> "Are you sure you want to log out?"
             StaticTextId.UiId.FreezeAccountAlertDialogText ->
                 "Are you sure you want to freeze your account?"
+
             StaticTextId.UiId.UnfreezeAccountAlertDialogText ->
                 "Are you sure you want to unfreeze your account?"
+
             StaticTextId.UiId.DeleteAccountAlertDialogText ->
                 "Are you sure you want to delete your account?"
+
             StaticTextId.UiId.DeleteImageAlertDialogText ->
                 "Are you sure you want to delete this image?"
 
@@ -168,6 +172,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.SubscriptionFootnote ->
                 "Subscription renews automatically.\n" +
                     "You can cancel anytime."
+
             StaticTextId.UiId.Month -> "month"
             StaticTextId.UiId.Discount -> "Discount"
             StaticTextId.UiId.Until -> "Until"
@@ -177,6 +182,14 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.BenefitReturnsBody -> "Made a mistake? Go back and give them another chance"
             StaticTextId.UiId.BenefitShowLikesTitle -> "Who liked you"
             StaticTextId.UiId.BenefitShowLikesBody -> "See who likes you"
+
+            StaticTextId.UiId.InternetConnectionErrorDescription ->
+                "Internet’s gone \uD83D\uDC40\n" +
+                    "Check your connection"
+
+            StaticTextId.UiId.UnknownErrorDescription ->
+                "Oops… something went wrong\n" +
+                    "We’ll fix it"
         }
     }
 

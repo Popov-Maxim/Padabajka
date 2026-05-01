@@ -8,6 +8,10 @@ import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.lifecycle.doOnPause
 import com.arkivanov.essenty.lifecycle.doOnResume
 import com.arkivanov.essenty.lifecycle.doOnStop
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.repository.api.exception.BadStatusCodeException
+import com.padabajka.dating.core.repository.api.exception.ConnectException
+import com.padabajka.dating.core.repository.api.exception.UserException
 import com.padabajka.dating.core.utils.isDebugBuild
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.crashlytics.crashlytics
@@ -64,25 +68,68 @@ abstract class BaseComponent<T : State>(
     @Suppress("TooGenericExceptionCaught")
     protected fun launchStep(
         action: suspend () -> Unit,
-        onError: (Throwable) -> Boolean = { false }
+        onError: (ExternalDomainError) -> Boolean = { false }
     ): Job = componentScope.launch {
         try {
             action()
         } catch (ce: CancellationException) {
             throw ce
         } catch (e: Throwable) {
-            println("${this::class.simpleName} exception in mapAndReduce: ${e.message}")
-            e.printStackTrace()
-            val handled = onError(e)
-            if (handled.not()) {
-                if (isDebugBuild) {
-                    throw e
-                } else {
-                    Firebase.crashlytics.recordException(e)
-                }
+            val mappedError = mapError(e)
+            when (mappedError) {
+                is ExternalDomainError -> handleExternalError(mappedError, e, onError)
+                is InternalDomainError -> handleInternalError(mappedError)
+            }
+        }
+    }
+
+    private fun handleInternalError(error: InternalDomainError) {
+        when (error) {
+            is InternalDomainError.User -> TODO()
+        }
+    }
+
+    private fun handleExternalError(
+        error: ExternalDomainError,
+        e: Throwable,
+        onError: (ExternalDomainError) -> Boolean = { false }
+    ) {
+        val handled = onError(error)
+        if (handled.not() && error.needLog) {
+            if (isDebugBuild) {
+                throw e
+            } else {
+                Firebase.crashlytics.recordException(e)
             }
         }
     }
 
     open fun onStopped() {}
+}
+
+sealed interface DomainError
+
+sealed interface InternalDomainError : DomainError {
+    data class User(val error: UserException) : InternalDomainError
+}
+
+sealed class ExternalDomainError(val needLog: Boolean) : DomainError {
+
+    data class TextError(val text: StaticTextId) : ExternalDomainError(false) {
+        companion object {
+            val Internet = TextError(StaticTextId.UiId.InternetConnectionErrorDescription)
+            val BadStatusCode = TextError(StaticTextId.UiId.UnknownErrorDescription)
+        }
+    }
+
+    data class Unknown(val e: Throwable) : ExternalDomainError(true)
+}
+
+private fun mapError(e: Throwable): DomainError {
+    return when (e) {
+        is ConnectException -> ExternalDomainError.TextError.Internet
+        is UserException -> InternalDomainError.User(e)
+        is BadStatusCodeException -> ExternalDomainError.TextError.BadStatusCode
+        else -> ExternalDomainError.Unknown(e)
+    }
 }

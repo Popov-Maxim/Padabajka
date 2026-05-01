@@ -17,7 +17,7 @@ sealed interface StaticTextId {
         // Setting screen
         Name(rawId = "name"),
         LogOut(rawId = "log_out"),
-        General(rawId = "general_error"),
+        General(rawId = "general"),
         Subscription(rawId = "subscription"),
         Notification(rawId = "notification"),
         FAQ(rawId = "faq"),
@@ -204,6 +204,9 @@ sealed interface StaticTextId {
         BenefitReturnsBody(rawId = "benefit_returns_body"),
         BenefitShowLikesTitle(rawId = "benefit_show_likes_title"),
         BenefitShowLikesBody(rawId = "benefit_show_likes_body"),
+
+        InternetConnectionErrorDescription(rawId = "internet_connection_error_description"),
+        UnknownErrorDescription(rawId = "unknown_error_description"),
         ;
         override val id: String = listOfNotNull(rawId, "ui_id")
             .joinToString(separator = "_")

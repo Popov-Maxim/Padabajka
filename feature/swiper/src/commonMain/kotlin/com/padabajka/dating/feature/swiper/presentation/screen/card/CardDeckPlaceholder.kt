@@ -38,7 +38,8 @@ fun CardDeckPlaceholder(
     Box(modifier) {
         when (cardDeckState) {
             CardDeckState.Empty -> Empty(state, onEvent)
-            CardDeckState.Error -> Error(
+            is CardDeckState.Error -> Error(
+                text = cardDeckState.message,
                 modifier = Modifier.align(Alignment.Center)
             )
 
@@ -96,6 +97,7 @@ private fun Empty(
 
 @Composable
 private fun Error(
+    text: StaticTextId,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -104,7 +106,7 @@ private fun Error(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LocalText(
-            text = StaticTextId.UiId.CardDeckErrorLoadingProfiles.translate(),
+            text = text.translate(),
         )
         Icon(
             modifier = Modifier.size(44.dp),

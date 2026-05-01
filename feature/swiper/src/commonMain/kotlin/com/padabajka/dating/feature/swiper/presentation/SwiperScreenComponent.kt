@@ -4,6 +4,8 @@ import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.domain.Factory
 import com.padabajka.dating.core.domain.delegate
 import com.padabajka.dating.core.presentation.BaseComponent
+import com.padabajka.dating.core.presentation.ExternalDomainError
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.toUI
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
@@ -205,8 +207,21 @@ class SwiperScreenComponent(
                 }
             },
             onError = {
+                val text = when (it) {
+                    is ExternalDomainError.TextError -> {
+                        if (it == ExternalDomainError.TextError.Internet) {
+                            StaticTextId.UiId.InternetConnectionErrorDescription
+                        } else {
+                            StaticTextId.UiId.CardDeckErrorLoadingProfiles
+                        }
+                    }
+
+                    is ExternalDomainError.Unknown -> {
+                        StaticTextId.UiId.CardDeckErrorLoadingProfiles
+                    }
+                }
                 reduce { state ->
-                    state.copy(cardDeckState = CardDeckState.Error)
+                    state.copy(cardDeckState = CardDeckState.Error(text))
                 }
                 false
             },
