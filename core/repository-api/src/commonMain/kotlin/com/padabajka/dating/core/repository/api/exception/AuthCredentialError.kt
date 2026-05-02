@@ -16,3 +16,14 @@ sealed class AuthCredentialError : Throwable() {
 
     data class Unknown(override val cause: Throwable? = null) : AuthCredentialError()
 }
+
+sealed class EmailLinkAuthException(
+    message: String
+) : Exception(message) {
+
+    class InvalidLink :
+        EmailLinkAuthException("Provided link is not a valid email sign-in link")
+
+    class MissingEmail :
+        EmailLinkAuthException("Email is required for email link sign-in but was null")
+}

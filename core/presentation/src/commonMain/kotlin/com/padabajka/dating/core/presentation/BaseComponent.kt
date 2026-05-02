@@ -126,6 +126,10 @@ sealed class ExternalDomainError(open val needLog: Boolean) : DomainError {
     data class Unknown(val e: Throwable) : ExternalDomainError(true)
 }
 
+fun StaticTextId.UiId.toTextError(needLog: Boolean = false): ExternalDomainError.TextError {
+    return ExternalDomainError.TextError(this, needLog)
+}
+
 private fun mapError(e: Throwable): DomainError {
     return when (e) {
         is ConnectException -> ExternalDomainError.TextError.Internet

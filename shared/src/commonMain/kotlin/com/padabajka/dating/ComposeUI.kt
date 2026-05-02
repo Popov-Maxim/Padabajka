@@ -18,7 +18,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -26,8 +28,10 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.NavigateComponentContext
+import com.padabajka.dating.core.presentation.event.AlertService
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.FpsMonitor
+import com.padabajka.dating.core.presentation.ui.SimpleConfirmDialog
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.hideKeyboardOnTap
 import com.padabajka.dating.core.presentation.ui.toDp
@@ -141,6 +145,23 @@ private fun PadabajkaTheme(content: @Composable () -> Unit) {
                         .background(CoreColors.background.mainColor)
                 )
             }
+        }
+        val alertService: AlertService = koinInject()
+        var alertText: @Composable (() -> String)? by remember { mutableStateOf(null) }
+        LaunchedEffect(Unit) {
+            alertService.alerts.collect {
+                alertText = it.text
+            }
+        }
+
+        alertText?.let {
+            SimpleConfirmDialog(
+                text = it.invoke(),
+                confirmText = "OK",
+                onConfirm = { alertText = null },
+                dismissText = null,
+                onDismiss = { alertText = null },
+            )
         }
     }
 }

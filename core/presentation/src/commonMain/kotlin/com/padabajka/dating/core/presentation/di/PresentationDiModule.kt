@@ -6,8 +6,10 @@ import coil3.svg.SvgDecoder
 import coil3.util.DebugLogger
 import com.padabajka.dating.core.networking.imageEngine
 import com.padabajka.dating.core.presentation.ComponentLifecycleListener
+import com.padabajka.dating.core.presentation.event.AlertService
 import io.ktor.client.HttpClient
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 private val presentationDiModule = module {
@@ -34,6 +36,8 @@ private val presentationDiModule = module {
             frameMetricsAggregator = get()
         )
     }
+
+    singleOf(::AlertService)
 }
 
 val presentationDiModules: Array<Module>

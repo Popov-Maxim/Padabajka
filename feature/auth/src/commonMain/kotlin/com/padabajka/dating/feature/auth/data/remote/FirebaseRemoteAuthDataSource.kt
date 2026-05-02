@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.auth.data.remote
 
 import com.padabajka.dating.core.repository.api.exception.AuthCredentialError
+import com.padabajka.dating.core.repository.api.exception.EmailLinkAuthException
 import com.padabajka.dating.core.repository.api.model.auth.InvalidCredentialsAuthException
 import com.padabajka.dating.core.repository.api.model.auth.UnexpectedAuthException
 import com.padabajka.dating.feature.auth.data.model.UserDto
@@ -55,11 +56,16 @@ internal class FirebaseRemoteAuthDataSource(
         _loginWithoutPassword(email, actionCodeSettings)
     }
 
+    @Throws(EmailLinkAuthException.InvalidLink::class, AuthCredentialError::class)
     override suspend fun signInWithEmailLink(email: String, link: String) {
-        if (firebaseAuth.isSignInWithEmailLink(link)) {
-            firebaseAuth.signInWithEmailLink(email, link)
+        if (firebaseAuth.isSignInWithEmailLink(link) && false) {
+            try {
+                firebaseAuth.signInWithEmailLink(email, link)
+            } catch (e: FirebaseException) {
+                throw mapFirebaseAuthError(e)
+            }
         } else {
-            TODO() // TODO(P0)
+            throw EmailLinkAuthException.InvalidLink()
         }
     }
 
@@ -118,7 +124,7 @@ internal class FirebaseRemoteAuthDataSource(
         )
     }
 
-    fun mapFirebaseAuthError(e: FirebaseException): AuthCredentialError {
+    private fun mapFirebaseAuthError(e: FirebaseException): AuthCredentialError {
         return when (e) {
             is FirebaseAuthInvalidCredentialsException,
             is FirebaseAuthWeakPasswordException,

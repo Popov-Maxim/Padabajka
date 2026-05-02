@@ -212,6 +212,8 @@ sealed interface StaticTextId {
         NoCredentialAvailableDescription(rawId = "no_credential_available_description"),
         TooManyRequestsDescription(rawId = "too_many_requests_description"),
         UserNotFoundDescription(rawId = "user_not_found_description"),
+        MissingEmailForLinkDescription(rawId = "missing_email_for_link_description"),
+        InvalidLinkForAuthDescription(rawId = "invalid_link_for_auth_description"),
 
         ;
         override val id: String = listOfNotNull(rawId, "ui_id")

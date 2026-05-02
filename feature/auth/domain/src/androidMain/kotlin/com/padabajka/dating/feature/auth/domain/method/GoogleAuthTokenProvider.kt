@@ -70,7 +70,7 @@ actual class GoogleAuthTokenProvider(
     }
 }
 
-inline fun <T> Result<T>.mapException(
+private inline fun <T> Result<T>.mapException(
     transform: (Throwable) -> Throwable
 ): Result<T> {
     return fold(

@@ -194,6 +194,9 @@ class RuDictionary : Dictionary() {
                 "Не удалось найти доступный аккаунт. Выберите аккаунт и попробуйте снова."
             StaticTextId.UiId.TooManyRequestsDescription -> "Слишком много попыток. Попробуйте позже."
             StaticTextId.UiId.UserNotFoundDescription -> "Не удалось найти аккаунт. Попробуйте снова."
+            StaticTextId.UiId.MissingEmailForLinkDescription -> "Не удалось завершить вход. Попробуйте снова."
+            StaticTextId.UiId.InvalidLinkForAuthDescription ->
+                "Ссылка для входа недействительна или устарела. Запросите новую и попробуйте снова."
         }
     }
 
