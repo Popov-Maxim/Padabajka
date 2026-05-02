@@ -205,8 +205,16 @@ sealed interface StaticTextId {
         BenefitShowLikesTitle(rawId = "benefit_show_likes_title"),
         BenefitShowLikesBody(rawId = "benefit_show_likes_body"),
 
+        // Error
         InternetConnectionErrorDescription(rawId = "internet_connection_error_description"),
         UnknownErrorDescription(rawId = "unknown_error_description"),
+        InvalidCredentialsDescription(rawId = "invalid_credentials_description"),
+        NoCredentialAvailableDescription(rawId = "no_credential_available_description"),
+        TooManyRequestsDescription(rawId = "too_many_requests_description"),
+        UserNotFoundDescription(rawId = "user_not_found_description"),
+        MissingEmailForLinkDescription(rawId = "missing_email_for_link_description"),
+        InvalidLinkForAuthDescription(rawId = "invalid_link_for_auth_description"),
+
         ;
         override val id: String = listOfNotNull(rawId, "ui_id")
             .joinToString(separator = "_")

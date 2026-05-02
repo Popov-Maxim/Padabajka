@@ -17,6 +17,7 @@ import com.padabajka.dating.feature.auth.domain.ReloadUserUseCase
 import com.padabajka.dating.feature.auth.domain.SendEmailVerificationUseCase
 import com.padabajka.dating.feature.auth.domain.ValidateEmailUseCase
 import com.padabajka.dating.feature.auth.domain.method.GoogleLoginUseCase
+import com.padabajka.dating.feature.auth.presentation.AuthErrorMapper
 import com.padabajka.dating.feature.auth.presentation.EmailLoginMethodComponent
 import com.padabajka.dating.feature.auth.presentation.LoginMethodsComponent
 import com.padabajka.dating.feature.auth.presentation.VerificationComponent
@@ -94,6 +95,8 @@ private val authPresentationModule = module {
             goToEmailMethodScreen = parameters.get(),
             goToDebugMethodScreen = parameters.get(),
             googleLoginUseCase = get(),
+            authErrorMapper = get(),
+            alertService = get()
         )
     }
     factory<EmailLoginMethodComponent> { parameters ->
@@ -112,6 +115,8 @@ private val authPresentationModule = module {
             reloadUserUseCaseFactory = { get() }
         )
     }
+
+    factoryOf(::AuthErrorMapper)
 }
 
 val authModules =

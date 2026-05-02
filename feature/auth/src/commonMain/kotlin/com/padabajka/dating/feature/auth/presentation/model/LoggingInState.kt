@@ -13,7 +13,7 @@ data class LoggingInState(
     sealed interface FieldState {
         data class Editor(
             val email: String = "",
-            val emailValidationIssue: EmailValidationIssue? = null,
+            val valid: Boolean = false
         ) : FieldState
 
         data class WaitSignFromEmail(

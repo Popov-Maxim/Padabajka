@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
+import com.padabajka.dating.core.utils.isDebugBuild
 import com.padabajka.dating.feature.auth.presentation.LoginMethodsComponent
 import com.padabajka.dating.feature.auth.presentation.model.LoginMethodEvent
 
@@ -31,9 +32,11 @@ fun LoginMethodsScreen(component: LoginMethodsComponent) {
             onClick = { component.onEvent(LoginMethodEvent.SelectGoogleMethod) }
         )
 
-        AuthMethodButton(
-            text = "Debug Login",
-            onClick = { component.onEvent(LoginMethodEvent.SelectDebugMethod) }
-        )
+        if (isDebugBuild) {
+            AuthMethodButton(
+                text = "Debug Login",
+                onClick = { component.onEvent(LoginMethodEvent.SelectDebugMethod) }
+            )
+        }
     }
 }
