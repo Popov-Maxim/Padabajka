@@ -2,6 +2,9 @@ package com.padabajka.dating.feature.profile.presentation.creator.image
 
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.BaseComponent
+import com.padabajka.dating.core.presentation.error.ExternalDomainError
+import com.padabajka.dating.core.presentation.event.AlertService
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.feature.image.domain.GetLocalImageUseCase
 import com.padabajka.dating.feature.profile.domain.creator.DraftProfileProvider
@@ -14,7 +17,8 @@ class CreateProfileImageScreenComponent(
     draftProfileProvider: DraftProfileProvider,
     private val updateMainImageUseCase: UpdateMainImageUseCase,
     private val getLocalImageUseCase: GetLocalImageUseCase,
-    private val toNext: () -> Unit
+    private val toNext: () -> Unit,
+    private val alertService: AlertService
 ) : BaseComponent<CreateProfileImageState>(
     context = context,
     screenName = "create_profile_image",
@@ -40,6 +44,15 @@ class CreateProfileImageScreenComponent(
                 it.copy(image = uiImage)
             }
         },
+        onError = {
+            val error = when (it) {
+                is ExternalDomainError.TextError -> it
+                is ExternalDomainError.Unknown -> ExternalDomainError.TextError.Unknown
+            }
+
+            alertService.showAlert { error.text.translate() }
+            error.needLog
+        }
     )
 
     private fun continueCreating() {

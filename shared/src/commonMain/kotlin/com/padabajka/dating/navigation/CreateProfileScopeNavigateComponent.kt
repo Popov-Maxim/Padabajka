@@ -86,14 +86,16 @@ class CreateProfileScopeNavigateComponent(
                     draftProfileProvider = get(),
                     updateMainImageUseCase = get(),
                     getLocalImageUseCase = get(),
-                    toNext = { navigate(Configuration.FinishScreen) }
+                    toNext = { navigate(Configuration.FinishScreen) },
+                    alertService = get()
                 )
             )
 
             Configuration.FinishScreen -> Child.FinishScreen(
                 component = CreateProfileFinishScreenComponent(
                     context = context,
-                    createProfileFromDraftUseCase = get()
+                    createProfileFromDraftUseCase = get(),
+                    alertService = get()
                 )
             )
         }
