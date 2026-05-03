@@ -2,6 +2,9 @@ package com.padabajka.dating.feature.reaction.screen.presentation
 
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.BaseComponent
+import com.padabajka.dating.core.presentation.error.ExternalDomainError
+import com.padabajka.dating.core.presentation.event.AlertService
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.toUI
 import com.padabajka.dating.core.repository.api.ReactionRepository
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
@@ -21,7 +24,8 @@ class LikesMeScreenComponent(
     private val openSubscriptionScreen: () -> Unit,
     private val reactionsToMeUseCase: ReactionsToMeUseCase,
     private val reactionRepository: ReactionRepository,
-    private val subscriptionRepository: SubscriptionRepository
+    private val subscriptionRepository: SubscriptionRepository,
+    private val alertService: AlertService,
 ) : BaseComponent<LikesMeState>(
     context,
     "likes_me",
@@ -78,7 +82,7 @@ class LikesMeScreenComponent(
     private fun reactPersonAndUpdateCardDeck(reaction: PersonReaction) =
         launchStep(
             action = {
-                reactionRepository.react(reaction)
+                reactionRepository.react(reaction) // TODO(P0): dont ignore exception
                 reduce { swiperState ->
                     val list = (swiperState.listReactions as? ListReactions.Success)?.likes
                         ?: return@reduce swiperState
@@ -87,5 +91,14 @@ class LikesMeScreenComponent(
                     swiperState.copy(listReactions = ListReactions.Success(newList))
                 }
             },
+            onError = {
+                val error = when (it) {
+                    is ExternalDomainError.TextError -> it
+                    is ExternalDomainError.Unknown -> ExternalDomainError.TextError.Unknown
+                }
+
+                alertService.showAlert { error.text.translate() }
+                error.needLog.not()
+            }
         )
 }

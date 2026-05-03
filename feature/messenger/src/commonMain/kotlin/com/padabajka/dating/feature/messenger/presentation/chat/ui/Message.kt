@@ -76,6 +76,7 @@ import kotlin.math.roundToInt
 fun Message(
     message: MessageItem,
     shape: Shape,
+    modifier: Modifier = Modifier,
     onEvent: (MessengerEvent) -> Unit
 ): Unit = CustomViewConfiguration(
     doubleTapTimeoutMillis = 150
@@ -97,7 +98,7 @@ fun Message(
     val parentMessageColor = getParentMessageColor(message)
 
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .swipeToReply {
                 onEvent(SelectParentMessageEvent(message.toParentMessageItem()))
             }.pointerInput(message.reactions) {

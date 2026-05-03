@@ -4,7 +4,10 @@ import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.domain.Factory
 import com.padabajka.dating.core.domain.delegate
 import com.padabajka.dating.core.presentation.BaseComponent
+import com.padabajka.dating.core.presentation.error.ExternalDomainError
+import com.padabajka.dating.core.presentation.event.AlertService
 import com.padabajka.dating.core.presentation.event.consumed
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Image
@@ -62,7 +65,8 @@ class ProfileEditorScreenComponent(
     getLocalImageUseCaseFactory: Factory<GetLocalImageUseCase>,
     private val findCitiesUseCase: FindCitiesUseCase,
     private val findLanguageAssetsUseCase: FindLanguageAssetsUseCase,
-    private val findInterestAssetsUseCase: FindInterestAssetsUseCase
+    private val findInterestAssetsUseCase: FindInterestAssetsUseCase,
+    private val alertService: AlertService
 ) : BaseComponent<ProfileEditorState>(
     context,
     "profile_editor",
@@ -147,6 +151,16 @@ class ProfileEditorScreenComponent(
                 }
                 reduce { it.copy(saveState = ProfileEditorState.SaveState.Idle) }
             },
+            onError = {
+                val error = when (it) {
+                    is ExternalDomainError.TextError -> it
+                    is ExternalDomainError.Unknown -> ExternalDomainError.TextError.Unknown
+                }
+
+                alertService.showAlert { error.text.translate() }
+                reduce { it.copy(saveState = ProfileEditorState.SaveState.Idle) }
+                error.needLog.not()
+            }
         )
     }
 
@@ -209,6 +223,15 @@ class ProfileEditorScreenComponent(
                 it.addImage(uiImage, index)
             }
         },
+        onError = {
+            val error = when (it) {
+                is ExternalDomainError.TextError -> it
+                is ExternalDomainError.Unknown -> ExternalDomainError.TextError.Unknown
+            }
+
+            alertService.showAlert { error.text.translate() }
+            error.needLog.not()
+        }
     )
 
     private fun searchCity(query: String) {

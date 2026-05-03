@@ -44,7 +44,7 @@ class ImageCropScreenComponent(
         onImageCropped(rest)
     }
 
-    fun calculateCropRect(
+    private fun calculateCropRect(
         imageSize: Size,
         containerSize: IntSize,
         scale: Float,

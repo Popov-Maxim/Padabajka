@@ -64,7 +64,8 @@ private val presentationModule = module {
             settingsComponentProvider = get(),
             deleteAccountUseCase = get(),
             profileRepository = get(),
-            subscriptionRepository = get()
+            subscriptionRepository = get(),
+            alertService = get()
         )
     }
 }

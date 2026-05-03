@@ -134,7 +134,8 @@ private fun MessageList(
                 is MessageItem -> Message(
                     message = item,
                     shape = RoundedCornerShape(15.dp),
-                    onEvent = onEvent
+                    onEvent = onEvent,
+                    modifier = Modifier.animateItem()
                 )
                 is TimeItem -> TimePeriod(item.labelText())
             }

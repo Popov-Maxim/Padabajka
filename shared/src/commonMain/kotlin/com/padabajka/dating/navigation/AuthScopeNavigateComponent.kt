@@ -64,7 +64,7 @@ class AuthScopeNavigateComponent(
                             throwable.message ?: throwable.toString()
                         )
                     )
-                    error.needLog
+                    error.needLog.not()
                 }
             }
         }

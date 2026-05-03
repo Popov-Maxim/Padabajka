@@ -5,6 +5,9 @@ import com.padabajka.dating.core.domain.Factory
 import com.padabajka.dating.core.domain.delegate
 import com.padabajka.dating.core.domain.sync.SyncRemoteDataUseCase
 import com.padabajka.dating.core.presentation.BaseComponent
+import com.padabajka.dating.core.presentation.error.ExternalDomainError
+import com.padabajka.dating.core.presentation.event.AlertService
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
 import com.padabajka.dating.core.repository.api.model.dictionary.Language
@@ -39,6 +42,7 @@ class SettingScreenComponent(
     private val profileRepository: ProfileRepository,
     settingsComponentProvider: AppSettingsComponentProvider,
     private val subscriptionRepository: SubscriptionRepository,
+    private val alertService: AlertService
 ) : BaseComponent<SettingsState>(
     context,
     "setting",
@@ -97,15 +101,18 @@ class SettingScreenComponent(
         action = {
             logoutUseCase()
         },
+        onError = ::defaultOnError
     )
 
     private fun sendPushToken() = launchStep(
+        // TODO(P3): dont run in prod
         action = {
             saveTokenUseCase()
         },
     )
 
     private fun syncRemoteData() = launchStep(
+        // TODO(P3): dont run in prod
         action = {
             syncRemoteDataUseCase()
         },
@@ -115,13 +122,25 @@ class SettingScreenComponent(
         action = {
             deleteAccountUseCase()
         },
+        onError = ::defaultOnError
     )
 
     private fun changeFreeze(freeze: Boolean) = launchStep(
         action = {
             profileRepository.setFreeze(freeze)
         },
+        onError = ::defaultOnError
     )
+
+    private suspend fun defaultOnError(error: ExternalDomainError): Boolean {
+        val error = when (error) {
+            is ExternalDomainError.TextError -> error
+            is ExternalDomainError.Unknown -> ExternalDomainError.TextError.Unknown
+        }
+
+        alertService.showAlert { error.text.translate() }
+        return error.needLog.not()
+    }
 
     private fun init(settingsComponentProvider: AppSettingsComponentProvider) =
         launchStep(

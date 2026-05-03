@@ -68,7 +68,8 @@ class SettingsScopeNavigateComponent(
                 component = SubscriptionScreenComponent(
                     context = context,
                     navigateBack = ::navigateBack,
-                    subscriptionRepository = get()
+                    subscriptionRepository = get(),
+                    alertService = get()
                 )
             )
         }

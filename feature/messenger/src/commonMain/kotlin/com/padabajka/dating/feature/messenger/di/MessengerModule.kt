@@ -49,6 +49,7 @@ private val presentationModule = module {
             matchRepository = get(),
             userPresenceRepository = get(),
             toggleMessageReactionUseCase = get(),
+            alertService = get()
         )
     }
 

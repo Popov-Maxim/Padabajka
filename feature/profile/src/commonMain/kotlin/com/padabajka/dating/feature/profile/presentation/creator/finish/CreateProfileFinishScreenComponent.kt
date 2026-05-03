@@ -32,7 +32,7 @@ class CreateProfileFinishScreenComponent(
             }
 
             alertService.showAlert { error.text.translate() }
-            error.needLog
+            error.needLog.not()
         }
     )
 }
