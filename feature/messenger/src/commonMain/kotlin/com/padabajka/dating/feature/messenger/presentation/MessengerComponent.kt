@@ -56,7 +56,7 @@ class MessengerComponent(
                         val currentUserPresence =
                             userPresenceRepository.currentUserPresence(personId)?.toUI()
                                 ?: UserPresenceItem.None
-                        userPresenceRepository.userPresenceFlow(personId)
+                        userPresenceRepository.userPresenceFlow(personId) // TODO(P1): add in ui
                             .map {
                                 val ui: UserPresenceItem = it.toUI()
                                 ui

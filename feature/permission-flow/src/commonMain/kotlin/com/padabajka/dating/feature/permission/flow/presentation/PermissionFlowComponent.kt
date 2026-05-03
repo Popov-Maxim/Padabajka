@@ -7,6 +7,7 @@ import com.padabajka.dating.core.presentation.NavigateComponentContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import org.koin.core.component.get
 
 class PermissionFlowComponent(
     context: ComponentContext,
@@ -36,6 +37,7 @@ class PermissionFlowComponent(
                 PermissionComponent(
                     context,
                     geoPermissionController,
+                    get(),
                     { nextScreen(PermissionScreen.Geo, false) },
                     { nextScreen(PermissionScreen.Geo) }
                 )
@@ -45,6 +47,7 @@ class PermissionFlowComponent(
                 PermissionComponent(
                     context,
                     notificationPermissionController,
+                    get(),
                     { nextScreen(PermissionScreen.Notification, false) },
                     { nextScreen(PermissionScreen.Notification) }
                 )

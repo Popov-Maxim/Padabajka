@@ -104,9 +104,7 @@ internal class MessageRepositoryImpl(
     }
 
     override suspend fun deleteMessage(chatId: ChatId, messageId: MessageId) {
-        runCatching {
-            remoteMessageDataSource.deleteMessage(chatId, messageId)
-        } // TODO(P0): add exception handling
+        remoteMessageDataSource.deleteMessage(chatId, messageId)
         localMessageDataSource.deleteMessage(messageId.raw)
     }
 
@@ -211,7 +209,10 @@ internal class MessageRepositoryImpl(
         updateMessageDto(messageSyncResponse.messages)
         updateReadEventDto(messageSyncResponse.readEvents)
 
-        return SyncResult(messageSyncResponse.lastEventNumber, messageSyncResponse.lastReadEventLogNumber)
+        return SyncResult(
+            messageSyncResponse.lastEventNumber,
+            messageSyncResponse.lastReadEventLogNumber
+        )
     }
 
     override suspend fun syncMessages(
@@ -227,7 +228,10 @@ internal class MessageRepositoryImpl(
         updateMessageDto(messageSyncResponse.messages)
         updateReadEventDto(messageSyncResponse.readEvents)
 
-        return SyncResult(messageSyncResponse.lastEventNumber, messageSyncResponse.lastReadEventLogNumber)
+        return SyncResult(
+            messageSyncResponse.lastEventNumber,
+            messageSyncResponse.lastReadEventLogNumber
+        )
     }
 
     private suspend fun updateMessageDto(messageDto: List<MessageDto>) {

@@ -60,7 +60,7 @@ class ProfileScreenComponent(
         }
     }
 
-    private fun updateProfile() = launchStep(
+    private fun updateProfile() = launchStep( // TODO(P3): never run in production
         action = {
             reduce { state ->
                 state.copy(value = ProfileValue.Loading)

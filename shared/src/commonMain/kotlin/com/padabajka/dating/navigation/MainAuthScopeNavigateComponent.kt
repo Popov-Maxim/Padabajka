@@ -106,6 +106,7 @@ class MainAuthScopeNavigateComponent(
                     findCitiesUseCase = get(),
                     findLanguageAssetsUseCase = get(),
                     findInterestAssetsUseCase = get(),
+                    alertService = get()
                 )
             )
 
@@ -145,7 +146,8 @@ class MainAuthScopeNavigateComponent(
                     openSubscriptionScreen = { navigate(Configuration.SubscriptionScreen) },
                     reactionsToMeUseCase = get(),
                     reactionRepository = get(),
-                    subscriptionRepository = get()
+                    subscriptionRepository = get(),
+                    alertService = get()
                 )
             )
 
@@ -153,7 +155,8 @@ class MainAuthScopeNavigateComponent(
                 component = SubscriptionScreenComponent(
                     context = context,
                     navigateBack = ::navigateBack,
-                    subscriptionRepository = get()
+                    subscriptionRepository = get(),
+                    alertService = get()
                 )
             )
 

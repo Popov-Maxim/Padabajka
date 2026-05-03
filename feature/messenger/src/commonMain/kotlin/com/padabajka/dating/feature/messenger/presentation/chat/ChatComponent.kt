@@ -4,7 +4,10 @@ import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.domain.Factory
 import com.padabajka.dating.core.domain.delegate
 import com.padabajka.dating.core.presentation.BaseComponent
+import com.padabajka.dating.core.presentation.error.ExternalDomainError
+import com.padabajka.dating.core.presentation.event.AlertService
 import com.padabajka.dating.core.presentation.event.consumed
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.repository.api.MatchRepository
 import com.padabajka.dating.core.repository.api.UserPresenceRepository
 import com.padabajka.dating.core.repository.api.model.match.Match
@@ -66,7 +69,8 @@ class ChatComponent(
     private val deleteChatUseCase: DeleteChatUseCase,
     private val matchRepository: MatchRepository,
     private val userPresenceRepository: UserPresenceRepository,
-    private val toggleMessageReactionUseCase: ToggleMessageReactionUseCase
+    private val toggleMessageReactionUseCase: ToggleMessageReactionUseCase,
+    private val alertService: AlertService
 ) : BaseComponent<ChatState>(
     context,
     "chat",
@@ -212,7 +216,7 @@ class ChatComponent(
     }
 
     private fun loadMoreMessages() {
-        // Implement message pagination
+        // TODO(P0) Implement message pagination
     }
 
     private fun updateNextMessageText(text: String) {
@@ -261,14 +265,16 @@ class ChatComponent(
         launchStep(
             action = {
                 deleteMessageUseCase(chatId, messageId)
-            }
+            },
+            onError = ::defaultOnError
         )
 
     private fun deleteChat() =
         launchStep(
             action = {
                 deleteChatUseCase(chatId)
-            }
+            },
+            onError = ::defaultOnError
         )
 
     private fun deleteMatch() {
@@ -278,6 +284,7 @@ class ChatComponent(
             action = {
                 matchRepository.deleteMatch(matchId)
             },
+            onError = ::defaultOnError
         )
     }
 
@@ -292,26 +299,37 @@ class ChatComponent(
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     private fun sendMessage(field: Field) {
-        componentScope.launch {
-            reduce { state ->
-                state.copy(field = Field.NewMessage())
-            }
-
-            try {
-                when (field) {
-                    is Field.Editor -> editMessageUseCase(chatId, field.message.id, field.content)
-                    is Field.NewMessage -> sendMessageUseCase(chatId, field.content, field.parentMessage?.id)
-                }
-            } catch (e: Throwable) {
-//                reduce { state ->
-//                    state.copy(
-//                        nextMessageText = message,
-//                        parentMessageId = parentMessageId,
-//                        internalErrorStateEvent = raised
-//                    )
-//                }
-            }
+        reduce { state ->
+            state.copy(field = Field.NewMessage())
         }
+
+        launchStep(
+            action = {
+                when (field) {
+                    is Field.Editor -> editMessageUseCase(
+                        chatId,
+                        field.message.id,
+                        field.content
+                    )
+
+                    is Field.NewMessage -> sendMessageUseCase(
+                        chatId,
+                        field.content,
+                        field.parentMessage?.id
+                    )
+                }
+            }
+        )
+    }
+
+    private suspend fun defaultOnError(error: ExternalDomainError): Boolean {
+        val error = when (error) {
+            is ExternalDomainError.TextError -> error
+            is ExternalDomainError.Unknown -> ExternalDomainError.TextError.Unknown
+        }
+
+        alertService.showAlert { error.text.translate() }
+        return error.needLog.not()
     }
 
     companion object {
