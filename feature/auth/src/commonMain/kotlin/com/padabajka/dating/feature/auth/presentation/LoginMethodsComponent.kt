@@ -3,7 +3,7 @@ package com.padabajka.dating.feature.auth.presentation
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.presentation.EmptyState
-import com.padabajka.dating.core.presentation.ExternalDomainError
+import com.padabajka.dating.core.presentation.error.ExternalDomainError
 import com.padabajka.dating.core.presentation.event.AlertService
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.repository.api.exception.AuthCredentialError

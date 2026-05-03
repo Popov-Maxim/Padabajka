@@ -3,6 +3,9 @@ package com.padabajka.dating.navigation
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.presentation.asFlow
+import com.padabajka.dating.core.presentation.error.DomainErrorHandler
+import com.padabajka.dating.core.presentation.error.ExternalDomainError
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
@@ -21,7 +24,8 @@ class AuthScopeNavigateComponent(
     private val userId: UserId,
     private val updateAuthMetadataUseCase: NewAuthMetadataUseCase,
     private val profileRepository: ProfileRepository,
-    private val syncManager: SyncManager
+    private val syncManager: SyncManager,
+    private val domainErrorHandler: DomainErrorHandler,
 ) : NavigateComponentContext<AuthScopeNavigateComponent.Configuration, AuthScopeNavigateComponent.Child>(
     context,
     Configuration.serializer(),
@@ -48,7 +52,20 @@ class AuthScopeNavigateComponent(
             runCatching {
                 profileRepository.updateProfile()
             }.onFailure { throwable ->
-                navigateNewStack(Configuration.LoadingErrorScreen(throwable.message ?: throwable.toString()))
+                domainErrorHandler.handle(throwable) { error ->
+                    val error = when (error) {
+                        is ExternalDomainError.TextError -> error
+                        is ExternalDomainError.Unknown -> ExternalDomainError.TextError.Unknown
+                    }
+
+                    navigateNewStack(
+                        Configuration.LoadingErrorScreen(
+                            error.text,
+                            throwable.message ?: throwable.toString()
+                        )
+                    )
+                    error.needLog
+                }
             }
         }
     }
@@ -67,7 +84,10 @@ class AuthScopeNavigateComponent(
                 component = MainAuthScopeNavigateComponent(context, userId)
             )
 
-            is Configuration.LoadingErrorScreen -> Child.LoadingErrorScreen(configuration.message)
+            is Configuration.LoadingErrorScreen -> Child.LoadingErrorScreen(
+                configuration.messageId,
+                configuration.message
+            )
         }
     }
 
@@ -83,7 +103,7 @@ class AuthScopeNavigateComponent(
 
     sealed interface Child {
         data object LoadingProfileScreen : Child
-        data class LoadingErrorScreen(val message: String) : Child
+        data class LoadingErrorScreen(val messageId: StaticTextId, val message: String) : Child
         data class CreateProfileScope(val component: CreateProfileScopeNavigateComponent) : Child
         data class MainAuthScope(val component: MainAuthScopeNavigateComponent) : Child
     }
@@ -95,7 +115,8 @@ class AuthScopeNavigateComponent(
         data object LoadingProfileScreen : Configuration
 
         @Serializable
-        data class LoadingErrorScreen(val message: String) : Configuration
+        data class LoadingErrorScreen(val messageId: StaticTextId, val message: String) :
+            Configuration
 
         @Serializable
         data object CreateProfileScope : Configuration

@@ -21,7 +21,7 @@ fun AuthScopeScreen(component: AuthScopeNavigateComponent) {
             AuthScopeNavigateComponent.Child.LoadingProfileScreen -> SplashScreen("Login Data for user")
             is AuthScopeNavigateComponent.Child.CreateProfileScope -> CreateProfileScopeScreen(instance.component)
             is AuthScopeNavigateComponent.Child.MainAuthScope -> MainAuthScopeScreen(instance.component)
-            is AuthScopeNavigateComponent.Child.LoadingErrorScreen -> ErrorScreen(instance.message)
+            is AuthScopeNavigateComponent.Child.LoadingErrorScreen -> ErrorScreen(instance.messageId, instance.message)
         }
     }
 }

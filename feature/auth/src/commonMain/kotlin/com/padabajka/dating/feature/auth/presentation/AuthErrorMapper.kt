@@ -1,7 +1,7 @@
 package com.padabajka.dating.feature.auth.presentation
 
-import com.padabajka.dating.core.presentation.ExternalDomainError
-import com.padabajka.dating.core.presentation.toTextError
+import com.padabajka.dating.core.presentation.error.ExternalDomainError
+import com.padabajka.dating.core.presentation.error.toTextError
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.repository.api.exception.AuthCredentialError
 

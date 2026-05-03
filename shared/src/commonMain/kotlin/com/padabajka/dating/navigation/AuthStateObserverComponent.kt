@@ -86,7 +86,8 @@ class AuthStateObserverComponent(
                     userId = configuration.userId,
                     updateAuthMetadataUseCase = get(),
                     profileRepository = get(),
-                    syncManager = get()
+                    syncManager = get(),
+                    domainErrorHandler = get(),
                 )
             )
 
