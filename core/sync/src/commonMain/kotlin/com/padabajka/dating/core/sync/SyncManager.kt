@@ -4,8 +4,13 @@ import com.padabajka.dating.core.data.atomic
 import com.padabajka.dating.core.data.lockWith
 import com.padabajka.dating.core.domain.sync.SyncRemoteDataUseCase
 import com.padabajka.dating.core.repository.api.SocketRepository
+import com.padabajka.dating.core.repository.api.exception.BadStatusCodeException
+import com.padabajka.dating.core.repository.api.exception.ConnectException
+import com.padabajka.dating.core.utils.isDebugBuild
 import com.padabajka.dating.feature.push.data.domain.HandlePushUseCase
 import com.padabajka.dating.feature.push.data.domain.model.MessagePush
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.crashlytics.crashlytics
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -106,7 +111,21 @@ class SyncManager(
         scope.launch {
             try {
                 log("start sync")
-                syncRemoteDataUseCase()
+                retryUntilSuccess(
+                    shouldRetry = { e ->
+                        if (e !is ConnectException && e !is BadStatusCodeException) {
+                            if (isDebugBuild) {
+                                throw e
+                            } else {
+                                Firebase.crashlytics.recordException(e)
+                            }
+                        }
+                        delay(timeMillis = 5_000)
+                        state == State.SYNCING
+                    }
+                ) {
+                    syncRemoteDataUseCase()
+                }
                 state = State.ONLINE
 
                 buffer.lockWith {
@@ -128,6 +147,21 @@ class SyncManager(
             State.SYNCING -> buffer.lockWith { add(event) }
             State.ONLINE -> handlePushUseCase(event)
             else -> Unit
+        }
+    }
+
+    private suspend fun retryUntilSuccess(
+        shouldRetry: suspend (Throwable) -> Boolean = { true },
+        block: suspend () -> Unit
+    ) {
+        while (true) {
+            try {
+                return block()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                if (!shouldRetry(e)) break
+            }
         }
     }
 

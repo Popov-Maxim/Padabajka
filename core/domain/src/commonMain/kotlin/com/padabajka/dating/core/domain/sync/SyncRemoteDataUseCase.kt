@@ -16,26 +16,21 @@ class SyncRemoteDataUseCase(
     private val subscriptionRepository: SubscriptionRepository
 ) {
     suspend operator fun invoke() = coroutineScope { // TODO(P1): handle error
-        runCatching {
-            launch {
-                matchRepository.sync()
-                matchRepository.matches().first().let { matches ->
-                    val matchIds = matches.map { it.chatId }
-                    syncChatsUseCase(matchIds)
-                }
+        launch {
+            matchRepository.sync()
+            matchRepository.matches().first().let { matches ->
+                val matchIds = matches.map { it.chatId }
+                syncChatsUseCase(matchIds)
             }
-            launch {
-                reactionRepository.syncReactionsToMe()
-            }
-            launch {
-                assetRepository.loadAssets()
-            }
-            launch {
-                subscriptionRepository.syncState()
-            }
-        }.onFailure {
-            println("TODO: not impl for error SyncRemoteDataUseCase ${it.message}")
-            it.printStackTrace()
+        }
+        launch {
+            reactionRepository.syncReactionsToMe()
+        }
+        launch {
+            assetRepository.loadAssets()
+        }
+        launch {
+            subscriptionRepository.syncState()
         }
     }
 }
