@@ -83,7 +83,7 @@ fun ProfileScreen(
             }
         }
     ) {
-        when (val profile = state.value) {
+        when (val profile = state.value) { // TODO(P1) use only for profile block
             ProfileValue.Loading -> LoadingScreen()
             is ProfileValue.Loaded -> ProfileScreen(component, profile, state)
             ProfileValue.Error -> ErrorScreen(component)

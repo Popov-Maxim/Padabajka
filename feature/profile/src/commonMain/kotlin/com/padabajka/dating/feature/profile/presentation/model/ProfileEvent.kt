@@ -4,6 +4,7 @@ sealed interface ProfileEvent {
     data object OpenSubscriptionScreen : ProfileEvent
 }
 
+@Deprecated("")
 data object UpdateProfileEvent : ProfileEvent
 data object OpenEditorEvent : ProfileEvent
 data object OpenLikesMeEvent : ProfileEvent
