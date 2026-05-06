@@ -30,7 +30,9 @@ kotlin {
             api(projects.core.domain)
             api(projects.core.repositoryApi)
             api(projects.core.data)
+            api(projects.core.utils)
 
+            implementation(libs.gitlive.firebase.crashlytics)
             implementation(projects.feature.push) // TODO: do not depend on feature
         }
     }
