@@ -60,6 +60,7 @@ class ProfileScreenComponent(
         }
     }
 
+    @Deprecated("")
     private fun updateProfile() = launchStep( // TODO(P3): never run in production
         action = {
             reduce { state ->

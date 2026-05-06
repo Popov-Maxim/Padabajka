@@ -48,6 +48,45 @@ class AuthScopeNavigateComponent(
                 }
             }
         }
+        updateProfile()
+    }
+
+    override fun createChild(
+        configuration: Configuration,
+        context: ComponentContext
+    ): Child {
+        return when (configuration) {
+            Configuration.LoadingProfileScreen -> Child.LoadingProfileScreen
+            is Configuration.CreateProfileScope -> Child.CreateProfileScope(
+                component = CreateProfileScopeNavigateComponent(context)
+            )
+
+            is Configuration.MainAuthScope -> Child.MainAuthScope(
+                component = MainAuthScopeNavigateComponent(context, userId)
+            )
+
+            is Configuration.LoadingErrorScreen -> Child.LoadingErrorScreen(
+                messageId = configuration.messageId,
+                message = configuration.message,
+                retry = {
+                    navigateNewStack(Configuration.LoadingProfileScreen)
+                    updateProfile()
+                }
+            )
+        }
+    }
+
+    suspend fun onDeeplink(deeplink: AppDeeplink) {
+        val instance = childStack
+            .asFlow()
+            .map { it.active.instance }
+            .filterIsInstance<Child.MainAuthScope>()
+            .first()
+
+        instance.component.onDeeplink(deeplink)
+    }
+
+    private fun updateProfile() {
         backgroundScope.launch {
             runCatching {
                 profileRepository.updateProfile()
@@ -70,40 +109,14 @@ class AuthScopeNavigateComponent(
         }
     }
 
-    override fun createChild(
-        configuration: Configuration,
-        context: ComponentContext
-    ): Child {
-        return when (configuration) {
-            Configuration.LoadingProfileScreen -> Child.LoadingProfileScreen
-            is Configuration.CreateProfileScope -> Child.CreateProfileScope(
-                component = CreateProfileScopeNavigateComponent(context)
-            )
-
-            is Configuration.MainAuthScope -> Child.MainAuthScope(
-                component = MainAuthScopeNavigateComponent(context, userId)
-            )
-
-            is Configuration.LoadingErrorScreen -> Child.LoadingErrorScreen(
-                configuration.messageId,
-                configuration.message
-            )
-        }
-    }
-
-    suspend fun onDeeplink(deeplink: AppDeeplink) {
-        val instance = childStack
-            .asFlow()
-            .map { it.active.instance }
-            .filterIsInstance<Child.MainAuthScope>()
-            .first()
-
-        instance.component.onDeeplink(deeplink)
-    }
-
     sealed interface Child {
         data object LoadingProfileScreen : Child
-        data class LoadingErrorScreen(val messageId: StaticTextId, val message: String) : Child
+        data class LoadingErrorScreen(
+            val messageId: StaticTextId,
+            val message: String,
+            val retry: () -> Unit
+        ) : Child
+
         data class CreateProfileScope(val component: CreateProfileScopeNavigateComponent) : Child
         data class MainAuthScope(val component: MainAuthScopeNavigateComponent) : Child
     }

@@ -17,6 +17,7 @@ data class ProfileState(
 ) : State
 
 sealed interface ProfileValue {
+    @Deprecated("")
     data object Error : ProfileValue
     data object Loading : ProfileValue
     data class Loaded(
