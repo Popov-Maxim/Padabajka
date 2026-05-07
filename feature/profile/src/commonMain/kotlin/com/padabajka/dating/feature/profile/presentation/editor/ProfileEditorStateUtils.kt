@@ -4,18 +4,27 @@ import com.padabajka.dating.core.domain.replaced
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
+import com.padabajka.dating.core.repository.api.model.profile.Profile
 import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.feature.profile.presentation.editor.model.DetailUIItem
 import com.padabajka.dating.feature.profile.presentation.editor.model.LanguageAssetsField
 import com.padabajka.dating.feature.profile.presentation.editor.model.LanguagesAssetType
 import com.padabajka.dating.feature.profile.presentation.editor.model.LanguagesAssetsFields
 import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileEditorState
+import com.padabajka.dating.feature.profile.presentation.editor.model.ProfileFields
 import com.padabajka.dating.feature.profile.presentation.editor.model.SupportedDetails
 import com.padabajka.dating.feature.profile.presentation.editor.model.SupportedLifestyles
+import com.padabajka.dating.feature.profile.presentation.editor.model.updated
 import com.padabajka.dating.feature.profile.presentation.model.AssetsFromDb
 import kotlinx.collections.immutable.PersistentList
 
-fun ProfileEditorState.changeAchievementMain(achievement: Achievement?): ProfileEditorState {
+fun ProfileEditorState.updateFields(profile: Profile?, update: (ProfileFields) -> ProfileFields): ProfileEditorState {
+    val fields = update(fields)
+    val new = profile?.updated(fields)
+    return copy(fields = fields, fieldsChanged = new != profile)
+}
+
+fun ProfileFields.changeAchievementMain(achievement: Achievement?): ProfileFields {
     return if (achievement == null) {
         this.copy(mainAchievement = this.mainAchievement.updatedValue(null))
     } else {
@@ -29,14 +38,14 @@ fun ProfileEditorState.changeAchievementMain(achievement: Achievement?): Profile
     }
 }
 
-fun ProfileEditorState.makeAchievementVisible(achievement: Achievement): ProfileEditorState {
+fun ProfileFields.makeAchievementVisible(achievement: Achievement): ProfileFields {
     val visibleAchievement = achievement.copy(hidden = false)
     return this.copy(
         achievements = achievements.updatedValue { it.replaced(achievement, visibleAchievement) }
     )
 }
 
-fun ProfileEditorState.hideAchievement(achievement: Achievement): ProfileEditorState {
+fun ProfileFields.hideAchievement(achievement: Achievement): ProfileFields {
     val hiddenAchievement = achievement.copy(hidden = true)
     return this.copy(
         mainAchievement = mainAchievement.updatedValue { it?.takeUnless { it == achievement } },
@@ -44,15 +53,15 @@ fun ProfileEditorState.hideAchievement(achievement: Achievement): ProfileEditorS
     )
 }
 
-fun ProfileEditorState.updateAboutMe(aboutMe: String): ProfileEditorState {
+fun ProfileFields.updateAboutMe(aboutMe: String): ProfileFields {
     return this.copy(aboutMe = this.aboutMe.updatedValue(aboutMe))
 }
 
-fun ProfileEditorState.updateName(name: String): ProfileEditorState {
+fun ProfileFields.updateName(name: String): ProfileFields {
     return this.copy(name = this.name.updatedValue(name))
 }
 
-fun ProfileEditorState.addImage(image: Image, index: Int): ProfileEditorState {
+fun ProfileFields.addImage(image: Image, index: Int): ProfileFields {
     return this.copy(
         images = this.images.updatedValue {
             if (index < it.size) {
@@ -64,15 +73,15 @@ fun ProfileEditorState.addImage(image: Image, index: Int): ProfileEditorState {
     )
 }
 
-fun ProfileEditorState.deleteImage(image: Image): ProfileEditorState {
+fun ProfileFields.deleteImage(image: Image): ProfileFields {
     return this.copy(images = this.images.updatedValue { it.remove(image) })
 }
 
-fun ProfileEditorState.updateLookingForData(data: LookingForData): ProfileEditorState {
+fun ProfileFields.updateLookingForData(data: LookingForData): ProfileFields {
     return this.copy(lookingFor = this.lookingFor.updatedValue(data))
 }
 
-fun ProfileEditorState.updateDetails(supportedDetails: SupportedDetails): ProfileEditorState {
+fun ProfileFields.updateDetails(supportedDetails: SupportedDetails): ProfileFields {
     return this.copy(
         details = this.details.updatedValue { details ->
             details.copy(supportedDetails = supportedDetails)
@@ -80,7 +89,7 @@ fun ProfileEditorState.updateDetails(supportedDetails: SupportedDetails): Profil
     )
 }
 
-fun ProfileEditorState.updateLifestyle(lifestyle: SupportedLifestyles): ProfileEditorState {
+fun ProfileFields.updateLifestyle(lifestyle: SupportedLifestyles): ProfileFields {
     return this.copy(
         lifeStyle = this.lifeStyle.updatedValue { details ->
             details.copy(supportedLifestyles = lifestyle)
@@ -88,7 +97,7 @@ fun ProfileEditorState.updateLifestyle(lifestyle: SupportedLifestyles): ProfileE
     )
 }
 
-fun ProfileEditorState.updateDetails(updated: SupportedDetails.() -> SupportedDetails): ProfileEditorState {
+fun ProfileFields.updateDetails(updated: SupportedDetails.() -> SupportedDetails): ProfileFields {
     return this.copy(
         details = this.details.updatedValue { details ->
             details.copy(supportedDetails = details.supportedDetails.updated())
@@ -96,48 +105,48 @@ fun ProfileEditorState.updateDetails(updated: SupportedDetails.() -> SupportedDe
     )
 }
 
-fun ProfileEditorState.updateDetailCity(
+fun ProfileFields.updateDetailCity(
     updated: DetailUIItem.AssetFromDb.() -> DetailUIItem.AssetFromDb
-): ProfileEditorState {
+): ProfileFields {
     return updateDetails {
         copy(city = city.updated())
     }
 }
 
-fun ProfileEditorState.updateNativeLang(
+fun ProfileFields.updateNativeLang(
     updated: LanguageAssetsField.() -> LanguageAssetsField
-): ProfileEditorState {
+): ProfileFields {
     return updateLanguages {
         copy(nativeLanguages = nativeLanguages.updated())
     }
 }
 
-fun ProfileEditorState.updateKnownLang(
+fun ProfileFields.updateKnownLang(
     updated: LanguageAssetsField.() -> LanguageAssetsField
-): ProfileEditorState {
+): ProfileFields {
     return updateLanguages {
         copy(knownLanguages = knownLanguages.updated())
     }
 }
 
-fun ProfileEditorState.updateLearningLang(
+fun ProfileFields.updateLearningLang(
     updated: LanguageAssetsField.() -> LanguageAssetsField
-): ProfileEditorState {
+): ProfileFields {
     return updateLanguages {
         copy(learningLanguages = learningLanguages.updated())
     }
 }
 
-fun ProfileEditorState.updateLanguages(
+fun ProfileFields.updateLanguages(
     updated: LanguagesAssetsFields.() -> LanguagesAssetsFields
-): ProfileEditorState {
+): ProfileFields {
     return copy(language = language.updatedValue(updated))
 }
 
-fun ProfileEditorState.changeLanguage(
+fun ProfileFields.changeLanguage(
     value: LanguageAssetsField,
     type: LanguagesAssetType
-): ProfileEditorState {
+): ProfileFields {
     return when (type) {
         LanguagesAssetType.Native -> updateNativeLang { value }
         LanguagesAssetType.Known -> updateKnownLang { value }
@@ -145,10 +154,10 @@ fun ProfileEditorState.changeLanguage(
     }
 }
 
-fun ProfileEditorState.updateLanguage(
+fun ProfileFields.updateLanguage(
     updated: LanguageAssetsField.() -> LanguageAssetsField,
     type: LanguagesAssetType
-): ProfileEditorState {
+): ProfileFields {
     return when (type) {
         LanguagesAssetType.Native -> updateNativeLang(updated)
         LanguagesAssetType.Known -> updateKnownLang(updated)
@@ -156,17 +165,17 @@ fun ProfileEditorState.updateLanguage(
     }
 }
 
-fun ProfileEditorState.updateInterests(
+fun ProfileFields.updateInterests(
     updated: AssetsFromDb.() -> AssetsFromDb
-): ProfileEditorState {
+): ProfileFields {
     return this.copy(
         interests = this.interests.updatedValue { it.updated() }
     )
 }
 
-fun ProfileEditorState.changeInterests(
+fun ProfileFields.changeInterests(
     value: PersistentList<Text>,
-): ProfileEditorState {
+): ProfileFields {
     return updateInterests {
         copy(value = value)
     }

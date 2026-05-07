@@ -12,6 +12,7 @@ import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.profile.Achievement
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
+import com.padabajka.dating.core.repository.api.model.profile.Profile
 import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.feature.image.domain.GetLocalImageUseCase
 import com.padabajka.dating.feature.profile.domain.SaveUpdatedProfileUseCase
@@ -73,6 +74,9 @@ class ProfileEditorScreenComponent(
     initProfileState(profileRepository)
 ) {
 
+    private val profile: Profile?
+        get() = profileRepository.profileValue
+
     private val saveProfileUseCase by saveUpdatedProfileUseCaseFactory.delegate()
     private val getLocalImageUseCase by getLocalImageUseCaseFactory.delegate()
 
@@ -99,35 +103,41 @@ class ProfileEditorScreenComponent(
             is LifeStyleUpdateEvent -> updateLifestyle(event.lifestyle)
             is CitySearchQueryChangedEvent -> searchCity(event.query)
             UpdateCitySearchEvent ->
-                searchCity(state.value.details.value.supportedDetails.city.searchItem.value)
+                searchCity(state.value.fields.details.value.supportedDetails.city.searchItem.value)
 
             is LangSearchQueryChangedEvent -> searchLang(event.query.value, event.type)
             is UpdateLangSearchEvent ->
-                searchLang(state.value.language.value.nativeLanguages.searchItem.value, event.type)
+                searchLang(state.value.fields.language.value.nativeLanguages.searchItem.value, event.type)
             is LanguagesUpdateEvent -> updateLanguages(event.lang, event.type)
 
             is InterestSearchQueryChangedEvent -> searchInterests(event.query.value)
             is InterestUpdateEvent -> updateInterests(event.assets)
             UpdateInterestSearchEvent ->
-                searchInterests(state.value.language.value.nativeLanguages.searchItem.value)
+                searchInterests(state.value.fields.language.value.nativeLanguages.searchItem.value)
         }
     }
 
     private fun makeAchievementMain(achievement: Achievement?) {
         reduce {
-            it.changeAchievementMain(achievement)
+            it.updateFields(profile) {
+                it.changeAchievementMain(achievement)
+            }
         }
     }
 
     private fun makeAchievementVisible(achievement: Achievement) {
         reduce {
-            it.makeAchievementVisible(achievement)
+            it.updateFields(profile) {
+                it.makeAchievementVisible(achievement)
+            }
         }
     }
 
     private fun hideAchievement(achievement: Achievement) {
         reduce {
-            it.hideAchievement(achievement)
+            it.updateFields(profile) {
+                it.hideAchievement(achievement)
+            }
         }
     }
 
@@ -166,49 +176,63 @@ class ProfileEditorScreenComponent(
 
     private fun updateName(name: String) {
         reduce {
-            it.updateName(name)
+            it.updateFields(profile) {
+                it.updateName(name)
+            }
         }
     }
 
     private fun trimName() {
-        val name = state.value.name.value
+        val name = state.value.fields.name.value
         val trimmedName = name.trim()
         updateName(trimmedName)
     }
 
     private fun updateAboutMe(aboutMe: String) {
         reduce {
-            it.updateAboutMe(aboutMe)
+            it.updateFields(profile) {
+                it.updateAboutMe(aboutMe)
+            }
         }
     }
 
     private fun updateLoockingForData(data: LookingForData) {
         reduce {
-            it.updateLookingForData(data)
+            it.updateFields(profile) {
+                it.updateLookingForData(data)
+            }
         }
     }
 
     private fun updateDetails(supportedDetails: SupportedDetails) {
         reduce {
-            it.updateDetails(supportedDetails)
+            it.updateFields(profile) {
+                it.updateDetails(supportedDetails)
+            }
         }
     }
 
     private fun updateLifestyle(lifestyles: SupportedLifestyles) {
         reduce {
-            it.updateLifestyle(lifestyles)
+            it.updateFields(profile) {
+                it.updateLifestyle(lifestyles)
+            }
         }
     }
 
     private fun updateLanguages(languagesField: LanguageAssetsField, type: LanguagesAssetType) {
         reduce {
-            it.changeLanguage(languagesField, type)
+            it.updateFields(profile) {
+                it.changeLanguage(languagesField, type)
+            }
         }
     }
 
     private fun updateInterests(assets: PersistentList<Text>) {
         reduce {
-            it.changeInterests(assets)
+            it.updateFields(profile) {
+                it.changeInterests(assets)
+            }
         }
     }
 
@@ -220,7 +244,9 @@ class ProfileEditorScreenComponent(
                 image
             }
             reduce {
-                it.addImage(uiImage, index)
+                it.updateFields(profile) {
+                    it.addImage(uiImage, index)
+                }
             }
         },
         onError = {
@@ -236,11 +262,13 @@ class ProfileEditorScreenComponent(
 
     private fun searchCity(query: String) {
         reduce {
-            it.updateDetailCity {
-                copy(
-                    foundedAssets = FoundedAssets.Searching,
-                    searchItem = searchItem.copy(value = query)
-                )
+            it.updateFields(profile) {
+                it.updateDetailCity {
+                    copy(
+                        foundedAssets = FoundedAssets.Searching,
+                        searchItem = searchItem.copy(value = query)
+                    )
+                }
             }
         }
         launchStep(
@@ -255,8 +283,10 @@ class ProfileEditorScreenComponent(
                     }
                     .toPersistentList()
                 reduce {
-                    it.updateDetailCity {
-                        copy(foundedAssets = FoundedAssets.Success(cities))
+                    it.updateFields(profile) {
+                        it.updateDetailCity {
+                            copy(foundedAssets = FoundedAssets.Success(cities))
+                        }
                     }
                 }
             },
@@ -265,7 +295,9 @@ class ProfileEditorScreenComponent(
 
     private fun searchLang(query: String, type: LanguagesAssetType) {
         searchLang(query) { updated ->
-            updateLanguage(updated, type)
+            updateFields(profile) {
+                it.updateLanguage(updated, type)
+            }
         }
     }
 
@@ -296,11 +328,13 @@ class ProfileEditorScreenComponent(
 
     private fun searchInterests(query: String) {
         reduce {
-            it.updateInterests {
-                copy(
-                    foundedAssets = FoundedAssets.Searching,
-                    searchItem = searchItem.copy(value = query)
-                )
+            it.updateFields(profile) {
+                it.updateInterests {
+                    copy(
+                        foundedAssets = FoundedAssets.Searching,
+                        searchItem = searchItem.copy(value = query)
+                    )
+                }
             }
         }
         launchStep(
@@ -308,8 +342,10 @@ class ProfileEditorScreenComponent(
                 val assets = findInterestAssetsUseCase(query)
                     .toPersistentList()
                 reduce {
-                    it.updateInterests {
-                        copy(foundedAssets = FoundedAssets.Success(assets))
+                    it.updateFields(profile) {
+                        it.updateInterests {
+                            copy(foundedAssets = FoundedAssets.Success(assets))
+                        }
                     }
                 }
             },
@@ -317,11 +353,13 @@ class ProfileEditorScreenComponent(
     }
 
     private fun deleteImage(image: Image) = reduce {
-        it.deleteImage(image)
+        it.updateFields(profile) {
+            it.deleteImage(image)
+        }
     }
 
     private fun trimAboutMe() {
-        val aboutMe = state.value.aboutMe.value
+        val aboutMe = state.value.fields.aboutMe.value
         val trimmedAboutMe = aboutMe.trim()
         updateAboutMe(trimmedAboutMe)
     }
