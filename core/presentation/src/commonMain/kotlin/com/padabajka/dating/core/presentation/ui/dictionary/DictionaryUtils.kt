@@ -36,7 +36,7 @@ fun rememberAppSettingRepository(): AppSettingsRepository {
 }
 
 @Composable
-private fun languageState(): State<Language.Static> {
+internal fun languageState(): State<Language.Static> {
     val appSettingsRepository = rememberAppSettingRepository()
     val language = appSettingsRepository
         .appSettings

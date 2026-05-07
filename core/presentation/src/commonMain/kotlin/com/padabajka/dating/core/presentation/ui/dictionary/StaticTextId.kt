@@ -105,6 +105,7 @@ sealed interface StaticTextId {
         EmptyMatches(rawId = "empty_matches"),
         EmptyChats(rawId = "empty_chats"),
         EnterMessage(rawId = "enter_message"),
+        WaitEllipsis(rawId = "wait_ellipsis"),
 
         // Message popup
         MessagePopupLike(rawId = "message_popup_like"),
@@ -126,6 +127,8 @@ sealed interface StaticTextId {
         Delete(rawId = "delete"),
         Replace(rawId = "replace"),
         Cancel(rawId = "cancel"),
+        Today(rawId = "today"),
+        Yesterday(rawId = "yesterday"),
 
         // Profile creating
 
