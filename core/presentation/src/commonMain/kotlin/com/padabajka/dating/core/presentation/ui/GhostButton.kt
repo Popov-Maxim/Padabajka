@@ -25,6 +25,9 @@ fun GhostButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
+    val textColor = CoreColors.background.textColor.copy(
+        alpha = if (enabled) 1f else 0.5f
+    )
     Box(
         modifier = modifier.fillMaxWidth()
             .clip(shape)
@@ -36,7 +39,7 @@ fun GhostButton(
         Text(
             text = text,
             fontSize = 16.sp,
-            color = CoreColors.background.textColor
+            color = textColor
         )
     }
 }

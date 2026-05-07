@@ -22,6 +22,33 @@ import kotlinx.datetime.LocalDate
 
 @Immutable
 data class ProfileEditorState(
+    val fields: ProfileFields,
+    val fieldsChanged: Boolean,
+    val saveState: SaveState = SaveState.Idle,
+    val internalErrorStateEvent: StateEvent = consumed
+) : State {
+
+    @Stable
+    val profileForPreview: ProfileViewUIItem = ProfileViewUIItem(
+        name = fields.name.value,
+        age = fields.birthday.value.age,
+        images = fields.images.value,
+        aboutMe = fields.aboutMe.value,
+        lookingFor = fields.lookingFor.value,
+        details = fields.details.value.allDetails,
+        lifestyle = fields.lifeStyle.value.toDomain().toPersistentList(),
+        interests = fields.interests.value.value,
+        languages = fields.language.value.toDomain()
+    )
+
+    sealed interface SaveState {
+        object Idle : SaveState
+        object Loading : SaveState
+        object Error : SaveState
+    }
+}
+
+data class ProfileFields(
     val name: ProfileField<String>,
     val birthday: ProfileField<LocalDate>,
     val images: ProfileField<PersistentList<Image>>,
@@ -32,30 +59,8 @@ data class ProfileEditorState(
     val interests: ProfileField<AssetsFromDb>,
     val language: ProfileField<LanguagesAssetsFields>,
     val mainAchievement: ProfileField<Achievement?>,
-    val achievements: ProfileField<PersistentList<Achievement>>,
-    val saveState: SaveState = SaveState.Idle,
-    val internalErrorStateEvent: StateEvent = consumed
-) : State {
-
-    @Stable
-    val profileForPreview: ProfileViewUIItem = ProfileViewUIItem(
-        name = name.value,
-        age = birthday.value.age,
-        images = images.value,
-        aboutMe = aboutMe.value,
-        lookingFor = lookingFor.value,
-        details = details.value.allDetails,
-        lifestyle = lifeStyle.value.toDomain().toPersistentList(),
-        interests = interests.value.value,
-        languages = language.value.toDomain()
-    )
-
-    sealed interface SaveState {
-        object Idle : SaveState
-        object Loading : SaveState
-        object Error : SaveState
-    }
-}
+    val achievements: ProfileField<PersistentList<Achievement>>
+)
 
 data class ProfileField<T>(
     val value: T,
@@ -90,7 +95,7 @@ sealed interface Issue {
 }
 
 fun Profile.toEditorState(): ProfileEditorState {
-    return ProfileEditorState(
+    val fields = ProfileFields(
         name = name.toField(),
         birthday = birthday.toField(),
         images = images.toPersistentList().toField(),
@@ -103,20 +108,38 @@ fun Profile.toEditorState(): ProfileEditorState {
         interests = interests.toPersistentList().run(::createInterests).toField(),
         language = languagesAsset.toLanguagesFields().toField()
     )
+    return ProfileEditorState(
+        fields = fields,
+        fieldsChanged = false
+    )
 }
 
 fun Profile.updated(state: ProfileEditorState) = copy(
-    name = state.name.value,
-    birthday = state.birthday.value,
-    images = state.images.value,
-    aboutMe = state.aboutMe.value,
-    lookingFor = state.lookingFor.value,
-    details = state.details.value.allDetails,
-    lifestyles = state.lifeStyle.value.toDomain(),
-    interests = state.interests.value.value,
-    languagesAsset = state.language.value.toDomain(),
-    mainAchievement = state.mainAchievement.value,
-    achievements = state.achievements.value
+    name = state.fields.name.value,
+    birthday = state.fields.birthday.value,
+    images = state.fields.images.value,
+    aboutMe = state.fields.aboutMe.value,
+    lookingFor = state.fields.lookingFor.value,
+    details = state.fields.details.value.allDetails,
+    lifestyles = state.fields.lifeStyle.value.toDomain(),
+    interests = state.fields.interests.value.value,
+    languagesAsset = state.fields.language.value.toDomain(),
+    mainAchievement = state.fields.mainAchievement.value,
+    achievements = state.fields.achievements.value
+)
+
+fun Profile.updated(fields: ProfileFields) = copy(
+    name = fields.name.value,
+    birthday = fields.birthday.value,
+    images = fields.images.value,
+    aboutMe = fields.aboutMe.value,
+    lookingFor = fields.lookingFor.value,
+    details = fields.details.value.allDetails,
+    lifestyles = fields.lifeStyle.value.toDomain(),
+    interests = fields.interests.value.value,
+    languagesAsset = fields.language.value.toDomain(),
+    mainAchievement = fields.mainAchievement.value,
+    achievements = fields.achievements.value
 )
 
 private fun <T> T.toField(): ProfileField<T> {

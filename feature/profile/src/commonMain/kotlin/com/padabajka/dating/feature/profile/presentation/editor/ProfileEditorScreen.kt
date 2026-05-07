@@ -89,14 +89,14 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
             ) {
                 Column {
                     Box(modifier = Modifier.padding(10.dp)) {
-                        ImageFields(images = state.images.value, component = component)
+                        ImageFields(images = state.fields.images.value, component = component)
                     }
 
                     TotalDataBlock(
                         label = StaticTextId.UiId.Bio.translate(),
                         modifier = Modifier.padding(20.dp)
                     ) {
-                        val aboutMe = state.aboutMe.value
+                        val aboutMe = state.fields.aboutMe.value
                         CoreTextEditField(
                             singleLine = false,
                             text = aboutMe,
@@ -112,7 +112,7 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
                         modifier = Modifier.padding(20.dp)
                     ) {
                         LookingForField(
-                            field = state.lookingFor,
+                            field = state.fields.lookingFor,
                             onChange = {
                                 component.onEvent(LookingForUpdateEvent(it))
                             }
@@ -124,7 +124,7 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
                         modifier = Modifier.padding(20.dp)
                     ) {
                         BasicInfoBlock(
-                            field = state.details,
+                            field = state.fields.details,
                             onEvent = component::onEvent
                         )
                     }
@@ -134,7 +134,7 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
                         modifier = Modifier.padding(20.dp)
                     ) {
                         LifestyleBlock(
-                            field = state.lifeStyle,
+                            field = state.fields.lifeStyle,
                             onEvent = component::onEvent
                         )
                     }
@@ -144,7 +144,7 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
                         modifier = Modifier.padding(20.dp)
                     ) {
                         InterestsBlock(
-                            field = state.interests,
+                            field = state.fields.interests,
                             onEvent = component::onEvent
                         )
                     }
@@ -154,7 +154,7 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
                         modifier = Modifier.padding(20.dp)
                     ) {
                         LanguageBlock(
-                            field = state.language,
+                            field = state.fields.language,
                             onEvent = component::onEvent
                         )
                     }
@@ -168,14 +168,16 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
                         text = StaticTextId.UiId.Reset.translate(),
                         onClick = {
                             component.onEvent(DiscardProfileUpdatesClickEvent)
-                        }
+                        },
+                        enabled = state.fieldsChanged
                     )
 
                     CoreCallToActionButton(
                         text = StaticTextId.UiId.Apply.translate(),
                         onClick = {
                             component.onEvent(SaveProfileUpdatesClickEvent)
-                        }
+                        },
+                        enabled = state.fieldsChanged
                     )
                 }
             }
