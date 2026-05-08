@@ -2,12 +2,12 @@ package com.padabajka.dating.feature.messenger.presentation.chat.model.item
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import com.padabajka.dating.core.presentation.compactText
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.feature.messenger.presentation.chat.util.currentDate
 import com.padabajka.dating.feature.messenger.presentation.chat.util.yesterdayDate
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.format
-import kotlinx.datetime.format.MonthNames
-import kotlinx.datetime.format.char
 
 @Immutable
 interface TimeItem : MessengerItem {
@@ -25,19 +25,17 @@ interface TimeItem : MessengerItem {
     }
 }
 
-// TODO(P0): Add resources handling
 @Immutable
-open class StringTimeItem(private val text: String) : TimeItem {
+open class StringTimeItem(private val text: StaticTextId) : TimeItem {
     @Composable
-    override fun labelText(): String = text
+    override fun labelText(): String = text.translate()
 
     override val key: Any
         get() = text.hashCode()
 }
 
-// TODO(P0): Remove strings hardcode
-data object YesterdayTimeItem : StringTimeItem("Yesterday")
-data object TodayTimeItem : StringTimeItem("Today")
+data object YesterdayTimeItem : StringTimeItem(StaticTextId.UiId.Yesterday)
+data object TodayTimeItem : StringTimeItem(StaticTextId.UiId.Today)
 
 class DateTimeItem(private val date: LocalDate) : TimeItem {
 
@@ -46,13 +44,6 @@ class DateTimeItem(private val date: LocalDate) : TimeItem {
 
     @Composable
     override fun labelText(): String {
-        val format = LocalDate.Format {
-            monthName(MonthNames.ENGLISH_ABBREVIATED)
-            char(' ')
-            dayOfMonth()
-            chars(", ")
-            year()
-        }
-        return date.format(format)
+        return date.compactText()
     }
 }

@@ -1,6 +1,8 @@
 package com.padabajka.dating.feature.messenger.presentation.model
 
 import androidx.compose.runtime.Composable
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.repository.api.model.profile.UserPresence
 import kotlinx.serialization.Serializable
 
@@ -20,7 +22,7 @@ sealed interface UserPresenceItem {
 fun UserPresenceItem.text(): String {
     return when (this) {
         is UserPresenceItem.Has -> description
-        UserPresenceItem.None -> "wait..." // TODO(P0): add translate
+        UserPresenceItem.None -> StaticTextId.UiId.WaitEllipsis.translate()
     }
 }
 

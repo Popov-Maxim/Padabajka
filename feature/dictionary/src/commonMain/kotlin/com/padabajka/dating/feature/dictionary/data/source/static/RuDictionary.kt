@@ -46,6 +46,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.EmptyMatches -> "Тут пока пусто"
             StaticTextId.UiId.EmptyChats -> "Здесь появятся ваши чаты"
             StaticTextId.UiId.EnterMessage -> "Введите сообщение..."
+            StaticTextId.UiId.WaitEllipsis -> "Ожидание сети..."
             StaticTextId.UiId.MessagePopupLike -> "Лайк"
             StaticTextId.UiId.MessagePopupReply -> "Ответить"
             StaticTextId.UiId.MessagePopupCopy -> "Копировать"
@@ -81,6 +82,8 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Delete -> "Удалить"
             StaticTextId.UiId.Replace -> "Заменить"
             StaticTextId.UiId.Cancel -> "Отмена"
+            StaticTextId.UiId.Today -> "Сегодня"
+            StaticTextId.UiId.Yesterday -> "Вчера"
 
             StaticTextId.UiId.WelcomeText ->
                 "Добро пожаловать в Padabajka " +

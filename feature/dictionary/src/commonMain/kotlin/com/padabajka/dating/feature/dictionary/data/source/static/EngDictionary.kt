@@ -48,6 +48,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.EmptyMatches -> "There's nothing here yet"
             StaticTextId.UiId.EmptyChats -> "Your chats will appear here"
             StaticTextId.UiId.EnterMessage -> "Enter message..."
+            StaticTextId.UiId.WaitEllipsis -> "Connecting..."
             StaticTextId.UiId.MessagePopupLike -> "Like"
             StaticTextId.UiId.MessagePopupReply -> "Reply"
             StaticTextId.UiId.MessagePopupCopy -> "Copy"
@@ -82,6 +83,8 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Delete -> "Delete"
             StaticTextId.UiId.Replace -> "Replace"
             StaticTextId.UiId.Cancel -> "Cancel"
+            StaticTextId.UiId.Today -> "Today"
+            StaticTextId.UiId.Yesterday -> "Yesterday"
 
             StaticTextId.UiId.WelcomeText ->
                 "Welcome to Padabajka! " +
