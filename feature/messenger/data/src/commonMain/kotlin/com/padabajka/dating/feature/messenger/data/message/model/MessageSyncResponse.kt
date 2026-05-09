@@ -8,4 +8,5 @@ data class MessageSyncResponse(
     val messages: List<MessageDto>,
     val lastReadEventLogNumber: Long,
     val readEvents: List<ChatReadEventResponse>,
+    val hasMoreMessages: Boolean
 )

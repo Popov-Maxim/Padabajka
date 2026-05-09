@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.messenger.data.message.source.remote.ktor
 import com.padabajka.dating.core.data.utils.encodeToMap
 import com.padabajka.dating.core.networking.KtorClientProvider
 import com.padabajka.dating.core.networking.utils.appendNotNull
+import com.padabajka.dating.core.networking.utils.takeIfHasContent
 import com.padabajka.dating.core.networking.utils.throwIfNotSuccessful
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
@@ -28,7 +29,7 @@ class KtorMessageApi(
     override suspend fun getMessages(
         chatId: ChatId,
         params: MessageRequest.Get
-    ): MessageSyncResponse {
+    ): MessageSyncResponse? {
         val client = ktorClientProvider.client()
 
         val response = client.get {
@@ -41,7 +42,7 @@ class KtorMessageApi(
             }
         }
 
-        return response.body()
+        return response.takeIfHasContent()?.body()
     }
 
     override suspend fun syncMessages(

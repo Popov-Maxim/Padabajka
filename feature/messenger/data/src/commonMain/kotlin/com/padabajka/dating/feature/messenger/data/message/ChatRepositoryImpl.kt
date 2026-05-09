@@ -7,11 +7,17 @@ import com.padabajka.dating.core.repository.api.model.messenger.Chat
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalChatDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteChatDataSource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 internal class ChatRepositoryImpl(
     private val remoteChatDataSource: RemoteChatDataSource,
     private val localChatDataSource: LocalChatDataSource
 ) : ChatRepository {
+    override fun chat(chatId: ChatId): Flow<Chat> {
+        return localChatDataSource.chat(chatId).map { it.toDomain() }
+    }
+
     override suspend fun getChat(chatId: ChatId): Chat? {
         return localChatDataSource.getChat(chatId)?.toDomain()
     }

@@ -51,6 +51,7 @@ val messengerDataModule = module {
             personRepository = get(),
             localChatReadStateDataSource = get(),
             readMessageManager = get(),
+            chatRepository = get(),
         )
     }
     singleOf(::ReadMessageManager)

@@ -6,6 +6,7 @@ import com.padabajka.dating.feature.messenger.domain.chat.ChatMessagesUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.DeleteChatUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.DeleteMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.EditMessageUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.ObserveChatHasMoreMessagesUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.ReactToMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.ReadMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.SendMessageUseCase
@@ -29,6 +30,7 @@ private val domainModule = module {
     factoryOf(::DeleteMessageUseCase)
     factoryOf(::EditMessageUseCase)
     factoryOf(::DeleteChatUseCase)
+    factoryOf(::ObserveChatHasMoreMessagesUseCase)
 }
 
 private val presentationModule = module {
@@ -49,7 +51,9 @@ private val presentationModule = module {
             matchRepository = get(),
             userPresenceRepository = get(),
             toggleMessageReactionUseCase = get(),
-            alertService = get()
+            alertService = get(),
+            observeChatHasMoreMessagesUseCase = get(),
+            messageRepository = get(),
         )
     }
 

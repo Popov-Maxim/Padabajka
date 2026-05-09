@@ -33,7 +33,7 @@ internal interface RemoteMessageDataSource {
         chatId: ChatId,
         beforeMessageId: String?,
         count: Int
-    ): MessageSyncResponse
+    ): MessageSyncResponse?
 
     suspend fun getMessages(chatId: ChatId, fromEventNumber: Long, fromReadEventNumber: Long): MessageSyncResponse
 }

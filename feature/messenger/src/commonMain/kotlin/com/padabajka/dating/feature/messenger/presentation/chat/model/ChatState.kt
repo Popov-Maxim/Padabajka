@@ -18,6 +18,7 @@ data class ChatState(
     val userPresence: UserPresenceItem,
     val field: Field = Field.NewMessage(),
     val messengerItems: PersistentList<MessengerItem> = persistentListOf(),
+    val hasMoreMessages: Boolean = false,
     val chatLoadingState: ChatLoadingState = ChatLoadingState.Loading,
     val internalErrorStateEvent: StateEvent = consumed // TODO(P1): fix
 ) : State

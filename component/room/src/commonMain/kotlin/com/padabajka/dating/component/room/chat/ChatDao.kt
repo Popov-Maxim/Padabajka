@@ -5,12 +5,16 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.padabajka.dating.component.room.chat.entry.ChatEntry
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ChatDao {
 
     @Query("SELECT * FROM chats")
     suspend fun getChats(): List<ChatEntry>
+
+    @Query("SELECT * FROM chats WHERE id = :chatId")
+    fun chat(chatId: String): Flow<ChatEntry?>
 
     @Query("SELECT * FROM chats WHERE id = :chatId")
     suspend fun getChat(chatId: String): ChatEntry?

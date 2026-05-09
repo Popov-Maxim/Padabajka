@@ -16,7 +16,6 @@ import org.koin.dsl.module
 val roomModule = module {
     single {
         dbBuilder.setDriver(BundledSQLiteDriver())
-            .fallbackToDestructiveMigration(true)
             .setQueryCoroutineContext(Dispatchers.IO)
             .build()
     }

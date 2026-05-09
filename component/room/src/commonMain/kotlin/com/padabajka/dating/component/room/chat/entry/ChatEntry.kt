@@ -10,14 +10,16 @@ import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 data class ChatEntry(
     @PrimaryKey val id: String,
     @ColumnInfo("lastEventNumber") val lastEventNumber: Long,
-    @ColumnInfo("lastReadEventNumber") val lastReadEventNumber: Long
+    @ColumnInfo("lastReadEventNumber") val lastReadEventNumber: Long,
+    @ColumnInfo("hasMoreOldMessages") val hasMoreOldMessages: Boolean
 )
 
 fun ChatEntry.toDomain(): Chat {
     return Chat(
         id = id.run(::ChatId),
         lastEventNumber = lastEventNumber,
-        lastReadEventNumber = lastReadEventNumber
+        lastReadEventNumber = lastReadEventNumber,
+        hasMoreOldMessages = hasMoreOldMessages,
     )
 }
 
@@ -25,6 +27,7 @@ fun Chat.toDB(): ChatEntry {
     return ChatEntry(
         id = id.raw,
         lastEventNumber = lastEventNumber,
-        lastReadEventNumber = lastReadEventNumber
+        lastReadEventNumber = lastReadEventNumber,
+        hasMoreOldMessages = hasMoreOldMessages,
     )
 }

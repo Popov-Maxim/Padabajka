@@ -6,12 +6,13 @@ import com.padabajka.dating.component.room.messenger.entry.MessageReadEventEntry
 import com.padabajka.dating.core.data.uuid
 import com.padabajka.dating.core.domain.replaced
 import com.padabajka.dating.core.repository.api.AuthRepository
+import com.padabajka.dating.core.repository.api.ChatRepository
 import com.padabajka.dating.core.repository.api.MessageRepository
 import com.padabajka.dating.core.repository.api.PersonRepository
-import com.padabajka.dating.core.repository.api.SyncResult
 import com.padabajka.dating.core.repository.api.model.auth.NoAuthorisedUserException
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
+import com.padabajka.dating.core.repository.api.model.messenger.Chat
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.Message
 import com.padabajka.dating.core.repository.api.model.messenger.MessageDirection
@@ -46,7 +47,8 @@ internal class MessageRepositoryImpl(
     private val localChatReadStateDataSource: LocalChatReadStateDataSource,
     private val remoteMessageDataSource: RemoteMessageDataSource,
     private val personRepository: PersonRepository,
-    private val readMessageManager: ReadMessageManager
+    private val readMessageManager: ReadMessageManager,
+    private val chatRepository: ChatRepository,
 ) : MessageRepository {
 
     private val myPersonId: UserId
@@ -191,47 +193,62 @@ internal class MessageRepositoryImpl(
             ?.map { it.toDomain() } ?: listOf()
     }
 
+    override suspend fun loadPreviousMessages(
+        chatId: ChatId
+    ) {
+        val oldestMessageId = localMessageDataSource.oldestMessageId(chatId)
+        loadMessages(chatId, oldestMessageId, COUNT_MESSAGE_FOR_SYNC)
+    }
+
     override suspend fun loadMessages(
         chatId: ChatId,
-        beforeMessageId: MessageId,
+        beforeMessageId: MessageId?,
         count: Int
     ) {
         val messageSyncResponse =
-            remoteMessageDataSource.getMessages(chatId, beforeMessageId.raw, count)
-        updateMessageDto(messageSyncResponse.messages)
+            remoteMessageDataSource.getMessages(chatId, beforeMessageId?.raw, count)
+        if (messageSyncResponse != null) {
+            updateMessageDto(messageSyncResponse.messages)
+            updateReadEventDto(messageSyncResponse.readEvents)
+        }
+
+        if (messageSyncResponse?.hasMoreMessages != true) {
+            chatRepository.updateChat(chatId) { chat ->
+                chat.copy(hasMoreOldMessages = false)
+            }
+        }
     }
 
-    override suspend fun loadMessages(
-        chatId: ChatId,
-        count: Int
-    ): SyncResult {
-        val messageSyncResponse = remoteMessageDataSource.getMessages(chatId, null, count)
+    override suspend fun sync(chatId: ChatId) {
+        val chat = chatRepository.getChat(chatId)
+        val messageSyncResponse = if (chat == null || chat.lastEventNumber < 0) {
+            remoteMessageDataSource.getMessages(chatId, null, COUNT_MESSAGE_FOR_SYNC)
+        } else {
+            remoteMessageDataSource.getMessages(
+                chatId = chatId,
+                fromEventNumber = chat.lastEventNumber,
+                fromReadEventNumber = chat.lastReadEventNumber
+            ).copy(
+                hasMoreMessages = chat.hasMoreOldMessages
+            )
+        } ?: TODO() // TODO(P0)
         updateMessageDto(messageSyncResponse.messages)
         updateReadEventDto(messageSyncResponse.readEvents)
 
-        return SyncResult(
-            messageSyncResponse.lastEventNumber,
-            messageSyncResponse.lastReadEventLogNumber
+        val newLastEventNumber = messageSyncResponse.lastEventNumber
+        val newLastReadEventNumber = messageSyncResponse.lastReadEventLogNumber
+        val newChat = chat?.copy(
+            lastEventNumber = newLastEventNumber,
+            lastReadEventNumber = newLastReadEventNumber,
+            hasMoreOldMessages = messageSyncResponse.hasMoreMessages
+        ) ?: Chat(
+            id = chatId,
+            lastEventNumber = newLastEventNumber,
+            lastReadEventNumber = newLastReadEventNumber,
+            hasMoreOldMessages = messageSyncResponse.hasMoreMessages
         )
-    }
 
-    override suspend fun syncMessages(
-        chatId: ChatId,
-        lastEventNumber: Long,
-        lastReadEventNumber: Long
-    ): SyncResult {
-        val messageSyncResponse = remoteMessageDataSource.getMessages(
-            chatId = chatId,
-            fromEventNumber = lastEventNumber,
-            fromReadEventNumber = lastReadEventNumber
-        )
-        updateMessageDto(messageSyncResponse.messages)
-        updateReadEventDto(messageSyncResponse.readEvents)
-
-        return SyncResult(
-            messageSyncResponse.lastEventNumber,
-            messageSyncResponse.lastReadEventLogNumber
-        )
+        chatRepository.setChat(chatId, newChat)
     }
 
     private suspend fun updateMessageDto(messageDto: List<MessageDto>) {
@@ -323,4 +340,8 @@ internal class MessageRepositoryImpl(
 
     private fun localDateTime(millis: Long): LocalDateTime =
         Instant.fromEpochMilliseconds(millis).toLocalDateTime(TimeZone.currentSystemDefault())
+
+    companion object {
+        private const val COUNT_MESSAGE_FOR_SYNC = 20
+    }
 }

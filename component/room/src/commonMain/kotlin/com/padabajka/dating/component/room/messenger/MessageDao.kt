@@ -31,6 +31,16 @@ interface MessageDao {
 
     @Query(
         """
+        SELECT id
+        FROM messages
+        WHERE chatId = :chatId
+        ORDER BY creationTime ASC LIMIT 1
+        """
+    )
+    fun oldestMessageByChatId(chatId: String): String?
+
+    @Query(
+        """
         SELECT COUNT(*)
         FROM messages
         WHERE chatId = :chatId
