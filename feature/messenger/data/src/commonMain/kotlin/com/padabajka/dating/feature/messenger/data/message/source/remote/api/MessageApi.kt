@@ -10,7 +10,7 @@ interface MessageApi {
     /**
      * GET /chats/{chatId}/messages?beforeMessageId={beforeMessageId}&count={count}
      */
-    suspend fun getMessages(chatId: ChatId, params: MessageRequest.Get): MessageSyncResponse
+    suspend fun getMessages(chatId: ChatId, params: MessageRequest.Get): MessageSyncResponse?
 
     /**
      * GET /chats/{chatId}/messages/sync?beforeMessageId={beforeMessageId}

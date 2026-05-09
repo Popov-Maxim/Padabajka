@@ -9,6 +9,7 @@ import com.padabajka.dating.core.presentation.event.AlertService
 import com.padabajka.dating.core.presentation.event.consumed
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.repository.api.MatchRepository
+import com.padabajka.dating.core.repository.api.MessageRepository
 import com.padabajka.dating.core.repository.api.UserPresenceRepository
 import com.padabajka.dating.core.repository.api.model.match.Match
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
@@ -18,6 +19,7 @@ import com.padabajka.dating.feature.messenger.domain.chat.ChatMessagesUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.DeleteChatUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.DeleteMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.EditMessageUseCase
+import com.padabajka.dating.feature.messenger.domain.chat.ObserveChatHasMoreMessagesUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.ReadMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.SendMessageUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.StartTypingUseCase
@@ -70,7 +72,9 @@ class ChatComponent(
     private val matchRepository: MatchRepository,
     private val userPresenceRepository: UserPresenceRepository,
     private val toggleMessageReactionUseCase: ToggleMessageReactionUseCase,
-    private val alertService: AlertService
+    private val alertService: AlertService,
+    private val observeChatHasMoreMessagesUseCase: ObserveChatHasMoreMessagesUseCase,
+    private val messageRepository: MessageRepository
 ) : BaseComponent<ChatState>(
     context,
     "chat",
@@ -88,6 +92,7 @@ class ChatComponent(
 
     init {
         subscribeOnMessages()
+        subscribeOnChat()
         subscribeMatch(chatId, matchItem)
     }
 
@@ -135,6 +140,21 @@ class ChatComponent(
                         }
                     }
             },
+        )
+    }
+
+    private fun subscribeOnChat() {
+        launchStep(
+            action = {
+                val newValue = observeChatHasMoreMessagesUseCase(chatId)
+                newValue.collect { messengerItems ->
+                    reduce {
+                        it.copy(
+                            hasMoreMessages = messengerItems
+                        )
+                    }
+                }
+            }
         )
     }
 
@@ -216,7 +236,12 @@ class ChatComponent(
     }
 
     private fun loadMoreMessages() {
-        // TODO(P0) Implement message pagination
+        println("ChatComponent: loadMoreMessages")
+        launchStep(
+            action = {
+                messageRepository.loadPreviousMessages(chatId)
+            }
+        )
     }
 
     private fun updateNextMessageText(text: String) {

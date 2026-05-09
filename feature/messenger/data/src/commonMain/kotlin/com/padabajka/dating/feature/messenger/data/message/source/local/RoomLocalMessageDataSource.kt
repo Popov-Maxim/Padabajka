@@ -4,6 +4,7 @@ import com.padabajka.dating.component.room.messenger.MessageDao
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import com.padabajka.dating.component.room.messenger.entry.MessageReadEventEntry
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
+import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import kotlinx.coroutines.flow.Flow
 
 internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
@@ -34,6 +35,10 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
 
     override suspend fun addMessage(message: MessageEntry) {
         messageDao.insertMessage(message)
+    }
+
+    override suspend fun oldestMessageId(chatId: ChatId): MessageId? {
+        return messageDao.oldestMessageByChatId(chatId.raw)?.run(::MessageId)
     }
 
     override suspend fun deleteMessage(messageId: String) {

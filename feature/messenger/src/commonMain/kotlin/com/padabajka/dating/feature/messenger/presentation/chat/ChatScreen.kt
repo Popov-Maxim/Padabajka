@@ -80,6 +80,7 @@ fun ChatScreen(component: ChatComponent) {
             modifier = Modifier
                 .fillMaxWidth().innerShadow(),
             items = state.messengerItems,
+            hasMore = state.hasMoreMessages,
             loadingState = state.chatLoadingState,
             followNewItems = followNewItems,
             onEvent = component::onEvent

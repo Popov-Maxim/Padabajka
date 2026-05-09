@@ -20,12 +20,7 @@ interface MessageRepository {
     suspend fun removeReactToMessage(messageId: MessageId)
     suspend fun messageReactions(messageId: MessageId): List<MessageReaction>
 
-    suspend fun loadMessages(chatId: ChatId, beforeMessageId: MessageId, count: Int)
-    suspend fun loadMessages(chatId: ChatId, count: Int): SyncResult
-    suspend fun syncMessages(chatId: ChatId, lastEventNumber: Long, lastReadEventNumber: Long): SyncResult
+    suspend fun loadPreviousMessages(chatId: ChatId)
+    suspend fun loadMessages(chatId: ChatId, beforeMessageId: MessageId?, count: Int)
+    suspend fun sync(chatId: ChatId)
 }
-
-data class SyncResult(
-    val lastEventNumber: Long,
-    val lastReadEventNumber: Long
-)

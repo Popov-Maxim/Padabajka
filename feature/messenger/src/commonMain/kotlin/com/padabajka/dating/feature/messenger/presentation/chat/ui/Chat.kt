@@ -21,6 +21,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.padabajka.dating.core.presentation.ui.CoreCircularProgressIndicator
 import com.padabajka.dating.feature.messenger.presentation.chat.model.ChatLoadingState
 import com.padabajka.dating.feature.messenger.presentation.chat.model.EndOfMessagesListReachedEvent
 import com.padabajka.dating.feature.messenger.presentation.chat.model.MessageGotReadEvent
@@ -40,6 +41,7 @@ import kotlinx.coroutines.launch
 fun Chat(
     modifier: Modifier = Modifier,
     items: PersistentList<MessengerItem>,
+    hasMore: Boolean,
     followNewItems: MutableState<Boolean>,
     loadingState: ChatLoadingState,
     onEvent: (MessengerEvent) -> Unit
@@ -62,6 +64,7 @@ fun Chat(
     Box(modifier) {
         MessageList(
             messengerItems = items,
+            hasMore = hasMore,
             listState = listState,
             followNewItems = followNewItems,
             onEvent = onEvent
@@ -93,6 +96,7 @@ fun Chat(
 @Composable
 private fun MessageList(
     messengerItems: PersistentList<MessengerItem>,
+    hasMore: Boolean,
     listState: LazyListState,
     followNewItems: MutableState<Boolean>,
     onEvent: (MessengerEvent) -> Unit
@@ -137,6 +141,7 @@ private fun MessageList(
                     onEvent = onEvent,
                     modifier = Modifier.animateItem()
                 )
+
                 is TimeItem -> TimePeriod(item.labelText())
             }
             if (index == messengerItems.lastIndex) {
@@ -145,6 +150,16 @@ private fun MessageList(
                 }
             } else {
 //                MessengerSpacer(messengerItems[index + 1], item)
+            }
+        }
+        if (hasMore) {
+            item {
+                Box(
+                    modifier = Modifier.fillParentMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CoreCircularProgressIndicator()
+                }
             }
         }
     }
