@@ -6,6 +6,7 @@ import com.padabajka.dating.core.repository.api.exception.UserException
 import com.padabajka.dating.core.repository.api.exception.isConnectException
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngineConfig
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.statement.request
 import io.ktor.http.HttpStatusCode
@@ -16,7 +17,8 @@ class ResponseValidatorConfigProvider : KtorConfigProvider.Static {
         get() = httpClientConfig {
             HttpResponseValidator {
                 validateResponse {
-                    val isWebSocket = it.request.url.protocol in arrayOf(URLProtocol.WS, URLProtocol.WSS)
+                    val isWebSocket =
+                        it.request.url.protocol in arrayOf(URLProtocol.WS, URLProtocol.WSS)
                     if (isWebSocket) return@validateResponse
 
                     val status = it.status
@@ -30,7 +32,12 @@ class ResponseValidatorConfigProvider : KtorConfigProvider.Static {
                 }
 
                 handleResponseExceptionWithRequest { cause, _ ->
-                    if (cause.isConnectException()) throw ConnectException(cause)
+                    if (
+                        cause.isConnectException() ||
+                        cause is HttpRequestTimeoutException
+                    ) {
+                        throw ConnectException(cause)
+                    }
 
                     throw cause
                 }
