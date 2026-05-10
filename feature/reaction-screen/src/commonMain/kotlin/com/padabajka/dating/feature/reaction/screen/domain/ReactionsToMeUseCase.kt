@@ -6,14 +6,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class ReactionsToMeUseCase(
-    private val reactionRepository: ReactionRepository,
+    reactionRepository: ReactionRepository,
     private val profileRepository: ProfileRepository
 ) {
     val reactionsToMe: Flow<List<ReactionsToMe>> = reactionRepository.reactionsToMe.map { reactions ->
         val reactionsToMe = reactions.mapNotNull { reaction ->
-            profileRepository.profile(reaction.id)?.let { profile ->
-                reaction.toReactionsToMe(profile)
-            }
+            runCatching {
+                profileRepository.profile(reaction.id)?.let { profile ->
+                    reaction.toReactionsToMe(profile)
+                }
+            }.getOrNull() // TODO(P1): handle error
         }
         reactionsToMe
     }

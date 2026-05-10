@@ -7,6 +7,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.ErrorScreen
 import com.padabajka.dating.SplashScreen
 import com.padabajka.dating.core.presentation.NavigateComponentContext
+import com.padabajka.dating.feature.auth.presentation.AccountDeletedScreen
 import com.padabajka.dating.navigation.AuthScopeNavigateComponent
 
 @Composable
@@ -23,6 +24,9 @@ fun AuthScopeScreen(component: AuthScopeNavigateComponent) {
             is AuthScopeNavigateComponent.Child.MainAuthScope -> MainAuthScopeScreen(instance.component)
             is AuthScopeNavigateComponent.Child.LoadingErrorScreen ->
                 ErrorScreen(instance.messageId, instance.message, instance.retry)
+
+            is AuthScopeNavigateComponent.Child.UserDeletedScreen ->
+                AccountDeletedScreen(instance.messageId, instance.component)
         }
     }
 }

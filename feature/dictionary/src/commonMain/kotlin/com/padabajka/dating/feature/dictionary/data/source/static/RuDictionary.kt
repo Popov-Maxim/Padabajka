@@ -205,6 +205,13 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.MissingEmailForLinkDescription -> "Не удалось завершить вход. Попробуйте снова."
             StaticTextId.UiId.InvalidLinkForAuthDescription ->
                 "Ссылка для входа недействительна или устарела. Запросите новую и попробуйте снова."
+
+            StaticTextId.UiId.AccountDeletedDescription ->
+                "Ваш аккаунт был удалён. Если вы считаете, что это ошибка, свяжитесь с поддержкой."
+
+            StaticTextId.UiId.AccountBannedDescription ->
+                "Ваш аккаунт был заблокирован за нарушение правил сообщества. " +
+                    "Если вы считаете, что это ошибка, свяжитесь с поддержкой."
         }
     }
 

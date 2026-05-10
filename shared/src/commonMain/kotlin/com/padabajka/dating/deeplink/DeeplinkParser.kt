@@ -1,5 +1,7 @@
 package com.padabajka.dating.deeplink
 
+import com.padabajka.dating.core.repository.api.model.deeplink.AppDeeplink
+import com.padabajka.dating.core.repository.api.model.deeplink.Deeplink
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 
 class DeeplinkParser {

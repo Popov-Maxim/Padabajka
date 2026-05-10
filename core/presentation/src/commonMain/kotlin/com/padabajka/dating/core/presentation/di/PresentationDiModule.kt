@@ -6,6 +6,7 @@ import coil3.svg.SvgDecoder
 import coil3.util.DebugLogger
 import com.padabajka.dating.core.networking.imageEngine
 import com.padabajka.dating.core.presentation.ComponentLifecycleListener
+import com.padabajka.dating.core.presentation.deeplink.AppDeeplinkHandler
 import com.padabajka.dating.core.presentation.error.DomainErrorHandler
 import com.padabajka.dating.core.presentation.event.AlertService
 import io.ktor.client.HttpClient
@@ -41,6 +42,8 @@ private val presentationDiModule = module {
 
     singleOf(::AlertService)
     factoryOf(::DomainErrorHandler)
+
+    singleOf(::AppDeeplinkHandler)
 }
 
 val presentationDiModules: Array<Module>

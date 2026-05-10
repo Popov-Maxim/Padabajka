@@ -85,7 +85,7 @@ class SyncManager(
                 socketRepository.connect()
             } catch (exception: CancellationException) {
                 throw exception
-            } catch (_: Exception) {
+            } catch (_: Throwable) {
                 scheduleReconnect()
             }
         }

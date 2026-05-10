@@ -3,13 +3,13 @@ package com.padabajka.dating.navigation
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.presentation.asFlow
+import com.padabajka.dating.core.presentation.deeplink.AppDeeplinkHandler
 import com.padabajka.dating.core.repository.api.SocketRepository
 import com.padabajka.dating.core.repository.api.metadata.PushRepository
 import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
 import com.padabajka.dating.core.repository.api.model.auth.LoggedOut
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.WaitingForEmailValidation
-import com.padabajka.dating.deeplink.SharedDeeplinkHandler
 import com.padabajka.dating.feature.auth.domain.AuthStateProvider
 import com.padabajka.dating.feature.auth.presentation.VerificationComponent
 import kotlinx.coroutines.flow.filterIsInstance
@@ -24,7 +24,8 @@ import org.koin.core.parameter.parametersOf
 class AuthStateObserverComponent(
     context: ComponentContext,
     private val socketRepository: SocketRepository,
-    private val pushRepository: PushRepository
+    private val pushRepository: PushRepository,
+    private val deeplinkHandler: AppDeeplinkHandler
 ) : NavigateComponentContext<AuthStateObserverComponent.Configuration, AuthStateObserverComponent.Child>(
     context,
     Configuration.serializer(),
@@ -34,7 +35,7 @@ class AuthStateObserverComponent(
 
     init {
         navigateScope.launch {
-            SharedDeeplinkHandler.appDeeplinks.collect {
+            deeplinkHandler.appDeeplinks.collect {
                 val instance = childStack
                     .asFlow()
                     .map { it.active.instance }

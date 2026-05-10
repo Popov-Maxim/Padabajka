@@ -3,9 +3,9 @@ package com.padabajka.dating.navigation
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.repository.api.model.auth.UserId
+import com.padabajka.dating.core.repository.api.model.deeplink.AppDeeplink
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.profile.Image
-import com.padabajka.dating.deeplink.AppDeeplink
 import com.padabajka.dating.feature.image.presentation.ImageCropScreenComponent
 import com.padabajka.dating.feature.messenger.presentation.MessengerComponent
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatComponent
@@ -17,6 +17,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.ImageAddEv
 import com.padabajka.dating.feature.reaction.screen.presentation.LikesMeScreenComponent
 import com.padabajka.dating.feature.subscription.presentation.SubscriptionScreenComponent
 import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
+import com.padabajka.dating.navigation.MainAuthScopeNavigateComponent.Configuration.ChatScreen
 import com.padabajka.dating.settings.presentation.SettingsScopeNavigateComponent
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
@@ -56,10 +57,11 @@ class MainAuthScopeNavigateComponent(
     fun onDeeplink(deeplink: AppDeeplink) {
         when (deeplink) {
             is AppDeeplink.OpenChat -> {
-                navigate(Configuration.ChatScreen(deeplink.chatId))
+                navigate(ChatScreen(deeplink.chatId))
             }
 
             AppDeeplink.OpenLikes -> openLikes()
+            is AppDeeplink.OpenUserDeleteScreen -> Unit
         }
     }
 

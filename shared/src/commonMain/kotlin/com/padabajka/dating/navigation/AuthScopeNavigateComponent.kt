@@ -8,9 +8,10 @@ import com.padabajka.dating.core.presentation.error.ExternalDomainError
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.auth.UserId
+import com.padabajka.dating.core.repository.api.model.deeplink.AppDeeplink
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
 import com.padabajka.dating.core.sync.SyncManager
-import com.padabajka.dating.deeplink.AppDeeplink
+import com.padabajka.dating.feature.auth.presentation.AccountDeletedScreenComponent
 import com.padabajka.dating.settings.domain.NewAuthMetadataUseCase
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
 class AuthScopeNavigateComponent(
     context: ComponentContext,
@@ -73,17 +75,35 @@ class AuthScopeNavigateComponent(
                     updateProfile()
                 }
             )
+
+            is Configuration.UserDeletedScreen -> Child.UserDeletedScreen(
+                messageId = configuration.messageId,
+                component = AccountDeletedScreenComponent(
+                    context = context,
+                    logoutUseCase = get(),
+                    alertService = get()
+                )
+            )
         }
     }
 
     suspend fun onDeeplink(deeplink: AppDeeplink) {
-        val instance = childStack
-            .asFlow()
-            .map { it.active.instance }
-            .filterIsInstance<Child.MainAuthScope>()
-            .first()
+        if (deeplink is AppDeeplink.OpenUserDeleteScreen) {
+            val textId = if (deeplink.banned) {
+                StaticTextId.UiId.AccountBannedDescription
+            } else {
+                StaticTextId.UiId.AccountDeletedDescription
+            }
+            navigateNewStack(Configuration.UserDeletedScreen(textId))
+        } else {
+            val instance = childStack
+                .asFlow()
+                .map { it.active.instance }
+                .filterIsInstance<Child.MainAuthScope>()
+                .first()
 
-        instance.component.onDeeplink(deeplink)
+            instance.component.onDeeplink(deeplink)
+        }
     }
 
     private fun updateProfile() {
@@ -118,6 +138,11 @@ class AuthScopeNavigateComponent(
         ) : Child
 
         data class CreateProfileScope(val component: CreateProfileScopeNavigateComponent) : Child
+        data class UserDeletedScreen(
+            val messageId: StaticTextId,
+            val component: AccountDeletedScreenComponent
+        ) : Child
+
         data class MainAuthScope(val component: MainAuthScopeNavigateComponent) : Child
     }
 
@@ -133,6 +158,9 @@ class AuthScopeNavigateComponent(
 
         @Serializable
         data object CreateProfileScope : Configuration
+
+        @Serializable
+        data class UserDeletedScreen(val messageId: StaticTextId) : Configuration
 
         @Serializable
         data object MainAuthScope : Configuration
