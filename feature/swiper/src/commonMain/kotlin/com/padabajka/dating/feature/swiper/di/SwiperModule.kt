@@ -18,6 +18,7 @@ import com.padabajka.dating.feature.swiper.data.candidate.source.RemoteCandidate
 import com.padabajka.dating.feature.swiper.data.reaction.ReactionRepositoryImpl
 import com.padabajka.dating.feature.swiper.data.reaction.network.KtorReactionApi
 import com.padabajka.dating.feature.swiper.data.reaction.network.ReactionApi
+import com.padabajka.dating.feature.swiper.data.reaction.network.ReactionDto
 import com.padabajka.dating.feature.swiper.data.reaction.source.LocalReactionDataSource
 import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDataSource
 import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDataSourceImpl
@@ -31,6 +32,7 @@ import com.padabajka.dating.feature.swiper.domain.ReactToCardUseCase
 import com.padabajka.dating.feature.swiper.domain.ReturnLastCardUseCase
 import com.padabajka.dating.feature.swiper.domain.search.SearchPreferencesProvider
 import com.padabajka.dating.feature.swiper.domain.search.UpdateSearchPrefUseCase
+import kotlinx.serialization.builtins.ListSerializer
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -73,7 +75,15 @@ private val dataModule = module {
         )
     }
 
-    factoryOf(::LocalReactionDataSource)
+    factory {
+        LocalReactionDataSource(
+            reactions = DataStoreUtils.create(
+                dbName = "reactions_datastore",
+                delegate = ListSerializer(ReactionDto.Request.serializer()),
+                default = emptyList()
+            )
+        )
+    }
 
     singleOf(::RemoteReactionDataSourceImpl) {
         bind<RemoteReactionDataSource>()
