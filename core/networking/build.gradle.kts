@@ -28,6 +28,7 @@ kotlin {
             implementation(projects.core.repositoryApi)
             implementation(projects.core.domain)
             implementation(projects.sharedLibs.firebase)
+            implementation(projects.core.utils)
             api(libs.koin.core)
 
             api(libs.ktor.core)
