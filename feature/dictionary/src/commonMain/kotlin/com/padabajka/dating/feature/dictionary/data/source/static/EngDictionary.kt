@@ -173,6 +173,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Unfreeze -> "Unfreeze"
             StaticTextId.UiId.CardDeckHasNotLocationPermission ->
                 "Without location access, we can't match you with people nearby"
+
             StaticTextId.UiId.RequestLocationPermission -> "Allow"
             StaticTextId.UiId.CardDeckUnknowLocationError ->
                 "Unable to determine your location. Please try again later."
@@ -202,11 +203,19 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.InvalidCredentialsDescription -> "Couldn't sign in. Please try again."
             StaticTextId.UiId.NoCredentialAvailableDescription ->
                 "No account found. Please choose an account and try again."
+
             StaticTextId.UiId.TooManyRequestsDescription -> "Too many attempts. Please try again later."
             StaticTextId.UiId.UserNotFoundDescription -> "Account not found. Please try again."
             StaticTextId.UiId.MissingEmailForLinkDescription -> "Couldn't complete sign-in. Please try again."
             StaticTextId.UiId.InvalidLinkForAuthDescription ->
                 "This sign-in link is invalid or has expired. Please request a new one and try again."
+
+            StaticTextId.UiId.AccountDeletedDescription ->
+                "Your account has been deleted. If you believe this is a mistake, please contact support."
+
+            StaticTextId.UiId.AccountBannedDescription ->
+                "Your account has been banned for violating the community guidelines. " +
+                    "If you believe this is a mistake, please contact support."
         }
     }
 

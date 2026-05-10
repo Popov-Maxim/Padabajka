@@ -63,7 +63,7 @@ class KtorSocketRepository(
                     disconnectInternal(false)
                 }
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             _connectionState.value = SocketRepository.ConnectionState.DISCONNECTED
             log("connection error: ${e.message}")
         }

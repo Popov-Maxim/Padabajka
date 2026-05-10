@@ -17,7 +17,7 @@ class LogOutUseCase(
             runCatching {
                 deleteAuthMetadataUseCase.invoke()
             }.onFailure {
-                if (it !is UserException.Banned) {
+                if (it !is UserException) { // TODO(P1)
                     throw it
                 }
             }

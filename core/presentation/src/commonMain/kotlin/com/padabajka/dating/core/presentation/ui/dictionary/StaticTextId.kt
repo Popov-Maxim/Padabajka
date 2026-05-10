@@ -221,6 +221,9 @@ sealed interface StaticTextId {
         MissingEmailForLinkDescription(rawId = "missing_email_for_link_description"),
         InvalidLinkForAuthDescription(rawId = "invalid_link_for_auth_description"),
 
+        AccountDeletedDescription(rawId = "account_deleted_description"),
+        AccountBannedDescription(rawId = "banned_description"),
+
         ;
         override val id: String = listOfNotNull(rawId, "ui_id")
             .joinToString(separator = "_")

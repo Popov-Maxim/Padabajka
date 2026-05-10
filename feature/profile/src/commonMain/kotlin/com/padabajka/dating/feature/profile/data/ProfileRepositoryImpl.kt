@@ -41,7 +41,7 @@ class ProfileRepositoryImpl(
     override suspend fun profile(userId: PersonId): Profile? {
         return try {
             removeProfileDataSource.getProfile(userId.raw)
-        } catch (_: ResourceExceptions.Deleted) {
+        } catch (_: ResourceExceptions.Deleted) { // TODO(P1)
             null
         }
     }

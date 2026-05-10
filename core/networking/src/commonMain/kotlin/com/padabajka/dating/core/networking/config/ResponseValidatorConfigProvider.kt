@@ -7,13 +7,18 @@ import com.padabajka.dating.core.repository.api.exception.isConnectException
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.statement.request
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.URLProtocol
 
 class ResponseValidatorConfigProvider : KtorConfigProvider.Static {
     override val config: HttpClientConfig<HttpClientEngineConfig>
         get() = httpClientConfig {
             HttpResponseValidator {
                 validateResponse {
+                    val isWebSocket = it.request.url.protocol in arrayOf(URLProtocol.WS, URLProtocol.WSS)
+                    if (isWebSocket) return@validateResponse
+
                     val status = it.status
                     when (status) {
                         // TODO: server send Gone only for other person

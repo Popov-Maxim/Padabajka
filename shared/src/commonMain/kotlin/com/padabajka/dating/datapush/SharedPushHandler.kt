@@ -31,7 +31,11 @@ object SharedPushHandler : KoinComponent {
     fun saveToken(token: String) {
         println("LOG: push saveToken $token")
         scope.launch {
-            updateTokenUseCase(token)
+            runCatching {
+                updateTokenUseCase.invoke(token)
+            }.onFailure {
+                println("TODO: not impl for error SaveTokenUseCase")
+            }
         }
     }
 
