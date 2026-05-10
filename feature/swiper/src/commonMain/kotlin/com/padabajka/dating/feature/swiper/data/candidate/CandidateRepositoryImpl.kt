@@ -6,11 +6,11 @@ import com.padabajka.dating.core.data.atomic
 import com.padabajka.dating.core.data.mutableAtomic
 import com.padabajka.dating.core.repository.api.CandidateRepository
 import com.padabajka.dating.core.repository.api.GeoRepository
+import com.padabajka.dating.core.repository.api.ReactionRepository
 import com.padabajka.dating.core.repository.api.model.swiper.Person
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
 import com.padabajka.dating.feature.swiper.data.candidate.source.RemoteCandidateDataSource
-import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -23,7 +23,7 @@ class CandidateRepositoryImpl(
     private val scope: CoroutineScope,
     private val remoteCandidateDataSource: RemoteCandidateDataSource,
     private val geoRepository: GeoRepository,
-    private val remoteReactionDataSource: RemoteReactionDataSource
+    private val reactionRepository: ReactionRepository,
 ) : CandidateRepository {
 
     private var actualSearchPreferences: MutableAtomic<SearchPreferences?> = mutableAtomic(null)
@@ -105,7 +105,7 @@ class CandidateRepositoryImpl(
         loaded: Set<Person>,
         searchPreferences: SearchPreferences
     ): List<Person> {
-        remoteReactionDataSource.forceSendReactions()
+        reactionRepository.forceSendReactions()
         geoRepository.sendLocation()
         val newPersons = remoteCandidateDataSource.getPersons(
             count = LOADING_COUNT,
