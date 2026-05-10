@@ -27,6 +27,7 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.play.services.location)
+            implementation(libs.kotlinx.coroutines.play.services)
         }
         commonMain.dependencies {
             api(libs.koin.core)

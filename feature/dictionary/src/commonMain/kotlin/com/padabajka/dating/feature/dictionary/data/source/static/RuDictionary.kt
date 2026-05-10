@@ -167,6 +167,11 @@ class RuDictionary : Dictionary() {
                 "Ваш профиль заморожен. Разморозьте его и продолжайте знакомиться"
 
             StaticTextId.UiId.Unfreeze -> "Разморозить"
+            StaticTextId.UiId.CardDeckHasNotLocationPermission ->
+                "Без доступа к местоположению мы не сможем подобрать людей рядом с вами"
+            StaticTextId.UiId.RequestLocationPermission -> "Разрешить"
+            StaticTextId.UiId.CardDeckUnknowLocationError ->
+                "Не удалось определить ваше местоположение. Попробуйте позже."
 
             StaticTextId.UiId.SubscriptionFootnote ->
                 "Подписка продлевается автоматически.\n" +

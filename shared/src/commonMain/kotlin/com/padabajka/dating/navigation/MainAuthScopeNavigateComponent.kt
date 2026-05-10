@@ -10,6 +10,7 @@ import com.padabajka.dating.feature.image.presentation.ImageCropScreenComponent
 import com.padabajka.dating.feature.messenger.presentation.MessengerComponent
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatComponent
 import com.padabajka.dating.feature.messenger.presentation.model.MatchItem
+import com.padabajka.dating.feature.permission.flow.presentation.PermissionFlowComponent
 import com.padabajka.dating.feature.profile.presentation.ProfileScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreenComponent
 import com.padabajka.dating.feature.profile.presentation.editor.model.ImageAddEvent
@@ -72,6 +73,7 @@ class MainAuthScopeNavigateComponent(
                 component = SwiperScreenComponent(
                     context = context,
                     openSubscriptionScreen = { navigate(Configuration.SubscriptionScreen) },
+                    openRequestPermission = { navigate(Configuration.LocationPermissionScreen) },
                     reactToCardUseCaseFactory = { get() },
                     nextCardUseCaseFactory = { get() },
                     updateSearchPrefUseCase = get(),
@@ -79,6 +81,7 @@ class MainAuthScopeNavigateComponent(
                     profileRepository = get(),
                     subscriptionRepository = get(),
                     returnLastCardUseCase = get(),
+                    geoPermissionController = get(),
                 )
             )
 
@@ -176,6 +179,15 @@ class MainAuthScopeNavigateComponent(
                     }
                 )
             )
+
+            Configuration.LocationPermissionScreen -> Child.PermissionFlowScreen(
+                component = PermissionFlowComponent(
+                    context = context,
+                    finish = ::navigateBack,
+                    geoPermissionController = get(),
+                    notificationPermissionController = get(),
+                )
+            )
         }
     }
 
@@ -190,6 +202,9 @@ class MainAuthScopeNavigateComponent(
         data class ChatScreen(val component: ChatComponent) : Child
         data class MessengerScreen(val component: MessengerComponent) : Child
         data class LikesMeScreen(val component: LikesMeScreenComponent) : Child
+
+        data class PermissionFlowScreen(val component: PermissionFlowComponent) :
+            Child
     }
 
     @Serializable
@@ -223,5 +238,8 @@ class MainAuthScopeNavigateComponent(
 
         @Serializable
         data class ImageCropScreen(val image: Image.Local, val index: Int) : Configuration
+
+        @Serializable
+        data object LocationPermissionScreen : Configuration
     }
 }

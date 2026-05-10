@@ -171,6 +171,11 @@ class EngDictionary : Dictionary() {
                 "Your profile is frozen. Unfreeze it to continue swiping and finding new matches"
 
             StaticTextId.UiId.Unfreeze -> "Unfreeze"
+            StaticTextId.UiId.CardDeckHasNotLocationPermission ->
+                "Without location access, we can't match you with people nearby"
+            StaticTextId.UiId.RequestLocationPermission -> "Allow"
+            StaticTextId.UiId.CardDeckUnknowLocationError ->
+                "Unable to determine your location. Please try again later."
 
             StaticTextId.UiId.SubscriptionFootnote ->
                 "Subscription renews automatically.\n" +

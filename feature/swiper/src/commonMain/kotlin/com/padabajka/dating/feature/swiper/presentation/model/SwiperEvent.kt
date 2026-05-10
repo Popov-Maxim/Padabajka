@@ -15,3 +15,5 @@ data object ResetSearchPrefEventToDefault : SwiperEvent
 
 data object UnfreezeProfileEvent : SwiperEvent
 data object OpenSubscriptionScreen : SwiperEvent
+
+data object RequestLocationPermission : SwiperEvent

@@ -3,11 +3,16 @@ package com.padabajka.dating.core.platform.data.geo
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
+import kotlinx.coroutines.suspendCancellableCoroutine
+import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationCoordinate2D
 import platform.CoreLocation.CLLocationManager
+import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.CoreLocation.kCLLocationAccuracyBest
-import platform.Foundation.NSDate
+import platform.Foundation.NSError
 import platform.Foundation.timeIntervalSince1970
+import platform.darwin.NSObject
+import kotlin.coroutines.resume
 
 class IOSLocationProvider : PlatformLocationProvider {
 
@@ -18,16 +23,43 @@ class IOSLocationProvider : PlatformLocationProvider {
         locationManager.requestWhenInUseAuthorization()
     }
 
-    @OptIn(ExperimentalForeignApi::class)
-    override suspend fun getCurrentLocation(): PlatformLocation? {
-        val loc = locationManager.location
-        return loc?.let {
-            PlatformLocation(
-                lat = it.coordinate.lat,
-                lon = it.coordinate.lon,
-                timestamp = NSDate().timeIntervalSince1970.toLong()
-            )
+    override suspend fun cachedLocation(): PlatformLocation? {
+        return locationManager.location?.toPlatform()
+    }
+
+    override suspend fun requestCurrentLocation(): PlatformLocation? {
+        return suspendCancellableCoroutine { continuation ->
+
+            locationManager.delegate = object : NSObject(), CLLocationManagerDelegateProtocol {
+
+                override fun locationManager(
+                    manager: CLLocationManager,
+                    didUpdateLocations: List<*>,
+                ) {
+                    val location = didUpdateLocations.lastOrNull() as? CLLocation
+
+                    continuation.resume(location?.toPlatform())
+                }
+
+                override fun locationManager(
+                    manager: CLLocationManager,
+                    didFailWithError: NSError,
+                ) {
+                    continuation.resume(null)
+                }
+            }
+
+            locationManager.requestLocation()
         }
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    private fun CLLocation.toPlatform(): PlatformLocation {
+        return PlatformLocation(
+            lat = coordinate.lat,
+            lon = coordinate.lon,
+            timestamp = timestamp.timeIntervalSince1970.toLong()
+        )
     }
 }
 
