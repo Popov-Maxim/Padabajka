@@ -15,10 +15,9 @@ fun GenderUI.toGender(): Gender {
     }
 }
 
-fun Gender.toGenderUI(): GenderUI? {
+fun Gender.toGenderUI(): GenderUI {
     return when (this) {
         Gender.MALE -> GenderUI.Male
         Gender.FEMALE -> GenderUI.Female
-        Gender.Everyone -> null // TODO(P0): delete Gender.Everyone
     }
 }

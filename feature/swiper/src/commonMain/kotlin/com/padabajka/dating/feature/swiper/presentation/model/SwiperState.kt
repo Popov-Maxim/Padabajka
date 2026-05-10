@@ -122,14 +122,14 @@ fun Person.toUIPerson(): PersonItem {
 
 fun SearchPreferences.toUISearchPreferences(): SearchPreferencesItem {
     val lookingGender = if (lookingGenders.size == 1) {
-        lookingGenders.first()
+        lookingGenders.first().toGenderUI()
     } else {
-        Gender.Everyone
+        GenderUI.Everyone
     }
     return this.run {
         SearchPreferencesItem.Success(
             ageRange,
-            lookingGender.toGenderUI(),
+            lookingGender,
             distanceInKm,
         )
     }
@@ -137,8 +137,8 @@ fun SearchPreferences.toUISearchPreferences(): SearchPreferencesItem {
 
 fun SearchPreferencesItem.Success.toSearchPreferences(): SearchPreferences {
     val lookingGenders = when (lookingGender) {
-        GenderUI.Male,
-        GenderUI.Female -> listOf(lookingGender.toGender())
+        GenderUI.Male -> listOf(Gender.MALE)
+        GenderUI.Female -> listOf(Gender.FEMALE)
 
         GenderUI.Everyone -> Gender.entries.toList()
     }

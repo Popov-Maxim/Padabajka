@@ -9,18 +9,9 @@ enum class GenderUI(val textId: StaticTextId) {
     Everyone(StaticTextId.UiId.Everyone)
 }
 
-fun GenderUI.toGender(): Gender {
-    return when (this) {
-        GenderUI.Male -> Gender.MALE
-        GenderUI.Female -> Gender.FEMALE
-        GenderUI.Everyone -> Gender.Everyone
-    }
-}
-
 fun Gender.toGenderUI(): GenderUI {
     return when (this) {
         Gender.MALE -> GenderUI.Male
         Gender.FEMALE -> GenderUI.Female
-        Gender.Everyone -> GenderUI.Everyone
     }
 }
