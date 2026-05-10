@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface ReactionRepository {
     val reactionsToMe: Flow<List<PersonReaction>>
     suspend fun react(reaction: PersonReaction)
+    suspend fun forceReact(reaction: PersonReaction)
     suspend fun forceSendReactions()
     suspend fun deleteReaction()
 

@@ -20,6 +20,7 @@ class LocalReactionDataSource(
     fun setReactionsToMe(reactions: List<PersonReaction>) {
         _reactionsToMe.value = reactions
     }
+
     fun addReactionsToMe(reactions: List<PersonReaction>) {
         _reactionsToMe.update {
             it + reactions

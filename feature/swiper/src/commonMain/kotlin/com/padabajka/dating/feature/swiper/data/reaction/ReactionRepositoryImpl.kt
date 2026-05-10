@@ -7,6 +7,7 @@ import com.padabajka.dating.core.repository.api.ReactionRepository
 import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
 import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
 import com.padabajka.dating.feature.swiper.data.reaction.network.ReactionDto
+import com.padabajka.dating.feature.swiper.data.reaction.network.toRequest
 import com.padabajka.dating.feature.swiper.data.reaction.source.LocalReactionDataSource
 import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDataSource
 import kotlinx.coroutines.CoroutineScope
@@ -48,6 +49,10 @@ class ReactionRepositoryImpl(
         if (reactions.isNotEmpty() && reactions.requiredForSend()) {
             forceSendReactions(reactions)
         }
+    }
+
+    override suspend fun forceReact(reaction: PersonReaction) {
+        remoteReactionDataSource.sendReactions(listOf(reaction.toRequest()))
     }
 
     override suspend fun forceSendReactions() {

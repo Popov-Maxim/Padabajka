@@ -298,6 +298,7 @@ class ChatComponent(
         launchStep(
             action = {
                 deleteChatUseCase(chatId)
+                navigateBack()
             },
             onError = ::defaultOnError
         )
@@ -308,6 +309,7 @@ class ChatComponent(
         launchStep(
             action = {
                 matchRepository.deleteMatch(matchId)
+                navigateBack()
             },
             onError = ::defaultOnError
         )

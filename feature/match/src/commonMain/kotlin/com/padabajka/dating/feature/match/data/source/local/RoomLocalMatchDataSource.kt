@@ -6,6 +6,7 @@ import com.padabajka.dating.core.repository.api.model.match.Match
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalChatDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 
 class RoomLocalMatchDataSource(
     private val matchesDao: MatchesDao,
@@ -16,7 +17,7 @@ class RoomLocalMatchDataSource(
     }
 
     override fun findMatch(chatId: ChatId): Flow<MatchEntry> {
-        return matchesDao.findMatch(chatId.raw)
+        return matchesDao.findMatch(chatId.raw).filterNotNull()
     }
 
     override suspend fun saveMatch(match: MatchEntry) {
