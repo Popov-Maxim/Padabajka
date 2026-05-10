@@ -194,6 +194,9 @@ sealed interface StaticTextId {
         CardDeckEmptyProfiles(rawId = "card_deck_empty_profiles"),
         CardDeckFrozenProfile(rawId = "card_deck_frozen_profile"),
         Unfreeze(rawId = "unfreeze"),
+        CardDeckHasNotLocationPermission(rawId = "card_deck_has_not_location_permission"),
+        RequestLocationPermission(rawId = "request_location_permission"),
+        CardDeckUnknowLocationError(rawId = "card_deck_unknow_location_error"),
 
         // Subscription
         SubscriptionFootnote(rawId = "subscription_footnote"),

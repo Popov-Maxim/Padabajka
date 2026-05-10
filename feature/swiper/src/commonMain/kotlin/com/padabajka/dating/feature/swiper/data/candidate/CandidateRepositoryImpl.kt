@@ -16,7 +16,6 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -107,8 +106,7 @@ class CandidateRepositoryImpl(
         searchPreferences: SearchPreferences
     ): List<Person> {
         remoteReactionDataSource.forceSendReactions()
-        val location = geoRepository.location.first() // TODO(P0): show message about permission
-        geoRepository.sendLocation(location)
+        geoRepository.sendLocation()
         val newPersons = remoteCandidateDataSource.getPersons(
             count = LOADING_COUNT,
             loaded = loaded,

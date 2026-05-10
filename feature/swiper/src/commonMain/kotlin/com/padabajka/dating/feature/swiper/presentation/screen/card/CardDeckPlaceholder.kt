@@ -22,6 +22,7 @@ import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
 import com.padabajka.dating.feature.swiper.presentation.model.CardDeckState
+import com.padabajka.dating.feature.swiper.presentation.model.RequestLocationPermission
 import com.padabajka.dating.feature.swiper.presentation.model.ResetSearchPrefEventToDefault
 import com.padabajka.dating.feature.swiper.presentation.model.SearchPreferencesItem
 import com.padabajka.dating.feature.swiper.presentation.model.SwiperEvent
@@ -48,6 +49,8 @@ fun CardDeckPlaceholder(
             CardDeckState.Loading -> Loading(
                 modifier = Modifier.align(Alignment.Center)
             )
+
+            CardDeckState.HasNotPermission -> HasNotPermission(onEvent)
         }
     }
 }
@@ -66,6 +69,24 @@ private fun Frozen(
         CoreCallToActionButton(
             text = StaticTextId.UiId.Unfreeze.translate(),
             onClick = { onEvent.invoke(UnfreezeProfileEvent) }
+        )
+    }
+}
+
+@Composable
+private fun HasNotPermission(
+    onEvent: (SwiperEvent) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(40.dp)
+    ) {
+        SimpleText(
+            text = StaticTextId.UiId.CardDeckHasNotLocationPermission.translate(),
+            modifier = Modifier.weight(1f)
+        )
+        CoreCallToActionButton(
+            text = StaticTextId.UiId.RequestLocationPermission.translate(),
+            onClick = { onEvent.invoke(RequestLocationPermission) }
         )
     }
 }

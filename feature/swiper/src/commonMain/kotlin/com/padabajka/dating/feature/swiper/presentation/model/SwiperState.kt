@@ -42,6 +42,7 @@ sealed interface CardDeckState {
     data class Error(val message: StaticTextId) : CardDeckState
     data object Empty : CardDeckState
     data object Frozen : CardDeckState
+    data object HasNotPermission : CardDeckState
 //    data object ProfileNotCreated : CardDeckState
 }
 

@@ -3,12 +3,14 @@ package com.padabajka.dating.feature.swiper.presentation
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.domain.Factory
 import com.padabajka.dating.core.domain.delegate
+import com.padabajka.dating.core.permission.GeoPermissionController
 import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.presentation.error.ExternalDomainError
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.toUI
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
+import com.padabajka.dating.core.repository.api.exception.GeoExceptions
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
 import com.padabajka.dating.core.repository.api.model.swiper.EmptyCard
 import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
@@ -28,6 +30,7 @@ import com.padabajka.dating.feature.swiper.presentation.model.EndReturnLastCardE
 import com.padabajka.dating.feature.swiper.presentation.model.LikeEvent
 import com.padabajka.dating.feature.swiper.presentation.model.OpenSubscriptionScreen
 import com.padabajka.dating.feature.swiper.presentation.model.PersonItem
+import com.padabajka.dating.feature.swiper.presentation.model.RequestLocationPermission
 import com.padabajka.dating.feature.swiper.presentation.model.ResetSearchPrefEventToDefault
 import com.padabajka.dating.feature.swiper.presentation.model.ReturnLastCardEvent
 import com.padabajka.dating.feature.swiper.presentation.model.SearchPreferencesConstants
@@ -47,13 +50,15 @@ import kotlinx.coroutines.launch
 class SwiperScreenComponent(
     context: ComponentContext,
     private val openSubscriptionScreen: () -> Unit,
+    private val openRequestPermission: () -> Unit,
     reactToCardUseCaseFactory: Factory<ReactToCardUseCase>,
     nextCardUseCaseFactory: Factory<NextCardUseCase>,
     private val updateSearchPrefUseCase: UpdateSearchPrefUseCase,
     searchPreferencesProvider: SearchPreferencesProvider,
     private val profileRepository: ProfileRepository,
     private val subscriptionRepository: SubscriptionRepository,
-    private val returnLastCardUseCase: ReturnLastCardUseCase
+    private val returnLastCardUseCase: ReturnLastCardUseCase,
+    private val geoPermissionController: GeoPermissionController
 ) : BaseComponent<SwiperState>(
     context,
     "swiper",
@@ -70,16 +75,21 @@ class SwiperScreenComponent(
             combine(
                 searchPreferencesProvider.get(),
                 profileRepository.profileState,
-            ) { searchPreferences, profileState ->
-                searchPreferences to profileState
-            }.collect { (searchPreferences, profileState) ->
-                val criticalState = when (profileState) {
-                    ProfileState.Idle -> null
-                    is ProfileState.Existing -> {
-                        if (profileState.profile.isFrozen) CardDeckState.Frozen else null
-                    }
+                geoPermissionController.isPermissionGranted()
+            ) { searchPreferences, profileState, isPermissionGranted ->
+                Triple(searchPreferences, profileState, isPermissionGranted)
+            }.collect { (searchPreferences, profileState, isPermissionGranted) ->
+                val criticalState = if (isPermissionGranted.not()) {
+                    CardDeckState.HasNotPermission
+                } else {
+                    when (profileState) {
+                        ProfileState.Idle -> null
+                        is ProfileState.Existing -> {
+                            if (profileState.profile.isFrozen) CardDeckState.Frozen else null
+                        }
 
-                    ProfileState.NotCreated -> null // CardDeckState.ProfileNotCreated
+                        ProfileState.NotCreated -> null // CardDeckState.ProfileNotCreated
+                    }
                 }
 
                 if (criticalState != null) {
@@ -127,6 +137,7 @@ class SwiperScreenComponent(
             UnfreezeProfileEvent -> unfreezeProfile()
             ResetSearchPrefEventToDefault -> resetSearchPrefEventToDefault()
             OpenSubscriptionScreen -> openSubscriptionScreen()
+            RequestLocationPermission -> openRequestPermission()
         }
     }
 
@@ -217,7 +228,20 @@ class SwiperScreenComponent(
                     }
 
                     is ExternalDomainError.Unknown -> {
-                        StaticTextId.UiId.CardDeckErrorLoadingProfiles
+                        val exception = it.e
+                        if (exception is GeoExceptions) {
+                            when (exception) {
+                                is GeoExceptions.HasNotPermission -> {
+                                    reduce { state ->
+                                        state.copy(cardDeckState = CardDeckState.HasNotPermission)
+                                    }
+                                    return@launchStep true
+                                }
+                                is GeoExceptions.UnknownError -> StaticTextId.UiId.CardDeckUnknowLocationError
+                            }
+                        } else {
+                            StaticTextId.UiId.CardDeckErrorLoadingProfiles
+                        }
                     }
                 }
                 reduce { state ->

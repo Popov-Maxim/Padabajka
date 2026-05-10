@@ -8,6 +8,7 @@ import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.feature.image.presentation.ImageCropScreen
 import com.padabajka.dating.feature.messenger.presentation.MessengerScreen
 import com.padabajka.dating.feature.messenger.presentation.chat.ChatScreen
+import com.padabajka.dating.feature.permission.flow.presentation.PermissionFlowScreen
 import com.padabajka.dating.feature.profile.presentation.ProfileScreen
 import com.padabajka.dating.feature.profile.presentation.editor.ProfileEditorScreen
 import com.padabajka.dating.feature.reaction.screen.presentation.LikesMeScreen
@@ -62,6 +63,9 @@ fun MainAuthScopeScreen(component: MainAuthScopeNavigateComponent) {
 
             is MainAuthScopeNavigateComponent.Child.ImageCropScreen ->
                 ImageCropScreen(instance.component)
+
+            is MainAuthScopeNavigateComponent.Child.PermissionFlowScreen ->
+                PermissionFlowScreen(instance.component)
         }
     }
 }

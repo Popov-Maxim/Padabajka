@@ -19,7 +19,7 @@ class DomainErrorHandler {
 
     private fun handleInternalError(error: InternalDomainError) {
         when (error) {
-            is InternalDomainError.User -> TODO()
+            is InternalDomainError.User -> TODO() // TODO(P0)
         }
     }
 

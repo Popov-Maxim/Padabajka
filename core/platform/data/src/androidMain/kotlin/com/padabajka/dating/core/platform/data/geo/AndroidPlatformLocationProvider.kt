@@ -1,9 +1,10 @@
 package com.padabajka.dating.core.platform.data.geo
 
 import android.content.Context
+import android.location.Location
 import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
+import com.google.android.gms.location.Priority
+import kotlinx.coroutines.tasks.await
 
 class AndroidPlatformLocationProvider(
     context: Context
@@ -17,21 +18,27 @@ class AndroidPlatformLocationProvider(
             android.Manifest.permission.ACCESS_COARSE_LOCATION
         ]
     )
-    override suspend fun getCurrentLocation(): PlatformLocation? {
-        return suspendCancellableCoroutine { cont ->
-            fusedClient.lastLocation.addOnSuccessListener { loc -> // TODO(P0): add request for location
-                if (loc != null) {
-                    cont.resume(
-                        PlatformLocation(
-                            lat = loc.latitude,
-                            lon = loc.longitude,
-                            timestamp = System.currentTimeMillis()
-                        )
-                    )
-                } else {
-                    cont.resume(null)
-                }
-            }.addOnFailureListener { cont.resume(null) }
-        }
+    override suspend fun cachedLocation(): PlatformLocation? {
+        val location = runCatching { fusedClient.lastLocation.await() }.getOrNull()
+        return location?.toPlatform()
+    }
+
+    override suspend fun requestCurrentLocation(): PlatformLocation? {
+        val location = fusedClient
+            .getCurrentLocation(
+                Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+                null,
+            )
+            .await()
+
+        return location?.toPlatform()
+    }
+
+    private fun Location.toPlatform(): PlatformLocation {
+        return PlatformLocation(
+            lat = this.latitude,
+            lon = this.longitude,
+            timestamp = this.time
+        )
     }
 }

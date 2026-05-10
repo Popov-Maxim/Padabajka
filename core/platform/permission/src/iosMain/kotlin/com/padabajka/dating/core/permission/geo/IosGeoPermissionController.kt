@@ -1,6 +1,9 @@
 package com.padabajka.dating.core.permission.geo
 
 import com.padabajka.dating.core.permission.GeoPermissionController
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
@@ -15,18 +18,15 @@ import kotlin.coroutines.resume
 
 class IosGeoPermissionController : GeoPermissionController {
 
+    private val _isPermissionGranted: MutableStateFlow<Boolean> by lazy {
+        MutableStateFlow(hasPlatformPermission())
+    }
+
     private val locationManager = CLLocationManager()
 
     override suspend fun hasPermission(): Boolean {
-        return when (locationManager.authorizationStatus) {
-            kCLAuthorizationStatusAuthorizedAlways,
-            kCLAuthorizationStatusAuthorizedWhenInUse -> true
-
-            kCLAuthorizationStatusDenied,
-            kCLAuthorizationStatusRestricted,
-            kCLAuthorizationStatusNotDetermined -> false
-
-            else -> false
+        return hasPlatformPermission().also {
+            _isPermissionGranted.value = it
         }
     }
 
@@ -58,6 +58,25 @@ class IosGeoPermissionController : GeoPermissionController {
 
             kCLAuthorizationStatusDenied,
             kCLAuthorizationStatusRestricted -> cont.resume(false)
+        }
+    }.also {
+        _isPermissionGranted.value = it
+    }
+
+    override fun isPermissionGranted(): Flow<Boolean> {
+        return _isPermissionGranted.asSharedFlow()
+    }
+
+    private fun hasPlatformPermission(): Boolean {
+        return when (locationManager.authorizationStatus) {
+            kCLAuthorizationStatusAuthorizedAlways,
+            kCLAuthorizationStatusAuthorizedWhenInUse -> true
+
+            kCLAuthorizationStatusDenied,
+            kCLAuthorizationStatusRestricted,
+            kCLAuthorizationStatusNotDetermined -> false
+
+            else -> false
         }
     }
 }
