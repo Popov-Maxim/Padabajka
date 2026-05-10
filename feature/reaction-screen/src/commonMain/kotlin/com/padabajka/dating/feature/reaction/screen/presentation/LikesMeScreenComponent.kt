@@ -82,7 +82,7 @@ class LikesMeScreenComponent(
     private fun reactPersonAndUpdateCardDeck(reaction: PersonReaction) =
         launchStep(
             action = {
-                reactionRepository.react(reaction) // TODO(P0): dont ignore exception
+                reactionRepository.forceReact(reaction)
                 reduce { swiperState ->
                     val list = (swiperState.listReactions as? ListReactions.Success)?.likes
                         ?: return@reduce swiperState
