@@ -31,10 +31,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.core.presentation.rememberLocalDateTime
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.SubscriptionUIItem
@@ -302,7 +304,6 @@ private fun FullGridItem(
                         vertical = 2.dp,
                     ),
             ) {
-                val message = state.message
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.Bottom,
@@ -313,7 +314,9 @@ private fun FullGridItem(
                             .weight(1f)
                     ) {
                         Text(
-                            text = message,
+                            text = state.message,
+                            maxLines = 3, // TODO(P1): support long text
+                            overflow = TextOverflow.Ellipsis,
                             color = Color.Black,
                             fontSize = 16.sp,
                             modifier = Modifier.weight(1f),
@@ -326,7 +329,7 @@ private fun FullGridItem(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = "12:45", // TODO(P0): add message.sentTime.hourMinutes,
+                            text = rememberLocalDateTime(state.timestamp),
                             fontSize = 12.sp,
                             maxLines = 1
                         )

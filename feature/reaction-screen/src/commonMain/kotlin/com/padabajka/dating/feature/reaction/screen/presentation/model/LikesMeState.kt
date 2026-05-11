@@ -39,7 +39,8 @@ sealed interface ReactionUIState {
     data class SuperLike(
         override val personId: PersonId,
         override val profile: ProfileViewUIItem,
-        val message: String
+        val message: String,
+        val timestamp: Long
     ) : ReactionUIState
 }
 
@@ -49,7 +50,8 @@ fun ReactionsToMe.toUIState(): ReactionUIState {
         is ReactionsToMe.SuperLike -> ReactionUIState.SuperLike(
             personId,
             profile.toPersonView(),
-            message
+            message,
+            timestamp
         )
     }
 }

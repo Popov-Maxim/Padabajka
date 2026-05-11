@@ -17,7 +17,8 @@ object ReactionDto {
     data class ToMeResponse(
         val fromPersonId: PersonId,
         val reaction: ReactionType,
-        val message: String? = null
+        val message: String? = null,
+        val timestamp: Long,
     )
 }
 
@@ -35,8 +36,8 @@ fun PersonReaction.toRequest(): ReactionDto.Request {
 
 fun ReactionDto.ToMeResponse.toDomain(): PersonReaction {
     return when (reaction) {
-        ReactionType.SuperLike -> PersonReaction.SuperLike(fromPersonId, message ?: "")
+        ReactionType.SuperLike -> PersonReaction.SuperLike(fromPersonId, message ?: "", timestamp)
         ReactionType.Like -> PersonReaction.Like(fromPersonId)
-        ReactionType.Dislike -> TODO("bad reaction format") // TODO(P2): add exception
+        ReactionType.Dislike -> error("bad reaction format") // TODO(P2): add exception
     }
 }

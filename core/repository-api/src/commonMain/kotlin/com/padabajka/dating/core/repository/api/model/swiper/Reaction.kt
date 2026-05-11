@@ -5,7 +5,8 @@ sealed interface Reaction
 sealed class PersonReaction(open val id: PersonId) : Reaction {
     data class SuperLike(
         override val id: PersonId,
-        val message: String
+        val message: String,
+        val timestamp: Long
     ) : PersonReaction(id)
     data class Like(override val id: PersonId) : PersonReaction(id)
     data class Dislike(override val id: PersonId) : PersonReaction(id)
