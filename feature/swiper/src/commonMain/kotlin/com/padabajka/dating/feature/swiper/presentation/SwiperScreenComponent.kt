@@ -185,7 +185,7 @@ class SwiperScreenComponent(
     private fun superLikeCard(cardItem: CardItem, message: String) {
         if (cardItem is PersonItem) {
             if (subscriptionRepository.subscriptionStateValue.features.superLikes > 0) {
-                reactPersonAndUpdateCardDeck(PersonReaction.SuperLike(cardItem.id, message))
+                reactPersonAndUpdateCardDeck(PersonReaction.SuperLike(cardItem.id, message, 0)) // TODO(P2): delete time
             } else {
                 reduceReturnLastCard()
                 openSubscriptionScreen()

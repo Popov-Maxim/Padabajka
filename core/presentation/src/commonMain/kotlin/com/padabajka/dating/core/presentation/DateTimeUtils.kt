@@ -3,14 +3,18 @@ package com.padabajka.dating.core.presentation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import com.padabajka.dating.core.presentation.ui.dictionary.languageState
 import com.padabajka.dating.core.repository.api.model.dictionary.Language
 import com.padabajka.dating.core.utils.now
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.char
+import kotlinx.datetime.toLocalDateTime
 
 @Suppress("ImplicitDefaultLocale")
 val LocalDateTime.hourMinutes: String
@@ -119,4 +123,12 @@ fun LocalDate.compactText(abbreviatedMonthNames: Boolean = false): String {
     }
 
     return format(format)
+}
+
+private fun LocalDateTime.Companion.fromMillis(millis: Long): LocalDateTime =
+    Instant.fromEpochMilliseconds(millis).toLocalDateTime(TimeZone.currentSystemDefault())
+
+@Composable
+fun rememberLocalDateTime(millis: Long): String {
+    return remember(millis) { LocalDateTime.fromMillis(millis).hourMinutes }
 }

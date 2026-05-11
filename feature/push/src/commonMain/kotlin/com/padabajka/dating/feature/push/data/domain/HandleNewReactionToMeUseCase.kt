@@ -17,7 +17,7 @@ class HandleNewReactionToMeUseCase(
     private fun DataPush.NewReactionToMe.toDomain(): PersonReaction {
         val personId = fromUserId.raw.run(::PersonId)
         return when (reaction) {
-            ReactionType.SuperLike -> PersonReaction.SuperLike(personId, message ?: "")
+            ReactionType.SuperLike -> PersonReaction.SuperLike(personId, message ?: "", timestamp)
             ReactionType.Like -> PersonReaction.Like(personId)
             ReactionType.Dislike -> PersonReaction.Dislike(personId)
         }

@@ -13,7 +13,8 @@ sealed interface ReactionsToMe {
     data class SuperLike(
         val personId: PersonId,
         val profile: Profile,
-        val message: String
+        val message: String,
+        val timestamp: Long
     ) : ReactionsToMe
 }
 
@@ -55,6 +56,7 @@ private fun PersonReaction.SuperLike.toMe(profile: Profile): ReactionsToMe.Super
     return ReactionsToMe.SuperLike(
         personId = id,
         profile = profile,
-        message = message
+        message = message,
+        timestamp = timestamp
     )
 }

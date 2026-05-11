@@ -33,7 +33,7 @@ class CandidateRepositoryImpl(
     private val preloadedPersons: Atomic<MutableMap<SearchPreferences, ArrayDeque<Person>>> =
         atomic(mutableMapOf())
 
-    private var preloadJobs: Atomic<MutableMap<SearchPreferences, Deferred<Unit>>> = atomic(
+    private var preloadJobs: Atomic<MutableMap<SearchPreferences, Deferred<Result<Unit>>>> = atomic(
         mutableMapOf()
     )
 
@@ -56,7 +56,9 @@ class CandidateRepositoryImpl(
             preloadJobs {
                 if (get(searchPreferences)?.isActive != true) {
                     this[searchPreferences] = scope.async {
-                        preloadPersons(searchPreferences)
+                        runCatching { // TODO(P1): bad runCatching?
+                            preloadPersons(searchPreferences)
+                        }
                     }
                 }
             }
@@ -70,7 +72,7 @@ class CandidateRepositoryImpl(
             loadMorePersonsIfNeeded(searchPreferences)
 
             if (preloadedPersons { get(searchPreferences).isNullOrEmpty() }) {
-                preloadJobs { get(searchPreferences) }?.await()
+                preloadJobs { get(searchPreferences) }?.await()?.getOrThrow()
                     ?: error("Persons is empty but preloadJob is null!")
             }
 

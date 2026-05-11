@@ -28,7 +28,8 @@ sealed interface DataPush {
     data class NewReactionToMe(
         val fromUserId: UserId,
         val reaction: ReactionType,
-        val message: String? = null
+        val message: String? = null,
+        val timestamp: Long,
     ) : DataPush
 
     @Serializable
