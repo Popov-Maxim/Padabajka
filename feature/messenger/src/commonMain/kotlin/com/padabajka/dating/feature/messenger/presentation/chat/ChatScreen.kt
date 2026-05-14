@@ -99,7 +99,7 @@ private fun TopBar(person: PersonItem?, userPresence: UserPresenceItem, onEvent:
         IconButton(onClick = { onEvent(NavigateBackEvent) }) {
             Icon(
                 modifier = Modifier.size(24.dp),
-                painter = CoreIcons.BackArrow,
+                imageVector = CoreIcons.BackArrow,
                 contentDescription = "Back",
             )
         }

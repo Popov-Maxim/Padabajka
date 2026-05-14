@@ -231,7 +231,7 @@ internal class MessageRepositoryImpl(
             ).copy(
                 hasMoreMessages = chat.hasMoreOldMessages
             )
-        } ?: error("sync message return 204") // TODO(P1)
+        } ?: error("sync message return 204") // TODO(P0): new chat may be empty
         updateMessageDto(messageSyncResponse.messages)
         updateReadEventDto(messageSyncResponse.readEvents)
 

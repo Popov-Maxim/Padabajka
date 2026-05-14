@@ -37,7 +37,7 @@ interface MessageDao {
         ORDER BY creationTime ASC LIMIT 1
         """
     )
-    fun oldestMessageByChatId(chatId: String): String?
+    suspend fun oldestMessageByChatId(chatId: String): String?
 
     @Query(
         """

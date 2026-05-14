@@ -113,13 +113,10 @@ class SyncManager(
                 log("start sync")
                 retryUntilSuccess(
                     shouldRetry = { e ->
-                        if (e !is ConnectException && e !is BadStatusCodeException) {
-                            if (isDebugBuild) {
-                                throw e
-                            } else {
-                                Firebase.crashlytics.recordException(e)
-                            }
-                        }
+                        log("sync retry failed: ${e.message}")
+                        e.printStackTrace()
+                        handleException(e)
+
                         delay(timeMillis = 5_000)
                         state == State.SYNCING
                     }
@@ -134,10 +131,22 @@ class SyncManager(
                 }
             } catch (exception: CancellationException) {
                 throw exception
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 log("sync failed: ${e.message}")
+                e.printStackTrace()
+                handleException(e)
                 state = State.DISCONNECTED
                 scheduleReconnect()
+            }
+        }
+    }
+
+    private fun handleException(e: Throwable) {
+        if (e !is ConnectException && e !is BadStatusCodeException) {
+            if (isDebugBuild) {
+                throw e
+            } else {
+                Firebase.crashlytics.recordException(e)
             }
         }
     }

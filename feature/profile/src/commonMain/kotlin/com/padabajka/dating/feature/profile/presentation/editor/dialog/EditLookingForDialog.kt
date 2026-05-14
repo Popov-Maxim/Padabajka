@@ -103,7 +103,7 @@ private fun DialogContent(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
-                                    painter = CoreIcons.BackArrow,
+                                    imageVector = CoreIcons.BackArrow,
                                     contentDescription = "Back arrow",
                                     modifier = Modifier.clickable { screen = Screen.Type }
                                 )
@@ -210,7 +210,7 @@ private fun DialogButton(
                 }
             }
             Icon(
-                painter = CoreIcons.RightArrow,
+                imageVector = CoreIcons.RightArrow,
                 contentDescription = "Right arrow",
                 modifier = Modifier.size(24.dp)
             )

@@ -1,42 +1,43 @@
 package com.padabajka.dating.core.presentation.ui.drawable.icon
 
 import androidx.compose.runtime.Composable
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.RawIcons
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.Add
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.AlcoholLifestyle
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.AnimalLifestyle
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.ArrowLeftIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.ArrowRightIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.CameraIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.CancelIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.EditProfileIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.FaqIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.GoogleLogo
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.LanguageIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.LogoutIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.MailLogo
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.MessagePopupCopy
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.MessagePopupEdit
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.MessagePopupLike
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.MessagePopupPin
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.MessagePopupReply
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.MessagePopupTrash
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.MessageRead
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.MessageSent
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.NavigationLikesIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.NavigationMessageIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.NavigationProfileIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.NavigationSwiperIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.NotificationIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.ReactionLike
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.RewindIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.SearchPrefIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.SettingsIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.SmokingLifestyle
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.Snowman
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.SwiperLikeIcon
+import com.padabajka.dating.core.presentation.ui.drawable.icon.raw.rawicons.SwiperSuperLikeIcon
 import com.padabajka.dating.core.presentation.ui.resource.CoreRes
-import com.padabajka.dating.core.presentation.ui.resource.drawable.add
-import com.padabajka.dating.core.presentation.ui.resource.drawable.alcohol_lifestyle
-import com.padabajka.dating.core.presentation.ui.resource.drawable.animal_lifestyle
 import com.padabajka.dating.core.presentation.ui.resource.drawable.app_logo
-import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_left_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.arrow_right_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.camera_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.cancel_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.edit_profile_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.faq_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.google_logo
-import com.padabajka.dating.core.presentation.ui.resource.drawable.language_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.likes_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.logout_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.mail_logo
-import com.padabajka.dating.core.presentation.ui.resource.drawable.message_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_copy
-import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_edit
-import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_like
-import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_pin
-import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_reply
-import com.padabajka.dating.core.presentation.ui.resource.drawable.message_popup_trash
-import com.padabajka.dating.core.presentation.ui.resource.drawable.message_read
-import com.padabajka.dating.core.presentation.ui.resource.drawable.message_sent
-import com.padabajka.dating.core.presentation.ui.resource.drawable.notification_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.profile_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.reaction_like
-import com.padabajka.dating.core.presentation.ui.resource.drawable.rewind_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.search_pref_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.settings_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.smoking_lifestyle
-import com.padabajka.dating.core.presentation.ui.resource.drawable.snowman
-import com.padabajka.dating.core.presentation.ui.resource.drawable.swiper_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.swiper_like_icon
-import com.padabajka.dating.core.presentation.ui.resource.drawable.swiper_super_like_icon
 import com.padabajka.dating.core.presentation.ui.resource.painterResource
 
 object CoreIcons {
@@ -44,148 +45,148 @@ object CoreIcons {
     object NavigationBar {
         val Messenger
             @Composable
-            get() = painterResource(CoreRes.svg.message_icon)
+            get() = RawIcons.NavigationMessageIcon
 
         val Likes
             @Composable
-            get() = painterResource(CoreRes.svg.likes_icon)
+            get() = RawIcons.NavigationLikesIcon
 
         val Swiper
             @Composable
-            get() = painterResource(CoreRes.svg.swiper_icon)
+            get() = RawIcons.NavigationSwiperIcon
 
         val Profile
             @Composable
-            get() = painterResource(CoreRes.svg.profile_icon)
+            get() = RawIcons.NavigationProfileIcon
     }
 
     val SearchPref
         @Composable
-        get() = painterResource(CoreRes.svg.search_pref_icon)
+        get() = RawIcons.SearchPrefIcon
 
     val BackArrow
         @Composable
-        get() = painterResource(CoreRes.svg.arrow_left_icon)
+        get() = RawIcons.ArrowLeftIcon
 
     val RightArrow
         @Composable
-        get() = painterResource(CoreRes.svg.arrow_right_icon)
+        get() = RawIcons.ArrowRightIcon
 
     val Add
         @Composable
-        get() = painterResource(CoreRes.svg.add)
+        get() = RawIcons.Add
 
     object Editor {
         val Camera
             @Composable
-            get() = painterResource(CoreRes.svg.camera_icon)
+            get() = RawIcons.CameraIcon
 
         val EditProfile
             @Composable
-            get() = painterResource(CoreRes.svg.edit_profile_icon)
+            get() = RawIcons.EditProfileIcon
     }
 
     object Reaction {
         val Like
             @Composable
-            get() = painterResource(CoreRes.svg.reaction_like)
+            get() = RawIcons.ReactionLike
     }
 
     object Message {
         object Popup {
             val Like
                 @Composable
-                get() = painterResource(CoreRes.svg.message_popup_like)
+                get() = RawIcons.MessagePopupLike
             val Reply
                 @Composable
-                get() = painterResource(CoreRes.svg.message_popup_reply)
+                get() = RawIcons.MessagePopupReply
             val Copy
                 @Composable
-                get() = painterResource(CoreRes.svg.message_popup_copy)
+                get() = RawIcons.MessagePopupCopy
             val Pin
                 @Composable
-                get() = painterResource(CoreRes.svg.message_popup_pin)
+                get() = RawIcons.MessagePopupPin
             val Edit
                 @Composable
-                get() = painterResource(CoreRes.svg.message_popup_edit)
+                get() = RawIcons.MessagePopupEdit
             val Trash
                 @Composable
-                get() = painterResource(CoreRes.svg.message_popup_trash)
+                get() = RawIcons.MessagePopupTrash
         }
 
         val Sent
             @Composable
-            get() = painterResource(CoreRes.svg.message_sent)
+            get() = RawIcons.MessageSent
 
         val Read
             @Composable
-            get() = painterResource(CoreRes.svg.message_read)
+            get() = RawIcons.MessageRead
     }
 
     object Login {
         val MailLogo
             @Composable
-            get() = painterResource(CoreRes.img.mail_logo)
+            get() = RawIcons.MailLogo
 
         val GoogleLogo
             @Composable
-            get() = painterResource(CoreRes.img.google_logo)
+            get() = RawIcons.GoogleLogo
     }
 
     object Lifestyle {
         val Smoking
             @Composable
-            get() = painterResource(CoreRes.svg.smoking_lifestyle)
+            get() = RawIcons.SmokingLifestyle
         val Alcohol
             @Composable
-            get() = painterResource(CoreRes.svg.alcohol_lifestyle)
+            get() = RawIcons.AlcoholLifestyle
         val Animals
             @Composable
-            get() = painterResource(CoreRes.svg.animal_lifestyle)
+            get() = RawIcons.AnimalLifestyle
     }
 
     object Settings {
         val SettingsIcon
             @Composable
-            get() = painterResource(CoreRes.svg.settings_icon)
+            get() = RawIcons.SettingsIcon
 
         val FAQ
             @Composable
-            get() = painterResource(CoreRes.svg.faq_icon)
+            get() = RawIcons.FaqIcon
 
         val Language
             @Composable
-            get() = painterResource(CoreRes.svg.language_icon)
+            get() = RawIcons.LanguageIcon
 
         val Logout
             @Composable
-            get() = painterResource(CoreRes.svg.logout_icon)
+            get() = RawIcons.LogoutIcon
 
         val Notification
             @Composable
-            get() = painterResource(CoreRes.svg.notification_icon)
+            get() = RawIcons.NotificationIcon
 
         val Snowman
             @Composable
-            get() = painterResource(CoreRes.svg.snowman)
+            get() = RawIcons.Snowman
     }
 
     object Swiper {
         val Rewind
             @Composable
-            get() = painterResource(CoreRes.svg.rewind_icon)
+            get() = RawIcons.RewindIcon
 
         val Dislike
             @Composable
-            get() = painterResource(CoreRes.svg.cancel_icon)
+            get() = RawIcons.CancelIcon
 
         val Like
             @Composable
-            get() = painterResource(CoreRes.svg.swiper_like_icon)
+            get() = RawIcons.SwiperLikeIcon
 
         val SuperLike
             @Composable
-            get() = painterResource(CoreRes.svg.swiper_super_like_icon)
+            get() = RawIcons.SwiperSuperLikeIcon
     }
 
     val AppLogo
