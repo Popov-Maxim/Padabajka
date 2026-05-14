@@ -1,3 +1,5 @@
+import io.gitlab.arturbosch.detekt.Detekt
+
 plugins {
     // trick: for the same plugin versions in all sub-modules
     alias(libs.plugins.androidApplication) apply false
@@ -21,6 +23,9 @@ detekt {
     val paths = project.allprojects.map { it.projectDir }
     val files = files(paths)
     source.setFrom(files)
+}
+tasks.withType<Detekt>().configureEach {
+    exclude { it.file.invariantSeparatorsPath.contains("/com/padabajka/dating/core/presentation/ui/drawable/icon/raw") }
 }
 
 dependencies {

@@ -97,7 +97,7 @@ private fun TopBar(
         ) {
             Icon(
                 modifier = Modifier.align(Alignment.Center).size(30.dp),
-                painter = CoreIcons.SearchPref,
+                imageVector = CoreIcons.SearchPref,
                 contentDescription = "Settings",
             )
         }

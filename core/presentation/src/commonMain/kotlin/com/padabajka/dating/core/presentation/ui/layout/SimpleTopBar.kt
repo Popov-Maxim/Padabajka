@@ -38,7 +38,7 @@ fun SimpleTopBar(
             ) {
                 Icon(
                     modifier = Modifier.size(24.dp),
-                    painter = CoreIcons.BackArrow,
+                    imageVector = CoreIcons.BackArrow,
                     contentDescription = "Back",
                 )
             }

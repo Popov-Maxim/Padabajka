@@ -323,7 +323,7 @@ private fun ImageField(
         Icon(
             modifier = Modifier.size(iconSize).align(Alignment.Center),
             tint = CoreColors.background.mainColor,
-            painter = CoreIcons.Editor.Camera,
+            imageVector = CoreIcons.Editor.Camera,
             contentDescription = "Add camera",
         )
     }
@@ -363,7 +363,7 @@ private fun LookingForField(
                 }
             }
             Icon(
-                painter = CoreIcons.RightArrow,
+                imageVector = CoreIcons.RightArrow,
                 contentDescription = "Right arrow",
                 modifier = Modifier.size(24.dp)
             )
@@ -420,7 +420,7 @@ private fun TopBar(state: ProfileEditorState, onEvent: (ProfileEditorEvent) -> U
             ) {
                 Icon(
                     modifier = Modifier.size(24.dp),
-                    painter = CoreIcons.BackArrow,
+                    imageVector = CoreIcons.BackArrow,
                     contentDescription = "Back",
                 )
             }

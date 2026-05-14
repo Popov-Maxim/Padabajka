@@ -182,7 +182,7 @@ fun Message(
                                     ) {
                                         Icon(
                                             modifier = Modifier.size(20.dp),
-                                            painter = CoreIcons.Reaction.Like,
+                                            imageVector = CoreIcons.Reaction.Like,
                                             tint = Color.Red,
                                             contentDescription = "reaction like"
                                         )
@@ -268,7 +268,7 @@ fun MessageStatus(
             }
             Icon(
                 modifier = modifier,
-                painter = icon,
+                imageVector = icon,
                 tint = color,
                 contentDescription = "Sent",
             )

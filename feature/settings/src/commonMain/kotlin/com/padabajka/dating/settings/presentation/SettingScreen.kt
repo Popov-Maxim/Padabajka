@@ -290,7 +290,7 @@ private fun SettingButton(
                 }
             }
             Icon(
-                painter = CoreIcons.RightArrow,
+                imageVector = CoreIcons.RightArrow,
                 modifier = Modifier.align(Alignment.CenterEnd).size(24.dp),
                 contentDescription = null
             )
