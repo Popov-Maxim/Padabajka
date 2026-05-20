@@ -31,9 +31,9 @@ class MainActivity : ComponentActivity() {
         intent?.run { handleDeeplink(this) }
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent?.run { handleDeeplink(this) }
+        intent.run { handleDeeplink(this) }
     }
 
     private fun handleDeeplink(intent: Intent) {

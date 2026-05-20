@@ -9,6 +9,7 @@ import com.padabajka.dating.core.presentation.di.presentationDiModules
 import com.padabajka.dating.core.sync.di.syncDiModule
 import com.padabajka.dating.core.system.intent.di.systemIntentDiModule
 import com.padabajka.dating.feature.ads.di.adModules
+import com.padabajka.dating.feature.ads.yandex.di.yandexAdModule
 import com.padabajka.dating.feature.auth.di.authModules
 import com.padabajka.dating.feature.dictionary.di.dictionaryDiModules
 import com.padabajka.dating.feature.image.di.imageModules
@@ -42,7 +43,7 @@ fun initKoin(platformModule: Module) {
             *authModules,
             *swiperModules,
             *adModules,
-//            yandexAdModule,
+            yandexAdModule,
             *profileModules,
             *reactionScreenDiModules,
             subscriptionDIModule,

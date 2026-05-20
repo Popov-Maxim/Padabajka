@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,7 @@ import com.padabajka.dating.core.repository.api.model.profile.Age
 import com.padabajka.dating.core.repository.api.model.profile.LanguagesAsset
 import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
+import com.padabajka.dating.feature.swiper.presentation.model.CardPosition
 import com.padabajka.dating.feature.swiper.presentation.model.PersonItem
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.delay
@@ -58,8 +60,15 @@ fun TestDeckOfCards() {
                 AnimationCard(
                     modifier = Modifier.height(300.dp).width(200.dp)
                         .zIndex((cards.size - i).toFloat()),
-                    content = @Composable {
-                        Card(cardItem = card) {}
+                    content = @Composable { _, _ ->
+                        Card(
+                            cardItem = card,
+                            cardPosition = CardPosition(
+                                rotationZ = 0f,
+                                offset = Offset.Zero
+                            ),
+                            onReaction = {},
+                        )
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center

@@ -18,7 +18,7 @@ private val dataModule = module {
 
     factory<NativeAdRemoteDataSource> {
         NativeAdRemoteDataSourceImpl(
-            nativeAdLoader = FakeNativeAdLoader(), // get(),
+            nativeAdLoader = getOrNull() ?: FakeNativeAdLoader(),
             compositeListener = get()
         )
     }
