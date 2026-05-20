@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.padabajka.dating.core.presentation.ui.ScreenSizeProvider
 import com.padabajka.dating.core.presentation.ui.toIntOffset
 import com.padabajka.dating.core.utils.isDebugBuild
+import com.padabajka.dating.feature.swiper.presentation.model.CardPosition
 import com.padabajka.dating.feature.swiper.presentation.screen.card.CardController
 import com.padabajka.dating.feature.swiper.presentation.screen.card.rememberCardController
 import kotlin.math.sqrt
@@ -38,7 +39,7 @@ fun AnimationCard(
     onEndSwipeAnimation: () -> Unit,
     resetPosition: Boolean = false,
     onResetSuccess: () -> Unit = {},
-    content: @Composable (CardController) -> Unit
+    content: @Composable (CardController, cardPosition: CardPosition) -> Unit
 ) {
     val screenSize = ScreenSizeProvider.getPxScreenSize()
     var offset by remember { mutableStateOf(AnimationOffset.Zero) }
@@ -53,6 +54,8 @@ fun AnimationCard(
         offset.finishedListener?.invoke(it)
         offset = offset.copy(finishedListener = null)
     }
+    val rotationZ = rotationZ(animationOffset)
+
     var rectForMinOffset: Rect by remember { mutableStateOf(Rect.Zero) }
     val controller = rememberCardController { swipe ->
         val offsetForSwipe =
@@ -71,7 +74,7 @@ fun AnimationCard(
             modifier = modifier.offset {
                 animationOffset.toIntOffset()
             }.graphicsLayer(
-                rotationZ = rotationZ(animationOffset)
+                rotationZ = rotationZ
             ).pointerInput(Unit) {
                 detectDragGestures(
                     onDragEnd = {
@@ -101,7 +104,13 @@ fun AnimationCard(
                 }
             }
         ) {
-            content(controller)
+            content(
+                controller,
+                CardPosition(
+                    rotationZ = rotationZ,
+                    offset = animationOffset
+                )
+            )
         }
     }
 }

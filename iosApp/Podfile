@@ -9,5 +9,5 @@ target 'Padabajka' do
   pod 'FirebaseCrashlytics', '11.8.0'
   pod 'FirebaseAuth', '11.8.0'
   pod 'GoogleSignIn', '7.0.0'
-#   pod 'YandexMobileAds', '6.4.1'
+  pod 'YandexMobileAds', '7.18.0'
 end

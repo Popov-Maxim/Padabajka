@@ -68,10 +68,11 @@ fun DeckOfCards(
                     modifier = Modifier.fillMaxSize()
                         .padding(horizontal = 10.dp)
                         .zIndex((cards.size - i).toFloat()),
-                    content = @Composable { controller ->
+                    content = @Composable { controller, cardPosition ->
                         Card(
                             modifier = Modifier.clip(shape).fillMaxSize(),
-                            cardItem = card
+                            cardItem = card,
+                            cardPosition = cardPosition,
                         ) {
                             when (it) {
                                 CardReaction.Dislike -> controller.swipeLeft()

@@ -1,7 +1,5 @@
 package com.padabajka.dating.core.repository.api
 
-import com.padabajka.dating.core.repository.api.exception.AuthCredentialError
-import com.padabajka.dating.core.repository.api.exception.EmailLinkAuthException
 import com.padabajka.dating.core.repository.api.model.auth.AuthState
 import dev.gitlive.firebase.auth.AuthCredential
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +13,7 @@ interface AuthRepository {
     suspend fun login(email: String, password: String)
     suspend fun loginWithoutPassword(email: String)
 
-    @Throws(EmailLinkAuthException::class, AuthCredentialError::class)
+//    @Throws(EmailLinkAuthException::class, AuthCredentialError::class)
     suspend fun signInWithEmailLink(link: String)
     suspend fun loginInWithCredential(credential: AuthCredential)
     suspend fun register(email: String, password: String)

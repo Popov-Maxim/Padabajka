@@ -32,9 +32,9 @@ actual class YandexNativeAdLoader(
     }
 
     override fun loadAd(configuration: NativeAdLoader.Configuration) {
-        val requestConfiguration = YMANativeAdRequestConfiguration("demo-native-content-yandex")
+        val requestConfiguration = YMANativeAdRequestConfiguration("demo-native-video-yandex")
             .mutableConfiguration().apply {
-                setAge(configuration.age.raw?.toNSNumber())
+                setAge(configuration.age?.raw?.toNSNumber())
             }
 
         nativeAdLoader.loadAdWithRequestConfiguration(requestConfiguration)

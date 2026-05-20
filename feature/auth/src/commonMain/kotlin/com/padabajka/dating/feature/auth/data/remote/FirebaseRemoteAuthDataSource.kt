@@ -56,7 +56,7 @@ internal class FirebaseRemoteAuthDataSource(
         _loginWithoutPassword(email, actionCodeSettings)
     }
 
-    @Throws(EmailLinkAuthException.InvalidLink::class, AuthCredentialError::class)
+//    @Throws(EmailLinkAuthException.InvalidLink::class, AuthCredentialError::class)
     override suspend fun signInWithEmailLink(email: String, link: String) {
         if (firebaseAuth.isSignInWithEmailLink(link) && false) {
             try {

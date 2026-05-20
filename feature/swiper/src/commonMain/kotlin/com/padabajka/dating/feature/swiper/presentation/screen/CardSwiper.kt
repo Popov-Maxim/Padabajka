@@ -39,6 +39,7 @@ import com.padabajka.dating.core.presentation.ui.pager.PagerIndicators
 import com.padabajka.dating.feature.profile.presentation.ProfileViewBottomSheet
 import com.padabajka.dating.feature.profile.presentation.model.ProfileViewMode
 import com.padabajka.dating.feature.swiper.presentation.model.CardItem
+import com.padabajka.dating.feature.swiper.presentation.model.CardPosition
 import com.padabajka.dating.feature.swiper.presentation.model.EmptyCardItem
 import com.padabajka.dating.feature.swiper.presentation.model.LoadingItem
 import com.padabajka.dating.feature.swiper.presentation.model.NativeAdItem
@@ -50,7 +51,8 @@ import com.padabajka.dating.feature.swiper.presentation.screen.card.CardReaction
 fun Card(
     modifier: Modifier = Modifier,
     cardItem: CardItem,
-    onReaction: (CardReaction) -> Unit
+    cardPosition: CardPosition,
+    onReaction: (CardReaction) -> Unit,
 ) {
     when (cardItem) {
         EmptyCardItem -> {}
@@ -66,7 +68,11 @@ fun Card(
         }
 
         is NativeAdItem -> {
-            NativeAdCard(cardItem)
+            NativeAdCard(
+                modifier = modifier,
+                nativeAdItem = cardItem,
+                cardPosition = cardPosition
+            )
         }
 
         is PersonItem -> PersonCard(modifier, cardItem, onReaction)

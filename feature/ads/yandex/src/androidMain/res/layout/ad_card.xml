@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.yandex.mobile.ads.nativeads.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#CCC"
+
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="33dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="33dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:src="@drawable/example_icon" />
+
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/domain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="#000"
+
+                    android:text="My App" />
+
+                <TextView
+                    android:id="@+id/sponsored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="#000"
+
+                    tools:text="Ad, 18+"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="20dp"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/feedback"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                tools:src="@drawable/example_feedback" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="30dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+
+                tools:text="Приложение, где рисунки оживают как по волшебству"
+                android:textSize="26sp" />
+
+            <TextView
+                android:id="@+id/body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+
+                tools:text="Увлекательное рисование лучше прописей научит красивому почерку. ОР за 60 дней!"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="30dp" />
+
+        <com.yandex.mobile.ads.nativeads.MediaView
+            android:id="@+id/mediaView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tools:background="#999"
+            />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:id="@+id/call_to_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="33dp"
+            android:background="@drawable/button_background"
+            android:gravity="center"
+            android:paddingVertical="14dp"
+            tools:text="Call To Action"
+            android:textColor="#FFF" />
+
+        <TextView
+            android:id="@+id/warning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            tools:text="есть противопоказания. необходима консультация специалиста"
+            android:textAllCaps="true"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+</com.yandex.mobile.ads.nativeads.NativeAdView>

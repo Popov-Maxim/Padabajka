@@ -1,7 +1,6 @@
 package com.padabajka.dating.feature.auth.data
 
 import com.padabajka.dating.core.repository.api.AuthRepository
-import com.padabajka.dating.core.repository.api.exception.AuthCredentialError
 import com.padabajka.dating.core.repository.api.exception.EmailLinkAuthException
 import com.padabajka.dating.core.repository.api.model.auth.AuthState
 import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
@@ -56,7 +55,7 @@ internal class AuthRepositoryImpl(
         localAuthDataSource.saveEmail(email)
     }
 
-    @Throws(EmailLinkAuthException::class, AuthCredentialError::class)
+//    @Throws(EmailLinkAuthException::class, AuthCredentialError::class)
     override suspend fun signInWithEmailLink(link: String) {
         val email = localAuthDataSource.authPreferences.first().email
             ?: throw EmailLinkAuthException.MissingEmail()
