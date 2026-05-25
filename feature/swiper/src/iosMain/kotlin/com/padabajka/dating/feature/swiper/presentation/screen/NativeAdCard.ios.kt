@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.UIKitView
 import com.padabajka.dating.core.repository.api.model.ads.PlatformNativeAd
+import com.padabajka.dating.core.utils.FeatureToggle
 import com.padabajka.dating.feature.swiper.presentation.model.CardPosition
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.CoreGraphics.CGAffineTransformMakeRotation
@@ -30,16 +31,19 @@ actual fun NativeAdCard(
             },
             modifier = Modifier.fillMaxSize(),
             update = { view ->
-                val radians = cardPosition.rotationZ.toDouble() * kotlin.math.PI / 180f
-                val rotation = CGAffineTransformMakeRotation(radians)
+                if (FeatureToggle.graphicsLayerCard) {
+                    val radians = cardPosition.rotationZ.toDouble() * kotlin.math.PI / 180f
+                    val rotation = CGAffineTransformMakeRotation(radians)
 
-                val offset = cardPosition.offset
-                view.clipsToBounds = true
-                view.transform = CGAffineTransformTranslate(
-                    rotation,
-                    offset.x.toDouble(),
-                    offset.y.toDouble()
-                )
+                    val offset = cardPosition.offset
+                    view.clipsToBounds = true
+                    view.transform = CGAffineTransformTranslate(
+                        rotation,
+                        0.0, 0.0
+//                    offset.x.toDouble(),
+//                    offset.y.toDouble()
+                    )
+                }
             },
         )
     }

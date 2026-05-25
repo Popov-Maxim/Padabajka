@@ -1,11 +1,11 @@
 [versions]
 agp = "8.11.1"
-kotlin = "2.3.0"
+kotlin = "2.3.21"
 kotlinx-datetime = "0.6.0"
 kotlinx-serialization = "1.6.3"
 google-services = "4.4.1"
 coroutines = "1.8.0"
-compose-compiler = "1.5.15"
+compose-compiler = "2.3.21" # TODO(P2) which version corrected?
 androidx-activityCompose = "1.8.2"
 androidx-core = "1.13.1"
 androidx-test-ext-junit = "1.1.5"
