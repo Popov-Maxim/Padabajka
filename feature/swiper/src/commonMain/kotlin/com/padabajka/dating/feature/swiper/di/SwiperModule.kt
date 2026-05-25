@@ -8,8 +8,8 @@ import com.padabajka.dating.core.repository.api.SearchPreferencesRepository
 import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
 import com.padabajka.dating.feature.swiper.data.CardRepositoryImpl
 import com.padabajka.dating.feature.swiper.data.CardSelector
+import com.padabajka.dating.feature.swiper.data.CardSelectorImpl
 import com.padabajka.dating.feature.swiper.data.CardSelectorProvider
-import com.padabajka.dating.feature.swiper.data.NoAdCardSelector
 import com.padabajka.dating.feature.swiper.data.candidate.CandidateRepositoryImpl
 import com.padabajka.dating.feature.swiper.data.candidate.network.CandidateApi
 import com.padabajka.dating.feature.swiper.data.candidate.network.KtorCandidateApi
@@ -102,7 +102,9 @@ private val dataModule = module {
     }
 
     factory<CardSelector> {
-        NoAdCardSelector()
+        CardSelectorImpl(
+            subscriptionRepository = get()
+        )
     }
 
     single<SearchPreferencesRepository> {

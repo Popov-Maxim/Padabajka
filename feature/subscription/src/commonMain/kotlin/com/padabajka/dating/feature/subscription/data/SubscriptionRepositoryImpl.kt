@@ -31,6 +31,7 @@ class SubscriptionRepositoryImpl(
                 isActive = plan.isActive,
                 features = SubscriptionState.Features(
                     showLikes = plan.showLikes,
+                    hideAds = plan.hideAds,
                     superLikes = (plan.superLikes - usage.superLikes).coerceAtLeast(0),
                     returns = (plan.returns - usage.returns).coerceAtLeast(0)
                 )

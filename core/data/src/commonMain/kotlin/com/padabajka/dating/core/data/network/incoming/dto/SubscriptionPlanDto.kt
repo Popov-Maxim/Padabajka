@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SubscriptionPlanDto(
     val isActive: Boolean,
+    val hideAds: Boolean,
     val showLikes: Boolean,
     val superLikes: Int,
     val returns: Int
@@ -14,6 +15,7 @@ data class SubscriptionPlanDto(
 fun SubscriptionPlanDto.toDomain(): SubscriptionPlan {
     return SubscriptionPlan(
         isActive = isActive,
+        hideAds = hideAds,
         showLikes = showLikes,
         superLikes = superLikes,
         returns = returns
@@ -23,6 +25,7 @@ fun SubscriptionPlanDto.toDomain(): SubscriptionPlan {
 fun SubscriptionPlan.toDto(): SubscriptionPlanDto {
     return SubscriptionPlanDto(
         isActive = isActive,
+        hideAds = hideAds,
         showLikes = showLikes,
         superLikes = superLikes,
         returns = returns
