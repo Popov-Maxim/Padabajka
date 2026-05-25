@@ -6,6 +6,7 @@ data class SubscriptionState(
 ) {
     data class Features(
         val showLikes: Boolean,
+        val hideAds: Boolean,
         val superLikes: Int,
         val returns: Int
     )
@@ -15,6 +16,7 @@ data class SubscriptionState(
             isActive = false,
             features = Features(
                 showLikes = false,
+                hideAds = false,
                 superLikes = 0,
                 returns = 0
             )
