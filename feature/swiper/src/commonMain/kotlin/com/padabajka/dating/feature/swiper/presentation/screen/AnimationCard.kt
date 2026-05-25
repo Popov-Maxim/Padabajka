@@ -23,7 +23,9 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.padabajka.dating.core.presentation.ui.ScreenSizeProvider
+import com.padabajka.dating.core.presentation.ui.modifier.applyIf
 import com.padabajka.dating.core.presentation.ui.toIntOffset
+import com.padabajka.dating.core.utils.FeatureToggle
 import com.padabajka.dating.core.utils.isDebugBuild
 import com.padabajka.dating.feature.swiper.presentation.model.CardPosition
 import com.padabajka.dating.feature.swiper.presentation.screen.card.CardController
@@ -73,9 +75,11 @@ fun AnimationCard(
         Box(
             modifier = modifier.offset {
                 animationOffset.toIntOffset()
-            }.graphicsLayer(
-                rotationZ = rotationZ
-            ).pointerInput(Unit) {
+            }.applyIf(FeatureToggle.graphicsLayerCard) {
+                graphicsLayer(
+                    rotationZ = rotationZ
+                )
+            }.pointerInput(Unit) {
                 detectDragGestures(
                     onDragEnd = {
                         offset.getSwipe(swipeHorizontalThreshold, swipeVerticalThreshold)
