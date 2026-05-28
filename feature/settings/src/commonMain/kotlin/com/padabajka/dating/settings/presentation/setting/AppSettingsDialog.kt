@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -24,13 +25,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.padabajka.dating.core.domain.IpAddressProvider
+import com.padabajka.dating.core.networking.NetworkConstants
 import com.padabajka.dating.core.networking.localHost
 import com.padabajka.dating.core.repository.api.AppSettingsRepository
 import com.padabajka.dating.core.repository.api.model.settings.Host
 import com.padabajka.dating.core.repository.api.model.settings.raw
+import com.padabajka.dating.core.repository.api.model.settings.rawPort
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -45,6 +49,10 @@ fun AppSettingsDialog(
     var ipAddress by remember(debugAppSettings) {
         val host = debugAppSettings.host.raw()
         mutableStateOf(host ?: ipAddressProvider.getIpAddress() ?: "")
+    }
+    var port: Int? by remember(debugAppSettings) {
+        val port = debugAppSettings.host.rawPort()
+        mutableStateOf(port ?: NetworkConstants.LOCAL_PORT)
     }
     var selectedHost by remember(debugAppSettings) {
         mutableStateOf(debugAppSettings.host.toSelectedHost())
@@ -75,6 +83,21 @@ fun AppSettingsDialog(
                     value = ipAddress,
                     onValueChange = { ipAddress = it },
                     label = { Text(text = "IP Address") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = selectedHost == SelectedHost.Custom
+                )
+                TextField(
+                    value = port?.toString() ?: "",
+
+                    onValueChange = { port = it.toIntOrNull() },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
+                    label = { Text(text = "Port") },
+                    placeholder = {
+                        Text("${NetworkConstants.LOCAL_PORT} for local")
+                    },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     enabled = selectedHost == SelectedHost.Custom
@@ -125,7 +148,7 @@ fun AppSettingsDialog(
                             coroutineScope.launch {
                                 appSettingsRepository.updateDebugAppSettings {
                                     copy(
-                                        host = selectedHost.toHost(ipAddress),
+                                        host = selectedHost.toHost(ipAddress, port),
                                         showFps = showFps
                                     )
                                 }
@@ -155,10 +178,10 @@ private fun Host.toSelectedHost(): SelectedHost {
     }
 }
 
-private fun SelectedHost.toHost(ipAddress: String): Host {
+private fun SelectedHost.toHost(ipAddress: String, port: Int? = null): Host {
     return when (this) {
         SelectedHost.Default -> Host.Prod
-        SelectedHost.Localhost -> Host.Local(localHost)
-        SelectedHost.Custom -> Host.Custom(ipAddress)
+        SelectedHost.Localhost -> Host.Local(localHost, NetworkConstants.LOCAL_PORT)
+        SelectedHost.Custom -> Host.Custom(ipAddress, port)
     }
 }
