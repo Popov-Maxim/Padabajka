@@ -8,16 +8,24 @@ sealed interface Host {
     data object Prod : Host
 
     @Serializable
-    data class Local(val host: String) : Host
+    data class Local(val host: String, val port: Int? = null) : Host
 
     @Serializable
-    data class Custom(val host: String) : Host
+    data class Custom(val host: String, val port: Int? = null) : Host
 }
 
 fun Host.raw(): String? {
     return when (this) {
         is Host.Custom -> host
         is Host.Local -> host
+        Host.Prod -> null
+    }
+}
+
+fun Host.rawPort(): Int? {
+    return when (this) {
+        is Host.Custom -> port
+        is Host.Local -> port
         Host.Prod -> null
     }
 }

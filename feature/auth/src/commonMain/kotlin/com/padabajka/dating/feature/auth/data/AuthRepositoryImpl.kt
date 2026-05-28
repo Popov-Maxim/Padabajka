@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.auth.data
 
+import com.padabajka.dating.core.networking.NetworkConstants
 import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.exception.EmailLinkAuthException
 import com.padabajka.dating.core.repository.api.model.auth.AuthState
@@ -43,7 +44,7 @@ internal class AuthRepositoryImpl(
 
     override suspend fun loginWithoutPassword(email: String) {
         val actionCodeSettings = ActionCodeSettings(
-            url = "https://padabajka-96c95.firebaseapp.com", // TODO(P0): change url after updating gitlive firebase
+            url = NetworkConstants.path + "/finishLoginWithoutPassword",
             androidPackageName = AndroidPackageName(
                 packageName = "com.padabajka.dating",
                 installIfNotAvailable = false

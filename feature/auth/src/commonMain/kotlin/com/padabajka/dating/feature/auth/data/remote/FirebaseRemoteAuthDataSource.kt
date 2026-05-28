@@ -53,12 +53,12 @@ internal class FirebaseRemoteAuthDataSource(
     }
 
     override suspend fun loginWithoutPassword(email: String, actionCodeSettings: ActionCodeSettings) {
-        _loginWithoutPassword(email, actionCodeSettings)
+        firebaseAuth.sendSignInLinkToEmail(email, actionCodeSettings)
     }
 
 //    @Throws(EmailLinkAuthException.InvalidLink::class, AuthCredentialError::class)
     override suspend fun signInWithEmailLink(email: String, link: String) {
-        if (firebaseAuth.isSignInWithEmailLink(link) && false) {
+        if (firebaseAuth.isSignInWithEmailLink(link)) {
             try {
                 firebaseAuth.signInWithEmailLink(email, link)
             } catch (e: FirebaseException) {
@@ -152,7 +152,3 @@ internal class FirebaseRemoteAuthDataSource(
         }
     }
 }
-
-// TODO(P10): delete after updating gitlive firebase
-@Suppress("FunctionName")
-expect suspend fun _loginWithoutPassword(email: String, actionCodeSettings: ActionCodeSettings)
