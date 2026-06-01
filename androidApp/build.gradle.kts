@@ -17,8 +17,8 @@ android {
         applicationId = "com.padabajka.dating"
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()
         targetSdk = libs.versions.projectConfig.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "0.0.1-dev"
     }
     buildFeatures {
         compose = true
