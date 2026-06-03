@@ -34,6 +34,9 @@ kotlin {
             api(projects.core.data)
             api(projects.core.networking)
         }
+        androidMain.dependencies {
+            implementation(libs.android.billingclient)
+        }
     }
 }
 

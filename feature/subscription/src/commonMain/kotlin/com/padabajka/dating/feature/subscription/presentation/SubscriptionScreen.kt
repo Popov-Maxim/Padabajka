@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreCallToActionButton
+import com.padabajka.dating.core.presentation.ui.CoreCircularProgressIndicator
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
@@ -67,17 +68,20 @@ fun SubscriptionScreen(component: SubscriptionScreenComponent) {
             )
         },
     ) {
-        Content(
-            component = component,
-            state = state,
-        )
+        when (val state = state) {
+            SubscriptionScreenState.Loading -> CoreCircularProgressIndicator()
+            is SubscriptionScreenState.Success -> Content(
+                component = component,
+                state = state,
+            )
+        }
     }
 }
 
 @Composable
 private fun Content(
     component: SubscriptionScreenComponent,
-    state: SubscriptionScreenState,
+    state: SubscriptionScreenState.Success,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -168,26 +172,30 @@ private fun PriceBlock(
         verticalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterVertically)
     ) {
         val shape = RoundedCornerShape(10.dp)
-        Text(
-            text = "${StaticTextId.UiId.Discount.translate()} ${subInfo.discount}%",
-            color = CoreColors.primary.textColor,
-            modifier = Modifier
-                .background(CoreColors.primary.mainColor, shape)
-                .padding(vertical = 5.dp, horizontal = 10.dp)
-        )
+        if (subInfo.discount != 0) {
+            Text(
+                text = "${StaticTextId.UiId.Discount.translate()} ${subInfo.discount}%",
+                color = CoreColors.primary.textColor,
+                modifier = Modifier
+                    .background(CoreColors.primary.mainColor, shape)
+                    .padding(vertical = 5.dp, horizontal = 10.dp)
+            )
+        }
 
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val monthText = StaticTextId.UiId.Month.translate()
-            Text(
-                text = "${subInfo.oldPrice}/$monthText",
-                fontSize = 16.sp,
-                style = LocalTextStyle.current.copy(
-                    textDecoration = TextDecoration.LineThrough
+            if (subInfo.discount != 0) {
+                Text(
+                    text = "${subInfo.oldPrice}/$monthText",
+                    fontSize = 16.sp,
+                    style = LocalTextStyle.current.copy(
+                        textDecoration = TextDecoration.LineThrough
+                    )
                 )
-            )
+            }
             Text(
                 text = buildAnnotatedString {
                     withStyle(

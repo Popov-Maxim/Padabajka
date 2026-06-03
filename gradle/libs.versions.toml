@@ -35,6 +35,7 @@ ktor = "2.3.12"
 coil = "3.0.0"
 coil-network = "3.0.0"
 playServicesLocation = "21.3.0"
+android-billingclient = "9.0.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -81,6 +82,7 @@ sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sql
 sqlite-framework = { module = "androidx.sqlite:sqlite-framework", version.ref = "sqlite" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutines" }
+android-billingclient = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "android-billingclient" }
 
 [plugins]
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }

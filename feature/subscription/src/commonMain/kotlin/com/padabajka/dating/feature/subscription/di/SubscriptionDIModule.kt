@@ -12,12 +12,15 @@ import com.padabajka.dating.feature.subscription.data.network.SubscriptionApi
 import com.padabajka.dating.feature.subscription.data.source.LocalSubscriptionDataSource
 import com.padabajka.dating.feature.subscription.data.source.LocalSubscriptionDataSourceImpl
 import com.padabajka.dating.feature.subscription.data.source.RemoteSubscriptionDataSource
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val subscriptionDIModule = module {
+expect val platformSubDiModule: Module
+
+private val subscriptionDIModule = module {
     singleOf(::SubscriptionRepositoryImpl) {
         bind<SubscriptionRepository>()
     }
@@ -41,3 +44,5 @@ val subscriptionDIModule = module {
         )
     }
 }
+
+val subscriptionDIModules = arrayOf(subscriptionDIModule, platformSubDiModule)
