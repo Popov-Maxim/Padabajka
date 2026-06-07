@@ -4,15 +4,14 @@ import com.padabajka.dating.feature.subscription.data.billing.AndroidBillingClie
 import com.padabajka.dating.feature.subscription.data.billing.BillingProductMapper
 import com.padabajka.dating.feature.subscription.data.billing.PlatformBillingClient
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 actual val platformSubDiModule: Module = module {
-    single<PlatformBillingClient> {
-        AndroidBillingClient(
-            context = get(),
-            billingProductMapper = get()
-        )
+    singleOf(::AndroidBillingClient) {
+        bind<PlatformBillingClient>()
     }
 
     factoryOf(::BillingProductMapper)
