@@ -56,7 +56,6 @@ kotlin {
             implementation(projects.feature.infra)
 
             implementation(libs.gitlive.firebase.auth)
-            implementation(libs.gitlive.firebase.perf)
             implementation(libs.gitlive.firebase.messaging)
             implementation(libs.gitlive.firebase.crashlytics)
         }
