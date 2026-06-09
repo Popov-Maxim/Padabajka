@@ -39,6 +39,9 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.firebase.perf)
         }
+        commonMain.dependencies {
+            api(libs.gitlive.firebase.perf)
+        }
     }
 }
 
