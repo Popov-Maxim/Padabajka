@@ -64,7 +64,7 @@ class IosBillingClient( // TODO(P0)
     }
 
     companion object {
-        private const val PRODUCT_ID = "premium_monthly"
+        private const val PRODUCT_ID = "premium_monthly_1"
     }
 }
 
