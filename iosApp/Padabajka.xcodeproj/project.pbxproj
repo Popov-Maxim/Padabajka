@@ -12,6 +12,7 @@
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 		9C9462B92B96429F0084F865 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C9462B82B96429F0084F865 /* GoogleService-Info.plist */; };
+		9C9F3E532FD92FDB0082F363 /* Padabajka.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9C9F3E522FD92FDB0082F363 /* Padabajka.storekit */; };
 		EBB4A2CFCF4DF11B7896C2A7 /* Pods_Padabajka.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 399F43F7E1499AEC45729AF3 /* Pods_Padabajka.framework */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +43,7 @@
 		9C9462B32B9641040084F865 /* Pods */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Pods; sourceTree = "<group>"; };
 		9C9462B42B96411C0084F865 /* FirebaseCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FirebaseCore; path = Pods/FirebaseCore; sourceTree = "<group>"; };
 		9C9462B82B96429F0084F865 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		9C9F3E522FD92FDB0082F363 /* Padabajka.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Padabajka.storekit; sourceTree = "<group>"; };
 		9CC347152DCE710D00E997C4 /* iosApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosApp.entitlements; sourceTree = "<group>"; };
 		FBFE9703926456949DC519A5 /* Pods-Padabajka.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Padabajka.release.xcconfig"; path = "Target Support Files/Pods-Padabajka/Pods-Padabajka.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -49,8 +51,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9C18C7BB2E630AFD00152047 /* Config */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = Config;
 			sourceTree = "<group>";
 		};
@@ -105,6 +105,7 @@
 				7555FF8C242A565B00829871 /* Info.plist */,
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
+				9C9F3E522FD92FDB0082F363 /* Padabajka.storekit */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -198,6 +199,7 @@
 			files = (
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
 				058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */,
+				9C9F3E532FD92FDB0082F363 /* Padabajka.storekit in Resources */,
 				9C9462B92B96429F0084F865 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -213,9 +215,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Padabajka/Pods-Padabajka-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Padabajka/Pods-Padabajka-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -275,9 +281,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Padabajka/Pods-Padabajka-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Padabajka/Pods-Padabajka-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
