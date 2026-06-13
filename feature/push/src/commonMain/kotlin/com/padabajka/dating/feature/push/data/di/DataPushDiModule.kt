@@ -20,7 +20,6 @@ import com.padabajka.dating.feature.push.data.domain.HandleReadMessageEventUseCa
 import com.padabajka.dating.feature.push.data.domain.HandleSubscriptionUseCase
 import com.padabajka.dating.feature.push.data.domain.HandleUpdateMatchUseCase
 import com.padabajka.dating.feature.push.data.domain.HandleUsersPresenceUseCase
-import com.padabajka.dating.feature.push.data.domain.SaveTokenUseCase
 import com.padabajka.dating.feature.push.data.domain.UpdateTokenUseCase
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.messaging.FirebaseMessaging
@@ -53,7 +52,6 @@ val dataPushDiModule = module {
     }
 
     factoryOf(::UpdateTokenUseCase)
-    factoryOf(::SaveTokenUseCase)
     factoryOf(::HandlePushUseCase)
     factoryOf(::HandleNewMatchUseCase)
     factoryOf(::DataPushParser)

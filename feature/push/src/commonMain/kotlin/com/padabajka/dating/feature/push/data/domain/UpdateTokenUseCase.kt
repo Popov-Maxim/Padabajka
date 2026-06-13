@@ -4,20 +4,18 @@ import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
 import com.padabajka.dating.core.repository.api.model.auth.LoggedOut
 import com.padabajka.dating.core.repository.api.model.auth.WaitingForEmailValidation
-import com.padabajka.dating.settings.domain.UpdateAuthMetadataUseCase
+import com.padabajka.dating.settings.domain.NewAuthMetadataUseCase
 
 class UpdateTokenUseCase(
     private val authRepository: AuthRepository,
-    private val updateAuthMetadataUseCase: UpdateAuthMetadataUseCase
+    private val newAuthMetadataUseCase: NewAuthMetadataUseCase
 ) {
-    suspend operator fun invoke(token: String) {
+    suspend operator fun invoke() {
         when (authRepository.currentAuthState) {
             LoggedOut -> Unit
             is LoggedIn,
             is WaitingForEmailValidation -> {
-                updateAuthMetadataUseCase.invoke { metadata ->
-                    metadata.copy(notificationToken = token)
-                }
+                newAuthMetadataUseCase.invoke()
             }
         }
     }

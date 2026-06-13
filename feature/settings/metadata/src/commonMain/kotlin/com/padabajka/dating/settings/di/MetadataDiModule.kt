@@ -13,7 +13,6 @@ import com.padabajka.dating.settings.data.source.MetadataRemoteDataSource
 import com.padabajka.dating.settings.data.source.MetadataRemoteDataSourceImpl
 import com.padabajka.dating.settings.domain.DeleteAuthMetadataUseCase
 import com.padabajka.dating.settings.domain.NewAuthMetadataUseCase
-import com.padabajka.dating.settings.domain.UpdateAuthMetadataUseCase
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.installations.FirebaseInstallations
 import dev.gitlive.firebase.installations.installations
@@ -58,7 +57,6 @@ private val dataModule = module {
 private val domainModule = module {
     factoryOf(::DeleteAuthMetadataUseCase)
     factoryOf(::NewAuthMetadataUseCase)
-    factoryOf(::UpdateAuthMetadataUseCase)
 }
 
 val metadataDiModules = arrayOf(domainModule, dataModule)

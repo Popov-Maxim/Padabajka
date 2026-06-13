@@ -1,7 +1,6 @@
 package com.padabajka.dating.datapush
 
 import com.padabajka.dating.feature.push.data.domain.HandlePushUseCase
-import com.padabajka.dating.feature.push.data.domain.SaveTokenUseCase
 import com.padabajka.dating.feature.push.data.domain.UpdateTokenUseCase
 import com.padabajka.dating.feature.push.data.domain.model.PlatformDataPush
 import kotlinx.coroutines.CoroutineScope
@@ -12,9 +11,6 @@ import org.koin.core.component.get
 object SharedPushHandler : KoinComponent {
 
     private val updateTokenUseCase: UpdateTokenUseCase
-        get() = get()
-
-    private val saveTokenUseCase: SaveTokenUseCase
         get() = get()
 
     private val handlePushUseCase: HandlePushUseCase
@@ -32,17 +28,10 @@ object SharedPushHandler : KoinComponent {
         println("LOG: push saveToken $token")
         scope.launch {
             runCatching {
-                updateTokenUseCase.invoke(token)
+                updateTokenUseCase.invoke()
             }.onFailure {
                 println("TODO: not impl for error SaveTokenUseCase")
             }
-        }
-    }
-
-    fun saveLocalToken() {
-        println("LOG: push saveLocalToken")
-        scope.launch {
-            saveTokenUseCase()
         }
     }
 }

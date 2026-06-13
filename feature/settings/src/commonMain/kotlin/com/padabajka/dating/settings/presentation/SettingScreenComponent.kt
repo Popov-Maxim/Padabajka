@@ -12,7 +12,7 @@ import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
 import com.padabajka.dating.core.repository.api.model.dictionary.Language
 import com.padabajka.dating.feature.auth.domain.LogOutUseCase
-import com.padabajka.dating.feature.push.data.domain.SaveTokenUseCase
+import com.padabajka.dating.feature.push.data.domain.UpdateTokenUseCase
 import com.padabajka.dating.settings.domain.AppSettingsComponentProvider
 import com.padabajka.dating.settings.domain.DeleteAccountUseCase
 import com.padabajka.dating.settings.presentation.model.DeleteAccountEvent
@@ -36,7 +36,7 @@ class SettingScreenComponent(
     private val navigateBack: () -> Unit,
     private val settingNavigator: SettingNavigator,
     logoutUseCaseFactory: Factory<LogOutUseCase>,
-    private val saveTokenUseCase: SaveTokenUseCase,
+    private val updateTokenUseCase: UpdateTokenUseCase,
     private val syncRemoteDataUseCase: SyncRemoteDataUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
     private val profileRepository: ProfileRepository,
@@ -107,7 +107,7 @@ class SettingScreenComponent(
     private fun sendPushToken() = launchStep(
         // TODO(P3): dont run in prod
         action = {
-            saveTokenUseCase()
+            updateTokenUseCase()
         },
     )
 
