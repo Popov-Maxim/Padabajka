@@ -6,6 +6,8 @@ import kotlin.jvm.JvmInline
 data class AuthMetadata(
     val deviceUid: DeviceUid,
     val notificationToken: String?,
+    val lang: String,
+    val timeZone: String,
 )
 
 @Serializable

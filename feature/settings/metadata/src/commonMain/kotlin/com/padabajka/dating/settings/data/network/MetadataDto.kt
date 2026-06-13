@@ -7,6 +7,8 @@ import kotlinx.serialization.Serializable
 data class UpdateMetadataDto(
     val deviceUid: String,
     val notificationToken: String?,
+    val lang: String,
+    val timeZone: String,
 )
 
 @Serializable
@@ -17,6 +19,8 @@ data class DeleteMetadataDto(
 fun AuthMetadata.toDto(): UpdateMetadataDto {
     return UpdateMetadataDto(
         deviceUid.raw,
-        notificationToken
+        notificationToken,
+        lang,
+        timeZone
     )
 }

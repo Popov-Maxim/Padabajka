@@ -35,7 +35,6 @@ import com.padabajka.dating.core.presentation.ui.SimpleConfirmDialog
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.hideKeyboardOnTap
 import com.padabajka.dating.core.presentation.ui.toDp
-import com.padabajka.dating.datapush.SharedPushHandler
 import com.padabajka.dating.feature.auth.presentation.screen.DebugLoginMethodScreen
 import com.padabajka.dating.feature.auth.presentation.screen.EmailLoginMethodScreen
 import com.padabajka.dating.feature.auth.presentation.screen.LoginMethodsScreen
@@ -172,6 +171,5 @@ private fun InitApp() {
 
     LaunchedEffect(Unit) {
         notificationService.initNotificationChannels()
-        SharedPushHandler.saveLocalToken()
     }
 }
