@@ -4,12 +4,12 @@ import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.presentation.asFlow
 import com.padabajka.dating.core.presentation.deeplink.AppDeeplinkHandler
-import com.padabajka.dating.core.repository.api.SocketRepository
 import com.padabajka.dating.core.repository.api.metadata.PushRepository
 import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
 import com.padabajka.dating.core.repository.api.model.auth.LoggedOut
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.WaitingForEmailValidation
+import com.padabajka.dating.core.sync.SyncSessionObserver
 import com.padabajka.dating.feature.auth.domain.AuthStateProvider
 import com.padabajka.dating.feature.auth.presentation.VerificationComponent
 import kotlinx.coroutines.flow.filterIsInstance
@@ -23,9 +23,9 @@ import org.koin.core.parameter.parametersOf
 
 class AuthStateObserverComponent(
     context: ComponentContext,
-    private val socketRepository: SocketRepository,
     private val pushRepository: PushRepository,
-    private val deeplinkHandler: AppDeeplinkHandler
+    private val deeplinkHandler: AppDeeplinkHandler,
+    private val syncSessionObserver: SyncSessionObserver,
 ) : NavigateComponentContext<AuthStateObserverComponent.Configuration, AuthStateObserverComponent.Child>(
     context,
     Configuration.serializer(),
@@ -55,7 +55,7 @@ class AuthStateObserverComponent(
                 LoggedOut -> {
                     navigateNewStack(Configuration.UnauthScope)
                     backgroundScope.launch {
-                        socketRepository.disconnect() // TODO(P1): can be crash in request with auth
+                        syncSessionObserver.stop() // TODO(P1): can be crash in request with auth
                         pushRepository.deleteToken()
                     }
                 }
@@ -87,8 +87,8 @@ class AuthStateObserverComponent(
                     userId = configuration.userId,
                     updateAuthMetadataUseCase = get(),
                     profileRepository = get(),
-                    syncManager = get(),
                     domainErrorHandler = get(),
+                    syncSessionObserver = get()
                 )
             )
 

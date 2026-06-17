@@ -60,7 +60,7 @@ fun initKoin(platformModule: Module) {
             *matchDiModules,
             *pushDiModules,
             *permissionDiModules,
-            syncDiModule,
+            *syncDiModule,
             permissionFlowDIModule,
             sharedDiModule,
             infraDiModule,

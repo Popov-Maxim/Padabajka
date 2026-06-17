@@ -10,7 +10,7 @@ import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.deeplink.AppDeeplink
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
-import com.padabajka.dating.core.sync.SyncManager
+import com.padabajka.dating.core.sync.SyncSessionObserver
 import com.padabajka.dating.feature.auth.presentation.AccountDeletedScreenComponent
 import com.padabajka.dating.settings.domain.NewAuthMetadataUseCase
 import kotlinx.coroutines.flow.filterIsInstance
@@ -26,7 +26,7 @@ class AuthScopeNavigateComponent(
     private val userId: UserId,
     private val updateAuthMetadataUseCase: NewAuthMetadataUseCase,
     private val profileRepository: ProfileRepository,
-    private val syncManager: SyncManager,
+    private val syncSessionObserver: SyncSessionObserver,
     private val domainErrorHandler: DomainErrorHandler,
 ) : NavigateComponentContext<AuthScopeNavigateComponent.Configuration, AuthScopeNavigateComponent.Child>(
     context,
@@ -43,7 +43,7 @@ class AuthScopeNavigateComponent(
                     ProfileState.NotCreated -> navigateNewStack(Configuration.CreateProfileScope)
                     is ProfileState.Existing -> {
                         updateAuthMetadataUseCase()
-                        syncManager.start()
+                        syncSessionObserver.start()
 
                         navigateNewStack(Configuration.MainAuthScope)
                     }

@@ -43,6 +43,10 @@ class SyncManager(
         connect()
     }
 
+    suspend fun stop() {
+        socketRepository.disconnect()
+    }
+
     private fun observeSocket() {
         scope.launch {
             socketRepository.connectionState.collect { connection ->

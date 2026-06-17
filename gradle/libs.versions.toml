@@ -36,6 +36,7 @@ coil = "3.0.0"
 coil-network = "3.0.0"
 playServicesLocation = "21.3.0"
 android-billingclient = "9.0.0"
+lifecycleProcess = "2.10.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -83,6 +84,7 @@ sqlite-framework = { module = "androidx.sqlite:sqlite-framework", version.ref = 
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutines" }
 android-billingclient = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "android-billingclient" }
+androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycleProcess" }
 
 [plugins]
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
