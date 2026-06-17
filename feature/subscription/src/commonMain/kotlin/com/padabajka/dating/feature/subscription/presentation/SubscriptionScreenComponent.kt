@@ -11,6 +11,7 @@ import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionP
 import com.padabajka.dating.feature.subscription.presentation.model.SubscriptionEvent
 import com.padabajka.dating.feature.subscription.presentation.model.SubscriptionInfo
 import com.padabajka.dating.feature.subscription.presentation.model.SubscriptionScreenState
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 
@@ -22,16 +23,27 @@ class SubscriptionScreenComponent(
 ) : BaseComponent<SubscriptionScreenState>(
     context,
     "subscription",
-    initState(subscriptionRepository.subscriptionProductsValue)
+    initState(subscriptionRepository)
 ) {
 
     init {
         componentScope.launch {
-            subscriptionRepository.subscriptionProducts.mapNotNull { products ->
-                products.find { it.offers.firstOrNull()?.period == SubscriptionPeriod.Month }
-            }.collect { product ->
+            val subscriptionProduct =
+                subscriptionRepository.subscriptionProducts.mapNotNull { products ->
+                    products.find { it.offers.firstOrNull()?.period == SubscriptionPeriod.Month }
+                }
+            combine(
+                subscriptionProduct,
+                subscriptionRepository.subscriptionState
+            ) { product, state ->
+                product to state
+            }.collect { (product, state) ->
                 reduce {
-                    product.toUI()
+                    if (state.isActive) {
+                        SubscriptionScreenState.HasSubscription
+                    } else {
+                        product.toUI()
+                    }
                 }
             }
         }
@@ -65,11 +77,16 @@ class SubscriptionScreenComponent(
 
     private companion object {
 
-        private fun initState(subscriptionProducts: List<SubscriptionProduct>): SubscriptionScreenState {
-            val product = subscriptionProducts.find {
-                it.offers.firstOrNull()?.period == SubscriptionPeriod.Month
+        private fun initState(subscriptionRepository: SubscriptionRepository): SubscriptionScreenState {
+            return if (subscriptionRepository.subscriptionStateValue.isActive) {
+                SubscriptionScreenState.HasSubscription
+            } else {
+                val product = subscriptionRepository.subscriptionProductsValue.find {
+                    it.offers.firstOrNull()?.period == SubscriptionPeriod.Month
+                }
+
+                product?.toUI() ?: SubscriptionScreenState.Loading
             }
-            return product?.toUI() ?: SubscriptionScreenState.Loading
         }
 
         private fun SubscriptionProduct.toUI(): SubscriptionScreenState.Success {

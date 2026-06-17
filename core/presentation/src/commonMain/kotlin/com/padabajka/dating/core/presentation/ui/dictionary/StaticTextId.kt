@@ -204,6 +204,8 @@ sealed interface StaticTextId {
         Discount(rawId = "discount"),
         Until(rawId = "until"),
 
+        YouAlreadyHaveSubscription(rawId = "you_already_have_subscription"),
+
         BenefitSuperLikeTitle(rawId = "benefit_super_like_title"),
         BenefitSuperLikeBody(rawId = "benefit_super_like_body"),
         BenefitReturnsTitle(rawId = "benefit_returns_title"),

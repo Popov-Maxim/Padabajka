@@ -4,6 +4,7 @@ import com.padabajka.dating.core.presentation.State
 
 sealed interface SubscriptionScreenState : State {
     data object Loading : SubscriptionScreenState
+    data object HasSubscription : SubscriptionScreenState
     data class Success(val monthSub: SubscriptionInfo) : SubscriptionScreenState
 }
 

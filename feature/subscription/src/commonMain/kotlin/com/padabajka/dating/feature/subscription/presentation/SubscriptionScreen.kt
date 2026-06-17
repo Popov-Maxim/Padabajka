@@ -2,6 +2,7 @@ package com.padabajka.dating.feature.subscription.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreCallToActionButton
@@ -37,6 +39,7 @@ import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.drawable.icon.toData
+import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
 import com.padabajka.dating.core.presentation.ui.layout.SimpleTopBar
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.Gradient
@@ -68,20 +71,17 @@ fun SubscriptionScreen(component: SubscriptionScreenComponent) {
             )
         },
     ) {
-        when (val state = state) {
-            SubscriptionScreenState.Loading -> CoreCircularProgressIndicator()
-            is SubscriptionScreenState.Success -> Content(
-                component = component,
-                state = state,
-            )
-        }
+        Content(
+            component = component,
+            state = state,
+        )
     }
 }
 
 @Composable
 private fun Content(
     component: SubscriptionScreenComponent,
-    state: SubscriptionScreenState.Success,
+    state: SubscriptionScreenState,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -91,29 +91,79 @@ private fun Content(
         CardsBlock(
             modifier = Modifier.weight(1f)
         )
-        PriceBlock(
-            subInfo = state.monthSub,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(22.dp)
-        ) {
-            Text(
-                text = StaticTextId.UiId.SubscriptionFootnote.translate(),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-                textAlign = TextAlign.Center
-            )
-            Column(
-                modifier = Modifier.padding(horizontal = 30.dp),
-            ) {
-                CoreCallToActionButton(
-                    text = StaticTextId.UiId.Apply.translate(),
-                    onClick = {
-                        component.onEvent(SubscriptionEvent.Apply)
-                    }
+        val modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp)
+        when (state) {
+            SubscriptionScreenState.HasSubscription -> {
+                HasSubscriptionBlock(modifier)
+            }
+            SubscriptionScreenState.Loading -> {
+                LoadingBox(modifier)
+            }
+            is SubscriptionScreenState.Success -> {
+                PriceBlock(
+                    subInfo = state.monthSub,
+                    modifier = modifier
                 )
             }
+        }
+        val buttonEnabled = state is SubscriptionScreenState.Success
+        FootnoteWithButton(
+            component = component,
+            buttonEnabled = buttonEnabled
+        )
+    }
+}
+
+@Composable
+private fun LoadingBox(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        CoreCircularProgressIndicator()
+    }
+}
+
+@Composable
+private fun HasSubscriptionBlock(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = StaticTextId.UiId.YouAlreadyHaveSubscription.translate(),
+            fontSize = 24.sp,
+            lineHeight = 1.2.em,
+            fontFamily = PlayfairDisplay,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun FootnoteWithButton(
+    component: SubscriptionScreenComponent,
+    buttonEnabled: Boolean
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(22.dp)
+    ) {
+        Text(
+            text = StaticTextId.UiId.SubscriptionFootnote.translate(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+            textAlign = TextAlign.Center
+        )
+        Column(
+            modifier = Modifier.padding(horizontal = 30.dp),
+        ) {
+            CoreCallToActionButton(
+                text = StaticTextId.UiId.Apply.translate(),
+                enabled = buttonEnabled,
+                onClick = {
+                    component.onEvent(SubscriptionEvent.Apply)
+                }
+            )
         }
     }
 }
@@ -167,7 +217,7 @@ private fun PriceBlock(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().heightIn(min = 150.dp),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterVertically)
     ) {
