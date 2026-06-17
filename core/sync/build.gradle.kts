@@ -26,6 +26,9 @@ kotlin {
     }
 
     sourceSets {
+        androidMain.dependencies {
+            implementation(libs.androidx.lifecycle.process)
+        }
         commonMain.dependencies {
             api(projects.core.domain)
             api(projects.core.repositoryApi)
