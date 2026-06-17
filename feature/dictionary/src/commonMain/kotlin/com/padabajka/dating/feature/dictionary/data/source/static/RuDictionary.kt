@@ -180,6 +180,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Month -> "месяц"
             StaticTextId.UiId.Discount -> "Скидка"
             StaticTextId.UiId.Until -> "До"
+            StaticTextId.UiId.YouAlreadyHaveSubscription -> "У вас уже оформлена подписка"
             StaticTextId.UiId.BenefitSuperLikeTitle -> "10 суперлайков в день"
             StaticTextId.UiId.BenefitSuperLikeBody -> "Выделитесь среди остальных и получите больше внимания"
             StaticTextId.UiId.BenefitReturnsTitle -> "Вернуться назад"

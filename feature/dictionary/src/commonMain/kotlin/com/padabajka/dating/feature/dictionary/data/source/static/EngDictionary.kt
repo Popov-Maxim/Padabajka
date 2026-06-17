@@ -185,6 +185,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Month -> "month"
             StaticTextId.UiId.Discount -> "Discount"
             StaticTextId.UiId.Until -> "Until"
+            StaticTextId.UiId.YouAlreadyHaveSubscription -> "You already have an active subscription"
             StaticTextId.UiId.BenefitSuperLikeTitle -> "10 Super Likes per day"
             StaticTextId.UiId.BenefitSuperLikeBody -> "Stand out and get more attention"
             StaticTextId.UiId.BenefitReturnsTitle -> "Rewind"
