@@ -77,6 +77,7 @@ class SubscriptionRepositoryImpl(
 
         val subscriptionStateResponse = remoteSubscriptionDataSource.subscribe(
             PurchaseRequest(
+                productId = result.productId,
                 purchaseToken = result.purchaseToken!!,
                 service = platformBillingClient.serviceName.raw
             )
