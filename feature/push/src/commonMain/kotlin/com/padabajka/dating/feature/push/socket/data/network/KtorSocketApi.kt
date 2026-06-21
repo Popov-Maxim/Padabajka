@@ -4,6 +4,7 @@ import com.padabajka.dating.core.networking.KtorClientProvider
 import com.padabajka.dating.core.networking.NetworkConstants
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.webSocketSession
+import io.ktor.http.URLProtocol
 import io.ktor.http.path
 
 class KtorSocketApi(
@@ -15,6 +16,7 @@ class KtorSocketApi(
 
         return client.webSocketSession {
             url {
+                protocol = URLProtocol.WSS
                 path(SOCKET_PATH)
                 port = NetworkConstants.PORT
             }
