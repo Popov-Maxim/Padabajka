@@ -1,6 +1,6 @@
 package com.padabajka.dating.core.networking
 
-import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.http.DEFAULT_PORT
 import io.ktor.http.URLProtocol
 
@@ -15,4 +15,4 @@ object NetworkConstants {
 
 expect val localHost: String
 
-expect val imageEngine: HttpClientEngine
+expect val networkEngineFactory: HttpClientEngineFactory<*>

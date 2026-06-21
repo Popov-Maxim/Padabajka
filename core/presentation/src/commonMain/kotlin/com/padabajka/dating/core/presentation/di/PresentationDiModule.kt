@@ -4,7 +4,7 @@ import coil3.ImageLoader
 import coil3.network.ktor2.KtorNetworkFetcherFactory
 import coil3.svg.SvgDecoder
 import coil3.util.DebugLogger
-import com.padabajka.dating.core.networking.imageEngine
+import com.padabajka.dating.core.networking.networkEngineFactory
 import com.padabajka.dating.core.presentation.ComponentLifecycleListener
 import com.padabajka.dating.core.presentation.deeplink.AppDeeplinkHandler
 import com.padabajka.dating.core.presentation.error.DomainErrorHandler
@@ -22,7 +22,7 @@ private val presentationDiModule = module {
             .components {
                 add(
                     KtorNetworkFetcherFactory(
-                        httpClient = HttpClient(engine = imageEngine)
+                        httpClient = HttpClient(engine = networkEngineFactory.create())
                     )
                 )
                 add(SvgDecoder.Factory(scaleToDensity = true))
