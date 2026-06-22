@@ -2,13 +2,16 @@ package com.padabajka.dating.feature.push.socket.data.network
 
 import com.padabajka.dating.core.networking.KtorClientProvider
 import com.padabajka.dating.core.networking.NetworkConstants
+import com.padabajka.dating.core.networking.socketProtocol
+import com.padabajka.dating.core.repository.api.AppSettingsRepository
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.http.URLProtocol
 import io.ktor.http.path
 
 class KtorSocketApi(
-    private val ktorClientProvider: KtorClientProvider
+    private val ktorClientProvider: KtorClientProvider,
+    private val appSettings: AppSettingsRepository
 ) {
 
     suspend fun connect(deviceUid: String): DefaultClientWebSocketSession {
@@ -16,7 +19,8 @@ class KtorSocketApi(
 
         return client.webSocketSession {
             url {
-                protocol = URLProtocol.WSS
+                val debugHost = appSettings.debugAppSettingsValue.host
+                protocol = debugHost.socketProtocol() ?: URLProtocol.WSS
                 path(SOCKET_PATH)
                 port = NetworkConstants.PORT
             }

@@ -29,3 +29,11 @@ fun Host.rawPort(): Int? {
         Host.Prod -> null
     }
 }
+
+fun Host.isHttps(): Boolean {
+    return when (this) {
+        is Host.Custom -> false
+        is Host.Local -> false
+        Host.Prod -> true
+    }
+}
