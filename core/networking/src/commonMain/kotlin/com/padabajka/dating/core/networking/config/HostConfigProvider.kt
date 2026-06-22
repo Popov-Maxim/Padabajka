@@ -1,6 +1,7 @@
 package com.padabajka.dating.core.networking.config
 
 import com.padabajka.dating.core.networking.NetworkConstants
+import com.padabajka.dating.core.networking.protocol
 import com.padabajka.dating.core.repository.api.AppSettingsRepository
 import com.padabajka.dating.core.repository.api.model.settings.raw
 import com.padabajka.dating.core.repository.api.model.settings.rawPort
@@ -17,7 +18,7 @@ class HostConfigProvider(
             install(DefaultRequest) {
                 url {
                     val debugHost = appSettings.debugAppSettingsValue.host
-                    protocol = NetworkConstants.protocol
+                    protocol = debugHost.protocol() ?: NetworkConstants.protocol
                     host = debugHost.raw() ?: NetworkConstants.domainName
                     port = debugHost.rawPort() ?: NetworkConstants.PORT
                 }
