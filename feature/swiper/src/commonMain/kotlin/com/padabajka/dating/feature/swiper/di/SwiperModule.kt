@@ -101,7 +101,7 @@ private val dataModule = module {
         )
     }
 
-    factory<CardSelector> {
+    single<CardSelector> {
         CardSelectorImpl(
             subscriptionRepository = get()
         )

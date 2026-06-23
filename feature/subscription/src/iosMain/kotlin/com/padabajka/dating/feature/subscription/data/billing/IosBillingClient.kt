@@ -106,7 +106,7 @@ private class PaymentObserver(
                         SKPaymentQueue.defaultQueue().finishTransaction(tx)
 
                         if (tx.payment.productIdentifier == targetId) {
-                            onResult(PurchaseResult(targetId))
+                            onResult(PurchaseResult(targetId, tx.transactionIdentifier))
                         }
                     }
 
