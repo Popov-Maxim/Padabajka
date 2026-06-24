@@ -84,7 +84,8 @@ fun TestDeckOfCards() {
                     },
                     onEndSwipeAnimation = {
                         cardDeck = cardDeck.remove(card)
-                    }
+                    },
+                    cardBacking = {}
                 )
             }
         }

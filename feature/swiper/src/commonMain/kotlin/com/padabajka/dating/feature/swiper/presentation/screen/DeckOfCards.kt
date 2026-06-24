@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.swiper.presentation.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -83,6 +85,17 @@ fun DeckOfCards(
                                 CardReaction.SuperLike -> controller.swipeUp()
                             }
                         }
+                    },
+                    cardBacking = {
+                        val backgroundColor = when (it) {
+                            Swipe.Left -> Color(color = 0xFFF44336)
+                            Swipe.Right -> Color(color = 0xFF47C04C)
+                            Swipe.Up -> Color(color = 0xFF6C2D85)
+                        }.copy(alpha = 0.5f)
+                        val gradient = Brush.linearGradient(
+                            colors = listOf(backgroundColor.copy(alpha = 0f), backgroundColor),
+                        )
+                        Box(modifier = Modifier.clip(shape).fillMaxSize().background(gradient))
                     },
                     onSwipe = {
                         val reaction = when (it) {
