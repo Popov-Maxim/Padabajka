@@ -36,14 +36,16 @@ import kotlin.math.sqrt
 fun AnimationCard(
     modifier: Modifier = Modifier,
     swipeHorizontalThreshold: Float = 300f,
-    swipeVerticalThreshold: Float = 400f,
+    swipeVerticalThreshold: Float = 500f,
     onSwipe: (Swipe) -> Unit,
     onEndSwipeAnimation: () -> Unit,
     resetPosition: Boolean = false,
     onResetSuccess: () -> Unit = {},
-    content: @Composable (CardController, cardPosition: CardPosition) -> Unit
+    content: @Composable (CardController, cardPosition: CardPosition) -> Unit,
+    cardBacking: @Composable (Swipe) -> Unit,
 ) {
     val screenSize = ScreenSizeProvider.getPxScreenSize()
+    var preSwipe: Swipe? by remember { mutableStateOf(null) }
     var offset by remember { mutableStateOf(AnimationOffset.Zero) }
     LaunchedEffect(resetPosition) {
         if (resetPosition) {
@@ -91,11 +93,16 @@ fun AnimationCard(
                                         onEndSwipeAnimation()
                                     }
                                 }
+
+                                preSwipe = null
                                 swipe?.let(onSwipe)
                             }
                     }
                 ) { change, dragAmount ->
                     offset += dragAmount
+                    val swipe =
+                        offset.getSwipe(swipeHorizontalThreshold, swipeVerticalThreshold)
+                    preSwipe = swipe
 
                     if (change.positionChange() != Offset.Zero) change.consume()
                 }
@@ -115,6 +122,9 @@ fun AnimationCard(
                     offset = animationOffset
                 )
             )
+            preSwipe?.let {
+                cardBacking(it)
+            }
         }
     }
 }
