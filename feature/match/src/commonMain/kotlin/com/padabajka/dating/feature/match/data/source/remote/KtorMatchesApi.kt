@@ -15,7 +15,7 @@ class KtorMatchesApi(
 
         val response = client.get {
             url {
-                path(MatchesApi.PATH)
+                path(MatchesApi.MATCHES_PATH)
             }
         }
 
@@ -27,7 +27,7 @@ class KtorMatchesApi(
 
         val response = client.delete {
             url {
-                path(MatchesApi.PATH_DELETE + "/$matchId")
+                path(MatchesApi.MATCH_PATH + "/$matchId")
             }
         }
 

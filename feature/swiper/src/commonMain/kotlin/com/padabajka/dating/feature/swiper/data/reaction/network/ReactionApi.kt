@@ -8,7 +8,7 @@ interface ReactionApi {
     suspend fun postReactions(reactions: Set<ReactionDto.Request>)
 
     /**
-     * GET /reactions_to_me
+     * GET /reactions_to_me // TODO(P0): rename to reactions?
      */
     suspend fun getReactions(): Set<ReactionDto.ToMeResponse>
 

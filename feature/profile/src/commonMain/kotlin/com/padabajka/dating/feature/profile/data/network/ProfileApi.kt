@@ -16,12 +16,12 @@ interface ProfileApi {
     suspend fun get(userId: String): PersonResponse?
 
     /**
-     * PATCH /update_profile?...
+     * PATCH /profile?...
      */
     suspend fun patch(params: PatchParams)
 
     /**
-     * POST /create_profile
+     * POST /profile
      */
     suspend fun create(profile: ProfileRequest)
 
@@ -41,8 +41,6 @@ interface ProfileApi {
     }
 
     companion object {
-        const val PATH_FOR_GET = "profile"
-        const val PATH_FOR_PATCH = "update_profile"
-        const val PATH_FOR_CREATE_API = "create_profile"
+        const val PROFILE_PATH = "profile"
     }
 }
