@@ -14,6 +14,9 @@ class KtorSocketApi(
     private val appSettings: AppSettingsRepository
 ) {
 
+    /**
+     * SOCKET GET /connection
+     */
     suspend fun connect(deviceUid: String): DefaultClientWebSocketSession {
         val client = ktorClientProvider.client()
 

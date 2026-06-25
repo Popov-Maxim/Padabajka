@@ -4,9 +4,25 @@ import com.padabajka.dating.core.data.network.model.PersonResponse
 import kotlin.jvm.JvmInline
 
 interface ProfileApi {
+
+    /**
+     * GET /profile
+     */
     suspend fun get(): PersonResponse?
+
+    /**
+     * GET /profile/{userId}
+     */
     suspend fun get(userId: String): PersonResponse?
+
+    /**
+     * PATCH /update_profile?...
+     */
     suspend fun patch(params: PatchParams)
+
+    /**
+     * POST /create_profile
+     */
     suspend fun create(profile: ProfileRequest)
 
     @JvmInline
