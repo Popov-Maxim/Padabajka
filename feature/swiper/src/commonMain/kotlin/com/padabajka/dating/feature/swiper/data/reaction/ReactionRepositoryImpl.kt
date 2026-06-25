@@ -57,7 +57,9 @@ class ReactionRepositoryImpl(
 
     override suspend fun forceSendReactions() {
         val reactions = localReactionDataSource.getReactions()
-        forceSendReactions(reactions)
+        if (reactions.isNotEmpty()) {
+            forceSendReactions(reactions)
+        }
     }
 
     override suspend fun deleteReaction() {

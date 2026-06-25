@@ -10,12 +10,12 @@ interface MatchesApi {
     suspend fun getMatches(): List<MatchDto>
 
     /**
-     * DELETE /match_delete/{matchId}
+     * DELETE /match/{matchId}
      */
     suspend fun delete(matchId: String)
 
     companion object {
-        const val PATH = "matches"
-        const val PATH_DELETE = "match_delete"
+        const val MATCHES_PATH = "matches"
+        const val MATCH_PATH = "match"
     }
 }

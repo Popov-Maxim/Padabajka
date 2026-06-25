@@ -24,7 +24,7 @@ class KtorProfileApi(
 
         val response = client.get {
             url {
-                path(ProfileApi.PATH_FOR_GET)
+                path(ProfileApi.PROFILE_PATH)
             }
         }
 
@@ -37,7 +37,7 @@ class KtorProfileApi(
 
         val response = client.get {
             url {
-                path(ProfileApi.PATH_FOR_GET + "/$userId")
+                path(ProfileApi.PROFILE_PATH + "/$userId")
             }
         }
 
@@ -51,7 +51,7 @@ class KtorProfileApi(
 
         val response = client.patch {
             url {
-                path(ProfileApi.PATH_FOR_PATCH)
+                path(ProfileApi.PROFILE_PATH)
 
                 parameters.apply {
                     params.raw.forEach { (key, value) ->
@@ -69,7 +69,7 @@ class KtorProfileApi(
 
         val response = client.post {
             url {
-                path(ProfileApi.PATH_FOR_CREATE_API)
+                path(ProfileApi.PROFILE_PATH)
             }
 
             contentType(ContentType.Application.Json)

@@ -5,11 +5,11 @@ import com.padabajka.dating.core.data.network.model.ImageDto
 interface ImageApi {
 
     /**
-     * POST /upload_image/profile
+     * POST /image/profile
      */
     suspend fun post(byteArray: ByteArray): ImageDto
 
     companion object {
-        const val PATH = "upload_image/profile"
+        const val PATH = "image/profile"
     }
 }
