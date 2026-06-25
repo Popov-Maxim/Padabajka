@@ -3,6 +3,10 @@ package com.padabajka.dating.feature.push.data.data.network
 import kotlinx.serialization.Serializable
 
 interface TokenApi {
+
+    /**
+     * POST /new_token TODO(P1): need delete?
+     */
     suspend fun post(data: BodyData)
 
     @Serializable

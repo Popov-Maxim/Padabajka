@@ -11,6 +11,10 @@ import io.ktor.http.path
 class CityApi(
     private val ktorClientProvider: KtorClientProvider
 ) {
+
+    /**
+     * GET /assets/cities/{clientVersion}
+     */
     suspend fun getCities(clientVersion: Int): AssetsDto<CityDto>? {
         val client = ktorClientProvider.client()
 

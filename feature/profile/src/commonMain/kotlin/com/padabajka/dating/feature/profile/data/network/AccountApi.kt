@@ -24,6 +24,9 @@ class AccountApi(
         response.throwIfNotSuccessful()
     }
 
+    /**
+     * POST /account/freeze
+     */
     suspend fun freeze() {
         val client = ktorClientProvider.client()
 
@@ -36,6 +39,9 @@ class AccountApi(
         response.throwIfNotSuccessful()
     }
 
+    /**
+     * POST /account/unfreeze
+     */
     suspend fun unfreeze() {
         val client = ktorClientProvider.client()
 

@@ -11,6 +11,10 @@ import io.ktor.http.path
 class LanguageAssetApi(
     private val ktorClientProvider: KtorClientProvider
 ) {
+
+    /**
+     * GET /assets/languages/{clientVersion}
+     */
     suspend fun getAssets(clientVersion: Int): AssetsDto<LanguageAssetDto>? {
         val client = ktorClientProvider.client()
 

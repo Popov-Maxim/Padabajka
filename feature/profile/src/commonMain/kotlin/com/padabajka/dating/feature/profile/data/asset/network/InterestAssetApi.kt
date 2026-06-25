@@ -11,6 +11,10 @@ import io.ktor.http.path
 class InterestAssetApi(
     private val ktorClientProvider: KtorClientProvider
 ) {
+
+    /**
+     * PATCH /assets/interests/{clientVersion}
+     */
     suspend fun getAssets(clientVersion: Int): AssetsDto<InterestAssetDto>? {
         val client = ktorClientProvider.client()
 
