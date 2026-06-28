@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.messenger.data.message
 
+import com.padabajka.dating.component.room.messenger.entry.MessageContentDB
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import com.padabajka.dating.component.room.messenger.entry.MessageReactionEntity
 import com.padabajka.dating.component.room.messenger.entry.MessageReadEventEntry
@@ -90,7 +91,7 @@ internal class MessageRepositoryImpl(
             id = uuid(),
             chatId = chatId.raw,
             authorId = myPersonId.raw,
-            content = content,
+            content = MessageContentDB(content),
             creationTime = currentTime,
             messageStatus = MessageStatus.Sending,
             readSynced = true,
@@ -117,7 +118,11 @@ internal class MessageRepositoryImpl(
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override suspend fun editMessage(chatId: ChatId, messageId: MessageId, content: String) {
         val updatedMessage = localMessageDataSource.updateMessage(messageId.raw) {
-            it.copy(editedAt = nowMilliseconds(), editSynced = false, content = content)
+            it.copy(
+                editedAt = nowMilliseconds(),
+                editSynced = false,
+                content = MessageContentDB(content)
+            )
         }
 
         try {
@@ -298,7 +303,7 @@ internal class MessageRepositoryImpl(
             ParentMessage(
                 id = MessageId(parentMessageDto.id),
                 direction = direction(parentMessageDto.authorId),
-                content = parentMessageDto.content
+                content = parentMessageDto.content.text
             )
         }
 
@@ -307,7 +312,7 @@ internal class MessageRepositoryImpl(
         return Message(
             id = MessageId(id),
             direction = direction(authorId),
-            content = content,
+            content = content.text,
             creationTime = localDateTime(creationTime),
             status = messageStatus,
             readAt = readAt?.run(::localDateTime),

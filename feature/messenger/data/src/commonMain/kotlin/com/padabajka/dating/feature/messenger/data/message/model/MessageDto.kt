@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.messenger.data.message.model
 
+import com.padabajka.dating.component.room.messenger.entry.MessageContentDB
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import com.padabajka.dating.component.room.messenger.entry.MessageReadEventEntry
 import com.padabajka.dating.core.data.network.incoming.dto.MessageDataPush
@@ -45,7 +46,7 @@ object MessageRequest {
     @Serializable
     data class Send(
         val id: String,
-        val content: String,
+        val content: String, // TODO(P0): add content data class
         val parentMessageId: String?
     )
 
@@ -92,14 +93,14 @@ object MessageReactionRequest {
 fun MessageEntry.toSendRequest(): MessageRequest.Send {
     return MessageRequest.Send(
         id = id,
-        content = content,
+        content = content.text,
         parentMessageId = parentMessageId
     )
 }
 
 fun MessageEntry.toEditRequest(): MessageRequest.Edit {
     return MessageRequest.Edit(
-        content = content,
+        content = content.text,
         parentMessageId = parentMessageId
     )
 }
@@ -117,7 +118,7 @@ fun MessageDto.Existing.toEntity(): MessageEntry {
         id = id,
         chatId = chatId,
         authorId = authorId,
-        content = content,
+        content = MessageContentDB(content),
         creationTime = creationTime,
         reactions = reactions.map { it.toEntity() },
         messageStatus = MessageStatus.Sent,
@@ -133,7 +134,7 @@ fun MessageDataPush.NewMessage.toEntity(): MessageEntry {
         id = id.raw,
         chatId = chatId,
         authorId = authorId,
-        content = content,
+        content = MessageContentDB(content),
         creationTime = creationTime,
         reactions = listOf(),
         messageStatus = MessageStatus.Sent,
