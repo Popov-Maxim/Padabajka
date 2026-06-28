@@ -1,10 +1,13 @@
 package com.padabajka.dating.feature.match.data.source.local
 
 import com.padabajka.dating.component.room.person.entry.PersonEntry
+import com.padabajka.dating.core.data.network.model.toDomain
+import com.padabajka.dating.core.data.network.model.toDto
 import com.padabajka.dating.core.data.network.model.toLookingForData
 import com.padabajka.dating.core.data.network.model.toLookingForDataDto
+import com.padabajka.dating.core.data.network.model.toText
+import com.padabajka.dating.core.data.network.model.toTextDto
 import com.padabajka.dating.core.repository.api.model.profile.Image
-import com.padabajka.dating.core.repository.api.model.profile.LanguagesAsset
 import com.padabajka.dating.core.repository.api.model.profile.Profile
 import com.padabajka.dating.core.repository.api.model.swiper.Person
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
@@ -18,7 +21,11 @@ fun Person.toEntry(): PersonEntry {
         birthday = profile.birthday,
         images = profile.images.map { (it as Image.Url).value },
         aboutMe = profile.aboutMe,
-        lookingFor = profile.lookingFor.toLookingForDataDto()
+        lookingFor = profile.lookingFor.toLookingForDataDto(),
+        details = profile.details.map { it.toDto() },
+        lifestyles = profile.lifestyles.map { it.toDto() },
+        interests = profile.interests.map { it.toTextDto() },
+        languagesAsset = profile.languagesAsset.toDto(),
     )
 }
 
@@ -36,10 +43,10 @@ fun PersonEntry.toProfile(): Profile {
         images = images.map { Image.Url(it) }.toPersistentList(),
         aboutMe = aboutMe,
         lookingFor = lookingFor.toLookingForData(),
-        details = listOf(),
-        lifestyles = listOf(),
-        interests = listOf(),
-        languagesAsset = LanguagesAsset(),
+        details = details.map { it.toDomain() },
+        lifestyles = lifestyles.map { it.toDomain() },
+        interests = interests.map { it.toText() },
+        languagesAsset = languagesAsset.toDomain(),
         mainAchievement = null,
         achievements = persistentListOf(),
         isFrozen = false

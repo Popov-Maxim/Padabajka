@@ -12,7 +12,7 @@ data class MessageEntry(
     @PrimaryKey val id: String,
     @ColumnInfo("chatId") val chatId: String,
     @ColumnInfo("authorId") val authorId: String,
-    @ColumnInfo("content") val content: String,
+    @ColumnInfo("content") val content: MessageContentDB,
     @ColumnInfo("creationTime") val creationTime: Long,
     @ColumnInfo("reaction") val reactions: List<MessageReactionEntity>?,
     @ColumnInfo("messageStatus") val messageStatus: MessageStatus,
@@ -28,4 +28,9 @@ data class MessageReactionEntity(
     val value: MessageReaction.Value,
     val time: Long,
     val reactionSynced: Boolean,
+)
+
+@Serializable
+data class MessageContentDB(
+    val text: String
 )

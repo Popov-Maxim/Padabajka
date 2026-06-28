@@ -7,11 +7,11 @@ class MessageStatusConverters {
 
     @TypeConverter
     fun fromString(value: String): MessageStatus {
-        return MessageStatus.valueOf(value)
+        return MessageStatus.parse(value)
     }
 
     @TypeConverter
     fun toString(value: MessageStatus): String {
-        return value.name
+        return value.raw
     }
 }

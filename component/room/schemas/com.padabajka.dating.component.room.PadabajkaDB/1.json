@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f17311e0602b4b5af94060fe53814b0d",
+    "identityHash": "0130d5db04b1d99681e1509902c7f9ef",
     "entities": [
       {
         "tableName": "messages",
@@ -184,7 +184,7 @@
       },
       {
         "tableName": "person",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `birthday` INTEGER NOT NULL, `images` TEXT NOT NULL, `aboutMe` TEXT NOT NULL, `lookingFor` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `birthday` INTEGER NOT NULL, `images` TEXT NOT NULL, `aboutMe` TEXT NOT NULL, `lookingFor` TEXT NOT NULL, `details` TEXT NOT NULL, `lifestyles` TEXT NOT NULL, `interests` TEXT NOT NULL, `languagesAsset` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -219,6 +219,30 @@
           {
             "fieldPath": "lookingFor",
             "columnName": "lookingFor",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "details",
+            "columnName": "details",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lifestyles",
+            "columnName": "lifestyles",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "interests",
+            "columnName": "interests",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "languagesAsset",
+            "columnName": "languagesAsset",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -343,7 +367,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f17311e0602b4b5af94060fe53814b0d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0130d5db04b1d99681e1509902c7f9ef')"
     ]
   }
 }

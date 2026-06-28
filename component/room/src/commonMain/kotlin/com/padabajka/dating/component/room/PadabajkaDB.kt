@@ -15,6 +15,7 @@ import com.padabajka.dating.component.room.matches.MatchesDao
 import com.padabajka.dating.component.room.matches.entry.MatchEntry
 import com.padabajka.dating.component.room.messenger.MessageDao
 import com.padabajka.dating.component.room.messenger.MessageReadEventDao
+import com.padabajka.dating.component.room.messenger.converters.MessageContentConverter
 import com.padabajka.dating.component.room.messenger.converters.MessageReactionEntityConverters
 import com.padabajka.dating.component.room.messenger.converters.MessageStatusConverters
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
@@ -40,6 +41,7 @@ import com.padabajka.dating.component.room.person.entry.PersonEntry
 @TypeConverters(
     MessageReactionEntityConverters::class,
     MessageStatusConverters::class,
+    MessageContentConverter::class,
     LocalDateConverters::class,
     ListStringConverters::class,
     LookingForDataConverter::class
