@@ -65,7 +65,8 @@ private val presentationModule = module {
             deleteAccountUseCase = get(),
             profileRepository = get(),
             subscriptionRepository = get(),
-            alertService = get()
+            alertService = get(),
+            legalRepository = get(),
         )
     }
 }

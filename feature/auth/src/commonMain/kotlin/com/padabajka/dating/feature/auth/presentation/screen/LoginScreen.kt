@@ -1,11 +1,13 @@
 package com.padabajka.dating.feature.auth.presentation.screen
 
+import FormattedLegalText
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -26,17 +28,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.drawable.icon.CoreIcons
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.BottomWaveShape
 import com.padabajka.dating.core.presentation.ui.modifier.Gradient
 import com.padabajka.dating.core.utils.isDebugBuild
+import com.padabajka.dating.feature.auth.presentation.UnauthScopeComponent
 import com.padabajka.dating.settings.presentation.setting.AppSettingsDialog
+import defaultOnLinkClick
 
 @Composable
-fun LoginScreen(context: @Composable () -> Unit) {
+fun LoginScreen(component: UnauthScopeComponent, content: @Composable () -> Unit) {
     Column(modifier = Modifier.fillMaxWidth().background(CoreColors.background.mainColor)) {
         Column(
             modifier = Modifier.fillMaxWidth().weight(1f)
@@ -80,7 +87,19 @@ fun LoginScreen(context: @Composable () -> Unit) {
                     modifier = Modifier.align(Alignment.TopEnd)
                 )
             }
-            context()
+            content()
+
+            val state by component.state.subscribeAsState()
+            FormattedLegalText(
+                modifier = Modifier.align(Alignment.BottomCenter)
+                    .padding(vertical = 10.dp, horizontal = 20.dp),
+                fontSize = 12.sp,
+                textPattern = StaticTextId.UiId.LegalTextForAccept.translate(),
+                onLinkClick = defaultOnLinkClick(
+                    terms = state.terms,
+                    privacy = state.privacy
+                )
+            )
         }
     }
 }

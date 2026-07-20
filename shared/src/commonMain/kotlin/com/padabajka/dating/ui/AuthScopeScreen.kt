@@ -8,6 +8,7 @@ import com.padabajka.dating.ErrorScreen
 import com.padabajka.dating.SplashScreen
 import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.feature.auth.presentation.AccountDeletedScreen
+import com.padabajka.dating.feature.legal.presentation.NewLegalAgreementsScreen
 import com.padabajka.dating.navigation.AuthScopeNavigateComponent
 
 @Composable
@@ -27,6 +28,9 @@ fun AuthScopeScreen(component: AuthScopeNavigateComponent) {
 
             is AuthScopeNavigateComponent.Child.UserDeletedScreen ->
                 AccountDeletedScreen(instance.messageId, instance.component)
+
+            is AuthScopeNavigateComponent.Child.NewLegalAgreementsScreen ->
+                NewLegalAgreementsScreen(instance.component)
         }
     }
 }

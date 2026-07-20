@@ -4,11 +4,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -24,7 +22,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "auth"
+            baseName = "legal"
             isStatic = true
         }
     }
@@ -35,31 +33,17 @@ kotlin {
             api(projects.core.domain)
             api(projects.core.repositoryApi)
             api(projects.core.data)
-            api(projects.feature.auth.domain)
-            api(projects.feature.settings)
-            implementation(projects.feature.legal)
-
-            implementation(libs.gitlive.firebase.auth)
-        }
-
-        commonTest.dependencies {
-            implementation(projects.testing)
-            implementation(libs.kotlin.test)
-        }
-        val androidInstrumentedTest by getting
-        androidInstrumentedTest.dependencies {
-            implementation(libs.androidx.test.ext.junit)
-            implementation(libs.espresso.core)
-            implementation(libs.kotlin.test)
+            api(projects.core.networking)
+            api(projects.component.room)
+            implementation(projects.feature.auth.domain)
         }
     }
 }
 
 android {
-    namespace = "com.padabajka.dating.feature.auth"
+    namespace = "com.padabajka.dating.feature.legal"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }

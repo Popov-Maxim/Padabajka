@@ -43,6 +43,7 @@ kotlin {
             implementation(projects.feature.messenger)
             implementation(projects.feature.settings)
             implementation(projects.feature.settings.metadata)
+            implementation(projects.feature.legal)
             implementation(projects.feature.dictionary)
             implementation(projects.feature.push)
             implementation(projects.feature.permissionFlow)

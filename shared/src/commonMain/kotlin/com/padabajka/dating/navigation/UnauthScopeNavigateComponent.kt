@@ -5,6 +5,7 @@ import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.feature.auth.presentation.DebugLoginMethodComponent
 import com.padabajka.dating.feature.auth.presentation.EmailLoginMethodComponent
 import com.padabajka.dating.feature.auth.presentation.LoginMethodsComponent
+import com.padabajka.dating.feature.auth.presentation.UnauthScopeComponent
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -18,6 +19,11 @@ class UnauthScopeNavigateComponent(
     Configuration.LoginMethodsScreen
 ),
     KoinComponent {
+
+    val unauthScopeComponent: UnauthScopeComponent = UnauthScopeComponent(
+        context,
+        get()
+    )
 
     override fun createChild(
         configuration: Configuration,

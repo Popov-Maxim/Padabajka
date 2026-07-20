@@ -7,6 +7,14 @@ class EngDictionary : Dictionary() {
     @Suppress("LongMethod")
     override fun getUiWord(uiId: StaticTextId.UiId): String {
         return when (uiId) {
+            StaticTextId.UiId.LegalTextForAccept ->
+                "By continuing, you agree to our [Terms of Use](terms) and [Privacy Policy](privacy)."
+            StaticTextId.UiId.NewLegalTitle -> "Terms Updated"
+            StaticTextId.UiId.NewLegalBody ->
+                "We have updated our [Terms of Use](terms) and [Privacy Policy](privacy)." +
+                    " Please review the changes to continue using the application."
+            StaticTextId.UiId.NewLegalTextForAccept ->
+                "By continuing, you accept the [Terms of Use](terms) and [Privacy Policy](privacy)."
             StaticTextId.UiId.Settings -> "Settings"
             StaticTextId.UiId.Profile -> "Profile"
             StaticTextId.UiId.Editor -> "Editor"
@@ -22,6 +30,7 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.FAQ -> "FAQ"
             StaticTextId.UiId.FreezeProfile -> "Freeze profile"
             StaticTextId.UiId.TermsOfUse -> "Terms of use"
+            StaticTextId.UiId.PrivacyPolicy -> "Privacy policy"
             StaticTextId.UiId.DeleteAccount -> "Delete account"
             StaticTextId.UiId.SubscriptionActive -> "active"
             StaticTextId.UiId.SubscriptionInactive -> "not subscribed"

@@ -7,6 +7,16 @@ class RuDictionary : Dictionary() {
     @Suppress("LongMethod")
     override fun getUiWord(uiId: StaticTextId.UiId): String {
         return when (uiId) {
+            StaticTextId.UiId.LegalTextForAccept ->
+                "Продолжая, вы принимаете [Пользовательское соглашение](terms)" +
+                    " и [Политику конфиденциальности](privacy)."
+            StaticTextId.UiId.NewLegalTitle -> "Обновление условий"
+            StaticTextId.UiId.NewLegalBody ->
+                "Мы обновили наши [Пользовательское соглашение](terms) и [Политику конфиденциальности](privacy)." +
+                    " Пожалуйста, ознакомьтесь с изменениями, чтобы продолжить работу с приложением."
+            StaticTextId.UiId.NewLegalTextForAccept ->
+                "Продолжая, вы принимаете [Пользовательское соглашение](terms)" +
+                    " и [Политику конфиденциальности](privacy)."
             StaticTextId.UiId.Settings -> "Настройки"
             StaticTextId.UiId.Profile -> "Профиль"
             StaticTextId.UiId.Editor -> "Редактор"
@@ -22,6 +32,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.FAQ -> "FAQ"
             StaticTextId.UiId.FreezeProfile -> "Заморозить профиль"
             StaticTextId.UiId.TermsOfUse -> "Пользовательское соглашение"
+            StaticTextId.UiId.PrivacyPolicy -> "Политика конфиденциальности"
             StaticTextId.UiId.DeleteAccount -> "Удалить аккаунт"
             StaticTextId.UiId.SubscriptionActive -> "активна"
             StaticTextId.UiId.SubscriptionInactive -> "не оформлена"
