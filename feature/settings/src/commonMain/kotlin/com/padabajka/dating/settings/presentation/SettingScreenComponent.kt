@@ -10,7 +10,9 @@ import com.padabajka.dating.core.presentation.event.AlertService
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
+import com.padabajka.dating.core.repository.api.metadata.LegalRepository
 import com.padabajka.dating.core.repository.api.model.dictionary.Language
+import com.padabajka.dating.core.repository.api.model.legal.LegalVersions
 import com.padabajka.dating.feature.auth.domain.LogOutUseCase
 import com.padabajka.dating.feature.push.data.domain.UpdateTokenUseCase
 import com.padabajka.dating.settings.domain.AppSettingsComponentProvider
@@ -42,14 +44,20 @@ class SettingScreenComponent(
     private val profileRepository: ProfileRepository,
     settingsComponentProvider: AppSettingsComponentProvider,
     private val subscriptionRepository: SubscriptionRepository,
-    private val alertService: AlertService
+    private val alertService: AlertService,
+    private val legalRepository: LegalRepository
 ) : BaseComponent<SettingsState>(
     context,
     "setting",
     SettingsState(
         selectedLanguage = Language.Static.EN,
         subscriptionActive = subscriptionRepository.subscriptionStateValue.isActive,
-        profileFrozen = profileRepository.profileValue?.isFrozen ?: false
+        profileFrozen = profileRepository.profileValue?.isFrozen ?: false,
+        legalVersions = legalRepository.acceptedLegalVersionsValue
+            ?: LegalVersions(
+                privacy = "actual",
+                terms = "actual"
+            )
     )
 ) {
 
@@ -80,6 +88,17 @@ class SettingScreenComponent(
                 }
             }
         }
+        launchStep(
+            action = {
+                legalRepository.acceptedLegalVersions.collect { legalVersions ->
+                    reduce {
+                        it.copy(
+                            legalVersions = legalVersions
+                        )
+                    }
+                }
+            },
+        )
     }
 
     fun onEvent(event: SettingsEvent) {

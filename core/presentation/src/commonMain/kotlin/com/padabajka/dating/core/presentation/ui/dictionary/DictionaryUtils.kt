@@ -47,6 +47,12 @@ internal fun languageState(): State<Language.Static> {
 }
 
 @Composable
+fun languageCode(): String {
+    val language by languageState()
+    return language.id
+}
+
+@Composable
 fun StaticTextId.translate(): String {
     val language by languageState()
     return rememberTranslation(this, language).value

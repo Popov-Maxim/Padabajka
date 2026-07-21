@@ -43,9 +43,11 @@ import com.padabajka.dating.settings.presentation.model.NavigateBackEvent
 import com.padabajka.dating.settings.presentation.model.OpenLanguageSelectorEvent
 import com.padabajka.dating.settings.presentation.model.RequestPermissionEvent
 import com.padabajka.dating.settings.presentation.model.SettingsEvent
+import com.padabajka.dating.settings.presentation.model.SettingsState
 import com.padabajka.dating.settings.presentation.model.UnfreezeAccountEvent
 import com.padabajka.dating.settings.presentation.model.language.supportedLanguagesMap
 import com.padabajka.dating.settings.presentation.setting.AppSettingsDialog
+import openLegalInBrowser
 import org.koin.compose.koinInject
 
 @Composable
@@ -62,8 +64,9 @@ fun SettingScreen(component: SettingScreenComponent) {
             ),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            GeneralSetting(component)
-            LittleSetting(component)
+            val state by component.state.subscribeAsState()
+            GeneralSetting(component, state)
+            LittleSetting(component, state)
         }
     }
 }
@@ -71,10 +74,9 @@ fun SettingScreen(component: SettingScreenComponent) {
 @Composable
 private fun GeneralSetting(
     component: SettingScreenComponent,
+    state: SettingsState,
     modifier: Modifier = Modifier
 ) {
-    val state by component.state.subscribeAsState()
-
     var showDialog by remember { mutableStateOf(false) }
     val notificationPermissionController: NotificationPermissionController = koinInject()
     val initPermissionAllow by produceState<Boolean?>(initialValue = null) {
@@ -203,6 +205,7 @@ private fun GeneralSetting(
 @Composable
 private fun LittleSetting(
     component: SettingScreenComponent,
+    state: SettingsState,
     modifier: Modifier = Modifier
 ) {
     var showDeletingDialog: Boolean by remember { mutableStateOf(false) }
@@ -210,7 +213,12 @@ private fun LittleSetting(
         modifier = modifier
     ) {
         LittleButton(
-            text = StaticTextId.UiId.TermsOfUse.translate()
+            text = StaticTextId.UiId.TermsOfUse.translate(),
+            onClick = openLegalInBrowser(state.legalVersions.terms)
+        )
+        LittleButton(
+            text = StaticTextId.UiId.PrivacyPolicy.translate(),
+            onClick = openLegalInBrowser(state.legalVersions.privacy)
         )
         LittleButton(
             text = StaticTextId.UiId.DeleteAccount.translate(),

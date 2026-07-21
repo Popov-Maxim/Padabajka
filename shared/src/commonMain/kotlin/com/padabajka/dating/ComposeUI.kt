@@ -87,7 +87,7 @@ private fun NavigateApp(rootContext: AuthStateObserverComponent) {
 private fun UnauthScopeScreen(component: UnauthScopeNavigateComponent) {
     val childStack by component.childStack.subscribeAsState()
 
-    LoginScreen {
+    LoginScreen(component.unauthScopeComponent) {
         Children(
             stack = childStack,
             animation = NavigateComponentContext.defaultAnimation()

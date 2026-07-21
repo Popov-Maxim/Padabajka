@@ -88,7 +88,8 @@ class AuthStateObserverComponent(
                     updateAuthMetadataUseCase = get(),
                     profileRepository = get(),
                     domainErrorHandler = get(),
-                    syncSessionObserver = get()
+                    syncSessionObserver = get(),
+                    legalRepository = get()
                 )
             )
 

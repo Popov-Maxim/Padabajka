@@ -7,11 +7,20 @@ import com.padabajka.dating.core.presentation.error.DomainErrorHandler
 import com.padabajka.dating.core.presentation.error.ExternalDomainError
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.repository.api.ProfileRepository
+import com.padabajka.dating.core.repository.api.metadata.LegalRepository
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.deeplink.AppDeeplink
+import com.padabajka.dating.core.repository.api.model.legal.LegalState
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
 import com.padabajka.dating.core.sync.SyncSessionObserver
 import com.padabajka.dating.feature.auth.presentation.AccountDeletedScreenComponent
+import com.padabajka.dating.feature.legal.presentation.NewLegalAgreementsComponent
+import com.padabajka.dating.navigation.AuthScopeNavigateComponent.Child.CreateProfileScope
+import com.padabajka.dating.navigation.AuthScopeNavigateComponent.Child.LoadingErrorScreen
+import com.padabajka.dating.navigation.AuthScopeNavigateComponent.Child.LoadingProfileScreen
+import com.padabajka.dating.navigation.AuthScopeNavigateComponent.Child.MainAuthScope
+import com.padabajka.dating.navigation.AuthScopeNavigateComponent.Child.NewLegalAgreementsScreen
+import com.padabajka.dating.navigation.AuthScopeNavigateComponent.Child.UserDeletedScreen
 import com.padabajka.dating.settings.domain.NewAuthMetadataUseCase
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
@@ -26,6 +35,7 @@ class AuthScopeNavigateComponent(
     private val userId: UserId,
     private val updateAuthMetadataUseCase: NewAuthMetadataUseCase,
     private val profileRepository: ProfileRepository,
+    private val legalRepository: LegalRepository,
     private val syncSessionObserver: SyncSessionObserver,
     private val domainErrorHandler: DomainErrorHandler,
 ) : NavigateComponentContext<AuthScopeNavigateComponent.Configuration, AuthScopeNavigateComponent.Child>(
@@ -37,15 +47,26 @@ class AuthScopeNavigateComponent(
 
     init {
         backgroundScope.launch {
+            legalRepository.userLegalState.collect { legalState ->
+                when (legalState) {
+                    LegalState.Idle -> Unit
+                    LegalState.AllAccepted -> {
+                        finishPrepare()
+                    }
+
+                    is LegalState.NeedAccent -> navigateNewStack(
+                        Configuration.NewLegalAgreements(legalState.toData())
+                    )
+                }
+            }
+        }
+        backgroundScope.launch {
             profileRepository.profileState.collect { profileState ->
                 when (profileState) {
                     ProfileState.Idle -> Unit
                     ProfileState.NotCreated -> navigateNewStack(Configuration.CreateProfileScope)
                     is ProfileState.Existing -> {
-                        updateAuthMetadataUseCase()
-                        syncSessionObserver.start()
-
-                        navigateNewStack(Configuration.MainAuthScope)
+                        updateLegal()
                     }
                 }
             }
@@ -53,35 +74,56 @@ class AuthScopeNavigateComponent(
         updateProfile()
     }
 
+    private suspend fun finishPrepare() {
+        updateAuthMetadataUseCase()
+        syncSessionObserver.start()
+
+        navigateNewStack(Configuration.MainAuthScope)
+    }
+
     override fun createChild(
         configuration: Configuration,
         context: ComponentContext
     ): Child {
         return when (configuration) {
-            Configuration.LoadingProfileScreen -> Child.LoadingProfileScreen
-            is Configuration.CreateProfileScope -> Child.CreateProfileScope(
+            Configuration.LoadingProfileScreen -> LoadingProfileScreen
+            is Configuration.CreateProfileScope -> CreateProfileScope(
                 component = CreateProfileScopeNavigateComponent(context)
             )
 
-            is Configuration.MainAuthScope -> Child.MainAuthScope(
+            is Configuration.MainAuthScope -> MainAuthScope(
                 component = MainAuthScopeNavigateComponent(context, userId)
             )
 
-            is Configuration.LoadingErrorScreen -> Child.LoadingErrorScreen(
+            is Configuration.LoadingErrorScreen -> LoadingErrorScreen(
                 messageId = configuration.messageId,
                 message = configuration.message,
                 retry = {
                     navigateNewStack(Configuration.LoadingProfileScreen)
-                    updateProfile()
+                    if (configuration.needUpdateProfile) {
+                        updateProfile()
+                    } else {
+                        updateLegal()
+                    }
                 }
             )
 
-            is Configuration.UserDeletedScreen -> Child.UserDeletedScreen(
+            is Configuration.UserDeletedScreen -> UserDeletedScreen(
                 messageId = configuration.messageId,
                 component = AccountDeletedScreenComponent(
                     context = context,
                     logoutUseCase = get(),
                     alertService = get()
+                )
+            )
+
+            is Configuration.NewLegalAgreements -> NewLegalAgreementsScreen(
+                component = NewLegalAgreementsComponent(
+                    context = context,
+                    legalData = configuration.legalData,
+                    logoutUseCase = get(),
+                    alertService = get(),
+                    legalRepository = legalRepository
                 )
             )
         }
@@ -99,7 +141,7 @@ class AuthScopeNavigateComponent(
             val instance = childStack
                 .asFlow()
                 .map { it.active.instance }
-                .filterIsInstance<Child.MainAuthScope>()
+                .filterIsInstance<MainAuthScope>()
                 .first()
 
             instance.component.onDeeplink(deeplink)
@@ -120,13 +162,45 @@ class AuthScopeNavigateComponent(
                     navigateNewStack(
                         Configuration.LoadingErrorScreen(
                             error.text,
-                            throwable.message ?: throwable.toString()
+                            throwable.message ?: throwable.toString(),
+                            true
                         )
                     )
                     error.needLog.not()
                 }
             }
         }
+    }
+
+    private fun updateLegal() {
+        backgroundScope.launch {
+            runCatching {
+                legalRepository.updateUserLegalState()
+            }.onFailure { throwable ->
+                domainErrorHandler.handle(throwable) { error ->
+                    val error = when (error) {
+                        is ExternalDomainError.TextError -> error
+                        is ExternalDomainError.Unknown -> ExternalDomainError.TextError.Unknown
+                    }
+
+                    navigateNewStack(
+                        Configuration.LoadingErrorScreen(
+                            error.text,
+                            throwable.message ?: throwable.toString(),
+                            false
+                        )
+                    )
+                    error.needLog.not()
+                }
+            }
+        }
+    }
+
+    private fun LegalState.NeedAccent.toData(): NewLegalAgreementsComponent.Data {
+        return NewLegalAgreementsComponent.Data(
+            privacy = privacy,
+            terms = terms
+        )
     }
 
     sealed interface Child {
@@ -143,6 +217,10 @@ class AuthScopeNavigateComponent(
             val component: AccountDeletedScreenComponent
         ) : Child
 
+        data class NewLegalAgreementsScreen(
+            val component: NewLegalAgreementsComponent
+        ) : Child
+
         data class MainAuthScope(val component: MainAuthScopeNavigateComponent) : Child
     }
 
@@ -153,14 +231,20 @@ class AuthScopeNavigateComponent(
         data object LoadingProfileScreen : Configuration
 
         @Serializable
-        data class LoadingErrorScreen(val messageId: StaticTextId, val message: String) :
-            Configuration
+        data class LoadingErrorScreen(
+            val messageId: StaticTextId,
+            val message: String,
+            val needUpdateProfile: Boolean
+        ) : Configuration
 
         @Serializable
         data object CreateProfileScope : Configuration
 
         @Serializable
         data class UserDeletedScreen(val messageId: StaticTextId) : Configuration
+
+        @Serializable
+        data class NewLegalAgreements(val legalData: NewLegalAgreementsComponent.Data) : Configuration
 
         @Serializable
         data object MainAuthScope : Configuration

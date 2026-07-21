@@ -5,6 +5,12 @@ sealed interface StaticTextId {
 
     enum class UiId(val rawId: String) : StaticTextId {
 
+        // Legal
+        LegalTextForAccept(rawId = "legal_text_for_accept"),
+        NewLegalTitle(rawId = "new_legal_title"),
+        NewLegalBody(rawId = "new_legal_body"),
+        NewLegalTextForAccept(rawId = "new_legal_text_for_accept"),
+
         // Headers
         Settings(rawId = "settings"),
         Profile(rawId = "profile"),
@@ -24,6 +30,7 @@ sealed interface StaticTextId {
         FreezeProfile(rawId = "freeze_profile"),
 
         TermsOfUse(rawId = "terms_of_use"),
+        PrivacyPolicy(rawId = "privacy_policy"),
         DeleteAccount(rawId = "delete_account"),
 //        PrivacyPolicy(rawId = "privacy_policy"),
 
