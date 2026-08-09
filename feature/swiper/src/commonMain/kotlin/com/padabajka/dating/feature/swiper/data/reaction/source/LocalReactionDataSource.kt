@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.swiper.data.reaction.source
 
 import androidx.datastore.core.DataStore
+import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
 import com.padabajka.dating.feature.swiper.data.reaction.network.ReactionDto
 import com.padabajka.dating.feature.swiper.data.reaction.network.toRequest
@@ -18,12 +19,20 @@ class LocalReactionDataSource(
     val reactionsToMe: Flow<List<PersonReaction>> = _reactionsToMe.asStateFlow()
 
     fun setReactionsToMe(reactions: List<PersonReaction>) {
-        _reactionsToMe.value = reactions
+        _reactionsToMe.value = reactions.distinctBy { it.id }
     }
 
     fun addReactionsToMe(reactions: List<PersonReaction>) {
-        _reactionsToMe.update {
-            it + reactions
+        val newReactionsByPersonId = reactions.associateBy { it.id }
+        _reactionsToMe.update { currentReactions ->
+            currentReactions.filterNot { it.id in newReactionsByPersonId } +
+                newReactionsByPersonId.values
+        }
+    }
+
+    fun removeReactionToMe(personId: PersonId) {
+        _reactionsToMe.update { reactions ->
+            reactions.filterNot { it.id == personId }
         }
     }
 

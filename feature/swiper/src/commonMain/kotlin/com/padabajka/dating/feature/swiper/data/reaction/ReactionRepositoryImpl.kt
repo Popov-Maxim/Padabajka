@@ -53,6 +53,7 @@ class ReactionRepositoryImpl(
 
     override suspend fun forceReact(reaction: PersonReaction) {
         remoteReactionDataSource.sendReactions(listOf(reaction.toRequest()))
+        localReactionDataSource.removeReactionToMe(reaction.id)
     }
 
     override suspend fun forceSendReactions() {
