@@ -5,6 +5,7 @@ import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import com.padabajka.dating.component.room.messenger.entry.MessageReadEventEntry
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
+import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import kotlinx.coroutines.flow.Flow
 
 internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
@@ -69,5 +70,13 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
 
         messageDao.updateMessage(updated)
         return updated
+    }
+
+    override suspend fun markMessageFailedToSend(messageId: String) {
+        messageDao.updateMessageStatusUnless(
+            id = messageId,
+            status = MessageStatus.FailedToSend,
+            excludedStatus = MessageStatus.Sent,
+        )
     }
 }

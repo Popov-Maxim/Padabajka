@@ -167,7 +167,15 @@ class ChatComponent(
                 var jobSubscribeUserPresence: Job? = matchItem?.run {
                     subscribeUserPresence(matchItem)
                 }
+                var hasObservedMatch = matchItem != null
                 matchRepository.findMatch(chatId).collect { match ->
+                    if (match == null) {
+                        if (hasObservedMatch) {
+                            navigateBack()
+                        }
+                        return@collect
+                    }
+                    hasObservedMatch = true
                     matchId = match.id
 
                     val newMatchItem = match.toMatchItem()

@@ -83,13 +83,6 @@ class LikesMeScreenComponent(
         launchStep(
             action = {
                 reactionRepository.forceReact(reaction)
-                reduce { swiperState ->
-                    val list = (swiperState.listReactions as? ListReactions.Success)?.likes
-                        ?: return@reduce swiperState
-                    val newList = list.removeAll { it.personId == reaction.id }
-
-                    swiperState.copy(listReactions = ListReactions.Success(newList))
-                }
             },
             onError = {
                 val error = when (it) {

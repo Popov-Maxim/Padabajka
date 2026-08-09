@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.padabajka.dating.component.room.chat.entry.ChatEntry
 import kotlinx.coroutines.flow.Flow
 
@@ -21,6 +22,17 @@ interface ChatDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(chatEntry: ChatEntry)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertIfAbsent(chatEntry: ChatEntry)
+
+    @Transaction
+    suspend fun getOrCreate(chatEntry: ChatEntry): ChatEntry {
+        return getChat(chatEntry.id) ?: run {
+            insertIfAbsent(chatEntry)
+            chatEntry
+        }
+    }
 
     @Query("SELECT lastEventNumber FROM chats WHERE id = :chatId")
     suspend fun getLastEventNumber(chatId: String): Long?

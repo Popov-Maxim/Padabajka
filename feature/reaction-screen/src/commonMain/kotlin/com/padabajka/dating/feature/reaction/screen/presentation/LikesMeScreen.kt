@@ -192,6 +192,8 @@ private fun HasLikesMeScreen(
     }
 
     reactionUIState?.let {
+        val superLikeMessage = (it as? ReactionUIState.SuperLike)?.message
+            ?.takeIf(String::isNotBlank)
         ProfileViewBottomSheet(
             profileViewUIItem = it.profile,
             onDismissRequest = { reactionUIState = null },
@@ -204,7 +206,27 @@ private fun HasLikesMeScreen(
                     component.onEvent(LikesMeEvent.Dislike(it.personId))
                     reactionUIState = null
                 }
-            )
+            ),
+            additionalContent = superLikeMessage?.let { message ->
+                {
+                    SuperLikeMessage(message)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun SuperLikeMessage(message: String) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+            .background(CoreColors.secondary.mainColor, RoundedCornerShape(15.dp))
+            .padding(16.dp)
+    ) {
+        Text(
+            text = message,
+            color = CoreColors.secondary.textColor,
+            fontSize = 16.sp
         )
     }
 }
