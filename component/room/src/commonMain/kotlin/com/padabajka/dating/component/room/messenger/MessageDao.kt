@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
+import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -19,6 +20,20 @@ interface MessageDao {
 
     @Update
     suspend fun updateMessage(message: MessageEntry)
+
+    @Query(
+        """
+        UPDATE messages
+        SET messageStatus = :status
+        WHERE id = :id
+          AND messageStatus != :excludedStatus
+        """
+    )
+    suspend fun updateMessageStatusUnless(
+        id: String,
+        status: MessageStatus,
+        excludedStatus: MessageStatus,
+    )
 
     @Query("SELECT * FROM messages WHERE id = :id")
     suspend fun messageById(id: String): MessageEntry

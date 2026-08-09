@@ -21,4 +21,5 @@ interface LocalMessageDataSource {
     suspend fun deleteMessagesInChat(chatId: ChatId)
     suspend fun updateMessages(messagesForAdd: List<MessageEntry>, messageIdsForDelete: List<String>)
     suspend fun updateMessage(messageId: String, update: (MessageEntry) -> MessageEntry): MessageEntry
+    suspend fun markMessageFailedToSend(messageId: String)
 }

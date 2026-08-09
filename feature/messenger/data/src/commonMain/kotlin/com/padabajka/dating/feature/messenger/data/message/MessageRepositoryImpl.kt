@@ -279,9 +279,7 @@ internal class MessageRepositoryImpl(
             localMessageDataSource.updateMessage(messageEntry.id) { updatedMessageDto.toEntity() }
         } catch (e: Throwable) {
             // TODO(P1): retry sending
-            localMessageDataSource.updateMessage(messageEntry.id) {
-                it.copy(messageStatus = MessageStatus.FailedToSend)
-            }
+            localMessageDataSource.markMessageFailedToSend(messageEntry.id)
         }
     }
 
