@@ -8,4 +8,5 @@ interface GeoRepository {
     suspend fun sendLocation(location: Location)
 
     suspend fun sendLocation()
+    suspend fun clearLocalData()
 }

@@ -18,6 +18,7 @@ import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteC
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -48,6 +49,13 @@ class ReadMessageManager(
         }
 
         readFlow.emit(messageId)
+    }
+
+    suspend fun clearLocalData() {
+        processorJob.update {
+            this?.cancelAndJoin()
+            null
+        }
     }
 
     @OptIn(FlowPreview::class)

@@ -12,6 +12,8 @@ import com.padabajka.dating.core.repository.api.model.auth.WaitingForEmailValida
 import com.padabajka.dating.core.sync.SyncSessionObserver
 import com.padabajka.dating.feature.auth.domain.AuthStateProvider
 import com.padabajka.dating.feature.auth.presentation.VerificationComponent
+import com.padabajka.dating.session.UserSessionManager
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -20,12 +22,14 @@ import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
+import kotlin.coroutines.cancellation.CancellationException
 
 class AuthStateObserverComponent(
     context: ComponentContext,
     private val pushRepository: PushRepository,
     private val deeplinkHandler: AppDeeplinkHandler,
     private val syncSessionObserver: SyncSessionObserver,
+    private val userSessionManager: UserSessionManager,
 ) : NavigateComponentContext<AuthStateObserverComponent.Configuration, AuthStateObserverComponent.Child>(
     context,
     Configuration.serializer(),
@@ -49,22 +53,35 @@ class AuthStateObserverComponent(
 
     private val authProvider: AuthStateProvider = get()
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun subscribeToAuth() {
-        authProvider.authState.collect { authState ->
+        authProvider.authState.distinctUntilChanged().collect { authState ->
             when (authState) {
                 LoggedOut -> {
-                    navigateNewStack(Configuration.UnauthScope)
-                    backgroundScope.launch {
-                        syncSessionObserver.stop() // TODO(P1): can be crash in request with auth
+                    navigateNewStack(Configuration.SplashScreen)
+                    syncSessionObserver.stop()
+                    userSessionManager.clear()
+                    try {
                         pushRepository.deleteToken()
+                    } catch (exception: CancellationException) {
+                        throw exception
+                    } catch (_: Throwable) {
+                        // Local user data is already cleared; token recreation is retried on login.
                     }
+                    navigateNewStack(Configuration.UnauthScope)
                 }
 
                 is LoggedIn -> {
+                    navigateNewStack(Configuration.SplashScreen)
+                    syncSessionObserver.stop()
+                    userSessionManager.prepare(authState.userId)
                     navigateNewStack(Configuration.AuthScope(authState.userId))
                 }
 
                 is WaitingForEmailValidation -> {
+                    navigateNewStack(Configuration.SplashScreen)
+                    syncSessionObserver.stop()
+                    userSessionManager.prepare(authState.userId)
                     navigateNewStack(Configuration.VerificationScreen)
                 }
             }

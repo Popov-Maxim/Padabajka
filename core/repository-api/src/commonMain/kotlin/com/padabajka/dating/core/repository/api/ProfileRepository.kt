@@ -16,4 +16,5 @@ interface ProfileRepository {
     suspend fun profile(userId: PersonId): Profile?
 
     suspend fun setFreeze(freeze: Boolean)
+    suspend fun clearLocalData()
 }

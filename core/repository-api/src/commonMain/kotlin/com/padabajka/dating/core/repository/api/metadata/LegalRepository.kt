@@ -11,4 +11,5 @@ interface LegalRepository {
     suspend fun actualVersions(): LegalVersions
     suspend fun updateUserLegalState()
     suspend fun acceptLegal(versions: LegalVersions)
+    suspend fun clearLocalData()
 }

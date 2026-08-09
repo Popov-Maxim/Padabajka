@@ -10,4 +10,5 @@ interface UserPresenceRepository {
 
     suspend fun setUserPresences(userPresence: List<UserPresence>)
     suspend fun updateUserPresences(userPresence: UserPresence)
+    suspend fun clearLocalData()
 }

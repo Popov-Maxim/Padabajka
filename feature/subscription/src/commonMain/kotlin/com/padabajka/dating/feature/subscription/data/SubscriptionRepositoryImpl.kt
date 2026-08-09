@@ -5,6 +5,7 @@ import com.padabajka.dating.core.data.network.incoming.dto.toDomain
 import com.padabajka.dating.core.data.network.incoming.dto.toDto
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
 import com.padabajka.dating.core.repository.api.model.subscription.FeatureUsage
+import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionPlan
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionState
 import com.padabajka.dating.feature.subscription.data.billing.PlatformBillingClient
@@ -83,6 +84,15 @@ class SubscriptionRepositoryImpl(
             )
         )
         updateSubscriptionState(subscriptionStateResponse)
+    }
+
+    override suspend fun clearLocalData() {
+        localSubscriptionDataSource.updatePlan {
+            SubscriptionPlan.DEFAULT.toDto()
+        }
+        localSubscriptionDataSource.updateFeatureUsage {
+            FeatureUsage.DEFAULT.toDto()
+        }
     }
 
     private suspend fun updateSubscriptionState(subscriptionStateResponse: SubscriptionStateResponse) {

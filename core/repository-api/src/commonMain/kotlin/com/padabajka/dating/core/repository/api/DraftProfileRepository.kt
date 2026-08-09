@@ -11,4 +11,6 @@ interface DraftProfileRepository {
 
     @Throws(ProfileException::class, CancellationException::class)
     suspend fun update(action: (DraftProfile) -> DraftProfile)
+
+    suspend fun clearLocalData()
 }

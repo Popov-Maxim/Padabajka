@@ -16,4 +16,5 @@ interface SubscriptionRepository {
 
     suspend fun syncState()
     suspend fun subscribe(offerId: String)
+    suspend fun clearLocalData()
 }

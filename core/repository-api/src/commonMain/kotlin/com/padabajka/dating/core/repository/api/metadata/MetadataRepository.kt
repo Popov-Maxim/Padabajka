@@ -5,4 +5,5 @@ interface MetadataRepository {
 
     suspend fun updateAuthMetadata(authMetadata: AuthMetadata)
     suspend fun deleteAuthMetadata(deviceUid: DeviceUid)
+    suspend fun clearLocalData()
 }

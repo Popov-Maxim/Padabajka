@@ -5,6 +5,7 @@ import com.padabajka.dating.core.sync.lifecycle.AppLifecycleState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
@@ -34,7 +35,7 @@ class SyncSessionObserver(
     }
 
     suspend fun stop() {
-        job?.cancel()
+        job?.cancelAndJoin()
         job = null
 
         syncManager.stop()

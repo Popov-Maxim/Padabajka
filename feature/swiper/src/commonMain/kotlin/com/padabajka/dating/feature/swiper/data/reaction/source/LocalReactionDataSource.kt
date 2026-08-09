@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 
 class LocalReactionDataSource(
-    private val reactions: DataStore<List<ReactionDto.Request>>
+    private val reactions: DataStore<List<ReactionDto.Request>>,
 ) {
 
     private val _reactionsToMe: MutableStateFlow<List<PersonReaction>> = MutableStateFlow(listOf())
@@ -56,5 +56,10 @@ class LocalReactionDataSource(
         this.reactions.updateData {
             it - reactions
         }
+    }
+
+    suspend fun clearAll() {
+        reactions.updateData { emptyList() }
+        clearToMe()
     }
 }

@@ -67,15 +67,13 @@ private val dataModule = module {
 
     single<ReactionRepository> {
         ReactionRepositoryImpl(
-            scope = get(),
             remoteReactionDataSource = get(),
             localReactionDataSource = get(),
-            authRepository = get(),
             matchRepository = get()
         )
     }
 
-    factory {
+    single {
         LocalReactionDataSource(
             reactions = DataStoreUtils.create(
                 dbName = "reactions_datastore",

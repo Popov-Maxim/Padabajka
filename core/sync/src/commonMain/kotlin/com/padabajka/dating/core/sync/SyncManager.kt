@@ -14,8 +14,11 @@ import dev.gitlive.firebase.crashlytics.crashlytics
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.Json
 
 @Suppress("TooGenericExceptionCaught")
@@ -33,6 +36,9 @@ class SyncManager(
     private var state = State.DISCONNECTED
     private val buffer = atomic(mutableListOf<MessagePush>())
     private var reconnectJob: Job? = null
+    private var connectJob: Job? = null
+    private var syncJob: Job? = null
+    private val eventMutex = Mutex()
     private var observed = false
 
     fun start() {
@@ -44,7 +50,17 @@ class SyncManager(
     }
 
     suspend fun stop() {
+        connectJob?.cancelAndJoin()
+        connectJob = null
+        reconnectJob?.cancelAndJoin()
+        reconnectJob = null
+        syncJob?.cancelAndJoin()
+        syncJob = null
+        state = State.TURNED_OFF
         socketRepository.disconnect()
+        eventMutex.withLock {
+            buffer.lockWith { clear() }
+        }
     }
 
     private fun observeSocket() {
@@ -84,7 +100,9 @@ class SyncManager(
     }
 
     private fun connect() {
-        scope.launch {
+        if (connectJob?.isActive == true) return
+
+        connectJob = scope.launch {
             try {
                 socketRepository.connect()
             } catch (exception: CancellationException) {
@@ -112,7 +130,8 @@ class SyncManager(
     private fun startSync() {
         state = State.SYNCING
 
-        scope.launch {
+        syncJob?.cancel()
+        syncJob = scope.launch {
             try {
                 log("start sync")
                 retryUntilSuccess(
@@ -127,11 +146,12 @@ class SyncManager(
                 ) {
                     syncRemoteDataUseCase()
                 }
-                state = State.ONLINE
-
-                buffer.lockWith {
-                    forEach { handlePushUseCase(it) }
-                    clear()
+                eventMutex.withLock {
+                    buffer.lockWith {
+                        forEach { handlePushUseCase(it) }
+                        clear()
+                    }
+                    state = State.ONLINE
                 }
             } catch (exception: CancellationException) {
                 throw exception
@@ -156,10 +176,12 @@ class SyncManager(
     }
 
     private suspend fun onSocketEvent(event: MessagePush) {
-        when (state) {
-            State.SYNCING -> buffer.lockWith { add(event) }
-            State.ONLINE -> handlePushUseCase(event)
-            else -> Unit
+        eventMutex.withLock {
+            when (state) {
+                State.SYNCING -> buffer.lockWith { add(event) }
+                State.ONLINE -> handlePushUseCase(event)
+                else -> Unit
+            }
         }
     }
 
