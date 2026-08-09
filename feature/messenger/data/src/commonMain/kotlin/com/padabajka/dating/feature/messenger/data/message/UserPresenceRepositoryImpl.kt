@@ -35,4 +35,8 @@ class UserPresenceRepositoryImpl : UserPresenceRepository {
             updatedMap
         }
     }
+
+    override suspend fun clearLocalData() {
+        _presenceMap.value = emptyMap()
+    }
 }

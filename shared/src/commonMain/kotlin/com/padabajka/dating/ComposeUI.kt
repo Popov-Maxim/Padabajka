@@ -32,6 +32,8 @@ import com.padabajka.dating.core.presentation.event.AlertService
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.FpsMonitor
 import com.padabajka.dating.core.presentation.ui.SimpleConfirmDialog
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.hideKeyboardOnTap
 import com.padabajka.dating.core.presentation.ui.toDp
@@ -52,7 +54,7 @@ fun App(rootContext: ComponentContext) {
     InitApp()
     val koin = getKoin()
     val rootComponent = remember {
-        AuthStateObserverComponent(rootContext, koin.get(), koin.get(), koin.get())
+        AuthStateObserverComponent(rootContext, koin.get(), koin.get(), koin.get(), koin.get())
     }
     NavigateApp(rootComponent)
 }
@@ -73,7 +75,8 @@ private fun NavigateApp(rootContext: AuthStateObserverComponent) {
             val instance = child.instance
             when (instance) {
                 is AuthStateObserverComponent.Child.AuthScope -> AuthScopeScreen(instance.component)
-                AuthStateObserverComponent.Child.SplashScreen -> SplashScreen("Auth State")
+                AuthStateObserverComponent.Child.SplashScreen ->
+                    SplashScreen(StaticTextId.UiId.Loading.translate())
                 is AuthStateObserverComponent.Child.UnauthScope -> UnauthScopeScreen(instance.component)
                 is AuthStateObserverComponent.Child.VerificationScreen -> VerificationScreen(
                     instance.component

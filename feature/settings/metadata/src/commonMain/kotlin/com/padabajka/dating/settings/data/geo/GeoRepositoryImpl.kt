@@ -41,6 +41,10 @@ class GeoRepositoryImpl(
         sendLocation(loc)
     }
 
+    override suspend fun clearLocalData() {
+        lastSentLocation = null
+    }
+
     private fun shouldUpdateLocation(
         last: Location?,
         current: Location,

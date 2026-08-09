@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -48,6 +49,24 @@ class CandidateRepositoryImpl(
     override suspend fun setUsed(personId: PersonId) {
         sharedPersons {
             removeAll { it.id == personId }
+        }
+    }
+
+    override suspend fun clearLocalData() {
+        personObtainMutex.withLock {
+            val jobs = preloadJobs {
+                values.toList().also {
+                    clear()
+                }
+            }
+            jobs.forEach {
+                it.cancelAndJoin()
+            }
+            preloadedPersons {
+                clear()
+            }
+            sharedPersons { clear() }
+            actualSearchPreferences.update { null }
         }
     }
 

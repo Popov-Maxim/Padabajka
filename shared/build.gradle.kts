@@ -51,6 +51,7 @@ kotlin {
             implementation(projects.feature.subscription)
             implementation(projects.core.platform.permission)
             implementation(projects.core.networking)
+            implementation(projects.core.data)
             implementation(projects.component.room)
             implementation(projects.core.platform.systemIntent)
             implementation(projects.core.sync)

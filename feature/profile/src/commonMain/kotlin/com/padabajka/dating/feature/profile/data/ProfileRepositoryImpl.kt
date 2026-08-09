@@ -55,6 +55,10 @@ class ProfileRepositoryImpl(
         }
     }
 
+    override suspend fun clearLocalData() {
+        _profileState.value = ProfileState.Idle
+    }
+
     private fun MutableStateFlow<ProfileState>.setProfile(profile: Profile?) {
         value = if (profile == null) {
             ProfileState.NotCreated

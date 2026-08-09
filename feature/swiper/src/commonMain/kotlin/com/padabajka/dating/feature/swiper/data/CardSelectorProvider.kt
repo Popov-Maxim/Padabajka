@@ -24,4 +24,8 @@ class CardSelectorProvider(
 
         return cardSelector
     }
+
+    suspend fun clearLocalData() {
+        previousSearchPreferences.update { null }
+    }
 }

@@ -43,6 +43,10 @@ class CardRepositoryImpl(
         }
     }
 
+    override suspend fun clearLocalData() {
+        cardSelectorProvider.clearLocalData()
+    }
+
     private suspend fun getAdCard(searchPreferences: SearchPreferences): Card {
         val nativeAd = nativeAdRepository.loadNextAd()
         return nativeAd?.toCard() ?: getPersonCard(searchPreferences)

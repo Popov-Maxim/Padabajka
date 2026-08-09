@@ -56,4 +56,9 @@ class LegalRepositoryImpl(
         _acceptedLegalVersions.value = versions
         _userLegalState.value = LegalState.AllAccepted
     }
+
+    override suspend fun clearLocalData() {
+        _acceptedLegalVersions.value = null
+        _userLegalState.value = LegalState.Idle
+    }
 }

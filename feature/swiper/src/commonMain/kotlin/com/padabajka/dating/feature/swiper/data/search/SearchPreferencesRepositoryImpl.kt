@@ -15,4 +15,8 @@ class SearchPreferencesRepositoryImpl(
     override suspend fun update(update: (SearchPreferences) -> SearchPreferences) {
         localDataSource.update(update)
     }
+
+    override suspend fun clearLocalData() {
+        localDataSource.update { SearchPreferences.DEFAULT }
+    }
 }

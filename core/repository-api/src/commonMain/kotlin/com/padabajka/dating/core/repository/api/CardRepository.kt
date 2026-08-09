@@ -7,4 +7,5 @@ import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
 interface CardRepository {
     suspend fun getNextCard(searchPreferences: SearchPreferences): Card
     suspend fun react(reaction: Reaction)
+    suspend fun clearLocalData()
 }

@@ -28,4 +28,8 @@ class DraftProfileRepositoryImpl(
     override suspend fun update(action: (DraftProfile) -> DraftProfile) {
         localDraftProfileDataSource.update(action)
     }
+
+    override suspend fun clearLocalData() {
+        localDraftProfileDataSource.replace(DraftProfile())
+    }
 }

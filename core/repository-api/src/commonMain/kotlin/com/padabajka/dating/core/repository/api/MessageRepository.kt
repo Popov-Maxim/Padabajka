@@ -23,4 +23,5 @@ interface MessageRepository {
     suspend fun loadPreviousMessages(chatId: ChatId)
     suspend fun loadMessages(chatId: ChatId, beforeMessageId: MessageId?, count: Int)
     suspend fun sync(chatId: ChatId)
+    suspend fun clearLocalData()
 }

@@ -25,6 +25,7 @@ import com.padabajka.dating.component.room.person.converters.ListStringConverter
 import com.padabajka.dating.component.room.person.converters.LocalDateConverters
 import com.padabajka.dating.component.room.person.converters.LookingForDataConverter
 import com.padabajka.dating.component.room.person.entry.PersonEntry
+import com.padabajka.dating.component.room.session.UserSessionDao
 
 @Database(
     entities = [
@@ -55,6 +56,7 @@ abstract class PadabajkaDB : RoomDatabase() {
     abstract fun matchesDao(): MatchesDao
     abstract fun cityDao(): CityDao
     abstract fun assetsDao(): AssetsDao
+    abstract fun userSessionDao(): UserSessionDao
 }
 
 internal const val DB_NAME = "padabajka.db"

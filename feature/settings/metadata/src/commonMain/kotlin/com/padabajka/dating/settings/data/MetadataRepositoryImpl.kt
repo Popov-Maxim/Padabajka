@@ -30,4 +30,8 @@ internal class MetadataRepositoryImpl(
         remoteDataSource.deleteAuthMetadata(dto)
         lastSentUpdate = null
     }
+
+    override suspend fun clearLocalData() {
+        lastSentUpdate = null
+    }
 }

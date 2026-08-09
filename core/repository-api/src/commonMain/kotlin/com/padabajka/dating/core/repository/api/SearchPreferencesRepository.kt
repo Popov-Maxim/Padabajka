@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 interface SearchPreferencesRepository {
     val searchPreferences: Flow<SearchPreferences>
     suspend fun update(update: (SearchPreferences) -> SearchPreferences)
+    suspend fun clearLocalData()
 }

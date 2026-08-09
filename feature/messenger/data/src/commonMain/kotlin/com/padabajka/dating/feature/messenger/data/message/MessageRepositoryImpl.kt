@@ -256,6 +256,10 @@ internal class MessageRepositoryImpl(
         chatRepository.setChat(chatId, newChat)
     }
 
+    override suspend fun clearLocalData() {
+        readMessageManager.clearLocalData()
+    }
+
     private suspend fun updateMessageDto(messageDto: List<MessageDto>) {
         val messageEntities =
             messageDto.filterIsInstance<MessageDto.Existing>().map { it.toEntity() }

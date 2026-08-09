@@ -7,4 +7,5 @@ import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
 interface CandidateRepository {
     suspend fun getCandidate(searchPreferences: SearchPreferences): Person?
     suspend fun setUsed(personId: PersonId)
+    suspend fun clearLocalData()
 }

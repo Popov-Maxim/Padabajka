@@ -12,4 +12,5 @@ interface ReactionRepository {
 
     suspend fun syncReactionsToMe()
     suspend fun addReactionsToMe(reactions: PersonReaction)
+    suspend fun clearLocalData()
 }
