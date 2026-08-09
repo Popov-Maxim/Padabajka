@@ -71,6 +71,7 @@ fun ProfileViewBottomSheet(
     profileViewUIItem: ProfileViewUIItem,
     onDismissRequest: () -> Unit,
     mode: ProfileViewMode = ProfileViewMode.None,
+    additionalContent: (@Composable () -> Unit)? = null,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(true)
     ModalBottomSheet(
@@ -86,6 +87,7 @@ fun ProfileViewBottomSheet(
             modifier = Modifier.fillMaxSize(),
             mode = mode,
             onDismissRequest = onDismissRequest,
+            additionalContent = additionalContent,
         )
     }
 }
@@ -193,13 +195,21 @@ private fun ProfileViewContent(
     profileViewUIItem: ProfileViewUIItem,
     modifier: Modifier = Modifier,
     mode: ProfileViewMode,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    additionalContent: (@Composable () -> Unit)?
 ) {
     val scrollState = rememberScrollState()
     Column(
         modifier = modifier.verticalScroll(scrollState)
     ) {
         BlockWithImagePager(profileViewUIItem)
+        additionalContent?.let { content ->
+            Column(
+                modifier = Modifier.padding(top = 24.dp, start = 20.dp, end = 20.dp)
+            ) {
+                content()
+            }
+        }
         Column(
             modifier = Modifier.padding(vertical = 40.dp),
             verticalArrangement = Arrangement.spacedBy(70.dp)
