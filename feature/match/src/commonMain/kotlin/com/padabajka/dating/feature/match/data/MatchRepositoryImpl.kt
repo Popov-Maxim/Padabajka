@@ -30,10 +30,11 @@ class MatchRepositoryImpl(
         }
     }
 
-    override suspend fun findMatch(chatId: ChatId): Flow<Match> {
-        return localMatchDataSource.findMatch(chatId).mapNotNull { match ->
+    override suspend fun findMatch(chatId: ChatId): Flow<Match?> {
+        return localMatchDataSource.findMatch(chatId).map { match ->
+            match ?: return@map null
             val personId = PersonId(match.personId)
-            val person = personRepository.getPerson(personId) ?: return@mapNotNull null
+            val person = personRepository.getPerson(personId) ?: return@map null
             match.toMatch(person)
         }
     }

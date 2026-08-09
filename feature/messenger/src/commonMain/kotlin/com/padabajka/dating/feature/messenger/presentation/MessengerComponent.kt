@@ -21,6 +21,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
@@ -82,7 +83,11 @@ class MessengerComponent(
                                 }
                             }
                     }
-                    combine(matchFlows) { items -> items.toList() }
+                    if (matchFlows.isEmpty()) {
+                        flowOf(emptyList())
+                    } else {
+                        combine(matchFlows) { items -> items.toList() }
+                    }
                 }.map { matches ->
                     val matchesWithoutChat = matches.filterIsInstance<EmptyChatItem>()
                         .sortedByDescending { chat -> chat.match.creationTime }

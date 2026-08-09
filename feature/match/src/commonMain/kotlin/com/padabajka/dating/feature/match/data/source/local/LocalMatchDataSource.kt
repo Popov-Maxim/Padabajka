@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocalMatchDataSource {
     fun matches(): Flow<List<MatchEntry>>
-    fun findMatch(chatId: ChatId): Flow<MatchEntry>
+    fun findMatch(chatId: ChatId): Flow<MatchEntry?>
     suspend fun saveMatch(match: MatchEntry)
     suspend fun replaceMatches(matches: List<MatchEntry>)
     suspend fun delete(matchId: Match.Id)
