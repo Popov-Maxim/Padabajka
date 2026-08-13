@@ -29,6 +29,10 @@ data class ProfileEditorState(
 ) : State {
 
     @Stable
+    val canSave: Boolean
+        get() = fieldsChanged && fields.images.value.isNotEmpty()
+
+    @Stable
     val profileForPreview: ProfileViewUIItem = ProfileViewUIItem(
         name = fields.name.value,
         age = fields.birthday.value.age,

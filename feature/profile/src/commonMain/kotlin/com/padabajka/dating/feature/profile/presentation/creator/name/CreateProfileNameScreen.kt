@@ -17,9 +17,11 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CoreTextEditField
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
+import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.feature.profile.presentation.creator.CreateProfileButton
 import com.padabajka.dating.feature.profile.presentation.creator.CreateProfileScreen
 import com.padabajka.dating.feature.profile.presentation.creator.name.model.CreateProfileNameEvent
@@ -61,12 +63,23 @@ private fun MainContent(
             modifier = Modifier.fillMaxWidth()
         )
 
-        CoreTextEditField(
-            text = state.nameField.value,
-            hint = StaticTextId.UiId.HintForName.translate(),
-            modifier = Modifier.fillMaxWidth(),
-            onChange = { component.onEvent(CreateProfileNameEvent.NameFieldUpdate(it)) }
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            CoreTextEditField(
+                text = state.nameField.value,
+                hint = StaticTextId.UiId.HintForName.translate(),
+                modifier = Modifier.fillMaxWidth(),
+                onChange = { component.onEvent(CreateProfileNameEvent.NameFieldUpdate(it)) }
+            )
+
+            state.nameField.currentIssue?.let { issue ->
+                Text(
+                    text = issue.toMessage(),
+                    color = CoreColors.primary.mainColor,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 }
 

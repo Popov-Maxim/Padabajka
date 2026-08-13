@@ -162,7 +162,7 @@ private fun HasLikesMeScreen(
                 GridSpan.ONE -> {
                     Box(modifier = modifier) {
                         ProfileImage(
-                            image = gridPlacedItem.state.profile.images.first(),
+                            image = gridPlacedItem.state.profile.images.firstOrNull(),
                             modifier = Modifier.width(cardWidth)
                                 .clickable(onClick = clickable),
                             blur = if (subscriptionFeature.showLikes.not()) 30.dp else 0.dp
@@ -233,7 +233,7 @@ private fun SuperLikeMessage(message: String) {
 
 @Composable
 private fun ProfileImage(
-    image: Image,
+    image: Image?,
     modifier: Modifier = Modifier,
     blur: Dp = 0.dp
 ) {
@@ -246,7 +246,7 @@ private fun ProfileImage(
                 .run {
                     if (blur != 0.dp) blur(blur) else this
                 },
-            model = image.raw(),
+            model = image?.raw(),
         )
     }
 }
@@ -273,7 +273,7 @@ private fun TwoGridItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfileImage(
-            image = profile.images.first(),
+            image = profile.images.firstOrNull(),
             modifier = Modifier.width(cardWidth)
         )
 
@@ -309,7 +309,7 @@ private fun FullGridItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfileImage(
-            image = profile.images.first(),
+            image = profile.images.firstOrNull(),
             modifier = Modifier.width(cardWidth)
         )
 

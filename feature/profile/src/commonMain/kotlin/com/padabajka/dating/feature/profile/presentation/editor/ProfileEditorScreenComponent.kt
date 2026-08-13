@@ -154,13 +154,15 @@ class ProfileEditorScreenComponent(
         )
 
     private fun saveUpdates() {
+        if (state.value.canSave.not()) return
+
         reduce { it.copy(saveState = ProfileEditorState.SaveState.Loading) }
         launchStep(
             action = {
-                saveProfileUseCase {
+                val savedProfile = saveProfileUseCase {
                     it.updated(state.value)
                 }
-                reduce { it.copy(saveState = ProfileEditorState.SaveState.Idle) }
+                reduce { savedProfile.toEditorState() }
             },
             onError = {
                 val error = it.toTextError(::mapImageError)

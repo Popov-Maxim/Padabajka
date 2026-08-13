@@ -2,6 +2,7 @@ package com.padabajka.dating.feature.profile.presentation.creator.name
 
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.BaseComponent
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.feature.profile.domain.creator.DraftProfileProvider
 import com.padabajka.dating.feature.profile.domain.creator.NameValidator
 import com.padabajka.dating.feature.profile.domain.update.FirstNameUpdateUseCase
@@ -48,7 +49,7 @@ class CreateProfileNameScreenComponent(
             )
         } else {
             reduce { state ->
-                val issue = Issue.StringValue("error") // TODO(P1): add issue
+                val issue = Issue.Text(StaticTextId.UiId.MessageForInvalidName)
                 state.copy(nameField = state.nameField.updatedIssues { it + (name to issue) })
             }
         }

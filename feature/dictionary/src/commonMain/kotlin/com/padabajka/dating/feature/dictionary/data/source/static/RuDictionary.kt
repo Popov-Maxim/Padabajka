@@ -108,6 +108,8 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.HowNameTitle -> "Как тебя зовут?"
             StaticTextId.UiId.HowNameBody -> "Лучше указать настоящее имя"
             StaticTextId.UiId.HintForName -> "Имя"
+            StaticTextId.UiId.MessageForInvalidName ->
+                "Имя должно содержать от 3 до 50 символов и не начинаться или заканчиваться пробелом"
             StaticTextId.UiId.WhenBirthdayTitle -> "Когда ты родился?"
             StaticTextId.UiId.WhenBirthdayBody -> "В профиле будет виден только возраст"
             StaticTextId.UiId.HintForBirthday -> "Твой день рождения"
