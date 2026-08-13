@@ -92,6 +92,8 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Delete -> "Delete"
             StaticTextId.UiId.Replace -> "Replace"
             StaticTextId.UiId.Cancel -> "Cancel"
+            StaticTextId.UiId.TryAgain -> "Try again"
+            StaticTextId.UiId.BackToProfileEditing -> "Back to editing"
             StaticTextId.UiId.Today -> "Today"
             StaticTextId.UiId.Yesterday -> "Yesterday"
 

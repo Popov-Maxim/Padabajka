@@ -93,6 +93,8 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Delete -> "Удалить"
             StaticTextId.UiId.Replace -> "Заменить"
             StaticTextId.UiId.Cancel -> "Отмена"
+            StaticTextId.UiId.TryAgain -> "Попробовать снова"
+            StaticTextId.UiId.BackToProfileEditing -> "Вернуться к редактированию"
             StaticTextId.UiId.Today -> "Сегодня"
             StaticTextId.UiId.Yesterday -> "Вчера"
 

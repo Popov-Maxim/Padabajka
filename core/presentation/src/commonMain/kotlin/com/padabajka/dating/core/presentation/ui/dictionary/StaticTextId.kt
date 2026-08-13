@@ -134,6 +134,8 @@ sealed interface StaticTextId {
         Delete(rawId = "delete"),
         Replace(rawId = "replace"),
         Cancel(rawId = "cancel"),
+        TryAgain(rawId = "try_again"),
+        BackToProfileEditing(rawId = "back_to_profile_editing"),
         Today(rawId = "today"),
         Yesterday(rawId = "yesterday"),
 

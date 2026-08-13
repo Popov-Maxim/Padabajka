@@ -95,7 +95,7 @@ class CreateProfileScopeNavigateComponent(
                 component = CreateProfileFinishScreenComponent(
                     context = context,
                     createProfileFromDraftUseCase = get(),
-                    alertService = get()
+                    navigateBack = ::navigateBack,
                 )
             )
         }
