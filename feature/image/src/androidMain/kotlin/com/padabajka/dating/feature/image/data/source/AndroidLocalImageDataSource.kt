@@ -7,7 +7,9 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import com.padabajka.dating.core.repository.api.model.common.CoreRect
 import com.padabajka.dating.core.repository.api.model.profile.ImageData
+import com.padabajka.dating.feature.image.domain.exception.ImageReadException
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.io.InputStream
 
 class AndroidLocalImageDataSource(
@@ -19,6 +21,7 @@ class AndroidLocalImageDataSource(
                 inputStream.readBytes()
             } else {
                 val bitmap = BitmapFactory.decodeStream(inputStream)
+                    ?: throw ImageReadException()
                 val cropped = Bitmap.createBitmap(
                     bitmap,
                     cropRect.left,
@@ -33,12 +36,21 @@ class AndroidLocalImageDataSource(
 
     private fun Bitmap.toByteArray(): ByteArray {
         val stream = ByteArrayOutputStream()
-        this.compress(Bitmap.CompressFormat.JPEG, MAX_QUALITY, stream)
+        val compressed = this.compress(Bitmap.CompressFormat.JPEG, MAX_QUALITY, stream)
+        if (compressed.not()) throw ImageReadException()
         return stream.toByteArray()
     }
 
     private fun <T> ContentResolver.useInputStream(uri: Uri, block: (InputStream) -> T): T {
-        return this.openInputStream(uri)?.use(block) ?: TODO("Image: handle null input stream") // TODO(P1)
+        return try {
+            openInputStream(uri)?.use(block) ?: throw ImageReadException()
+        } catch (error: ImageReadException) {
+            throw error
+        } catch (error: IOException) {
+            throw ImageReadException(error)
+        } catch (error: SecurityException) {
+            throw ImageReadException(error)
+        }
     }
 
     companion object {

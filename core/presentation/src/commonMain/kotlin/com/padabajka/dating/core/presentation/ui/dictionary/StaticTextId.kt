@@ -222,6 +222,7 @@ sealed interface StaticTextId {
 
         // Error
         InternetConnectionErrorDescription(rawId = "internet_connection_error_description"),
+        ImageReadErrorDescription(rawId = "image_read_error_description"),
         UnknownErrorDescription(rawId = "unknown_error_description"),
         InvalidCredentialsDescription(rawId = "invalid_credentials_description"),
         NoCredentialAvailableDescription(rawId = "no_credential_available_description"),

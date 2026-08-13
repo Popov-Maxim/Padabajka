@@ -2,6 +2,7 @@ package com.padabajka.dating.feature.image.data.source
 
 import com.padabajka.dating.core.repository.api.model.common.CoreRect
 import com.padabajka.dating.core.repository.api.model.profile.ImageData
+import com.padabajka.dating.feature.image.domain.exception.ImageReadException
 import com.padabajka.dating.feature.image.toByteArray
 import com.padabajka.dating.feature.image.toImageRect
 import kotlinx.cinterop.CValue
@@ -19,7 +20,7 @@ class IosLocalImageDataSource : LocalImageDataSource {
             val rect = cropRect.toImageRect(data.uiImage.scale)
             data.uiImage.crop(rect)
         }
-        val byteArray = croppedImage.toByteArray() ?: TODO("Image: handle null input stream") // TODO(P1)
+        val byteArray = croppedImage.toByteArray() ?: throw ImageReadException()
         return byteArray
     }
 }

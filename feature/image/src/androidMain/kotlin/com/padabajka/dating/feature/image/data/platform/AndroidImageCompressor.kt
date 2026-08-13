@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import androidx.core.graphics.scale
 import com.padabajka.dating.feature.image.data.SizeUtils
 import com.padabajka.dating.feature.image.domain.ImageCompressor
+import com.padabajka.dating.feature.image.domain.exception.ImageReadException
 import java.io.ByteArrayOutputStream
 
 class AndroidImageCompressor : ImageCompressor {
@@ -14,7 +15,7 @@ class AndroidImageCompressor : ImageCompressor {
         config: ImageCompressor.Configuration
     ): ByteArray {
         val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
-            ?: throw IllegalArgumentException("Cannot decode image bytes")
+            ?: throw ImageReadException()
 
         val newSize = SizeUtils.calculateNewDimensions(
             bitmap.width,
@@ -30,7 +31,12 @@ class AndroidImageCompressor : ImageCompressor {
         }
 
         val outputStream = ByteArrayOutputStream()
-        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, config.quality, outputStream)
+        val compressed = resizedBitmap.compress(
+            Bitmap.CompressFormat.JPEG,
+            config.quality,
+            outputStream
+        )
+        if (compressed.not()) throw ImageReadException()
 
         return outputStream.toByteArray()
     }

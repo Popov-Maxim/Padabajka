@@ -205,6 +205,9 @@ class RuDictionary : Dictionary() {
                 "Интернет пропал \uD83D\uDC40\n" +
                     "Проверь соединение"
 
+            StaticTextId.UiId.ImageReadErrorDescription ->
+                "Не удалось прочитать файл изображения. Выберите другое фото и попробуйте снова."
+
             StaticTextId.UiId.UnknownErrorDescription ->
                 "Ой… что-то пошло не так\n" +
                     "Сейчас поправим"

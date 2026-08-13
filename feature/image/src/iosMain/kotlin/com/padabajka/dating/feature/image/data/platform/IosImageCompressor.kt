@@ -2,6 +2,7 @@ package com.padabajka.dating.feature.image.data.platform
 
 import com.padabajka.dating.feature.image.data.SizeUtils
 import com.padabajka.dating.feature.image.domain.ImageCompressor
+import com.padabajka.dating.feature.image.domain.exception.ImageReadException
 import com.padabajka.dating.feature.image.height
 import com.padabajka.dating.feature.image.toByteArray
 import com.padabajka.dating.feature.image.toNSData
@@ -19,14 +20,16 @@ class IosImageCompressor : ImageCompressor {
         data: ByteArray,
         config: ImageCompressor.Configuration
     ): ByteArray {
+        if (data.isEmpty()) throw ImageReadException()
+
         val nsData = data.toNSData()
-        val image = UIImage.imageWithData(nsData) ?: return data
+        val image = UIImage.imageWithData(nsData) ?: throw ImageReadException()
 
         val resizedImage = resizeIfNeeded(image, config.maxMegapixels)
 
         val quality = config.quality.toDouble() / FULL_PERCENT
         return resizedImage.toByteArray(quality = quality)
-            ?: data
+            ?: throw ImageReadException()
     }
 
     @OptIn(ExperimentalForeignApi::class)

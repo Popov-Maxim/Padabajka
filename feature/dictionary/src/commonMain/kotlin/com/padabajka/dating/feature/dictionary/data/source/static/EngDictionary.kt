@@ -206,6 +206,9 @@ class EngDictionary : Dictionary() {
                 "Internet’s gone \uD83D\uDC40\n" +
                     "Check your connection"
 
+            StaticTextId.UiId.ImageReadErrorDescription ->
+                "Couldn't read the image file. Choose another photo and try again."
+
             StaticTextId.UiId.UnknownErrorDescription ->
                 "Oops… something went wrong\n" +
                     "We’ll fix it"

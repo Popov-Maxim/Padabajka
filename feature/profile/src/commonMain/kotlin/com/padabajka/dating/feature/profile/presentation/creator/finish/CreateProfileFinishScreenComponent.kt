@@ -3,9 +3,10 @@ package com.padabajka.dating.feature.profile.presentation.creator.finish
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.presentation.EmptyState
-import com.padabajka.dating.core.presentation.error.ExternalDomainError
+import com.padabajka.dating.core.presentation.error.toTextError
 import com.padabajka.dating.core.presentation.event.AlertService
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
+import com.padabajka.dating.feature.image.presentation.mapImageError
 import com.padabajka.dating.feature.profile.domain.CreateProfileFromDraftUseCase
 
 class CreateProfileFinishScreenComponent(
@@ -26,10 +27,7 @@ class CreateProfileFinishScreenComponent(
             createProfileFromDraftUseCase()
         },
         onError = {
-            val error = when (it) {
-                is ExternalDomainError.TextError -> it
-                is ExternalDomainError.Unknown -> ExternalDomainError.TextError.Unknown
-            }
+            val error = it.toTextError(::mapImageError)
 
             alertService.showAlert { error.text.translate() }
             error.needLog.not()
