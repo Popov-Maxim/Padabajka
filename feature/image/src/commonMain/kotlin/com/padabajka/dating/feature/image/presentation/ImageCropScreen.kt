@@ -88,7 +88,10 @@ private fun ImageCropper(
 
     Box(
         modifier = modifier
-            .onSizeChanged { containerSize = it }
+            .onSizeChanged { newContainerSize ->
+                containerSize = newContainerSize
+                onChangeCropData(cropData.copy(containerSize = newContainerSize))
+            }
             .aspectRatio(RATIO_FOR_IMAGE)
             .clipToBounds()
             .pointerInput(Unit) {

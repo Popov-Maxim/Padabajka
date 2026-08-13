@@ -18,6 +18,7 @@ class CreateProfileImageScreenComponent(
     draftProfileProvider: DraftProfileProvider,
     private val updateMainImageUseCase: UpdateMainImageUseCase,
     private val getLocalImageUseCase: GetLocalImageUseCase,
+    private val cropImage: (Image.Local) -> Unit,
     private val toNext: () -> Unit,
     private val alertService: AlertService
 ) : BaseComponent<CreateProfileImageState>(
@@ -28,7 +29,8 @@ class CreateProfileImageScreenComponent(
 
     fun onEvent(event: CreateProfileImageEvent) {
         when (event) {
-            is CreateProfileImageEvent.ImageSelected -> updateImage(event.image)
+            is CreateProfileImageEvent.ImageSelected -> cropImage(event.image)
+            is CreateProfileImageEvent.ImageCropped -> updateImage(event.image)
             CreateProfileImageEvent.DeleteImage -> updateImage(null)
             CreateProfileImageEvent.Continue -> continueCreating()
         }
