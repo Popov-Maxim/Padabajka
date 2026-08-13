@@ -93,6 +93,8 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Delete -> "Удалить"
             StaticTextId.UiId.Replace -> "Заменить"
             StaticTextId.UiId.Cancel -> "Отмена"
+            StaticTextId.UiId.TryAgain -> "Попробовать снова"
+            StaticTextId.UiId.BackToProfileEditing -> "Вернуться к редактированию"
             StaticTextId.UiId.Today -> "Сегодня"
             StaticTextId.UiId.Yesterday -> "Вчера"
 
@@ -204,6 +206,9 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.InternetConnectionErrorDescription ->
                 "Интернет пропал \uD83D\uDC40\n" +
                     "Проверь соединение"
+
+            StaticTextId.UiId.ImageReadErrorDescription ->
+                "Не удалось прочитать файл изображения. Выберите другое фото и попробуйте снова."
 
             StaticTextId.UiId.UnknownErrorDescription ->
                 "Ой… что-то пошло не так\n" +

@@ -3,10 +3,13 @@ package com.padabajka.dating.navigation
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.repository.api.model.profile.Image
+import com.padabajka.dating.feature.image.presentation.ImageCropScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.birthday.CreateProfileBirthdayScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.finish.CreateProfileFinishScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.gender.CreateProfileSexScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.image.CreateProfileImageScreenComponent
+import com.padabajka.dating.feature.profile.presentation.creator.image.model.CreateProfileImageEvent
 import com.padabajka.dating.feature.profile.presentation.creator.lookingfor.CreateProfileLookingForScreenComponent
 import com.padabajka.dating.feature.profile.presentation.creator.name.CreateProfileNameScreenComponent
 import kotlinx.serialization.Serializable
@@ -24,6 +27,16 @@ class CreateProfileScopeNavigateComponent(
     Configuration.WelcomeScreen
 ),
     KoinComponent {
+
+    private val actionComponent = CreateProfileScopeActionComponent(
+        context = context,
+        logoutUseCase = get(),
+        alertService = get()
+    )
+
+    fun logout() {
+        actionComponent.logout()
+    }
 
     @Suppress("LongMethod")
     override fun createChild(
@@ -86,8 +99,25 @@ class CreateProfileScopeNavigateComponent(
                     draftProfileProvider = get(),
                     updateMainImageUseCase = get(),
                     getLocalImageUseCase = get(),
+                    cropImage = { image -> navigate(Configuration.ImageCropScreen(image)) },
                     toNext = { navigate(Configuration.FinishScreen) },
                     alertService = get()
+                )
+            )
+
+            is Configuration.ImageCropScreen -> Child.ImageCropScreen(
+                component = ImageCropScreenComponent(
+                    componentContext = context,
+                    image = configuration.image,
+                    navigateBack = ::navigateBack,
+                    onImageCropped = { rect ->
+                        navigateBackWithResult { child ->
+                            if (child is Child.ImageScreen) {
+                                val image = configuration.image.copy(rect = rect)
+                                child.component.onEvent(CreateProfileImageEvent.ImageCropped(image))
+                            }
+                        }
+                    }
                 )
             )
 
@@ -95,7 +125,7 @@ class CreateProfileScopeNavigateComponent(
                 component = CreateProfileFinishScreenComponent(
                     context = context,
                     createProfileFromDraftUseCase = get(),
-                    alertService = get()
+                    navigateBack = ::navigateBack,
                 )
             )
         }
@@ -116,6 +146,8 @@ class CreateProfileScopeNavigateComponent(
             Child
 
         data class ImageScreen(val component: CreateProfileImageScreenComponent) : Child
+
+        data class ImageCropScreen(val component: ImageCropScreenComponent) : Child
 
         data class FinishScreen(val component: CreateProfileFinishScreenComponent) : Child
     }
@@ -142,6 +174,9 @@ class CreateProfileScopeNavigateComponent(
 
         @Serializable
         data object ImageScreen : Configuration
+
+        @Serializable
+        data class ImageCropScreen(val image: Image.Local) : Configuration
 
         @Serializable
         data object FinishScreen : Configuration

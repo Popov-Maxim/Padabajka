@@ -92,6 +92,8 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Delete -> "Delete"
             StaticTextId.UiId.Replace -> "Replace"
             StaticTextId.UiId.Cancel -> "Cancel"
+            StaticTextId.UiId.TryAgain -> "Try again"
+            StaticTextId.UiId.BackToProfileEditing -> "Back to editing"
             StaticTextId.UiId.Today -> "Today"
             StaticTextId.UiId.Yesterday -> "Yesterday"
 
@@ -205,6 +207,9 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.InternetConnectionErrorDescription ->
                 "Internet’s gone \uD83D\uDC40\n" +
                     "Check your connection"
+
+            StaticTextId.UiId.ImageReadErrorDescription ->
+                "Couldn't read the image file. Choose another photo and try again."
 
             StaticTextId.UiId.UnknownErrorDescription ->
                 "Oops… something went wrong\n" +

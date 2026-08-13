@@ -4,7 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.domain.Factory
 import com.padabajka.dating.core.domain.delegate
 import com.padabajka.dating.core.presentation.BaseComponent
-import com.padabajka.dating.core.presentation.error.ExternalDomainError
+import com.padabajka.dating.core.presentation.error.toTextError
 import com.padabajka.dating.core.presentation.event.AlertService
 import com.padabajka.dating.core.presentation.event.consumed
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
@@ -15,6 +15,7 @@ import com.padabajka.dating.core.repository.api.model.profile.LookingForData
 import com.padabajka.dating.core.repository.api.model.profile.Profile
 import com.padabajka.dating.core.repository.api.model.profile.Text
 import com.padabajka.dating.feature.image.domain.GetLocalImageUseCase
+import com.padabajka.dating.feature.image.presentation.mapImageError
 import com.padabajka.dating.feature.profile.domain.SaveUpdatedProfileUseCase
 import com.padabajka.dating.feature.profile.domain.asset.FindCitiesUseCase
 import com.padabajka.dating.feature.profile.domain.asset.FindInterestAssetsUseCase
@@ -162,10 +163,7 @@ class ProfileEditorScreenComponent(
                 reduce { it.copy(saveState = ProfileEditorState.SaveState.Idle) }
             },
             onError = {
-                val error = when (it) {
-                    is ExternalDomainError.TextError -> it
-                    is ExternalDomainError.Unknown -> ExternalDomainError.TextError.Unknown
-                }
+                val error = it.toTextError(::mapImageError)
 
                 alertService.showAlert { error.text.translate() }
                 reduce { it.copy(saveState = ProfileEditorState.SaveState.Idle) }
@@ -250,10 +248,7 @@ class ProfileEditorScreenComponent(
             }
         },
         onError = {
-            val error = when (it) {
-                is ExternalDomainError.TextError -> it
-                is ExternalDomainError.Unknown -> ExternalDomainError.TextError.Unknown
-            }
+            val error = it.toTextError(::mapImageError)
 
             alertService.showAlert { error.text.translate() }
             error.needLog.not()

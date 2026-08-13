@@ -2,11 +2,12 @@ package com.padabajka.dating.feature.profile.presentation.creator.image
 
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.BaseComponent
-import com.padabajka.dating.core.presentation.error.ExternalDomainError
+import com.padabajka.dating.core.presentation.error.toTextError
 import com.padabajka.dating.core.presentation.event.AlertService
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.feature.image.domain.GetLocalImageUseCase
+import com.padabajka.dating.feature.image.presentation.mapImageError
 import com.padabajka.dating.feature.profile.domain.creator.DraftProfileProvider
 import com.padabajka.dating.feature.profile.domain.update.UpdateMainImageUseCase
 import com.padabajka.dating.feature.profile.presentation.creator.image.model.CreateProfileImageEvent
@@ -17,6 +18,7 @@ class CreateProfileImageScreenComponent(
     draftProfileProvider: DraftProfileProvider,
     private val updateMainImageUseCase: UpdateMainImageUseCase,
     private val getLocalImageUseCase: GetLocalImageUseCase,
+    private val cropImage: (Image.Local) -> Unit,
     private val toNext: () -> Unit,
     private val alertService: AlertService
 ) : BaseComponent<CreateProfileImageState>(
@@ -27,7 +29,8 @@ class CreateProfileImageScreenComponent(
 
     fun onEvent(event: CreateProfileImageEvent) {
         when (event) {
-            is CreateProfileImageEvent.ImageSelected -> updateImage(event.image)
+            is CreateProfileImageEvent.ImageSelected -> cropImage(event.image)
+            is CreateProfileImageEvent.ImageCropped -> updateImage(event.image)
             CreateProfileImageEvent.DeleteImage -> updateImage(null)
             CreateProfileImageEvent.Continue -> continueCreating()
         }
@@ -45,10 +48,7 @@ class CreateProfileImageScreenComponent(
             }
         },
         onError = {
-            val error = when (it) {
-                is ExternalDomainError.TextError -> it
-                is ExternalDomainError.Unknown -> ExternalDomainError.TextError.Unknown
-            }
+            val error = it.toTextError(::mapImageError)
 
             alertService.showAlert { error.text.translate() }
             error.needLog.not()

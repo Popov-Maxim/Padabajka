@@ -38,3 +38,12 @@ sealed class ExternalDomainError(open val needLog: Boolean) : DomainError {
 fun StaticTextId.UiId.toTextError(needLog: Boolean = false): ExternalDomainError.TextError {
     return ExternalDomainError.TextError(this, needLog)
 }
+
+fun ExternalDomainError.toTextError(
+    mapUnknown: (Throwable) -> ExternalDomainError.TextError? = { null }
+): ExternalDomainError.TextError {
+    return when (this) {
+        is ExternalDomainError.TextError -> this
+        is ExternalDomainError.Unknown -> mapUnknown(e) ?: ExternalDomainError.TextError.Unknown
+    }
+}
