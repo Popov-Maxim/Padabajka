@@ -148,6 +148,7 @@ sealed interface StaticTextId {
         HowNameTitle(rawId = "how_name_title"),
         HowNameBody(rawId = "how_name_body"),
         HintForName(rawId = "hint_for_name"),
+        MessageForInvalidName(rawId = "message_for_invalid_name"),
 
         WhenBirthdayTitle(rawId = "when_birthday_title"),
         WhenBirthdayBody(rawId = "when_birthday_body"),

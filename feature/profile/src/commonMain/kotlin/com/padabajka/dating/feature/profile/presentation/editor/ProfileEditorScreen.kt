@@ -177,7 +177,7 @@ fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
                         onClick = {
                             component.onEvent(SaveProfileUpdatesClickEvent)
                         },
-                        enabled = state.fieldsChanged
+                        enabled = state.canSave
                     )
                 }
             }

@@ -14,12 +14,14 @@ class SaveUpdatedProfileUseCase(
 ) {
 
     @Throws(ProfileException::class, CancellationException::class)
-    suspend operator fun invoke(updateProfile: (Profile) -> Profile) {
+    suspend operator fun invoke(updateProfile: (Profile) -> Profile): Profile {
         val currentProfile = with(profileRepository) { profileValue ?: profile.first() }
         val newProfile = updateProfile(currentProfile)
         val profileWithLoadingImage = newProfile.loadedImage()
 
         profileRepository.replace(profileWithLoadingImage)
+
+        return with(profileRepository) { profileValue ?: profile.first() }
     }
 
     private suspend fun Profile.loadedImage(): Profile {

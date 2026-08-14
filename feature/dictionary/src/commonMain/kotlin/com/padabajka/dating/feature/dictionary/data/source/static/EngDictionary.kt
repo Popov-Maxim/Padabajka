@@ -108,6 +108,8 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.HowNameTitle -> "What’s your name?"
             StaticTextId.UiId.HowNameBody -> "It’s best to use your real one"
             StaticTextId.UiId.HintForName -> "Name"
+            StaticTextId.UiId.MessageForInvalidName ->
+                "Name must be 3–50 characters and cannot start or end with a space"
             StaticTextId.UiId.WhenBirthdayTitle -> "When’s your birthday?"
             StaticTextId.UiId.WhenBirthdayBody -> "Only your age is visible on your profile"
             StaticTextId.UiId.HintForBirthday -> "Your birthday"
