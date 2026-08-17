@@ -6,11 +6,14 @@ import com.padabajka.dating.core.domain.delegate
 import com.padabajka.dating.core.permission.GeoPermissionController
 import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.presentation.error.ExternalDomainError
+import com.padabajka.dating.core.presentation.event.AlertService
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.toUI
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
 import com.padabajka.dating.core.repository.api.exception.GeoExceptions
+import com.padabajka.dating.core.repository.api.exception.SuperLikeException
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
 import com.padabajka.dating.core.repository.api.model.swiper.EmptyCard
 import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
@@ -58,7 +61,8 @@ class SwiperScreenComponent(
     private val profileRepository: ProfileRepository,
     private val subscriptionRepository: SubscriptionRepository,
     private val returnLastCardUseCase: ReturnLastCardUseCase,
-    private val geoPermissionController: GeoPermissionController
+    private val geoPermissionController: GeoPermissionController,
+    private val alertService: AlertService
 ) : BaseComponent<SwiperState>(
     context,
     "swiper",
@@ -168,7 +172,7 @@ class SwiperScreenComponent(
 
     private fun dislikeCard(cardItem: CardItem) {
         if (cardItem is PersonItem) {
-            reactPersonAndUpdateCardDeck(PersonReaction.Dislike(cardItem.id))
+            reactPersonAndUpdateCardDeck(PersonReaction.Dislike(cardItem.id), cardItem)
         } else {
             updateCardDeck()
         }
@@ -176,7 +180,7 @@ class SwiperScreenComponent(
 
     private fun likeCard(cardItem: CardItem) {
         if (cardItem is PersonItem) {
-            reactPersonAndUpdateCardDeck(PersonReaction.Like(cardItem.id))
+            reactPersonAndUpdateCardDeck(PersonReaction.Like(cardItem.id), cardItem)
         } else {
             updateCardDeck()
         }
@@ -185,7 +189,10 @@ class SwiperScreenComponent(
     private fun superLikeCard(cardItem: CardItem, message: String) {
         if (cardItem is PersonItem) {
             if (subscriptionRepository.subscriptionStateValue.features.superLikes > 0) {
-                reactPersonAndUpdateCardDeck(PersonReaction.SuperLike(cardItem.id, message, 0)) // TODO(P2): delete time
+                reactPersonAndUpdateCardDeck(
+                    PersonReaction.SuperLike(cardItem.id, message, 0), // TODO(P2): delete time
+                    cardItem
+                )
             } else {
                 reduceReturnLastCard()
                 openSubscriptionScreen()
@@ -195,13 +202,34 @@ class SwiperScreenComponent(
         }
     }
 
-    private fun reactPersonAndUpdateCardDeck(reaction: PersonReaction) =
+    private fun reactPersonAndUpdateCardDeck(
+        reaction: PersonReaction,
+        cardItem: PersonItem
+    ) =
         launchStep(
             action = {
                 reactToCardUseCase(reaction)
                 updateCardDeck()
             },
+            onError = { error ->
+                val exception = (error as? ExternalDomainError.Unknown)?.e
+                if (exception is SuperLikeException) {
+                    reduceReturnCard(cardItem)
+                    alertService.showAlert {
+                        StaticTextId.UiId.NotEnoughSuperLikesDescription.translate()
+                    }
+                    true
+                } else {
+                    false
+                }
+            }
         )
+
+    private fun reduceReturnCard(cardItem: CardItem) {
+        reduce { state ->
+            state.run { copy(cardDeck = cardDeck.returnCard(cardItem)) }
+        }
+    }
 
     private fun updateCardDeck(count: Int = 1) {
         launchStep(

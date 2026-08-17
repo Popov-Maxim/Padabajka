@@ -49,6 +49,18 @@ data class CardDeck(
         return CardDeck(mainCollection, newIndexForDelete, raised)
     }
 
+    fun returnCard(cardItem: CardItem): CardDeck {
+        val cardIndex = mainCollection.indexOf(cardItem)
+        if (cardIndex !in 0 until indexForDelete) return this
+
+        val newIndexForDelete = indexForDelete - 1
+        val newMainCollection = mainCollection
+            .removeAt(cardIndex)
+            .add(newIndexForDelete, cardItem)
+
+        return CardDeck(newMainCollection, newIndexForDelete, raised)
+    }
+
     fun makeStatic(): CardDeck {
         return copy(returnLastEvent = consumed)
     }

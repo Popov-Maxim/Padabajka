@@ -230,6 +230,7 @@ sealed interface StaticTextId {
         InvalidCredentialsDescription(rawId = "invalid_credentials_description"),
         NoCredentialAvailableDescription(rawId = "no_credential_available_description"),
         TooManyRequestsDescription(rawId = "too_many_requests_description"),
+        NotEnoughSuperLikesDescription(rawId = "not_enough_super_likes_description"),
         UserNotFoundDescription(rawId = "user_not_found_description"),
         MissingEmailForLinkDescription(rawId = "missing_email_for_link_description"),
         InvalidLinkForAuthDescription(rawId = "invalid_link_for_auth_description"),
