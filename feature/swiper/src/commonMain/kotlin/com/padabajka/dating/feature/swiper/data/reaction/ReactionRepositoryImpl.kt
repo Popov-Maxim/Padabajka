@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.swiper.data.reaction
 import com.padabajka.dating.core.data.network.model.ReactionType
 import com.padabajka.dating.core.repository.api.MatchRepository
 import com.padabajka.dating.core.repository.api.ReactionRepository
+import com.padabajka.dating.core.repository.api.exception.SuperLikeException
 import com.padabajka.dating.core.repository.api.model.swiper.PersonReaction
 import com.padabajka.dating.feature.swiper.data.reaction.network.ReactionDto
 import com.padabajka.dating.feature.swiper.data.reaction.network.toRequest
@@ -31,7 +32,13 @@ class ReactionRepositoryImpl(
         val reactions = localReactionDataSource.insert(reaction)
 
         if (reactions.isNotEmpty() && reactions.requiredForSend()) {
-            forceSendReactions(reactions)
+            try {
+                forceSendReactions(reactions)
+            } catch (e: SuperLikeException) {
+                val rejectedSuperLikes = reactions.filter { it.reaction == ReactionType.SuperLike }
+                localReactionDataSource.remove(rejectedSuperLikes)
+                throw e
+            }
         }
     }
 

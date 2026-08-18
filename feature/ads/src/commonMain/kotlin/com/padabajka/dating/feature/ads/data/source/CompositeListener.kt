@@ -5,6 +5,7 @@ import com.padabajka.dating.core.repository.api.model.ads.PlatformNativeAd
 
 internal interface CompositeListener : NativeAdLoader.Listener {
     fun addListener(listener: NativeAdLoader.Listener)
+    fun removeListener(listener: NativeAdLoader.Listener)
 
     companion object {
         operator fun invoke(): CompositeListener = CompositeListenerImpl()
@@ -18,6 +19,10 @@ private class CompositeListenerImpl : CompositeListener {
 
     override fun addListener(listener: NativeAdLoader.Listener) {
         listeners.add(listener)
+    }
+
+    override fun removeListener(listener: NativeAdLoader.Listener) {
+        listeners.remove(listener)
     }
 
     override fun onLoaded(platformNativeAd: PlatformNativeAd) {

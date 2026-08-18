@@ -222,6 +222,7 @@ class EngDictionary : Dictionary() {
                 "No account found. Please choose an account and try again."
 
             StaticTextId.UiId.TooManyRequestsDescription -> "Too many attempts. Please try again later."
+            StaticTextId.UiId.NotEnoughSuperLikesDescription -> "You don't have enough Super Likes."
             StaticTextId.UiId.UserNotFoundDescription -> "Account not found. Please try again."
             StaticTextId.UiId.MissingEmailForLinkDescription -> "Couldn't complete sign-in. Please try again."
             StaticTextId.UiId.InvalidLinkForAuthDescription ->

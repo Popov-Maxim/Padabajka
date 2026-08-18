@@ -84,6 +84,7 @@ class MainAuthScopeNavigateComponent(
                     subscriptionRepository = get(),
                     returnLastCardUseCase = get(),
                     geoPermissionController = get(),
+                    alertService = get(),
                 )
             )
 

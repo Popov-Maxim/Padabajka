@@ -3,9 +3,10 @@ package com.padabajka.dating.feature.ads.data.source
 import com.padabajka.dating.core.data.NativeAdLoader
 import com.padabajka.dating.core.repository.api.model.ads.PlatformNativeAd
 import com.padabajka.dating.core.repository.api.model.profile.Profile
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
+import kotlin.time.Duration.Companion.seconds
 
 internal class NativeAdRemoteDataSourceImpl(
     private val nativeAdLoader: NativeAdLoader,
@@ -16,21 +17,29 @@ internal class NativeAdRemoteDataSourceImpl(
         nativeAdLoader.setListener(compositeListener)
     }
 
-    override suspend fun loadAd(profile: Profile?): PlatformNativeAd {
+    override suspend fun loadAd(profile: Profile?): PlatformNativeAd? {
         val configuration = NativeAdLoader.Configuration(
             age = profile?.age
         )
-        return suspendCoroutine {
-            compositeListener.addListener(object : NativeAdLoader.Listener {
-                override fun onLoaded(platformNativeAd: PlatformNativeAd) {
-                    it.resume(platformNativeAd)
+
+        return withTimeoutOrNull(5.seconds) {
+            suspendCancellableCoroutine { continuation ->
+                val listener = object : NativeAdLoader.Listener {
+                    override fun onLoaded(platformNativeAd: PlatformNativeAd) {
+                        continuation.resume(platformNativeAd)
+                    }
+
+                    override fun onError(description: String) {
+                        continuation.resume(null)
+                    }
                 }
 
-                override fun onError(description: String) {
-                    it.resumeWithException(LoadErrorException(description))
+                continuation.invokeOnCancellation {
+                    compositeListener.removeListener(listener)
                 }
-            })
-            nativeAdLoader.loadAd(configuration)
+                compositeListener.addListener(listener)
+                nativeAdLoader.loadAd(configuration)
+            }
         }
     }
 }
