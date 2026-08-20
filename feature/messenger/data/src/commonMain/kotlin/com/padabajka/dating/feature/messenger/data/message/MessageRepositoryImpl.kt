@@ -212,12 +212,10 @@ internal class MessageRepositoryImpl(
     ) {
         val messageSyncResponse =
             remoteMessageDataSource.getMessages(chatId, beforeMessageId?.raw, count)
-        if (messageSyncResponse != null) {
-            updateMessageDto(messageSyncResponse.messages)
-            updateReadEventDto(messageSyncResponse.readEvents)
-        }
+        updateMessageDto(messageSyncResponse.messages)
+        updateReadEventDto(messageSyncResponse.readEvents)
 
-        if (messageSyncResponse?.hasMoreMessages != true) {
+        if (messageSyncResponse.hasMoreMessages.not()) {
             chatRepository.updateChat(chatId) { chat ->
                 chat.copy(hasMoreOldMessages = false)
             }
@@ -236,7 +234,7 @@ internal class MessageRepositoryImpl(
             ).copy(
                 hasMoreMessages = chat.hasMoreOldMessages
             )
-        } ?: error("sync message return 204") // TODO(P0): new chat may be empty
+        }
         updateMessageDto(messageSyncResponse.messages)
         updateReadEventDto(messageSyncResponse.readEvents)
 
