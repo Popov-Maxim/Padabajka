@@ -15,6 +15,7 @@ interface LocalMessageDataSource {
         messageReadEvent: MessageReadEventEntry?
     ): Int
     suspend fun message(messageId: String): MessageEntry
+    suspend fun messageOrNull(messageId: String): MessageEntry?
     suspend fun addMessage(message: MessageEntry)
     suspend fun oldestMessageId(chatId: ChatId): MessageId?
     suspend fun deleteMessage(messageId: String)

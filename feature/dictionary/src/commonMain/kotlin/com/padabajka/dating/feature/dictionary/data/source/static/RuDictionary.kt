@@ -65,6 +65,7 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.MessagePopupEdit -> "Изменить"
             StaticTextId.UiId.MessagePopupDelete -> "Удалить"
             StaticTextId.UiId.MessageReadAt -> "прочитано в"
+            StaticTextId.UiId.MessageUnavailable -> "Сообщение недоступно"
             StaticTextId.UiId.City -> "Город"
             StaticTextId.UiId.CityHint -> "Из какого ты города?"
             StaticTextId.UiId.SexualOrientation -> "Ориентация"

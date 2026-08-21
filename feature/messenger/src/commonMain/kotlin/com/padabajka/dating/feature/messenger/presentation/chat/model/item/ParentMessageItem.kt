@@ -7,8 +7,8 @@ import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 @Immutable
 data class ParentMessageItem(
     val id: MessageId,
-    val content: String,
-    val direction: MessageDirection
+    val content: String?,
+    val direction: MessageDirection?
 )
 
 fun MessageItem.toParentMessageItem(): ParentMessageItem {

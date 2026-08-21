@@ -122,6 +122,7 @@ sealed interface StaticTextId {
         MessagePopupEdit(rawId = "message_popup_edit"),
         MessagePopupDelete(rawId = "message_popup_delete"),
         MessageReadAt(rawId = "message_read_at"),
+        MessageUnavailable(rawId = "message_unavailable"),
 
         // General
         Apply(rawId = "apply"),

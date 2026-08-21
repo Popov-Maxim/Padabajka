@@ -299,11 +299,11 @@ internal class MessageRepositoryImpl(
 
     private suspend fun MessageEntry.toDomain(readAt: Long?): Message {
         val parentMessage = parentMessageId?.let { parentId ->
-            val parentMessageDto = localMessageDataSource.message(parentId)
+            val parentMessageDto = localMessageDataSource.messageOrNull(parentId)
             ParentMessage(
-                id = MessageId(parentMessageDto.id),
-                direction = direction(parentMessageDto.authorId),
-                content = parentMessageDto.content.text
+                id = MessageId(parentId),
+                direction = parentMessageDto?.authorId?.let(::direction),
+                content = parentMessageDto?.content?.text
             )
         }
 
