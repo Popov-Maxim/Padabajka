@@ -45,10 +45,16 @@ class RoomLocalMatchDataSource(
         val updatedMatch = updated(match)
 
         val oldChatId = ChatId(match.chatId)
-        if (oldChatId.raw != updatedMatch.chatId) {
-            chatDataSource.deleteChat(oldChatId)
+        val newChatId = ChatId(updatedMatch.chatId)
+        val chatChanged = oldChatId != newChatId
+        if (chatChanged) {
+            chatDataSource.getOrCreateChat(newChatId)
         }
 
         matchesDao.insertOrUpdate(updatedMatch)
+
+        if (chatChanged) {
+            chatDataSource.deleteChat(oldChatId)
+        }
     }
 }

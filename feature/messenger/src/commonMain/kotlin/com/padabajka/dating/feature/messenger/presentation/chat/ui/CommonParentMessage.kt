@@ -19,6 +19,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreColors
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
+import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.feature.messenger.presentation.chat.model.Field
 import com.padabajka.dating.feature.messenger.presentation.chat.model.item.ParentMessageItem
@@ -56,7 +58,10 @@ fun CommonParentMessage(
                         fontSize = 13.sp,
                     )
                 ) {
-                    append(parentMessage.content)
+                    append(
+                        parentMessage.content
+                            ?: StaticTextId.UiId.MessageUnavailable.translate()
+                    )
                 }
             },
             lineHeight = (13 * 1.2).sp,

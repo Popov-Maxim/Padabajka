@@ -34,6 +34,10 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
         return messageDao.messageById(messageId)
     }
 
+    override suspend fun messageOrNull(messageId: String): MessageEntry? {
+        return messageDao.messageByIdOrNull(messageId)
+    }
+
     override suspend fun addMessage(message: MessageEntry) {
         messageDao.insertMessage(message)
     }

@@ -212,12 +212,10 @@ internal class MessageRepositoryImpl(
     ) {
         val messageSyncResponse =
             remoteMessageDataSource.getMessages(chatId, beforeMessageId?.raw, count)
-        if (messageSyncResponse != null) {
-            updateMessageDto(messageSyncResponse.messages)
-            updateReadEventDto(messageSyncResponse.readEvents)
-        }
+        updateMessageDto(messageSyncResponse.messages)
+        updateReadEventDto(messageSyncResponse.readEvents)
 
-        if (messageSyncResponse?.hasMoreMessages != true) {
+        if (messageSyncResponse.hasMoreMessages.not()) {
             chatRepository.updateChat(chatId) { chat ->
                 chat.copy(hasMoreOldMessages = false)
             }
@@ -236,7 +234,7 @@ internal class MessageRepositoryImpl(
             ).copy(
                 hasMoreMessages = chat.hasMoreOldMessages
             )
-        } ?: error("sync message return 204") // TODO(P0): new chat may be empty
+        }
         updateMessageDto(messageSyncResponse.messages)
         updateReadEventDto(messageSyncResponse.readEvents)
 
@@ -301,11 +299,11 @@ internal class MessageRepositoryImpl(
 
     private suspend fun MessageEntry.toDomain(readAt: Long?): Message {
         val parentMessage = parentMessageId?.let { parentId ->
-            val parentMessageDto = localMessageDataSource.message(parentId)
+            val parentMessageDto = localMessageDataSource.messageOrNull(parentId)
             ParentMessage(
-                id = MessageId(parentMessageDto.id),
-                direction = direction(parentMessageDto.authorId),
-                content = parentMessageDto.content.text
+                id = MessageId(parentId),
+                direction = parentMessageDto?.authorId?.let(::direction),
+                content = parentMessageDto?.content?.text
             )
         }
 
