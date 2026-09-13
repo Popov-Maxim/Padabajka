@@ -10,6 +10,7 @@ import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.ChatRepository
 import com.padabajka.dating.core.repository.api.MessageRepository
 import com.padabajka.dating.core.repository.api.PersonRepository
+import com.padabajka.dating.core.repository.api.exception.BadStatusCodeException
 import com.padabajka.dating.core.repository.api.model.auth.NoAuthorisedUserException
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
@@ -107,7 +108,15 @@ internal class MessageRepositoryImpl(
     }
 
     override suspend fun deleteMessage(chatId: ChatId, messageId: MessageId) {
-        remoteMessageDataSource.deleteMessage(chatId, messageId)
+        try {
+            remoteMessageDataSource.deleteMessage(chatId, messageId)
+        } catch (e: BadStatusCodeException) {
+            if (e.statusCode != HTTP_NOT_FOUND_STATUS_CODE) throw e
+
+            val message = localMessageDataSource.messageOrNull(messageId.raw)
+            val isFailedToSend = message?.messageStatus == MessageStatus.FailedToSend
+            if (isFailedToSend.not()) throw e
+        }
         localMessageDataSource.deleteMessage(messageId.raw)
     }
 
@@ -347,6 +356,7 @@ internal class MessageRepositoryImpl(
         Instant.fromEpochMilliseconds(millis).toLocalDateTime(TimeZone.currentSystemDefault())
 
     companion object {
+        private const val HTTP_NOT_FOUND_STATUS_CODE = 404
         private const val COUNT_MESSAGE_FOR_SYNC = 20
     }
 }

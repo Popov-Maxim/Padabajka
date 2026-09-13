@@ -37,6 +37,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -366,11 +368,13 @@ private fun getParentMessageColor(message: MessageItem): ParentMessageColors {
 }
 
 @Composable
+@Suppress("DEPRECATION")
 private fun PopupMessageMenuContent(
     message: MessageItem,
     onEvent: (MessengerEvent) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
+    val clipboardManager = LocalClipboardManager.current
     val popupButtonData = listOfNotNull(
         PopupButtonData(
             iconData = CoreIcons.Message.Popup.Like.toData(),
@@ -385,13 +389,19 @@ private fun PopupMessageMenuContent(
         PopupButtonData(
             iconData = CoreIcons.Message.Popup.Copy.toData(),
             text = StaticTextId.UiId.MessagePopupCopy,
-            onClick = { }
+            onClick = {
+                clipboardManager.setText(AnnotatedString(message.content))
+            }
         ),
-        PopupButtonData(
-            iconData = CoreIcons.Message.Popup.Pin.toData(),
-            text = StaticTextId.UiId.MessagePopupPin,
-            onClick = { }
-        ),
+        if (PIN_MESSAGE_ENABLED) {
+            PopupButtonData(
+                iconData = CoreIcons.Message.Popup.Pin.toData(),
+                text = StaticTextId.UiId.MessagePopupPin,
+                onClick = { }
+            )
+        } else {
+            null
+        },
         message.safeCast<OutgoingMessageItem>()?.let {
             PopupButtonData(
                 iconData = CoreIcons.Message.Popup.Edit.toData(),
@@ -449,6 +459,8 @@ private fun PopupMessageMenuContent(
         }
     }
 }
+
+private const val PIN_MESSAGE_ENABLED = false
 
 private data class PopupButtonData(
     val iconData: IconData,
