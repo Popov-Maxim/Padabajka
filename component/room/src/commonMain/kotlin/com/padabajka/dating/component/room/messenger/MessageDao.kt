@@ -104,17 +104,12 @@ interface MessageDao {
         update: (MessageEntry?) -> MessageEntry?,
     ) {
         val saved = messageVersion(chatId, messageId)
-        if (saved?.deleted == true) return
-        val savedVersion = saved?.version
-        // Equal HTTP/sync snapshots can confirm or roll back optimistic local changes.
-        if (savedVersion != null &&
-            (version == null || version < savedVersion || (fromEvent && version == savedVersion))
-        ) return
         val current = messageByIdOrNull(messageId)
         // A sync snapshot may omit a deleted message entirely. Its cursor still covers the event.
-        if (fromEvent && !deleted && saved == null && current == null && version != null &&
+        val isUnknownMessageEvent = fromEvent && !deleted && saved == null && current == null
+        val coveredBySync = isUnknownMessageEvent && version != null &&
             version <= (syncedMessageVersion(chatId) ?: -1)
-        ) return
+        if (!canApplyRemoteChange(saved, version, fromEvent) || coveredBySync) return
 
         if (deleted) {
             deleteMessageById(messageId)
@@ -133,5 +128,21 @@ interface MessageDao {
         require(updated.id == old.id && updated.chatId == old.chatId)
         updateMessage(updated)
         return updated
+    }
+}
+
+private fun canApplyRemoteChange(
+    saved: MessageVersionEntry?,
+    version: Long?,
+    fromEvent: Boolean,
+): Boolean {
+    val savedVersion = saved?.version
+    // Equal HTTP/sync snapshots can confirm or roll back optimistic local changes.
+    return when {
+        saved?.deleted == true -> false
+        savedVersion == null -> true
+        version == null -> false
+        fromEvent -> version > savedVersion
+        else -> version >= savedVersion
     }
 }

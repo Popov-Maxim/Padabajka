@@ -61,7 +61,12 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
         fromEvent: Boolean,
         update: (MessageEntry?) -> MessageEntry?,
     ) = messageDao.applyRemoteChange(
-        chatId, messageId, version, deleted = false, fromEvent = fromEvent, update = update,
+        chatId = chatId,
+        messageId = messageId,
+        version = version,
+        deleted = false,
+        fromEvent = fromEvent,
+        update = update,
     )
 
     override suspend fun applyRemoteDeletion(
@@ -70,7 +75,12 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
         version: Long?,
         fromEvent: Boolean,
     ) = messageDao.applyRemoteChange(
-        chatId, messageId, version, deleted = true, fromEvent = fromEvent, update = { null },
+        chatId = chatId,
+        messageId = messageId,
+        version = version,
+        deleted = true,
+        fromEvent = fromEvent,
+        update = { null },
     )
 
     override suspend fun updateMessage(

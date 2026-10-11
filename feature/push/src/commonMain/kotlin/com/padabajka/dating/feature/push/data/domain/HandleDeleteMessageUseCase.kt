@@ -8,7 +8,10 @@ class HandleDeleteMessageUseCase(
 ) {
     suspend operator fun invoke(dataPush: MessageDataPush.DeleteMessage) {
         localMessageDataSource.applyRemoteDeletion(
-            dataPush.chatId, dataPush.id.raw, dataPush.version, fromEvent = true,
+            chatId = dataPush.chatId,
+            messageId = dataPush.id.raw,
+            version = dataPush.version,
+            fromEvent = true,
         )
     }
 }
