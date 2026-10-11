@@ -11,10 +11,14 @@ interface UserSessionDao {
     suspend fun clearUserData() {
         deleteMessageReadEvents()
         deleteMessages()
+        deleteMessageVersions()
         deleteChats()
         deleteMatches()
         deletePersons()
     }
+
+    @Query("DELETE FROM message_versions")
+    suspend fun deleteMessageVersions()
 
     @Query("DELETE FROM messages")
     suspend fun deleteMessages()

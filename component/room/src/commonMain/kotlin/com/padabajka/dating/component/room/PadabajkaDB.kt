@@ -20,6 +20,7 @@ import com.padabajka.dating.component.room.messenger.converters.MessageReactionE
 import com.padabajka.dating.component.room.messenger.converters.MessageStatusConverters
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import com.padabajka.dating.component.room.messenger.entry.MessageReadEventEntry
+import com.padabajka.dating.component.room.messenger.entry.MessageVersionEntry
 import com.padabajka.dating.component.room.person.PersonDao
 import com.padabajka.dating.component.room.person.converters.ListStringConverters
 import com.padabajka.dating.component.room.person.converters.LocalDateConverters
@@ -30,6 +31,7 @@ import com.padabajka.dating.component.room.session.UserSessionDao
 @Database(
     entities = [
         MessageEntry::class,
+        MessageVersionEntry::class,
         ChatEntry::class,
         MessageReadEventEntry::class,
         PersonEntry::class,

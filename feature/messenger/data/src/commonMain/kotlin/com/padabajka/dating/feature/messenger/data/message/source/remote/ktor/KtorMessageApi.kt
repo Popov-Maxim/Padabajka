@@ -100,7 +100,7 @@ class KtorMessageApi(
         return response.body()
     }
 
-    override suspend fun deleteMessage(chatId: ChatId, messageId: MessageId) {
+    override suspend fun deleteMessage(chatId: ChatId, messageId: MessageId): MessageDto.Deleted {
         val client = ktorClientProvider.client()
 
         val response = client.delete {
@@ -109,6 +109,7 @@ class KtorMessageApi(
             }
         }
 
-        return response.throwIfNotSuccessful()
+        response.throwIfNotSuccessful()
+        return response.body()
     }
 }

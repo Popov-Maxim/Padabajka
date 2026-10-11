@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0130d5db04b1d99681e1509902c7f9ef",
+    "identityHash": "16c6876189acc3dcb35d2f451d6a5e54",
     "entities": [
       {
         "tableName": "messages",
@@ -76,6 +76,42 @@
           "autoGenerate": false,
           "columnNames": [
             "id"
+          ]
+        }
+      },
+      {
+        "tableName": "message_versions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`chatId` TEXT NOT NULL, `messageId` TEXT NOT NULL, `version` INTEGER, `deleted` INTEGER NOT NULL, PRIMARY KEY(`chatId`, `messageId`))",
+        "fields": [
+          {
+            "fieldPath": "chatId",
+            "columnName": "chatId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "messageId",
+            "columnName": "messageId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "deleted",
+            "columnName": "deleted",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "chatId",
+            "messageId"
           ]
         }
       },
@@ -367,7 +403,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0130d5db04b1d99681e1509902c7f9ef')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '16c6876189acc3dcb35d2f451d6a5e54')"
     ]
   }
 }
