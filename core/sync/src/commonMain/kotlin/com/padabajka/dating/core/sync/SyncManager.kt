@@ -118,12 +118,9 @@ class SyncManager(
                     }
 
                     SocketRepository.ConnectionState.TURNED_OFF -> {
-                        log("socket turn off")
-                        eventMutex.withLock {
-                            log("state socket turn off")
-                            state = State.TURNED_OFF
-                            pendingSyncRequest = null
-                        }
+                        // Only stop() may turn off the manager; the socket's initial or
+                        // delayed TURNED_OFF must not override start() or queued sync work.
+                        log("socket TURNED_OFF ignored; manager state=${stateFlow.value}")
                     }
                 }
             }
