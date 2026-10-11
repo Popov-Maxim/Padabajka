@@ -5,7 +5,6 @@ import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import com.padabajka.dating.component.room.messenger.entry.MessageReactionEntity
 import com.padabajka.dating.component.room.messenger.entry.MessageReadEventEntry
 import com.padabajka.dating.core.data.uuid
-import com.padabajka.dating.core.domain.replaced
 import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.ChatRepository
 import com.padabajka.dating.core.repository.api.MessageRepository
@@ -31,6 +30,7 @@ import com.padabajka.dating.feature.messenger.data.message.model.toSendRequest
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalChatReadStateDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.addReaction
+import com.padabajka.dating.feature.messenger.data.message.source.local.applyRemoteMessage
 import com.padabajka.dating.feature.messenger.data.message.source.local.removeReaction
 import com.padabajka.dating.feature.messenger.data.message.source.local.toEntity
 import com.padabajka.dating.feature.messenger.data.message.source.local.toSendRequestDto
@@ -109,15 +109,16 @@ internal class MessageRepositoryImpl(
 
     override suspend fun deleteMessage(chatId: ChatId, messageId: MessageId) {
         try {
-            remoteMessageDataSource.deleteMessage(chatId, messageId)
+            val deletedMessage = remoteMessageDataSource.deleteMessage(chatId, messageId)
+            localMessageDataSource.applyRemoteMessage(deletedMessage)
         } catch (e: BadStatusCodeException) {
             if (e.statusCode != HTTP_NOT_FOUND_STATUS_CODE) throw e
 
             val message = localMessageDataSource.messageOrNull(messageId.raw)
             val isFailedToSend = message?.messageStatus == MessageStatus.FailedToSend
             if (isFailedToSend.not()) throw e
+            localMessageDataSource.deleteMessage(messageId.raw)
         }
-        localMessageDataSource.deleteMessage(messageId.raw)
     }
 
     override suspend fun deleteLocalMessage(chatId: ChatId, messageId: MessageId) {
@@ -142,9 +143,7 @@ internal class MessageRepositoryImpl(
                 editMessageDto
             )
 
-            localMessageDataSource.updateMessage(messageId.raw) {
-                updatedMessageDto.toEntity()
-            }
+            localMessageDataSource.applyRemoteMessage(updatedMessageDto)
         } catch (e: Throwable) {
             // TODO: retry read updating
         }
@@ -176,9 +175,7 @@ internal class MessageRepositoryImpl(
             val updatedReaction =
                 remoteMessageDataSource.sendReaction(chatId, messageId, reaction.toSendRequestDto())
 
-            localMessageDataSource.updateMessage(messageId.raw) {
-                it.copy(reactions = it.reactions?.replaced(reaction, updatedReaction.toEntity()))
-            }
+            localMessageDataSource.applyRemoteMessage(updatedReaction.message)
         } catch (e: Throwable) {
             // TODO(P1): retry sending reaction
         }
@@ -195,7 +192,8 @@ internal class MessageRepositoryImpl(
         try {
             val chatId = updatedMessage.chatId.let(::ChatId)
 
-            remoteMessageDataSource.removeReaction(chatId, messageId)
+            val updatedMessageDto = remoteMessageDataSource.removeReaction(chatId, messageId)
+            localMessageDataSource.applyRemoteMessage(updatedMessageDto)
         } catch (e: Throwable) {
             // TODO(P1): retry sending reaction
         }
@@ -268,10 +266,7 @@ internal class MessageRepositoryImpl(
     }
 
     private suspend fun updateMessageDto(messageDto: List<MessageDto>) {
-        val messageEntities =
-            messageDto.filterIsInstance<MessageDto.Existing>().map { it.toEntity() }
-        val messageIdsForDeleted = messageDto.filterIsInstance<MessageDto.Deleted>().map { it.id }
-        localMessageDataSource.updateMessages(messageEntities, messageIdsForDeleted)
+        messageDto.forEach { localMessageDataSource.applyRemoteMessage(it) }
     }
 
     private suspend fun updateReadEventDto(messageDto: List<ChatReadEventResponse>) {
@@ -287,7 +282,7 @@ internal class MessageRepositoryImpl(
             val updatedMessageDto =
                 remoteMessageDataSource.sendMessage(chatId, messageEntry.toSendRequest())
 
-            localMessageDataSource.updateMessage(messageEntry.id) { updatedMessageDto.toEntity() }
+            localMessageDataSource.applyRemoteMessage(updatedMessageDto)
         } catch (e: Throwable) {
             // TODO(P1): retry sending
             localMessageDataSource.markMessageFailedToSend(messageEntry.id)

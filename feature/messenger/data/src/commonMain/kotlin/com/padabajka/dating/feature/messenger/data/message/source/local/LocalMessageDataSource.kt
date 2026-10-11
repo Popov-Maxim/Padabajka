@@ -20,7 +20,19 @@ interface LocalMessageDataSource {
     suspend fun oldestMessageId(chatId: ChatId): MessageId?
     suspend fun deleteMessage(messageId: String)
     suspend fun deleteMessagesInChat(chatId: ChatId)
-    suspend fun updateMessages(messagesForAdd: List<MessageEntry>, messageIdsForDelete: List<String>)
+    suspend fun applyRemoteMessage(
+        chatId: String,
+        messageId: String,
+        version: Long?,
+        fromEvent: Boolean = false,
+        update: (MessageEntry?) -> MessageEntry?,
+    )
+    suspend fun applyRemoteDeletion(
+        chatId: String,
+        messageId: String,
+        version: Long?,
+        fromEvent: Boolean = false,
+    )
     suspend fun updateMessage(messageId: String, update: (MessageEntry) -> MessageEntry): MessageEntry
     suspend fun markMessageFailedToSend(messageId: String)
 }

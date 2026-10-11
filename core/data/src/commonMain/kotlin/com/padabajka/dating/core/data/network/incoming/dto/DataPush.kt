@@ -82,7 +82,8 @@ sealed interface MessageDataPush : DataPush {
         val creationTime: Long,
         val parentMessageId: MessageId? = null,
         val editedAt: Long? = null,
-        val readAt: Long? = null
+        val readAt: Long? = null,
+        val version: Long? = null,
     ) : MessageDataPush
 
     @Serializable
@@ -94,6 +95,7 @@ sealed interface MessageDataPush : DataPush {
         val content: String,
         val parentMessageId: MessageId? = null,
         val reactions: List<MessageReactionResponse> = listOf(),
+        val version: Long? = null,
     ) : MessageDataPush
 
     @Serializable
@@ -101,6 +103,7 @@ sealed interface MessageDataPush : DataPush {
     data class DeleteMessage(
         val id: MessageId,
         val chatId: String,
+        val version: Long? = null,
     ) : MessageDataPush
 
     @Serializable

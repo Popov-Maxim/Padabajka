@@ -30,5 +30,5 @@ interface MessageApi {
     /**
      * DELETE /chats/{chatId}/messages/{messageId}
      */
-    suspend fun deleteMessage(chatId: ChatId, messageId: MessageId)
+    suspend fun deleteMessage(chatId: ChatId, messageId: MessageId): MessageDto.Deleted
 }

@@ -1,10 +1,11 @@
 package com.padabajka.dating.feature.messenger.data.message.source.remote.api
 
-import com.padabajka.dating.core.data.network.incoming.dto.MessageReactionResponse
 import com.padabajka.dating.core.networking.KtorClientProvider
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
+import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.MessageReactionRequest
+import com.padabajka.dating.feature.messenger.data.message.model.MessageReactionUpdateResponse
 import com.padabajka.dating.feature.messenger.data.message.source.remote.routes.MessageReactionRoutes
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
@@ -25,7 +26,7 @@ class MessageReactionApi(
         chatId: ChatId,
         messageId: MessageId,
         request: MessageReactionRequest.Send
-    ): MessageReactionResponse {
+    ): MessageReactionUpdateResponse {
         val client = ktorClientProvider.client()
 
         val response = client.post {
@@ -46,7 +47,7 @@ class MessageReactionApi(
     suspend fun removeReaction(
         chatId: ChatId,
         messageId: MessageId,
-    ) {
+    ): MessageDto.Existing {
         val client = ktorClientProvider.client()
 
         val response = client.delete {

@@ -18,13 +18,15 @@ sealed interface MessageDto {
     val id: String
     val chatId: String
     val creationTime: Long
+    val version: Long?
 
     @Serializable
     @SerialName("deleted")
     data class Deleted(
         override val id: String,
         override val chatId: String,
-        override val creationTime: Long
+        override val creationTime: Long,
+        override val version: Long? = null,
     ) : MessageDto
 
     @Serializable
@@ -38,7 +40,8 @@ sealed interface MessageDto {
         val content: String,
         val reactions: List<MessageReactionResponse>,
         val readAt: Long?,
-        val parentMessageId: String?
+        val parentMessageId: String?,
+        override val version: Long? = null,
     ) : MessageDto
 }
 

@@ -54,27 +54,29 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
         messageDao.deleteMessagesByChatId(chatId.raw)
     }
 
-    override suspend fun updateMessages(
-        messagesForAdd: List<MessageEntry>,
-        messageIdsForDelete: List<String>
-    ) {
-        messageDao.updateMessages(messagesForAdd, messageIdsForDelete)
-    }
+    override suspend fun applyRemoteMessage(
+        chatId: String,
+        messageId: String,
+        version: Long?,
+        fromEvent: Boolean,
+        update: (MessageEntry?) -> MessageEntry?,
+    ) = messageDao.applyRemoteChange(
+        chatId, messageId, version, deleted = false, fromEvent = fromEvent, update = update,
+    )
+
+    override suspend fun applyRemoteDeletion(
+        chatId: String,
+        messageId: String,
+        version: Long?,
+        fromEvent: Boolean,
+    ) = messageDao.applyRemoteChange(
+        chatId, messageId, version, deleted = true, fromEvent = fromEvent, update = { null },
+    )
 
     override suspend fun updateMessage(
         messageId: String,
         update: (MessageEntry) -> MessageEntry
-    ): MessageEntry {
-        val old = messageDao.messageById(messageId)
-        val updated = update(old)
-
-        if (old.id != updated.id) {
-            messageDao.replaceMessage(old = old, new = updated)
-        }
-
-        messageDao.updateMessage(updated)
-        return updated
-    }
+    ): MessageEntry = messageDao.updateMessage(messageId, update)
 
     override suspend fun markMessageFailedToSend(messageId: String) {
         messageDao.updateMessageStatusUnless(
