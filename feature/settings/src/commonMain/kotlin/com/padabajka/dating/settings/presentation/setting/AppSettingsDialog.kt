@@ -59,6 +59,8 @@ fun AppSettingsDialog(
     }
     val currentShowFps = debugAppSettings.showFps
     var showFps by remember(currentShowFps) { mutableStateOf(currentShowFps) }
+    val currentShowSyncStatus = debugAppSettings.showSyncStatus
+    var showSyncStatus by remember(currentShowSyncStatus) { mutableStateOf(currentShowSyncStatus) }
     val coroutineScope: CoroutineScope = koinInject() // TODO(P3): move to use case
 
     Dialog(onDismissRequest = onDismiss) {
@@ -133,6 +135,18 @@ fun AppSettingsDialog(
                     )
                 }
 
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Show SyncManager status")
+                    Checkbox(
+                        checked = showSyncStatus,
+                        onCheckedChange = { showSyncStatus = it },
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
@@ -149,7 +163,8 @@ fun AppSettingsDialog(
                                 appSettingsRepository.updateDebugAppSettings {
                                     copy(
                                         host = selectedHost.toHost(ipAddress, port),
-                                        showFps = showFps
+                                        showFps = showFps,
+                                        showSyncStatus = showSyncStatus,
                                     )
                                 }
                             }

@@ -17,6 +17,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -38,7 +40,14 @@ class SyncManager(
         REGULAR, RECOVERY
     }
 
+    private val _stateFlow = MutableStateFlow(State.DISCONNECTED.name)
+    val stateFlow = _stateFlow.asStateFlow()
+
     private var state = State.DISCONNECTED
+        set(value) {
+            field = value
+            _stateFlow.value = value.name
+        }
     private val buffer = atomic(mutableListOf<MessagePush>())
     private var reconnectJob: Job? = null
     private var connectJob: Job? = null
@@ -102,6 +111,7 @@ class SyncManager(
                         log("socket connecting...")
                         eventMutex.withLock {
                             if (state != State.TURNED_OFF) {
+                                log("state socket connecting...")
                                 state = State.CONNECTING
                             }
                         }
@@ -110,6 +120,7 @@ class SyncManager(
                     SocketRepository.ConnectionState.TURNED_OFF -> {
                         log("socket turn off")
                         eventMutex.withLock {
+                            log("state socket turn off")
                             state = State.TURNED_OFF
                             pendingSyncRequest = null
                         }

@@ -46,6 +46,7 @@ import com.padabajka.dating.feature.push.notification.NotificationService
 import com.padabajka.dating.navigation.AuthStateObserverComponent
 import com.padabajka.dating.navigation.UnauthScopeNavigateComponent
 import com.padabajka.dating.ui.AuthScopeScreen
+import com.padabajka.dating.ui.SyncStatusBanner
 import org.koin.compose.getKoin
 import org.koin.compose.koinInject
 
@@ -131,6 +132,7 @@ private fun PadabajkaTheme(content: @Composable () -> Unit) {
             ) {
                 content.invoke()
                 FpsMonitor(modifier = Modifier.align(Alignment.TopStart))
+                SyncStatusBanner(modifier = Modifier.align(Alignment.TopCenter))
             }
             val density = LocalDensity.current
             val navBarHeightPx = WindowInsets.navigationBars.getBottom(density)
