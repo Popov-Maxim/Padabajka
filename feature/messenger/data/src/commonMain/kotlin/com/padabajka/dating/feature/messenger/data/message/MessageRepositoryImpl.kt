@@ -35,8 +35,10 @@ import com.padabajka.dating.feature.messenger.data.message.source.local.removeRe
 import com.padabajka.dating.feature.messenger.data.message.source.local.toEntity
 import com.padabajka.dating.feature.messenger.data.message.source.local.toSendRequestDto
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteMessageDataSource
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
@@ -125,9 +127,11 @@ internal class MessageRepositoryImpl(
         localMessageDataSource.deleteMessage(messageId.raw)
     }
 
-    @Suppress("TooGenericExceptionCaught", "SwallowedException")
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun editMessage(chatId: ChatId, messageId: MessageId, content: String) {
+        lateinit var previousMessage: MessageEntry
         val updatedMessage = localMessageDataSource.updateMessage(messageId.raw) {
+            previousMessage = it
             it.copy(
                 editedAt = nowMilliseconds(),
                 editSynced = false,
@@ -145,7 +149,21 @@ internal class MessageRepositoryImpl(
 
             localMessageDataSource.applyRemoteMessage(updatedMessageDto)
         } catch (e: Throwable) {
-            // TODO: retry read updating
+            withContext(NonCancellable) {
+                localMessageDataSource.updateMessage(messageId.raw) { current ->
+                    if (current.editSynced) {
+                        current
+                    } else {
+                        current.copy(
+                            content = previousMessage.content,
+                            editedAt = previousMessage.editedAt,
+                            // A failed request may have reached the server; verify its state on the next sync.
+                            editSynced = false
+                        )
+                    }
+                }
+            }
+            throw e
         }
     }
 
@@ -259,10 +277,19 @@ internal class MessageRepositoryImpl(
         )
 
         chatRepository.setChat(chatId, newChat)
+        syncUnsyncedEdits(chatId)
     }
 
     override suspend fun clearLocalData() {
         readMessageManager.clearLocalData()
+    }
+
+    private suspend fun syncUnsyncedEdits(chatId: ChatId) {
+        val messageIds = localMessageDataSource.unsyncedEditMessageIds(chatId.raw)
+        messageIds.forEach { messageId ->
+            val message = remoteMessageDataSource.getMessage(chatId, MessageId(messageId))
+            localMessageDataSource.applyRemoteMessage(message)
+        }
     }
 
     private suspend fun updateMessageDto(messageDto: List<MessageDto>) {

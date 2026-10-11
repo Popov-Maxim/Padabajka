@@ -108,8 +108,10 @@ fun Message(
                     onTap = {
                         enabledDropdown = true
                     },
-                    onDoubleTap = {
-                        onEvent(likeEvent(message))
+                    onDoubleTap = if (MESSAGE_REACTIONS_ENABLED) {
+                        { onEvent(likeEvent(message)) }
+                    } else {
+                        null
                     }
                 )
             }
@@ -376,11 +378,15 @@ private fun PopupMessageMenuContent(
 ) {
     val clipboardManager = LocalClipboardManager.current
     val popupButtonData = listOfNotNull(
-        PopupButtonData(
-            iconData = CoreIcons.Message.Popup.Like.toData(),
-            text = StaticTextId.UiId.MessagePopupLike,
-            onClick = { onEvent(likeEvent(message)) }
-        ),
+        if (MESSAGE_REACTIONS_ENABLED) {
+            PopupButtonData(
+                iconData = CoreIcons.Message.Popup.Like.toData(),
+                text = StaticTextId.UiId.MessagePopupLike,
+                onClick = { onEvent(likeEvent(message)) }
+            )
+        } else {
+            null
+        },
         PopupButtonData(
             iconData = CoreIcons.Message.Popup.Reply.toData(),
             text = StaticTextId.UiId.MessagePopupReply,
@@ -461,6 +467,7 @@ private fun PopupMessageMenuContent(
 }
 
 private const val PIN_MESSAGE_ENABLED = false
+private const val MESSAGE_REACTIONS_ENABLED = false
 
 private data class PopupButtonData(
     val iconData: IconData,

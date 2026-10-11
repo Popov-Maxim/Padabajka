@@ -10,6 +10,7 @@ import com.padabajka.dating.feature.messenger.data.message.model.MessageRequest
 import com.padabajka.dating.feature.messenger.data.message.model.MessageSyncResponse
 
 internal interface RemoteMessageDataSource {
+    suspend fun getMessage(chatId: ChatId, messageId: MessageId): MessageDto
     suspend fun sendMessage(chatId: ChatId, sendMessageDto: MessageRequest.Send): MessageDto.Existing
     suspend fun deleteMessage(chatId: ChatId, messageId: MessageId): MessageDto.Deleted
     suspend fun editMessage(

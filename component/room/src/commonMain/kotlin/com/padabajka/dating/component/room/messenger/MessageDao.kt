@@ -42,6 +42,9 @@ interface MessageDao {
     @Query("SELECT * FROM messages WHERE id = :id")
     suspend fun messageByIdOrNull(id: String): MessageEntry?
 
+    @Query("SELECT id FROM messages WHERE chatId = :chatId AND editSynced = 0")
+    suspend fun unsyncedEditMessageIds(chatId: String): List<String>
+
     @Query("SELECT * FROM messages WHERE chatId = :chatId ORDER BY creationTime DESC")
     fun messagesByChatId(chatId: String): Flow<List<MessageEntry>>
 
