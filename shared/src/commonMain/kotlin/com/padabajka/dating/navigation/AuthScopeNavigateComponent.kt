@@ -76,7 +76,7 @@ class AuthScopeNavigateComponent(
 
     private suspend fun finishPrepare() {
         updateAuthMetadataUseCase()
-        syncSessionObserver.start()
+        syncSessionObserver.start(userId)
 
         navigateNewStack(Configuration.MainAuthScope)
     }

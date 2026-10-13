@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.padabajka.dating.core.repository.api.AppSettingsRepository
-import com.padabajka.dating.core.sync.SyncManager
+import com.padabajka.dating.core.sync.SyncSessionObserver
 import org.koin.compose.koinInject
 
 @Composable
@@ -21,8 +21,8 @@ fun SyncStatusBanner(modifier: Modifier = Modifier) {
     val debugAppSettings by settings.debugAppSettings.collectAsState()
     if (debugAppSettings.showSyncStatus.not()) return
 
-    val syncManager: SyncManager = koinInject()
-    val state by syncManager.stateFlow.collectAsState()
+    val syncSessionObserver: SyncSessionObserver = koinInject()
+    val state by syncSessionObserver.stateFlow.collectAsState()
 
     Box(
         modifier = modifier

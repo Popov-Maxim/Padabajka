@@ -31,7 +31,7 @@ object SharedPushHandler : KoinComponent {
         scope.launch {
             val userId = authRepository.currentAuthState.userIdOrNull() ?: return@launch
             userSessionManager.runIfActive(userId) {
-                handlePushUseCase(rawPush)
+                handlePushUseCase(rawPush, userId)
             }
         }
     }
