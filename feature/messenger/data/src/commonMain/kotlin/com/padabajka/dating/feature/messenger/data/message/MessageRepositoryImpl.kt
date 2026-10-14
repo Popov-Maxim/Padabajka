@@ -32,7 +32,6 @@ import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMes
 import com.padabajka.dating.feature.messenger.data.message.source.local.addReaction
 import com.padabajka.dating.feature.messenger.data.message.source.local.applyRemoteMessage
 import com.padabajka.dating.feature.messenger.data.message.source.local.removeReaction
-import com.padabajka.dating.feature.messenger.data.message.source.local.toEntity
 import com.padabajka.dating.feature.messenger.data.message.source.local.toSendRequestDto
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteMessageDataSource
 import kotlinx.coroutines.NonCancellable
@@ -287,7 +286,14 @@ internal class MessageRepositoryImpl(
     private suspend fun syncUnsyncedEdits(chatId: ChatId) {
         val messageIds = localMessageDataSource.unsyncedEditMessageIds(chatId.raw)
         messageIds.forEach { messageId ->
-            val message = remoteMessageDataSource.getMessage(chatId, MessageId(messageId))
+            val message = try {
+                remoteMessageDataSource.getMessage(chatId, MessageId(messageId))
+            } catch (e: BadStatusCodeException) {
+                if (e.statusCode != HTTP_NOT_FOUND_STATUS_CODE) throw e
+
+                localMessageDataSource.deleteMessage(messageId)
+                return@forEach
+            }
             localMessageDataSource.applyRemoteMessage(message)
         }
     }
