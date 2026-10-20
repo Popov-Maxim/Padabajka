@@ -12,6 +12,7 @@ import com.padabajka.dating.feature.match.data.source.local.toEntry
 import com.padabajka.dating.feature.match.data.source.local.toMatch
 import com.padabajka.dating.feature.match.data.source.remote.RemoteMatchDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 
@@ -29,6 +30,13 @@ class MatchRepositoryImpl(
             }
         }
     }
+
+    override fun matchedPersonIds(): Flow<Set<PersonId>> =
+        localMatchDataSource.matches()
+            .map { matches ->
+                matches.mapTo(mutableSetOf()) { PersonId(it.personId) }
+            }
+            .distinctUntilChanged()
 
     override suspend fun findMatch(chatId: ChatId): Flow<Match?> {
         return localMatchDataSource.findMatch(chatId).map { match ->
