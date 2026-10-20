@@ -8,6 +8,11 @@ import com.padabajka.dating.feature.messenger.data.message.model.MessageSyncResp
 
 interface MessageApi {
     /**
+     * GET /chats/{chatId}/messages/{messageId}
+     */
+    suspend fun getMessage(chatId: ChatId, messageId: MessageId): MessageDto
+
+    /**
      * GET /chats/{chatId}/messages?beforeMessageId={beforeMessageId}&count={count}
      */
     suspend fun getMessages(chatId: ChatId, params: MessageRequest.Get): MessageSyncResponse

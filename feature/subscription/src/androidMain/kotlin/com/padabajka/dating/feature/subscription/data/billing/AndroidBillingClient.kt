@@ -12,14 +12,13 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.queryProductDetails
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 
 class AndroidBillingClient(
     private val context: Activity,
@@ -141,21 +140,17 @@ class AndroidBillingClient(
     private suspend fun BillingClient.startConnectionWait(): Boolean {
         if (this.isReady) return true
 
-        return suspendCancellableCoroutine { continuation ->
-            this.startConnection(object : BillingClientStateListener {
-                override fun onBillingSetupFinished(result: BillingResult) {
-                    if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                        continuation.resume(true)
-                    } else {
-                        continuation.resume(false)
-                    }
-                }
+        val connectionResult = CompletableDeferred<Boolean>()
+        this.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(result: BillingResult) {
+                connectionResult.complete(result.responseCode == BillingClient.BillingResponseCode.OK)
+            }
 
-                override fun onBillingServiceDisconnected() {
-                    continuation.resume(false)
-                }
-            })
-        }
+            override fun onBillingServiceDisconnected() {
+                connectionResult.complete(false)
+            }
+        })
+        return connectionResult.await()
     }
 
     companion object {

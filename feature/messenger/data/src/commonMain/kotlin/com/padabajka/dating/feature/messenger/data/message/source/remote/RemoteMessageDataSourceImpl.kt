@@ -17,6 +17,9 @@ internal class RemoteMessageDataSourceImpl(
     private val chatApi: ChatApi,
     private val messageReactionApi: MessageReactionApi
 ) : RemoteMessageDataSource {
+    override suspend fun getMessage(chatId: ChatId, messageId: MessageId): MessageDto =
+        messageApi.getMessage(chatId, messageId)
+
     override suspend fun sendMessage(chatId: ChatId, sendMessageDto: MessageRequest.Send): MessageDto.Existing {
         return messageApi.sendMessage(chatId, sendMessageDto)
     }

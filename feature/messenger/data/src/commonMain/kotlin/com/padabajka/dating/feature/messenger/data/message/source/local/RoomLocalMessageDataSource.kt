@@ -38,6 +38,9 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
         return messageDao.messageByIdOrNull(messageId)
     }
 
+    override suspend fun unsyncedEditMessageIds(chatId: String): List<String> =
+        messageDao.unsyncedEditMessageIds(chatId)
+
     override suspend fun addMessage(message: MessageEntry) {
         messageDao.insertMessage(message)
     }

@@ -353,7 +353,8 @@ class ChatComponent(
                         field.parentMessage?.id
                     )
                 }
-            }
+            },
+            onError = ::defaultOnError
         )
     }
 

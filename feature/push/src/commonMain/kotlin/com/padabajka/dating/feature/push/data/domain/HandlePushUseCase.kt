@@ -4,6 +4,7 @@ import com.padabajka.dating.core.data.network.incoming.dto.DataPush
 import com.padabajka.dating.core.data.network.incoming.dto.MatchDataPush
 import com.padabajka.dating.core.data.network.incoming.dto.MessageDataPush
 import com.padabajka.dating.core.repository.api.AuthRepository
+import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
 import com.padabajka.dating.feature.push.data.domain.model.MessagePush
 
@@ -24,13 +25,12 @@ class HandlePushUseCase(
     private val handleNotificationPayloadUseCase: HandleNotificationPayloadUseCase,
 ) {
     @Suppress("CyclomaticComplexMethod", "ReturnCount")
-    suspend operator fun invoke(rawPush: MessagePush) {
-        println("HandlePushUseCase: rawPush = ${rawPush.dataJson}")
-
-        val userId = authRepository.currentAuthState.userIdOrNull() ?: return
+    suspend operator fun invoke(rawPush: MessagePush, userId: UserId) {
+        if (authRepository.currentAuthState.userIdOrNull() != userId) return
         val pushMessage = dataPushParser.parse(rawPush) ?: return
         if (pushMessage.recipientUserId != userId) return
 
+        println("HandlePushUseCase: rawPush = ${rawPush.dataJson}")
         val dataPush = pushMessage.event
         println("HandlePushUseCase: dataPush = $dataPush")
         when (dataPush) {

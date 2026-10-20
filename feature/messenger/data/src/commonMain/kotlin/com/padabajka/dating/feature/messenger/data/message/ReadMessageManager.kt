@@ -69,10 +69,13 @@ class ReadMessageManager(
                         localMessageDataSource.message(it.raw)
                     }
 
-                    val newLastReadMessage = messages.filter { myPersonId.raw != it.authorId }
-                        .maxBy(MessageEntry::creationTime)
-
-                    handleReadEvent(newLastReadMessage)
+                    messages.filter { myPersonId.raw != it.authorId }
+                        .groupBy(MessageEntry::chatId)
+                        .values
+                        .forEach { chatMessages ->
+                            val newLastReadMessage = chatMessages.maxBy(MessageEntry::creationTime)
+                            handleReadEvent(newLastReadMessage)
+                        }
                 }
         } catch (e: Throwable) {
             println("ReadMessageManager crashed: ${e.message}, restarting...")

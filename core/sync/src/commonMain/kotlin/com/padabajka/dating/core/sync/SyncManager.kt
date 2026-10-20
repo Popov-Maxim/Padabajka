@@ -3,9 +3,12 @@ package com.padabajka.dating.core.sync
 import com.padabajka.dating.core.data.atomic
 import com.padabajka.dating.core.data.lockWith
 import com.padabajka.dating.core.domain.sync.SyncRemoteDataUseCase
+import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.SocketRepository
 import com.padabajka.dating.core.repository.api.exception.BadStatusCodeException
 import com.padabajka.dating.core.repository.api.exception.ConnectException
+import com.padabajka.dating.core.repository.api.model.auth.UserId
+import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
 import com.padabajka.dating.core.utils.isDebugBuild
 import com.padabajka.dating.feature.push.data.domain.HandlePushUseCase
 import com.padabajka.dating.feature.push.data.domain.model.MessagePush
@@ -14,23 +17,29 @@ import dev.gitlive.firebase.crashlytics.crashlytics
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
 @Suppress("TooGenericExceptionCaught", "PrintStackTrace")
-class SyncManager(
+class SyncManager internal constructor(
+    val userId: UserId,
     private val scope: CoroutineScope,
     private val socketRepository: SocketRepository,
     private val syncRemoteDataUseCase: SyncRemoteDataUseCase,
     private val handlePushUseCase: HandlePushUseCase,
+    private val authRepository: AuthRepository,
 ) {
 
-    private enum class State {
+    enum class State {
         DISCONNECTED, CONNECTING, SYNCING, ONLINE, TURNED_OFF
     }
 
@@ -38,7 +47,14 @@ class SyncManager(
         REGULAR, RECOVERY
     }
 
-    private var state = State.DISCONNECTED
+    private val _stateFlow = MutableStateFlow(State.TURNED_OFF)
+    val stateFlow = _stateFlow.asStateFlow()
+
+    private var state = State.TURNED_OFF
+        set(value) {
+            field = value
+            _stateFlow.value = value
+        }
     private val buffer = atomic(mutableListOf<MessagePush>())
     private var reconnectJob: Job? = null
     private var connectJob: Job? = null
@@ -46,9 +62,13 @@ class SyncManager(
     private var pendingSyncRequest: SyncRequest? = null
     private var activeSyncRequest: SyncRequest? = null
     private val eventMutex = Mutex()
+    private val lifecycleMutex = Mutex()
     private var observed = false
+    private var closed = false
 
-    suspend fun start() {
+    suspend fun start(): Unit = lifecycleMutex.withLock {
+        if (closed || isCurrentUser().not()) return@withLock
+
         eventMutex.withLock {
             if (observed.not()) {
                 observeSocket()
@@ -61,26 +81,43 @@ class SyncManager(
         connect()
     }
 
-    suspend fun stop() {
-        val activeSyncJob = eventMutex.withLock {
+    /** Pauses sync without ending the user session. */
+    suspend fun stop(): Unit = withContext(NonCancellable) {
+        lifecycleMutex.withLock { stopInternal() }
+    }
+
+    /** Permanently ends this session and waits for all of its producers and collectors. */
+    suspend fun close(): Unit = withContext(NonCancellable) {
+        lifecycleMutex.withLock {
+            if (closed) return@withLock
+
+            closed = true
+            try {
+                stopInternal()
+            } finally {
+                scope.coroutineContext[Job]?.cancelAndJoin()
+            }
+        }
+    }
+
+    private suspend fun stopInternal() {
+        val jobs = eventMutex.withLock {
             state = State.TURNED_OFF
             pendingSyncRequest = null
             buffer.lockWith { clear() }
-            syncJob
+            listOfNotNull(connectJob, reconnectJob, syncJob)
         }
 
-        connectJob?.cancelAndJoin()
-        connectJob = null
-        reconnectJob?.cancelAndJoin()
-        reconnectJob = null
-        activeSyncJob?.cancelAndJoin()
+        jobs.forEach { it.cancel() }
+        jobs.forEach { it.join() }
         socketRepository.disconnect()
 
         eventMutex.withLock {
             buffer.lockWith { clear() }
-            if (syncJob === activeSyncJob) {
-                syncJob = null
-            }
+            connectJob = null
+            reconnectJob = null
+            syncJob = null
+            activeSyncRequest = null
         }
     }
 
@@ -102,17 +139,16 @@ class SyncManager(
                         log("socket connecting...")
                         eventMutex.withLock {
                             if (state != State.TURNED_OFF) {
+                                log("state socket connecting...")
                                 state = State.CONNECTING
                             }
                         }
                     }
 
                     SocketRepository.ConnectionState.TURNED_OFF -> {
-                        log("socket turn off")
-                        eventMutex.withLock {
-                            state = State.TURNED_OFF
-                            pendingSyncRequest = null
-                        }
+                        // Only stop() may turn off the manager; the socket's initial or
+                        // delayed TURNED_OFF must not override start() or queued sync work.
+                        log("socket TURNED_OFF ignored; manager state=${stateFlow.value}")
                     }
                 }
             }
@@ -125,12 +161,15 @@ class SyncManager(
         }
     }
 
-    private fun connect() {
-        if (connectJob?.isActive == true) return
+    private suspend fun connect(): Unit = eventMutex.withLock {
+        if (state == State.TURNED_OFF || isCurrentUser().not()) return@withLock
+        if (connectJob?.isActive == true) return@withLock
 
         connectJob = scope.launch {
             try {
-                val shouldConnect = eventMutex.withLock { state != State.TURNED_OFF }
+                val shouldConnect = eventMutex.withLock {
+                    state != State.TURNED_OFF && isCurrentUser()
+                }
                 if (shouldConnect.not()) return@launch
 
                 socketRepository.connect()
@@ -142,12 +181,15 @@ class SyncManager(
         }
     }
 
-    private fun scheduleReconnect() {
-        if (reconnectJob?.isActive == true) return
+    private suspend fun scheduleReconnect(): Unit = eventMutex.withLock {
+        if (state == State.TURNED_OFF || isCurrentUser().not()) return@withLock
+        if (reconnectJob?.isActive == true) return@withLock
 
         reconnectJob = scope.launch {
             delay(RECONNECT_DELAY)
-            val shouldConnect = eventMutex.withLock { state == State.DISCONNECTED }
+            val shouldConnect = eventMutex.withLock {
+                state == State.DISCONNECTED && isCurrentUser()
+            }
             if (shouldConnect.not()) return@launch
 
             log("reconnecting...")
@@ -157,7 +199,7 @@ class SyncManager(
 
     private suspend fun onSocketConnected() {
         eventMutex.withLock {
-            if (state != State.TURNED_OFF) {
+            if (state != State.TURNED_OFF && isCurrentUser()) {
                 requestSyncLocked(SyncRequest.REGULAR)
             }
         }
@@ -179,6 +221,7 @@ class SyncManager(
     }
 
     private fun requestSyncLocked(request: SyncRequest) {
+        if (isCurrentUser().not()) return
         if (request == SyncRequest.RECOVERY && activeSyncRequest == SyncRequest.RECOVERY) return
 
         pendingSyncRequest = when {
@@ -228,12 +271,12 @@ class SyncManager(
             }
             handleException(e)
         } finally {
-            finishSyncLoop(currentJob)
+            withContext(NonCancellable) { finishSyncLoop(currentJob) }
         }
     }
 
     private suspend fun takeSyncRequest(): SyncRequest? = eventMutex.withLock {
-        if (state == State.TURNED_OFF || state == State.DISCONNECTED) {
+        if (state == State.TURNED_OFF || state == State.DISCONNECTED || isCurrentUser().not()) {
             pendingSyncRequest = null
             null
         } else {
@@ -256,10 +299,12 @@ class SyncManager(
                 handleException(e)
 
                 delay(timeMillis = 5_000)
-                eventMutex.withLock { state == State.SYNCING }
+                eventMutex.withLock { state == State.SYNCING && isCurrentUser() }
             }
         ) {
+            ensureCurrentUser()
             syncRemoteDataUseCase()
+            ensureCurrentUser()
         }
         if (synced.not()) return false
 
@@ -289,10 +334,12 @@ class SyncManager(
 
             syncJob = null
             activeSyncRequest = null
+            if (pendingSyncRequest == null) return@withLock
+
             if (
-                pendingSyncRequest != null &&
                 state != State.TURNED_OFF &&
-                state != State.DISCONNECTED
+                state != State.DISCONNECTED &&
+                isCurrentUser()
             ) {
                 syncJob = scope.launch { runSyncLoop() }
             }
@@ -323,6 +370,7 @@ class SyncManager(
 
     private suspend fun onSocketEvent(event: MessagePush) {
         eventMutex.withLock {
+            if (isCurrentUser().not()) return@withLock
             when (state) {
                 State.SYNCING -> {
                     buffer.lockWith { add(event) }
@@ -339,7 +387,7 @@ class SyncManager(
 
     private suspend fun handlePushSafely(event: MessagePush): Boolean {
         return try {
-            handlePushUseCase(event)
+            handlePushUseCase(event, userId)
             true
         } catch (exception: CancellationException) {
             throw exception
@@ -376,6 +424,13 @@ class SyncManager(
 
     private fun parse(raw: String): MessagePush =
         MessagePush.Json(Json.decodeFromString(raw))
+
+    private fun isCurrentUser(): Boolean =
+        authRepository.currentAuthState.userIdOrNull() == userId
+
+    private fun ensureCurrentUser() {
+        if (isCurrentUser().not()) throw CancellationException("Sync user session has changed")
+    }
 
     private companion object {
         private const val RECONNECT_DELAY = 5_000L

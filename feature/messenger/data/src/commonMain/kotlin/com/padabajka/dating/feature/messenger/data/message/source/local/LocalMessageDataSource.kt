@@ -16,6 +16,7 @@ interface LocalMessageDataSource {
     ): Int
     suspend fun message(messageId: String): MessageEntry
     suspend fun messageOrNull(messageId: String): MessageEntry?
+    suspend fun unsyncedEditMessageIds(chatId: String): List<String>
     suspend fun addMessage(message: MessageEntry)
     suspend fun oldestMessageId(chatId: ChatId): MessageId?
     suspend fun deleteMessage(messageId: String)

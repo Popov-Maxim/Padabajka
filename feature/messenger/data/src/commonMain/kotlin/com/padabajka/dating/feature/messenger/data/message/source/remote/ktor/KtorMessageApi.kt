@@ -25,6 +25,18 @@ import kotlinx.serialization.json.Json
 class KtorMessageApi(
     private val ktorClientProvider: KtorClientProvider
 ) : MessageApi {
+    override suspend fun getMessage(chatId: ChatId, messageId: MessageId): MessageDto {
+        val client = ktorClientProvider.client()
+        val response = client.get {
+            url {
+                path(MessageRoutes.message(chatId, messageId))
+            }
+        }
+
+        response.throwIfNotSuccessful()
+        return response.body()
+    }
+
     override suspend fun getMessages(
         chatId: ChatId,
         params: MessageRequest.Get

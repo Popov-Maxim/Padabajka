@@ -101,15 +101,17 @@ fun Message(
 
     Box(
         modifier = modifier.fillMaxWidth()
-            .swipeToReply {
+            .swipeToReply(enabled = message.status() != MessageStatus.FailedToSend) {
                 onEvent(SelectParentMessageEvent(message.toParentMessageItem()))
             }.pointerInput(message.reactions) {
                 detectTapGestures(
                     onTap = {
                         enabledDropdown = true
                     },
-                    onDoubleTap = {
-                        onEvent(likeEvent(message))
+                    onDoubleTap = if (MESSAGE_REACTIONS_ENABLED) {
+                        { onEvent(likeEvent(message)) }
+                    } else {
+                        null
                     }
                 )
             }
@@ -310,8 +312,11 @@ private fun Modifier.alignForMessage(
 @Composable
 fun Modifier.swipeToReply(
     threshold: Float = 200f,
+    enabled: Boolean = true,
     onReply: () -> Unit
 ): Modifier {
+    if (!enabled) return this
+
     var swipeOffset by remember { mutableStateOf(0f) }
 
     return this
@@ -376,16 +381,24 @@ private fun PopupMessageMenuContent(
 ) {
     val clipboardManager = LocalClipboardManager.current
     val popupButtonData = listOfNotNull(
-        PopupButtonData(
-            iconData = CoreIcons.Message.Popup.Like.toData(),
-            text = StaticTextId.UiId.MessagePopupLike,
-            onClick = { onEvent(likeEvent(message)) }
-        ),
-        PopupButtonData(
-            iconData = CoreIcons.Message.Popup.Reply.toData(),
-            text = StaticTextId.UiId.MessagePopupReply,
-            onClick = { onEvent(SelectParentMessageEvent(message.toParentMessageItem())) }
-        ),
+        if (MESSAGE_REACTIONS_ENABLED) {
+            PopupButtonData(
+                iconData = CoreIcons.Message.Popup.Like.toData(),
+                text = StaticTextId.UiId.MessagePopupLike,
+                onClick = { onEvent(likeEvent(message)) }
+            )
+        } else {
+            null
+        },
+        if (message.status() != MessageStatus.FailedToSend) {
+            PopupButtonData(
+                iconData = CoreIcons.Message.Popup.Reply.toData(),
+                text = StaticTextId.UiId.MessagePopupReply,
+                onClick = { onEvent(SelectParentMessageEvent(message.toParentMessageItem())) }
+            )
+        } else {
+            null
+        },
         PopupButtonData(
             iconData = CoreIcons.Message.Popup.Copy.toData(),
             text = StaticTextId.UiId.MessagePopupCopy,
@@ -402,7 +415,7 @@ private fun PopupMessageMenuContent(
         } else {
             null
         },
-        message.safeCast<OutgoingMessageItem>()?.let {
+        message.safeCast<OutgoingMessageItem>()?.takeIf { it.status == MessageStatus.Sent }?.let {
             PopupButtonData(
                 iconData = CoreIcons.Message.Popup.Edit.toData(),
                 text = StaticTextId.UiId.MessagePopupEdit,
@@ -461,6 +474,7 @@ private fun PopupMessageMenuContent(
 }
 
 private const val PIN_MESSAGE_ENABLED = false
+private const val MESSAGE_REACTIONS_ENABLED = false
 
 private data class PopupButtonData(
     val iconData: IconData,
