@@ -57,6 +57,7 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.toEditorSt
 import com.padabajka.dating.feature.profile.presentation.editor.model.updated
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.flow.first
 
 class ProfileEditorScreenComponent(
     context: ComponentContext,
@@ -81,8 +82,32 @@ class ProfileEditorScreenComponent(
     private val saveProfileUseCase by saveUpdatedProfileUseCaseFactory.delegate()
     private val getLocalImageUseCase by getLocalImageUseCaseFactory.delegate()
 
+    init {
+        if (state.value == ProfileEditorState.Loading) {
+            launchStep(
+                action = {
+                    val loadedProfile = profileRepository.profile.first()
+                    reduce { current ->
+                        if (current == ProfileEditorState.Loading) loadedProfile.toEditorState() else current
+                    }
+                }
+            )
+        }
+    }
+
+    private fun reduceEditing(
+        update: (ProfileEditorState.Editing) -> ProfileEditorState.Editing
+    ) = reduce { current ->
+        if (current is ProfileEditorState.Editing) update(current) else current
+    }
+
     @Suppress("CyclomaticComplexMethod")
     fun onEvent(event: ProfileEditorEvent) {
+        if (event == NavigateBackEvent) {
+            navigateBack()
+            return
+        }
+        val editorState = state.value as? ProfileEditorState.Editing ?: return
         when (event) {
             DiscardProfileUpdatesClickEvent -> discardUpdates()
             SaveProfileUpdatesClickEvent -> saveUpdates()
@@ -97,29 +122,29 @@ class ProfileEditorScreenComponent(
             is ImageAddEvent -> addImage(event.image, event.index)
             is ImageSelectedEvent -> cropImage(event.image, event.index)
             ConsumeInternalErrorEvent -> consumeInternalError()
-            NavigateBackEvent -> navigateBack()
+            NavigateBackEvent -> Unit
             is DeleteImageEvent -> deleteImage(event.image)
             is LookingForUpdateEvent -> updateLoockingForData(event.data)
             is DetailUpdateEvent -> updateDetails(event.supportedDetails)
             is LifeStyleUpdateEvent -> updateLifestyle(event.lifestyle)
             is CitySearchQueryChangedEvent -> searchCity(event.query)
             UpdateCitySearchEvent ->
-                searchCity(state.value.fields.details.value.supportedDetails.city.searchItem.value)
+                searchCity(editorState.fields.details.value.supportedDetails.city.searchItem.value)
 
             is LangSearchQueryChangedEvent -> searchLang(event.query.value, event.type)
             is UpdateLangSearchEvent ->
-                searchLang(state.value.fields.language.value.nativeLanguages.searchItem.value, event.type)
+                searchLang(editorState.fields.language.value.nativeLanguages.searchItem.value, event.type)
             is LanguagesUpdateEvent -> updateLanguages(event.lang, event.type)
 
             is InterestSearchQueryChangedEvent -> searchInterests(event.query.value)
             is InterestUpdateEvent -> updateInterests(event.assets)
             UpdateInterestSearchEvent ->
-                searchInterests(state.value.fields.language.value.nativeLanguages.searchItem.value)
+                searchInterests(editorState.fields.language.value.nativeLanguages.searchItem.value)
         }
     }
 
     private fun makeAchievementMain(achievement: Achievement?) {
-        reduce {
+        reduceEditing {
             it.updateFields(profile) {
                 it.changeAchievementMain(achievement)
             }
@@ -127,7 +152,7 @@ class ProfileEditorScreenComponent(
     }
 
     private fun makeAchievementVisible(achievement: Achievement) {
-        reduce {
+        reduceEditing {
             it.updateFields(profile) {
                 it.makeAchievementVisible(achievement)
             }
@@ -135,7 +160,7 @@ class ProfileEditorScreenComponent(
     }
 
     private fun hideAchievement(achievement: Achievement) {
-        reduce {
+        reduceEditing {
             it.updateFields(profile) {
                 it.hideAchievement(achievement)
             }
@@ -154,13 +179,14 @@ class ProfileEditorScreenComponent(
         )
 
     private fun saveUpdates() {
-        if (state.value.canSave.not()) return
+        val editorState = state.value as? ProfileEditorState.Editing ?: return
+        if (editorState.canSave.not()) return
 
-        reduce { it.copy(saveState = ProfileEditorState.SaveState.Loading) }
+        reduceEditing { it.copy(saveState = ProfileEditorState.SaveState.Loading) }
         launchStep(
             action = {
                 val savedProfile = saveProfileUseCase {
-                    it.updated(state.value)
+                    it.updated(editorState)
                 }
                 reduce { savedProfile.toEditorState() }
             },
@@ -168,14 +194,14 @@ class ProfileEditorScreenComponent(
                 val error = it.toTextError(::mapImageError)
 
                 alertService.showAlert { error.text.translate() }
-                reduce { it.copy(saveState = ProfileEditorState.SaveState.Idle) }
+                reduceEditing { it.copy(saveState = ProfileEditorState.SaveState.Idle) }
                 error.needLog.not()
             }
         )
     }
 
     private fun updateName(name: String) {
-        reduce {
+        reduceEditing {
             it.updateFields(profile) {
                 it.updateName(name)
             }
@@ -183,13 +209,13 @@ class ProfileEditorScreenComponent(
     }
 
     private fun trimName() {
-        val name = state.value.fields.name.value
+        val name = (state.value as? ProfileEditorState.Editing)?.fields?.name?.value ?: return
         val trimmedName = name.trim()
         updateName(trimmedName)
     }
 
     private fun updateAboutMe(aboutMe: String) {
-        reduce {
+        reduceEditing {
             it.updateFields(profile) {
                 it.updateAboutMe(aboutMe)
             }
@@ -197,7 +223,7 @@ class ProfileEditorScreenComponent(
     }
 
     private fun updateLoockingForData(data: LookingForData) {
-        reduce {
+        reduceEditing {
             it.updateFields(profile) {
                 it.updateLookingForData(data)
             }
@@ -205,7 +231,7 @@ class ProfileEditorScreenComponent(
     }
 
     private fun updateDetails(supportedDetails: SupportedDetails) {
-        reduce {
+        reduceEditing {
             it.updateFields(profile) {
                 it.updateDetails(supportedDetails)
             }
@@ -213,7 +239,7 @@ class ProfileEditorScreenComponent(
     }
 
     private fun updateLifestyle(lifestyles: SupportedLifestyles) {
-        reduce {
+        reduceEditing {
             it.updateFields(profile) {
                 it.updateLifestyle(lifestyles)
             }
@@ -221,7 +247,7 @@ class ProfileEditorScreenComponent(
     }
 
     private fun updateLanguages(languagesField: LanguageAssetsField, type: LanguagesAssetType) {
-        reduce {
+        reduceEditing {
             it.updateFields(profile) {
                 it.changeLanguage(languagesField, type)
             }
@@ -229,7 +255,7 @@ class ProfileEditorScreenComponent(
     }
 
     private fun updateInterests(assets: PersistentList<Text>) {
-        reduce {
+        reduceEditing {
             it.updateFields(profile) {
                 it.changeInterests(assets)
             }
@@ -243,7 +269,7 @@ class ProfileEditorScreenComponent(
             } else {
                 image
             }
-            reduce {
+            reduceEditing {
                 it.updateFields(profile) {
                     it.addImage(uiImage, index)
                 }
@@ -258,7 +284,7 @@ class ProfileEditorScreenComponent(
     )
 
     private fun searchCity(query: String) {
-        reduce {
+        reduceEditing {
             it.updateFields(profile) {
                 it.updateDetailCity {
                     copy(
@@ -279,7 +305,7 @@ class ProfileEditorScreenComponent(
                         )
                     }
                     .toPersistentList()
-                reduce {
+                reduceEditing {
                     it.updateFields(profile) {
                         it.updateDetailCity {
                             copy(foundedAssets = FoundedAssets.Success(cities))
@@ -300,9 +326,11 @@ class ProfileEditorScreenComponent(
 
     private fun searchLang(
         query: String,
-        updateLang: ProfileEditorState.(LanguageAssetsField.() -> LanguageAssetsField) -> ProfileEditorState
+        updateLang: ProfileEditorState.Editing.(
+            LanguageAssetsField.() -> LanguageAssetsField
+        ) -> ProfileEditorState.Editing
     ) {
-        reduce {
+        reduceEditing {
             it.updateLang {
                 copy(
                     foundedAssets = FoundedAssets.Searching,
@@ -314,7 +342,7 @@ class ProfileEditorScreenComponent(
             action = {
                 val texts = findLanguageAssetsUseCase(query)
                     .toPersistentList()
-                reduce {
+                reduceEditing {
                     it.updateLang {
                         copy(foundedAssets = FoundedAssets.Success(texts))
                     }
@@ -324,7 +352,7 @@ class ProfileEditorScreenComponent(
     }
 
     private fun searchInterests(query: String) {
-        reduce {
+        reduceEditing {
             it.updateFields(profile) {
                 it.updateInterests {
                     copy(
@@ -338,7 +366,7 @@ class ProfileEditorScreenComponent(
             action = {
                 val assets = findInterestAssetsUseCase(query)
                     .toPersistentList()
-                reduce {
+                reduceEditing {
                     it.updateFields(profile) {
                         it.updateInterests {
                             copy(foundedAssets = FoundedAssets.Success(assets))
@@ -349,25 +377,25 @@ class ProfileEditorScreenComponent(
         )
     }
 
-    private fun deleteImage(image: Image) = reduce {
+    private fun deleteImage(image: Image) = reduceEditing {
         it.updateFields(profile) {
             it.deleteImage(image)
         }
     }
 
     private fun trimAboutMe() {
-        val aboutMe = state.value.fields.aboutMe.value
+        val aboutMe = (state.value as? ProfileEditorState.Editing)?.fields?.aboutMe?.value ?: return
         val trimmedAboutMe = aboutMe.trim()
         updateAboutMe(trimmedAboutMe)
     }
 
-    private fun consumeInternalError() = reduce {
+    private fun consumeInternalError() = reduceEditing {
         it.copy(internalErrorStateEvent = consumed)
     }
 
     companion object {
         private fun initProfileState(profileRepository: ProfileRepository): ProfileEditorState {
-            return profileRepository.profileValue?.toEditorState() ?: TODO() // TODO(P1)
+            return profileRepository.profileValue?.toEditorState() ?: ProfileEditorState.Loading
         }
     }
 }

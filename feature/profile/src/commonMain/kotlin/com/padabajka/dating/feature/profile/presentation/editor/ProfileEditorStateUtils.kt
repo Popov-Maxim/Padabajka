@@ -18,7 +18,10 @@ import com.padabajka.dating.feature.profile.presentation.editor.model.updated
 import com.padabajka.dating.feature.profile.presentation.model.AssetsFromDb
 import kotlinx.collections.immutable.PersistentList
 
-fun ProfileEditorState.updateFields(profile: Profile?, update: (ProfileFields) -> ProfileFields): ProfileEditorState {
+fun ProfileEditorState.Editing.updateFields(
+    profile: Profile?,
+    update: (ProfileFields) -> ProfileFields
+): ProfileEditorState.Editing {
     val fields = update(fields)
     val new = profile?.updated(fields)
     return copy(fields = fields, fieldsChanged = new != profile)

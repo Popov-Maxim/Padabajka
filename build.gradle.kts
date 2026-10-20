@@ -25,7 +25,7 @@ detekt {
     source.setFrom(files)
 }
 tasks.withType<Detekt>().configureEach {
-    exclude { it.file.invariantSeparatorsPath.contains("/com/padabajka/dating/core/presentation/ui/drawable/icon/raw") }
+    exclude("**/com/padabajka/dating/core/presentation/ui/drawable/icon/raw/**")
 }
 
 dependencies {

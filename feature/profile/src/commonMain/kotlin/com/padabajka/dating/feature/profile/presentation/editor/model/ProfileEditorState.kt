@@ -20,30 +20,34 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.datetime.LocalDate
 
-@Immutable
-data class ProfileEditorState(
-    val fields: ProfileFields,
-    val fieldsChanged: Boolean,
-    val saveState: SaveState = SaveState.Idle,
-    val internalErrorStateEvent: StateEvent = consumed
-) : State {
+sealed interface ProfileEditorState : State {
+    data object Loading : ProfileEditorState
 
-    @Stable
-    val canSave: Boolean
-        get() = fieldsChanged && fields.images.value.isNotEmpty()
+    @Immutable
+    data class Editing(
+        val fields: ProfileFields,
+        val fieldsChanged: Boolean,
+        val saveState: SaveState = SaveState.Idle,
+        val internalErrorStateEvent: StateEvent = consumed
+    ) : ProfileEditorState {
 
-    @Stable
-    val profileForPreview: ProfileViewUIItem = ProfileViewUIItem(
-        name = fields.name.value,
-        age = fields.birthday.value.age,
-        images = fields.images.value,
-        aboutMe = fields.aboutMe.value,
-        lookingFor = fields.lookingFor.value,
-        details = fields.details.value.allDetails,
-        lifestyle = fields.lifeStyle.value.toDomain().toPersistentList(),
-        interests = fields.interests.value.value,
-        languages = fields.language.value.toDomain()
-    )
+        @Stable
+        val canSave: Boolean
+            get() = fieldsChanged && fields.images.value.isNotEmpty()
+
+        @Stable
+        val profileForPreview: ProfileViewUIItem = ProfileViewUIItem(
+            name = fields.name.value,
+            age = fields.birthday.value.age,
+            images = fields.images.value,
+            aboutMe = fields.aboutMe.value,
+            lookingFor = fields.lookingFor.value,
+            details = fields.details.value.allDetails,
+            lifestyle = fields.lifeStyle.value.toDomain().toPersistentList(),
+            interests = fields.interests.value.value,
+            languages = fields.language.value.toDomain()
+        )
+    }
 
     sealed interface SaveState {
         object Idle : SaveState
@@ -98,7 +102,7 @@ sealed interface Issue {
     }
 }
 
-fun Profile.toEditorState(): ProfileEditorState {
+fun Profile.toEditorState(): ProfileEditorState.Editing {
     val fields = ProfileFields(
         name = name.toField(),
         birthday = birthday.toField(),
@@ -112,13 +116,13 @@ fun Profile.toEditorState(): ProfileEditorState {
         interests = interests.toPersistentList().run(::createInterests).toField(),
         language = languagesAsset.toLanguagesFields().toField()
     )
-    return ProfileEditorState(
+    return ProfileEditorState.Editing(
         fields = fields,
         fieldsChanged = false
     )
 }
 
-fun Profile.updated(state: ProfileEditorState) = copy(
+fun Profile.updated(state: ProfileEditorState.Editing) = copy(
     name = state.fields.name.value,
     birthday = state.fields.birthday.value,
     images = state.fields.images.value,
