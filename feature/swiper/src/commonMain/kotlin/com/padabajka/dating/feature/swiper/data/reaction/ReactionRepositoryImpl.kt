@@ -21,11 +21,9 @@ class ReactionRepositoryImpl(
     override val reactionsToMe: Flow<List<PersonReaction>>
         get() = combine(
             localReactionDataSource.reactionsToMe,
-            matchRepository.matches()
-        ) { reactions, matches ->
-            val excludedPersonId = matches.map { it.person.id }.toSet()
-
-            reactions.filter { it.id !in excludedPersonId }
+            matchRepository.matchedPersonIds()
+        ) { reactions, matchedPersonIds ->
+            reactions.filter { it.id !in matchedPersonIds }
         }
 
     override suspend fun react(reaction: PersonReaction) {
