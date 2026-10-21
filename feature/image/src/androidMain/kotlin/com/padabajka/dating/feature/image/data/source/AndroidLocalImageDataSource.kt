@@ -20,18 +20,36 @@ class AndroidLocalImageDataSource(
             if (cropRect == null) {
                 inputStream.readBytes()
             } else {
-                val bitmap = BitmapFactory.decodeStream(inputStream)
+                val options = BitmapFactory.Options()
+                val source = BitmapFactory.decodeStream(inputStream, null, options)
                     ?: throw ImageReadException()
-                val cropped = Bitmap.createBitmap(
-                    bitmap,
-                    cropRect.left,
-                    cropRect.top,
-                    cropRect.right - cropRect.left,
-                    cropRect.bottom - cropRect.top
-                )
-                cropped.toByteArray()
+                source.useBitmap { bitmap ->
+                    val orientation = AndroidImageOrientation.read(
+                        context.contentResolver,
+                        data.uri,
+                        options.outMimeType,
+                    )
+                    val normalized = orientation.applyTo(bitmap)
+                    if (normalized === bitmap) {
+                        bitmap.cropToByteArray(cropRect)
+                    } else {
+                        bitmap.recycle()
+                        normalized.useBitmap { it.cropToByteArray(cropRect) }
+                    }
+                }
             }
         }
+    }
+
+    private fun Bitmap.cropToByteArray(rect: CoreRect): ByteArray {
+        val cropped = Bitmap.createBitmap(this, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top)
+        return if (cropped === this) toByteArray() else cropped.useBitmap { it.toByteArray() }
+    }
+
+    private inline fun <T> Bitmap.useBitmap(action: (Bitmap) -> T): T = try {
+        action(this)
+    } finally {
+        recycle()
     }
 
     private fun Bitmap.toByteArray(): ByteArray {
