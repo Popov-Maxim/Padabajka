@@ -5,15 +5,13 @@ import com.padabajka.dating.core.data.network.model.toImageDto
 import com.padabajka.dating.core.data.network.model.toLookingForDataDto
 import com.padabajka.dating.core.data.network.model.toProfile
 import com.padabajka.dating.core.data.network.model.toTextDto
-import com.padabajka.dating.core.domain.mapOfNotNull
 import com.padabajka.dating.core.repository.api.model.profile.Gender
 import com.padabajka.dating.core.repository.api.model.profile.Image
 import com.padabajka.dating.core.repository.api.model.profile.Profile
 import com.padabajka.dating.feature.profile.data.network.AccountApi
 import com.padabajka.dating.feature.profile.data.network.ProfileApi
+import com.padabajka.dating.feature.profile.data.network.UpdateProfileRequest
 import com.padabajka.dating.feature.profile.data.network.toRequest
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 class RemoveProfileDataSourceImpl(
     private val profileApi: ProfileApi,
@@ -44,18 +42,18 @@ class RemoveProfileDataSourceImpl(
         val languages = fieldForUpdate(current, newProfile, Profile::languagesAsset)?.toDto()
         val interests = fieldForUpdate(current, newProfile, Profile::interests)
             ?.map { it.toTextDto() }
-        val parameters = mapOfNotNull(
-            ProfileApi.PatchParams.Key.Name to name,
-            ProfileApi.PatchParams.Key.Birthday to birthday,
-            ProfileApi.PatchParams.Key.AboutMe to aboutMe,
-            ProfileApi.PatchParams.Key.Images to images?.serializeToString(),
-            ProfileApi.PatchParams.Key.LookingFor to lookingFor?.serializeToString(),
-            ProfileApi.PatchParams.Key.Details to details?.serializeToString(),
-            ProfileApi.PatchParams.Key.Lifestyles to lifestyles?.serializeToString(),
-            ProfileApi.PatchParams.Key.LanguagesAsset to languages?.serializeToString(),
-            ProfileApi.PatchParams.Key.Interests to interests?.serializeToString(),
+        val request = UpdateProfileRequest(
+            name = name,
+            birthday = birthday,
+            aboutMe = aboutMe,
+            images = images,
+            lookingFor = lookingFor,
+            details = details,
+            lifestyles = lifestyles,
+            languagesAsset = languages,
+            interests = interests,
         )
-        profileApi.patch(ProfileApi.PatchParams(parameters))
+        profileApi.patch(request)
     }
 
     override suspend fun create(profile: Profile, gender: Gender) {
@@ -72,9 +70,5 @@ class RemoveProfileDataSourceImpl(
 
     private fun <T> fieldForUpdate(current: Profile?, newProfile: Profile, field: Profile.() -> T): T? {
         return newProfile.field().takeIf { it != current?.field() }
-    }
-
-    private inline fun <reified T> T.serializeToString(): String {
-        return Json.encodeToString(this)
     }
 }

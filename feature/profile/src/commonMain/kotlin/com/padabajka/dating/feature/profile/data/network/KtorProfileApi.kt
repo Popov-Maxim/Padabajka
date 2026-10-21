@@ -2,7 +2,6 @@ package com.padabajka.dating.feature.profile.data.network
 
 import com.padabajka.dating.core.data.network.model.PersonResponse
 import com.padabajka.dating.core.networking.KtorClientProvider
-import com.padabajka.dating.core.networking.utils.appendNotNull
 import com.padabajka.dating.core.networking.utils.takeIfHasContent
 import com.padabajka.dating.core.networking.utils.throwIfNotSuccessful
 import io.ktor.client.call.body
@@ -46,19 +45,15 @@ class KtorProfileApi(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    override suspend fun patch(params: ProfileApi.PatchParams) {
+    override suspend fun patch(request: UpdateProfileRequest) {
         val client = ktorClientProvider.client()
 
         val response = client.patch {
             url {
                 path(ProfileApi.PROFILE_PATH)
-
-                parameters.apply {
-                    params.raw.forEach { (key, value) ->
-                        appendNotNull(key.raw, value)
-                    }
-                }
             }
+            contentType(ContentType.Application.Json)
+            setBody(request)
         }
 
         response.throwIfNotSuccessful()

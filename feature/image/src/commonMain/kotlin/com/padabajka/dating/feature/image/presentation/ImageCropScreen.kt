@@ -1,36 +1,42 @@
 package com.padabajka.dating.feature.image.presentation
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.ui.CoreCallToActionButton
+import com.padabajka.dating.core.presentation.ui.CoreCircularProgressIndicator
 import com.padabajka.dating.core.presentation.ui.CustomScaffold
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
-import com.padabajka.dating.core.presentation.ui.image.CoreAsyncImage
 import com.padabajka.dating.core.presentation.ui.image.raw
 import com.padabajka.dating.core.presentation.ui.layout.SimpleTopBar
-import com.padabajka.dating.core.repository.api.model.profile.Image
+import com.padabajka.dating.core.presentation.ui.utils.rememberImageLoader
+import com.padabajka.dating.core.repository.api.model.profile.Size
 import com.padabajka.dating.feature.image.presentation.model.ImageCropData
 import com.padabajka.dating.feature.image.presentation.model.ImageCropEvent
+import kotlin.math.roundToInt
 
 @Composable
 fun ImageCropScreen(component: ImageCropScreenComponent) {
@@ -50,23 +56,31 @@ fun ImageCropScreen(component: ImageCropScreenComponent) {
 
 @Composable
 private fun Content(component: ImageCropScreenComponent) {
-    Column {
-        val state by component.state.subscribeAsState()
+    val state by component.state.subscribeAsState()
+    val painter = rememberAsyncImagePainter(state.image.raw(), imageLoader = rememberImageLoader())
+    val painterState by painter.state.collectAsState()
+    val isReady = painterState is AsyncImagePainter.State.Success
+    val geometry = ImageCropGeometry.create(state.image.data.size, state.cropData.containerSize)
 
-        ImageCropper(
-            image = state.image,
-            modifier = Modifier.fillMaxWidth().weight(1f),
-            cropData = state.cropData,
-            onChangeCropData = {
-                component.onEvent(ImageCropEvent.ChangeCropData(it))
-            }
-        )
+    Column(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+            ImageCropper(
+                imageSize = state.image.data.size,
+                painter = painter,
+                isReady = isReady,
+                hasError = painterState is AsyncImagePainter.State.Error,
+                modifier = Modifier.aspectRatio(RATIO_FOR_IMAGE),
+                cropData = state.cropData,
+                onEvent = component::onEvent,
+            )
+        }
 
         Column(
             modifier = Modifier.padding(horizontal = 30.dp, vertical = 10.dp),
         ) {
             CoreCallToActionButton(
                 text = StaticTextId.UiId.Apply.translate(),
+                enabled = isReady && geometry != null,
                 onClick = {
                     component.onEvent(ImageCropEvent.Apply)
                 }
@@ -77,54 +91,46 @@ private fun Content(component: ImageCropScreenComponent) {
 
 @Composable
 private fun ImageCropper(
-    image: Image.Local,
+    imageSize: Size,
+    painter: Painter,
+    isReady: Boolean,
+    hasError: Boolean,
     cropData: ImageCropData,
     modifier: Modifier = Modifier,
-    onChangeCropData: (ImageCropData) -> Unit
+    onEvent: (ImageCropEvent) -> Unit
 ) {
-    val cropData by rememberUpdatedState(cropData)
-
-    var containerSize by remember { mutableStateOf(IntSize.Zero) }
+    val onEvent by rememberUpdatedState(onEvent)
+    val isReady by rememberUpdatedState(isReady)
 
     Box(
         modifier = modifier
             .onSizeChanged { newContainerSize ->
-                containerSize = newContainerSize
-                onChangeCropData(cropData.copy(containerSize = newContainerSize))
+                onEvent(ImageCropEvent.ContainerSizeChanged(newContainerSize))
             }
-            .aspectRatio(RATIO_FOR_IMAGE)
             .clipToBounds()
-            .pointerInput(Unit) {
-                detectTransformGestures { _, pan, zoom, _ ->
-                    val newScale = (cropData.scale * zoom).coerceAtLeast(1f)
-
-                    val scaledWidth = containerSize.width * newScale
-                    val scaledHeight = containerSize.height * newScale
-
-                    val maxOffsetX = (scaledWidth - containerSize.width) / 2f
-                    val maxOffsetY = (scaledHeight - containerSize.height) / 2f
-
-                    val newOffset = Offset(
-                        x = (cropData.offset.x + pan.x).coerceIn(-maxOffsetX, maxOffsetX),
-                        y = (cropData.offset.y + pan.y).coerceIn(-maxOffsetY, maxOffsetY)
-                    )
-
-                    onChangeCropData(ImageCropData(newScale, newOffset, containerSize))
+            .pointerInput(imageSize) {
+                detectTransformGestures { centroid, pan, zoom, _ ->
+                    if (isReady) onEvent(ImageCropEvent.Transform(centroid, pan, zoom))
                 }
-            }
+            },
+        contentAlignment = Alignment.Center,
     ) {
-        CoreAsyncImage(
-            model = image.raw(),
-            modifier = Modifier
-                .matchParentSize()
-                .graphicsLayer {
-                    scaleX = cropData.scale
-                    scaleY = cropData.scale
-
-                    translationX = cropData.offset.x
-                    translationY = cropData.offset.y
-                }
-        )
+        Canvas(modifier = Modifier.matchParentSize()) {
+            val containerSize = IntSize(size.width.roundToInt(), size.height.roundToInt())
+            val geometry = ImageCropGeometry.create(imageSize, containerSize) ?: return@Canvas
+            val placement = geometry.placement(cropData)
+            translate(left = placement.topLeft.x, top = placement.topLeft.y) {
+                with(painter) { draw(size = placement.size) }
+            }
+        }
+        if (hasError) {
+            Text(
+                text = StaticTextId.UiId.ImageReadErrorDescription.translate(),
+                modifier = Modifier.padding(20.dp),
+            )
+        } else if (!isReady) {
+            CoreCircularProgressIndicator()
+        }
     }
 }
 

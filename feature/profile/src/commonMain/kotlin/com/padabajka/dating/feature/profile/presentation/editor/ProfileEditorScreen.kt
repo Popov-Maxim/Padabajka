@@ -77,10 +77,17 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileEditorScreen(component: ProfileEditorScreenComponent) {
-    val state by component.state.subscribeAsState()
+    val screenState by component.state.subscribeAsState()
+    val state = screenState as? ProfileEditorState.Editing
     CustomScaffold(
         topBar = { TopBar(state, component::onEvent) }
     ) {
+        if (state == null) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CoreCircularProgressIndicator()
+            }
+            return@CustomScaffold
+        }
         val scrollState = rememberScrollState()
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -405,7 +412,7 @@ fun TotalDataBlock(
 }
 
 @Composable
-private fun TopBar(state: ProfileEditorState, onEvent: (ProfileEditorEvent) -> Unit) {
+private fun TopBar(state: ProfileEditorState.Editing?, onEvent: (ProfileEditorEvent) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth().background(CoreColors.background.mainColor)
             .padding(vertical = 10.dp, horizontal = 10.dp),
@@ -432,16 +439,18 @@ private fun TopBar(state: ProfileEditorState, onEvent: (ProfileEditorEvent) -> U
                 fontFamily = PlayfairDisplay
             )
         }
-        PreviewButton(
-            modifier = Modifier
-                .padding(vertical = 10.dp, horizontal = 10.dp),
-            state = state
-        )
+        if (state != null) {
+            PreviewButton(
+                modifier = Modifier
+                    .padding(vertical = 10.dp, horizontal = 10.dp),
+                state = state
+            )
+        }
     }
 }
 
 @Composable
-private fun PreviewButton(modifier: Modifier = Modifier, state: ProfileEditorState) {
+private fun PreviewButton(modifier: Modifier = Modifier, state: ProfileEditorState.Editing) {
     var showViewProfile by remember { mutableStateOf(false) }
 
     Text(
