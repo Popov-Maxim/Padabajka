@@ -67,8 +67,8 @@ fun ProfileFields.updateName(name: String): ProfileFields {
 fun ProfileFields.addImage(image: Image, index: Int): ProfileFields {
     return this.copy(
         images = this.images.updatedValue {
-            if (index < it.size) {
-                it.add(index, image)
+            if (index in it.indices) {
+                it.set(index, image)
             } else {
                 it.add(image)
             }
