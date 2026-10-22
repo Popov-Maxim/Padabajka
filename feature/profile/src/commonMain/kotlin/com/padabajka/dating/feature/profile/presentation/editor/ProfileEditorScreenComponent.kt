@@ -132,14 +132,13 @@ class ProfileEditorScreenComponent(
                 searchCity(editorState.fields.details.value.supportedDetails.city.searchItem.value)
 
             is LangSearchQueryChangedEvent -> searchLang(event.query.value, event.type)
-            is UpdateLangSearchEvent ->
-                searchLang(editorState.fields.language.value.nativeLanguages.searchItem.value, event.type)
+            is UpdateLangSearchEvent -> updateLangSearch(event.type)
             is LanguagesUpdateEvent -> updateLanguages(event.lang, event.type)
 
             is InterestSearchQueryChangedEvent -> searchInterests(event.query.value)
             is InterestUpdateEvent -> updateInterests(event.assets)
             UpdateInterestSearchEvent ->
-                searchInterests(editorState.fields.language.value.nativeLanguages.searchItem.value)
+                searchInterests(editorState.fields.interests.value.searchItem.value)
         }
     }
 
@@ -314,6 +313,17 @@ class ProfileEditorScreenComponent(
                 }
             },
         )
+    }
+
+    private fun updateLangSearch(type: LanguagesAssetType) {
+        val editorState = state.value as? ProfileEditorState.Editing ?: return
+        val languages = editorState.fields.language.value
+        val field = when (type) {
+            LanguagesAssetType.Native -> languages.nativeLanguages
+            LanguagesAssetType.Known -> languages.knownLanguages
+            LanguagesAssetType.Learning -> languages.learningLanguages
+        }
+        searchLang(field.searchItem.value, type)
     }
 
     private fun searchLang(query: String, type: LanguagesAssetType) {

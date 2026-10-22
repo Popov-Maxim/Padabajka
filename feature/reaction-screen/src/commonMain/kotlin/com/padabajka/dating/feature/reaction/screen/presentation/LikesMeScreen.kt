@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -237,17 +238,22 @@ private fun ProfileImage(
     modifier: Modifier = Modifier,
     blur: Dp = 0.dp
 ) {
+    val isBlurSupported = remember { BlurEffect(1f, 1f).isSupported() }
     Box(
         modifier = modifier.aspectRatio(ratio = 2.0f / 3)
             .clip(RoundedCornerShape(10.dp))
     ) {
-        CoreAsyncImage(
-            modifier = Modifier.fillMaxSize()
-                .run {
-                    if (blur != 0.dp) blur(blur) else this
-                },
-            model = image?.raw(),
-        )
+        if (blur != 0.dp && isBlurSupported.not()) {
+            Box(Modifier.fillMaxSize().background(CoreColors.secondary.mainColor))
+        } else {
+            CoreAsyncImage(
+                modifier = Modifier.fillMaxSize()
+                    .run {
+                        if (blur != 0.dp) blur(blur) else this
+                    },
+                model = image?.raw(),
+            )
+        }
     }
 }
 
