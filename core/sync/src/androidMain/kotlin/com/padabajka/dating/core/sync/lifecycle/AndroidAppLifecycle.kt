@@ -1,6 +1,7 @@
 package com.padabajka.dating.core.sync.lifecycle
 
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import kotlinx.coroutines.channels.awaitClose
@@ -22,12 +23,18 @@ class AndroidAppLifecycle : AppLifecycle {
             }
         }
 
-        ProcessLifecycleOwner.get().lifecycle.addObserver(observer)
+        val lifecycle = ProcessLifecycleOwner.get().lifecycle
+        lifecycle.addObserver(observer)
 
-        trySend(AppLifecycleState.FOREGROUND)
+        val initialState = if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+            AppLifecycleState.FOREGROUND
+        } else {
+            AppLifecycleState.BACKGROUND
+        }
+        trySend(initialState)
 
         awaitClose {
-            ProcessLifecycleOwner.get().lifecycle.removeObserver(observer)
+            lifecycle.removeObserver(observer)
         }
     }
 }

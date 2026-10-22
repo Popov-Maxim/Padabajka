@@ -9,7 +9,7 @@ internal actual val platformSystemIntentDiModule: Module
     get() = module {
         factory<OpenMailNavigator> {
             AndroidOpenMailNavigator(
-                activity = get()
+                context = get()
             )
         }
     }
