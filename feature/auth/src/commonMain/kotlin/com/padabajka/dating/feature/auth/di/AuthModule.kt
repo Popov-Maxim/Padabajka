@@ -105,7 +105,9 @@ private val authPresentationModule = module {
             goToLoginMethodScreen = parameters.get(),
             validateEmailUseCase = get(),
             loginEmailOnlyUseCase = get(),
-            openMailAppUseCase = get()
+            openMailAppUseCase = get(),
+            authErrorMapper = get(),
+            alertService = get()
         )
     }
     factory<VerificationComponent> { parameters ->
