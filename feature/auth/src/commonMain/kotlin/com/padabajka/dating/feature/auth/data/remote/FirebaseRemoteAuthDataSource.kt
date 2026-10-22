@@ -53,7 +53,11 @@ internal class FirebaseRemoteAuthDataSource(
     }
 
     override suspend fun loginWithoutPassword(email: String, actionCodeSettings: ActionCodeSettings) {
-        firebaseAuth.sendSignInLinkToEmail(email, actionCodeSettings)
+        try {
+            firebaseAuth.sendSignInLinkToEmail(email, actionCodeSettings)
+        } catch (e: FirebaseException) {
+            throw mapFirebaseAuthError(e)
+        }
     }
 
 //    @Throws(EmailLinkAuthException.InvalidLink::class, AuthCredentialError::class)

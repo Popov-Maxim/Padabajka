@@ -41,6 +41,7 @@ kotlin {
         }
         commonMain.dependencies {
             api(libs.gitlive.firebase.perf)
+            implementation(libs.gitlive.firebase.crashlytics)
         }
     }
 }
