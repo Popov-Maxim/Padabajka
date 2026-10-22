@@ -8,7 +8,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.arkivanov.decompose.defaultComponentContext
 import com.padabajka.dating.core.permission.PermissionRequestHandler
 import com.padabajka.dating.deeplink.SharedDeeplinkHandler
-import com.padabajka.dating.di.addActivity
 import com.padabajka.dating.di.addPermissionRequester
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -18,7 +17,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        WindowCompat.setDecorFitsSystemWindows(window, true)
-        addActivity(this) // TODO(P3): fix leak?
         val permissionRequestHandler = PermissionRequestHandler { permissions ->
             val result = requestPermissionsSuspend(*permissions)
             result.any { it.value }

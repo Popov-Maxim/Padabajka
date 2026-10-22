@@ -1,6 +1,5 @@
 package com.padabajka.dating.di
 
-import android.app.Activity
 import android.app.Application
 import android.content.Context
 import com.padabajka.dating.core.permission.PermissionRequestHandler
@@ -14,10 +13,6 @@ fun initKoinAndroid(application: Application) {
             single<Application> { application }
         }
     )
-}
-
-fun addActivity(activity: Activity) {
-    loadKoinModules(module { single { activity } })
 }
 
 fun addPermissionRequester(

@@ -1,6 +1,6 @@
 package com.padabajka.dating.feature.subscription.data.billing
 
-import android.app.Activity
+import android.content.Context
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -11,6 +11,7 @@ import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.queryProductDetails
+import com.padabajka.dating.core.platform.data.activity.AndroidActivityProvider
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -19,13 +20,15 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AndroidBillingClient(
-    private val context: Activity,
+    context: Context,
+    private val activityProvider: AndroidActivityProvider,
     private val billingProductMapper: BillingProductMapper
 ) : PlatformBillingClient {
 
-    private val billingClient = BillingClient.newBuilder(context)
+    private val billingClient = BillingClient.newBuilder(context.applicationContext)
         .setListener { billingResult, purchases ->
             handlePurchaseUpdates(billingResult, purchases)
         }
@@ -61,7 +64,11 @@ class AndroidBillingClient(
             )
             .build()
 
-        billingClient.launchBillingFlow(context, params)
+        withContext(Dispatchers.Main.immediate) {
+            val activity = activityProvider.currentActivity
+                ?: error("Cannot launch a purchase without a resumed Activity")
+            billingClient.launchBillingFlow(activity, params)
+        }
 
         return purchaseResultFlow.first { it.productId == PRODUCT_ID }
     }
