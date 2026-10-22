@@ -26,6 +26,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.utils)
+            implementation(projects.sharedLibs.firebase)
             api(projects.core.domain)
             api(projects.core.repositoryApi)
             api(projects.core.data)
