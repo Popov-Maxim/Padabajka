@@ -10,26 +10,25 @@ import com.padabajka.dating.feature.match.data.model.toEntry
 import com.padabajka.dating.feature.match.data.source.local.LocalMatchDataSource
 import com.padabajka.dating.feature.match.data.source.local.toEntry
 import com.padabajka.dating.feature.match.data.source.local.toMatch
+import com.padabajka.dating.feature.match.data.source.local.toRawMatch
 import com.padabajka.dating.feature.match.data.source.remote.RemoteMatchDataSource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 
 class MatchRepositoryImpl(
     private val localMatchDataSource: LocalMatchDataSource,
     private val remoteMatchDataSource: RemoteMatchDataSource,
     private val personRepository: PersonRepository
 ) : MatchRepository {
-    override fun matches(): Flow<List<Match>> {
-        return localMatchDataSource.matches().map {
-            it.mapNotNull { match ->
-                val personId = PersonId(match.personId)
-                val person = personRepository.getPerson(personId) ?: return@mapNotNull null
-                match.toMatch(person)
-            }
+    override fun rawMatches(): Flow<List<RawMatch>> = localMatchDataSource.matches().map { matches ->
+        matches.map { match ->
+            match.toRawMatch()
         }
-    }
+    }.distinctUntilChanged()
 
     override fun matchedPersonIds(): Flow<Set<PersonId>> =
         localMatchDataSource.matches()
@@ -38,12 +37,15 @@ class MatchRepositoryImpl(
             }
             .distinctUntilChanged()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun findMatch(chatId: ChatId): Flow<Match?> {
-        return localMatchDataSource.findMatch(chatId).map { match ->
-            match ?: return@map null
-            val personId = PersonId(match.personId)
-            val person = personRepository.getPerson(personId) ?: return@map null
-            match.toMatch(person)
+        return localMatchDataSource.findMatch(chatId).flatMapLatest { match ->
+            if (match == null) {
+                flowOf(null)
+            } else {
+                personRepository.observePerson(PersonId(match.personId))
+                    .map { person -> match.toMatch(person) }
+            }
         }
     }
 

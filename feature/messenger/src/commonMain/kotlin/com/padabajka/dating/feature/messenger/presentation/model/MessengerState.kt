@@ -40,9 +40,10 @@ data class ChatItem(
 @Serializable
 data class MatchItem(
     val id: Match.Id,
-    val person: PersonItem,
+    val person: PersonItem?,
     val creationTime: Long,
     val userPresence: UserPresenceItem,
+    val personId: PersonId,
 )
 
 @Serializable

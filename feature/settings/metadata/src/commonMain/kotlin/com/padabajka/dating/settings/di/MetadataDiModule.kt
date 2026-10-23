@@ -1,5 +1,6 @@
 package com.padabajka.dating.settings.di
 
+import com.padabajka.dating.core.domain.usecase.UpdateAuthMetadataUseCase
 import com.padabajka.dating.core.repository.api.GeoRepository
 import com.padabajka.dating.core.repository.api.metadata.MetadataRepository
 import com.padabajka.dating.settings.data.MetadataRepositoryImpl
@@ -56,7 +57,9 @@ private val dataModule = module {
 
 private val domainModule = module {
     factoryOf(::DeleteAuthMetadataUseCase)
-    factoryOf(::NewAuthMetadataUseCase)
+    factoryOf(::NewAuthMetadataUseCase) {
+        bind<UpdateAuthMetadataUseCase>()
+    }
 }
 
 val metadataDiModules = arrayOf(domainModule, dataModule)

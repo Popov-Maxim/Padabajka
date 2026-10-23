@@ -31,6 +31,7 @@ kotlin {
             api(libs.immutable.collections)
             api(libs.coroutines.core)
             api(libs.koin.core)
+            implementation(libs.gitlive.firebase.crashlytics)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

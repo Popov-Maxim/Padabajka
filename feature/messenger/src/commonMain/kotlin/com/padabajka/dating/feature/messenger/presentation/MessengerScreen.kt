@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -25,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +40,7 @@ import com.padabajka.dating.core.presentation.ui.ProfileAvatar
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.font.PlayfairDisplay
+import com.padabajka.dating.core.presentation.ui.image.ShimmerPlaceholder
 import com.padabajka.dating.core.presentation.ui.image.raw
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.textColor
@@ -101,7 +104,7 @@ private fun MatchesBlock(matches: List<EmptyChatItem>, onEvent: (MessengerEvent)
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 items(matches) { match ->
-                    ProfileAvatar(match.match.person.images.firstOrNull()?.raw()) {
+                    ProfileAvatar(match.match.person?.images?.firstOrNull()?.raw()) {
                         onEvent(OpenChatEvent(match.chatId, match.match))
                     }
                 }
@@ -147,14 +150,22 @@ private fun ChatsBlock(chats: List<ChatItem>, onEvent: (MessengerEvent) -> Unit)
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(modifier = Modifier.padding(10.dp)) {
-                        ProfileAvatar(chat.match.person.images.firstOrNull()?.raw())
+                        ProfileAvatar(chat.match.person?.images?.firstOrNull()?.raw())
                     }
                     Column(modifier = Modifier.padding(end = 20.dp)) {
-                        Text(
-                            text = chat.match.person.name,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                        val person = chat.match.person
+                        if (person == null) {
+                            ShimmerPlaceholder(
+                                Modifier.width(120.dp).height(24.dp)
+                                    .clip(RoundedCornerShape(4.dp))
+                            )
+                        } else {
+                            Text(
+                                text = person.name,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                         Text(
                             text = chat.lastMessage.content.oneLine(),
                             fontSize = 16.sp,
