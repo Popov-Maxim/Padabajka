@@ -34,6 +34,14 @@ interface ChatDao {
         }
     }
 
+    @Transaction
+    suspend fun updateChat(defaultChat: ChatEntry, update: (ChatEntry) -> ChatEntry) {
+        val current = getOrCreate(defaultChat)
+        val updated = update(current)
+        require(updated.id == current.id)
+        insertOrUpdate(updated)
+    }
+
     @Query("SELECT lastEventNumber FROM chats WHERE id = :chatId")
     suspend fun getLastEventNumber(chatId: String): Long?
 

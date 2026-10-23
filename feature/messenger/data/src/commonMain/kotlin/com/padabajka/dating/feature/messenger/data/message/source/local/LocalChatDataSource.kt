@@ -23,20 +23,11 @@ class LocalChatDataSource(
     }
 
     suspend fun getOrCreateChat(chatId: ChatId): ChatEntry {
-        return chatDao.getOrCreate(
-            ChatEntry(
-                id = chatId.raw,
-                lastEventNumber = NO_EVENT,
-                lastReadEventNumber = NO_EVENT,
-                hasMoreOldMessages = true,
-            )
-        )
+        return chatDao.getOrCreate(initialChatEntry(chatId))
     }
 
     suspend fun updateChat(chatId: ChatId, updated: (ChatEntry) -> ChatEntry) {
-        val chat = getOrCreateChat(chatId)
-        val updatedChat = updated(chat)
-        setChat(updatedChat)
+        chatDao.updateChat(initialChatEntry(chatId), updated)
     }
 
     suspend fun deleteChat(chatId: ChatId) {
@@ -51,6 +42,13 @@ class LocalChatDataSource(
             deleteChat(chatId)
         }
     }
+
+    private fun initialChatEntry(chatId: ChatId) = ChatEntry(
+        id = chatId.raw,
+        lastEventNumber = NO_EVENT,
+        lastReadEventNumber = NO_EVENT,
+        hasMoreOldMessages = true,
+    )
 
     private companion object {
         const val NO_EVENT = -1L

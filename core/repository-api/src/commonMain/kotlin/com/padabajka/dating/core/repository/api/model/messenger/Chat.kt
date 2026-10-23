@@ -4,5 +4,6 @@ data class Chat(
     val id: ChatId,
     val lastEventNumber: Long,
     val lastReadEventNumber: Long,
-    val hasMoreOldMessages: Boolean
+    val hasMoreOldMessages: Boolean,
+    val historyBeforeMessageId: MessageId? = null,
 )
