@@ -9,6 +9,9 @@ suspend fun LocalMessageDataSource.applyRemoteMessage(message: MessageDto) = whe
     is MessageDto.Existing -> applyRemoteMessage(message.chatId, message.id, message.version) {
         message.toEntity()
     }
+    is MessageDto.Edited -> applyRemoteMessage(message.chatId, message.id, message.version) { current ->
+        current?.let { message.message.toEntity() }
+    }
     is MessageDto.Deleted -> applyRemoteDeletion(message.chatId, message.id, message.version)
 }
 

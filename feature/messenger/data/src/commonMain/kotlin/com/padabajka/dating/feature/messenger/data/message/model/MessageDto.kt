@@ -43,6 +43,16 @@ sealed interface MessageDto {
         val parentMessageId: String?,
         override val version: Long? = null,
     ) : MessageDto
+
+    // TODO(P0): Review the nested Edited(message: Existing) JSON format in the pre-launch API audit.
+    @Serializable
+    @SerialName("edited")
+    data class Edited(val message: Existing) : MessageDto {
+        override val id: String get() = message.id
+        override val chatId: String get() = message.chatId
+        override val creationTime: Long get() = message.creationTime
+        override val version: Long? get() = message.version
+    }
 }
 
 object MessageRequest {
