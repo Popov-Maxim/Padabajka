@@ -103,7 +103,6 @@ class AuthStateObserverComponent(
                 component = AuthScopeNavigateComponent(
                     context = context,
                     userId = configuration.userId,
-                    updateAuthMetadataUseCase = get(),
                     profileRepository = get(),
                     domainErrorHandler = get(),
                     syncSessionObserver = get(),

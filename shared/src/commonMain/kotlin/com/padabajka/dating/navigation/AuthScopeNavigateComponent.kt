@@ -22,7 +22,6 @@ import com.padabajka.dating.navigation.AuthScopeNavigateComponent.Child.LoadingP
 import com.padabajka.dating.navigation.AuthScopeNavigateComponent.Child.MainAuthScope
 import com.padabajka.dating.navigation.AuthScopeNavigateComponent.Child.NewLegalAgreementsScreen
 import com.padabajka.dating.navigation.AuthScopeNavigateComponent.Child.UserDeletedScreen
-import com.padabajka.dating.settings.domain.NewAuthMetadataUseCase
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -34,7 +33,6 @@ import org.koin.core.component.get
 class AuthScopeNavigateComponent(
     context: ComponentContext,
     private val userId: UserId,
-    private val updateAuthMetadataUseCase: NewAuthMetadataUseCase,
     private val profileRepository: ProfileRepository,
     private val legalRepository: LegalRepository,
     private val syncSessionObserver: SyncSessionObserver,
@@ -76,7 +74,6 @@ class AuthScopeNavigateComponent(
     }
 
     private suspend fun finishPrepare() {
-        updateAuthMetadataUseCase()
         syncSessionObserver.start(userId)
 
         navigateNewStack(Configuration.MainAuthScope)

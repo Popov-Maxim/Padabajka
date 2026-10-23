@@ -1,5 +1,6 @@
 package com.padabajka.dating.settings.domain
 
+import com.padabajka.dating.core.domain.usecase.UpdateAuthMetadataUseCase
 import com.padabajka.dating.core.repository.api.AppSettingsRepository
 import com.padabajka.dating.core.repository.api.metadata.AuthMetadata
 import com.padabajka.dating.core.repository.api.metadata.MetadataRepository
@@ -13,8 +14,8 @@ class NewAuthMetadataUseCase(
     private val metadataRepository: MetadataRepository,
     private val pushRepository: PushRepository,
     private val appSettingsRepository: AppSettingsRepository
-) {
-    suspend operator fun invoke() {
+) : UpdateAuthMetadataUseCase {
+    override suspend operator fun invoke() {
         val deviceUid = metadataRepository.getDeviceUid()
         val token = runCatchingCancellable {
             pushRepository.getToken()
@@ -27,6 +28,6 @@ class NewAuthMetadataUseCase(
 
         runCatchingCancellable {
             metadataRepository.updateAuthMetadata(authMetadata)
-        }.logFailureToCrashlytics()
+        }.logFailureToCrashlytics().getOrThrow()
     }
 }

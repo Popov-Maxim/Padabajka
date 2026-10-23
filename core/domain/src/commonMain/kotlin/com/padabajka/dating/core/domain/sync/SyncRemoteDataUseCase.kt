@@ -1,5 +1,6 @@
 package com.padabajka.dating.core.domain.sync
 
+import com.padabajka.dating.core.domain.usecase.UpdateAuthMetadataUseCase
 import com.padabajka.dating.core.repository.api.AssetRepository
 import com.padabajka.dating.core.repository.api.MatchRepository
 import com.padabajka.dating.core.repository.api.ReactionRepository
@@ -14,9 +15,12 @@ class SyncRemoteDataUseCase(
     private val assetRepository: AssetRepository,
     private val syncChatsUseCase: SyncChatsUseCase,
     private val reactionRepository: ReactionRepository,
-    private val subscriptionRepository: SubscriptionRepository
+    private val subscriptionRepository: SubscriptionRepository,
+    private val updateAuthMetadataUseCase: UpdateAuthMetadataUseCase
 ) {
     suspend operator fun invoke() = supervisorScope {
+        updateAuthMetadataUseCase()
+
         val matchSync = async {
             runCatching {
                 matchRepository.sync()
