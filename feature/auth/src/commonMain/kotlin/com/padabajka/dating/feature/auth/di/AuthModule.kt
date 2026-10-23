@@ -8,7 +8,6 @@ import com.padabajka.dating.feature.auth.data.model.AuthPreferences
 import com.padabajka.dating.feature.auth.data.remote.DebugAuthApi
 import com.padabajka.dating.feature.auth.data.remote.FirebaseRemoteAuthDataSource
 import com.padabajka.dating.feature.auth.data.remote.RemoteAuthDataSource
-import com.padabajka.dating.feature.auth.domain.AuthStateProvider
 import com.padabajka.dating.feature.auth.domain.LogInWithEmailAndPasswordUseCase
 import com.padabajka.dating.feature.auth.domain.LogOutUseCase
 import com.padabajka.dating.feature.auth.domain.LoginEmailOnlyUseCase
@@ -63,12 +62,6 @@ private val authDomainModule = module {
 
     factory {
         LogInWithEmailAndPasswordUseCase(
-            authRepository = get()
-        )
-    }
-
-    factory {
-        AuthStateProvider(
             authRepository = get()
         )
     }

@@ -8,10 +8,14 @@ import com.arkivanov.decompose.router.stack.active
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.KSerializer
 import org.koin.core.component.KoinComponent
 
@@ -33,11 +37,22 @@ abstract class NavigateComponentContext<Config : Any, Child : Any>(
         )
     }
 
+    private val componentJob = SupervisorJob()
+
     protected val navigateScope: CoroutineScope =
-        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        CoroutineScope(componentJob + Dispatchers.Main.immediate)
 
     protected val backgroundScope: CoroutineScope =
-        CoroutineScope(SupervisorJob() + Dispatchers.Default)
+        CoroutineScope(componentJob + Dispatchers.Default)
+
+    init {
+        context.lifecycle.doOnDestroy { componentJob.cancel() }
+    }
+
+    /** Called by the owner to finish this component's tasks before clearing shared data. */
+    suspend fun close(): Unit = withContext(NonCancellable) {
+        componentJob.cancelAndJoin()
+    }
 
     protected fun navigate(configuration: Config, saveLast: Boolean = true) {
         navigateScope.launch {

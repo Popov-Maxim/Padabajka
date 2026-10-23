@@ -64,6 +64,10 @@ internal class AuthRepositoryImpl(
         remoteAuthDataSource.signInWithEmailLink(email, link)
     }
 
+    override suspend fun clearPendingEmail() {
+        localAuthDataSource.clearEmail()
+    }
+
     override suspend fun loginInWithCredential(credential: AuthCredential) {
         remoteAuthDataSource.loginInWithCredential(credential)
     }

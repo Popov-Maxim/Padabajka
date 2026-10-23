@@ -15,6 +15,7 @@ interface AuthRepository {
 
 //    @Throws(EmailLinkAuthException::class, AuthCredentialError::class)
     suspend fun signInWithEmailLink(link: String)
+    suspend fun clearPendingEmail()
     suspend fun loginInWithCredential(credential: AuthCredential)
     suspend fun register(email: String, password: String)
     suspend fun logout()
