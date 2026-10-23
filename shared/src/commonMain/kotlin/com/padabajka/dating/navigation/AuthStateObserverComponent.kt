@@ -4,13 +4,13 @@ import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.core.presentation.asFlow
 import com.padabajka.dating.core.presentation.deeplink.AppDeeplinkHandler
+import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.metadata.PushRepository
 import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
 import com.padabajka.dating.core.repository.api.model.auth.LoggedOut
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.WaitingForEmailValidation
 import com.padabajka.dating.core.sync.SyncSessionObserver
-import com.padabajka.dating.feature.auth.domain.AuthStateProvider
 import com.padabajka.dating.feature.auth.presentation.VerificationComponent
 import com.padabajka.dating.session.UserSessionManager
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -51,11 +51,11 @@ class AuthStateObserverComponent(
         }
     }
 
-    private val authProvider: AuthStateProvider = get()
+    private val authRepository: AuthRepository = get()
 
     @Suppress("TooGenericExceptionCaught")
     suspend fun subscribeToAuth() {
-        authProvider.authState.distinctUntilChanged().collect { authState ->
+        authRepository.authState.distinctUntilChanged().collect { authState ->
             val previousAuthScope = (childStack.value.active.instance as? Child.AuthScope)?.component
             navigateNewStack(Configuration.SplashScreen)
             previousAuthScope?.close()
@@ -75,11 +75,13 @@ class AuthStateObserverComponent(
                 }
 
                 is LoggedIn -> {
+                    authRepository.clearPendingEmail()
                     userSessionManager.prepare(authState.userId)
                     navigateNewStack(Configuration.AuthScope(authState.userId))
                 }
 
                 is WaitingForEmailValidation -> {
+                    authRepository.clearPendingEmail()
                     userSessionManager.prepare(authState.userId)
                     navigateNewStack(Configuration.VerificationScreen)
                 }

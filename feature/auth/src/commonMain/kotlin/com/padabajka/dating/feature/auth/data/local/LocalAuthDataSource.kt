@@ -13,4 +13,8 @@ class LocalAuthDataSource(
     suspend fun saveEmail(email: String) {
         dataStore.updateData { it.copy(email = email) }
     }
+
+    suspend fun clearEmail() {
+        dataStore.updateData { it.copy(email = null) }
+    }
 }
