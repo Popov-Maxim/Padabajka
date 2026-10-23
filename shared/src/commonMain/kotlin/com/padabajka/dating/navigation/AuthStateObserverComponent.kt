@@ -56,10 +56,13 @@ class AuthStateObserverComponent(
     @Suppress("TooGenericExceptionCaught")
     suspend fun subscribeToAuth() {
         authProvider.authState.distinctUntilChanged().collect { authState ->
+            val previousAuthScope = (childStack.value.active.instance as? Child.AuthScope)?.component
+            navigateNewStack(Configuration.SplashScreen)
+            previousAuthScope?.close()
+            syncSessionObserver.stop()
+
             when (authState) {
                 LoggedOut -> {
-                    navigateNewStack(Configuration.SplashScreen)
-                    syncSessionObserver.stop()
                     userSessionManager.clear()
                     try {
                         pushRepository.deleteToken()
@@ -72,15 +75,11 @@ class AuthStateObserverComponent(
                 }
 
                 is LoggedIn -> {
-                    navigateNewStack(Configuration.SplashScreen)
-                    syncSessionObserver.stop()
                     userSessionManager.prepare(authState.userId)
                     navigateNewStack(Configuration.AuthScope(authState.userId))
                 }
 
                 is WaitingForEmailValidation -> {
-                    navigateNewStack(Configuration.SplashScreen)
-                    syncSessionObserver.stop()
                     userSessionManager.prepare(authState.userId)
                     navigateNewStack(Configuration.VerificationScreen)
                 }

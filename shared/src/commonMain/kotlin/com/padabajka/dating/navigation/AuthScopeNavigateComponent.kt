@@ -13,6 +13,7 @@ import com.padabajka.dating.core.repository.api.model.deeplink.AppDeeplink
 import com.padabajka.dating.core.repository.api.model.legal.LegalState
 import com.padabajka.dating.core.repository.api.model.profile.ProfileState
 import com.padabajka.dating.core.sync.SyncSessionObserver
+import com.padabajka.dating.core.utils.runCatchingCancellable
 import com.padabajka.dating.feature.auth.presentation.AccountDeletedScreenComponent
 import com.padabajka.dating.feature.legal.presentation.NewLegalAgreementsComponent
 import com.padabajka.dating.navigation.AuthScopeNavigateComponent.Child.CreateProfileScope
@@ -150,7 +151,7 @@ class AuthScopeNavigateComponent(
 
     private fun updateProfile() {
         backgroundScope.launch {
-            runCatching {
+            runCatchingCancellable {
                 profileRepository.updateProfile()
             }.onFailure { throwable ->
                 domainErrorHandler.handle(throwable) { error ->
@@ -174,7 +175,7 @@ class AuthScopeNavigateComponent(
 
     private fun updateLegal() {
         backgroundScope.launch {
-            runCatching {
+            runCatchingCancellable {
                 legalRepository.updateUserLegalState()
             }.onFailure { throwable ->
                 domainErrorHandler.handle(throwable) { error ->
