@@ -283,7 +283,7 @@ class ChatComponent(
 
     private fun readMessage(messageId: MessageId) = launchStep(
         action = {
-            readMessageUseCase(messageId)
+            readMessageUseCase(chatId, messageId)
         },
     )
 

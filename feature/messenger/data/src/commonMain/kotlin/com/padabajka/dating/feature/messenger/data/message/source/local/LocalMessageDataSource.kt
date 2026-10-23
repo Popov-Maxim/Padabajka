@@ -14,12 +14,12 @@ interface LocalMessageDataSource {
         currentUserId: String,
         messageReadEvent: MessageReadEventEntry?
     ): Int
-    suspend fun message(messageId: String): MessageEntry
-    suspend fun messageOrNull(messageId: String): MessageEntry?
+    suspend fun message(chatId: String, messageId: String): MessageEntry
+    suspend fun messageOrNull(chatId: String, messageId: String): MessageEntry?
     suspend fun unsyncedEditMessageIds(chatId: String): List<String>
     suspend fun addMessage(message: MessageEntry)
     suspend fun oldestMessageId(chatId: ChatId): MessageId?
-    suspend fun deleteMessage(messageId: String)
+    suspend fun deleteMessage(chatId: String, messageId: String)
     suspend fun deleteMessagesInChat(chatId: ChatId)
     suspend fun applyRemoteMessage(
         chatId: String,
@@ -34,6 +34,10 @@ interface LocalMessageDataSource {
         version: Long?,
         fromEvent: Boolean = false,
     )
-    suspend fun updateMessage(messageId: String, update: (MessageEntry) -> MessageEntry): MessageEntry
-    suspend fun markMessageFailedToSend(messageId: String)
+    suspend fun updateMessage(
+        chatId: String,
+        messageId: String,
+        update: (MessageEntry) -> MessageEntry
+    ): MessageEntry
+    suspend fun markMessageFailedToSend(chatId: String, messageId: String)
 }

@@ -30,12 +30,12 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
         )
     }
 
-    override suspend fun message(messageId: String): MessageEntry {
-        return messageDao.messageById(messageId)
+    override suspend fun message(chatId: String, messageId: String): MessageEntry {
+        return messageDao.messageById(chatId, messageId)
     }
 
-    override suspend fun messageOrNull(messageId: String): MessageEntry? {
-        return messageDao.messageByIdOrNull(messageId)
+    override suspend fun messageOrNull(chatId: String, messageId: String): MessageEntry? {
+        return messageDao.messageByIdOrNull(chatId, messageId)
     }
 
     override suspend fun unsyncedEditMessageIds(chatId: String): List<String> =
@@ -49,8 +49,8 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
         return messageDao.oldestMessageByChatId(chatId.raw)?.run(::MessageId)
     }
 
-    override suspend fun deleteMessage(messageId: String) {
-        messageDao.deleteMessageById(messageId)
+    override suspend fun deleteMessage(chatId: String, messageId: String) {
+        messageDao.deleteMessageById(chatId, messageId)
     }
 
     override suspend fun deleteMessagesInChat(chatId: ChatId) {
@@ -87,12 +87,14 @@ internal class RoomLocalMessageDataSource(private val messageDao: MessageDao) :
     )
 
     override suspend fun updateMessage(
+        chatId: String,
         messageId: String,
         update: (MessageEntry) -> MessageEntry
-    ): MessageEntry = messageDao.updateMessage(messageId, update)
+    ): MessageEntry = messageDao.updateMessage(chatId, messageId, update)
 
-    override suspend fun markMessageFailedToSend(messageId: String) {
+    override suspend fun markMessageFailedToSend(chatId: String, messageId: String) {
         messageDao.updateMessageStatusUnless(
+            chatId = chatId,
             id = messageId,
             status = MessageStatus.FailedToSend,
             excludedStatus = MessageStatus.Sent,

@@ -2,14 +2,13 @@ package com.padabajka.dating.component.room.messenger.entry
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import kotlinx.serialization.Serializable
 
-@Entity(tableName = "messages")
+@Entity(tableName = "messages", primaryKeys = ["chatId", "id"])
 data class MessageEntry(
-    @PrimaryKey val id: String,
+    val id: String,
     @ColumnInfo("chatId") val chatId: String,
     @ColumnInfo("authorId") val authorId: String,
     @ColumnInfo("content") val content: MessageContentDB,

@@ -13,16 +13,16 @@ class ToggleMessageReactionUseCase(
     private val reactToMessageUseCase: ReactToMessageUseCase
 ) {
     suspend operator fun invoke(chatId: ChatId, messageId: MessageId, reactionValue: MessageReaction.Value) {
-        val reactions = messageRepository.messageReactions(messageId)
+        val reactions = messageRepository.messageReactions(chatId, messageId)
         val currentUserId = authRepository.currentAuthState.userIdOrNull() ?: return
         val userHasReacted = reactions.any {
             it.author.id.raw == currentUserId.raw && it.value == reactionValue
         }
 
         if (userHasReacted) {
-            reactToMessageUseCase.invoke(messageId, null)
+            reactToMessageUseCase.invoke(chatId, messageId, null)
         } else {
-            reactToMessageUseCase.invoke(messageId, reactionValue)
+            reactToMessageUseCase.invoke(chatId, messageId, reactionValue)
         }
     }
 }
