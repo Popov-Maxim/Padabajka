@@ -14,12 +14,7 @@ import com.android.billingclient.api.queryProductDetails
 import com.padabajka.dating.core.platform.data.activity.AndroidActivityProvider
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AndroidBillingClient(
@@ -40,9 +35,10 @@ class AndroidBillingClient(
         )
         .build()
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    // TODO(P2): Correlate late callbacks from cancelled purchases with their originating flow.
+    @Volatile
+    private var pendingPurchase: CompletableDeferred<PurchaseResult?>? = null
 
-    private val purchaseResultFlow = MutableSharedFlow<PurchaseResult>() // TODO(P0)
     override val serviceName: PlatformBillingClient.ServiceName
         get() = PlatformBillingClient.ServiceName.GOOGLE_PLAY
 
@@ -50,28 +46,36 @@ class AndroidBillingClient(
         return querySubscriptions()
     }
 
-    override suspend fun launchPurchase(offerId: String): PurchaseResult? {
-        val product = queryProduct(PRODUCT_ID) ?: return null
-
-        val params = BillingFlowParams.newBuilder()
-            .setProductDetailsParamsList(
-                listOf(
-                    BillingFlowParams.ProductDetailsParams.newBuilder()
-                        .setProductDetails(product)
-                        .setOfferToken(offerId)
-                        .build()
-                )
-            )
-            .build()
-
+    override suspend fun launchPurchase(offerId: String): PurchaseResult? =
         withContext(Dispatchers.Main.immediate) {
+            val product = queryProduct(PRODUCT_ID) ?: return@withContext null
+
+            val params = BillingFlowParams.newBuilder()
+                .setProductDetailsParamsList(
+                    listOf(
+                        BillingFlowParams.ProductDetailsParams.newBuilder()
+                            .setProductDetails(product)
+                            .setOfferToken(offerId)
+                            .build()
+                    )
+                )
+                .build()
+
             val activity = activityProvider.currentActivity
                 ?: error("Cannot launch a purchase without a resumed Activity")
-            billingClient.launchBillingFlow(activity, params)
-        }
 
-        return purchaseResultFlow.first { it.productId == PRODUCT_ID }
-    }
+            check(pendingPurchase == null) { "A purchase is already in progress" }
+            val purchaseResult = CompletableDeferred<PurchaseResult?>()
+            pendingPurchase = purchaseResult
+
+            try {
+                billingClient.launchBillingFlow(activity, params)
+                purchaseResult.await()
+            } finally {
+                pendingPurchase = null
+                purchaseResult.cancel()
+            }
+        }
 
     private fun handlePurchaseUpdates(
         result: BillingResult,
@@ -80,14 +84,15 @@ class AndroidBillingClient(
         if (result.responseCode != BillingClient.BillingResponseCode.OK || purchases == null) {
             return
         }
+        val purchaseResult = pendingPurchase
 
         purchases.forEach { purchase ->
 
             if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
                 val productId = purchase.products.firstOrNull() ?: return
 
-                scope.launch {
-                    purchaseResultFlow.emit(
+                if (productId == PRODUCT_ID) {
+                    purchaseResult?.complete(
                         PurchaseResult(
                             productId = productId,
                             purchaseToken = purchase.purchaseToken
