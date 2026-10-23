@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.messenger.presentation
 
 import com.arkivanov.decompose.ComponentContext
+import com.padabajka.dating.core.domain.retryLoading
 import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.repository.api.UserPresenceRepository
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
@@ -52,8 +53,8 @@ class MessengerComponent(
             action = {
                 matchWithChatUseCase().flatMapLatest {
                     val matchFlows = it.map { match ->
-                        val person = match.person.toPersonItem()
-                        val personId = match.person.id
+                        val person = match.person?.toPersonItem()
+                        val personId = match.personId
                         val currentUserPresence =
                             userPresenceRepository.currentUserPresence(personId)?.toUI()
                                 ?: UserPresenceItem.None
@@ -69,7 +70,7 @@ class MessengerComponent(
                                     userPresenceRepository.currentUserPresence(personId)?.toUI()
                                         ?: UserPresenceItem.None
                                 val matchItem =
-                                    MatchItem(match.id, person, match.creationTime, currentUserPresence)
+                                    MatchItem(match.id, person, match.creationTime, currentUserPresence, personId)
                                 val lastMessage = match.chat.lastMessage
                                 if (lastMessage == null) {
                                     EmptyChatItem(match.chat.id, matchItem)
@@ -94,7 +95,7 @@ class MessengerComponent(
                     val chats = matches.filterIsInstance<ChatItem>()
                         .sortedByDescending { chat -> chat.lastMessage.sentTime }
                     matchesWithoutChat to chats
-                }.collect { (matchesWithoutChat, chats) ->
+                }.retryLoading().collect { (matchesWithoutChat, chats) ->
                     reduce { state ->
                         state.copy(
                             matchesWithoutChat = matchesWithoutChat.toPersistentList(),

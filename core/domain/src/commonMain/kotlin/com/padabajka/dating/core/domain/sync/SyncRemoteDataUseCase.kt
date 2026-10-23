@@ -24,7 +24,7 @@ class SyncRemoteDataUseCase(
         val matchSync = async {
             runCatching {
                 matchRepository.sync()
-                matchRepository.matches().first().let { matches ->
+                matchRepository.rawMatches().first().let { matches ->
                     val matchIds = matches.map { it.chatId }
                     syncChatsUseCase(matchIds).awaitAll()
                 }

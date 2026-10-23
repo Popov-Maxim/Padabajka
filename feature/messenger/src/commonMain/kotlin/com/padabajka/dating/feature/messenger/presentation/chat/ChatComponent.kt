@@ -196,10 +196,10 @@ class ChatComponent(
 
     private fun Match.toMatchItem(): MatchItem {
         val currentUserPresence =
-            userPresenceRepository.currentUserPresence(person.id)?.toUI()
+            userPresenceRepository.currentUserPresence(personId)?.toUI()
                 ?: UserPresenceItem.None
         val newMatchItem =
-            MatchItem(id, person.toPersonItem(), creationTime, currentUserPresence)
+            MatchItem(id, person?.toPersonItem(), creationTime, currentUserPresence, personId)
 
         return newMatchItem
     }
@@ -207,7 +207,7 @@ class ChatComponent(
     private fun subscribeUserPresence(matchItem: MatchItem): Job {
         return launchStep(
             action = {
-                userPresenceRepository.userPresenceFlow(matchItem.person.id).collect {
+                userPresenceRepository.userPresenceFlow(matchItem.personId).collect {
                     val userPresence = it.toUI()
                     reduce {
                         it.copy(userPresence = userPresence)
@@ -377,7 +377,7 @@ class ChatComponent(
         ): ChatState {
             if (matchItem != null) {
                 val userPresence =
-                    userPresenceRepository.currentUserPresence(matchItem.person.id)?.toUI()
+                    userPresenceRepository.currentUserPresence(matchItem.personId)?.toUI()
                         ?: matchItem.userPresence
                 val personState = matchItem.person
                 return ChatState(personState, userPresence)

@@ -9,7 +9,8 @@ import kotlin.jvm.JvmInline
 
 data class Match(
     val id: Id,
-    val person: Person,
+    val personId: PersonId,
+    val person: Person?,
     val chatId: ChatId,
     val creationTime: Long
 ) {

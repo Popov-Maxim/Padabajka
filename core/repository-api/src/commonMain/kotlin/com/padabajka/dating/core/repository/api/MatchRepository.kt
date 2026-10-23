@@ -7,7 +7,7 @@ import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import kotlinx.coroutines.flow.Flow
 
 interface MatchRepository {
-    fun matches(): Flow<List<Match>>
+    fun rawMatches(): Flow<List<RawMatch>>
     fun matchedPersonIds(): Flow<Set<PersonId>>
     suspend fun findMatch(chatId: ChatId): Flow<Match?>
     suspend fun saveMatch(match: RawMatch)
