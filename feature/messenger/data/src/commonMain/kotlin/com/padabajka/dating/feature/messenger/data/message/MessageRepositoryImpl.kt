@@ -115,21 +115,21 @@ internal class MessageRepositoryImpl(
         } catch (e: BadStatusCodeException) {
             if (e.statusCode != HTTP_NOT_FOUND_STATUS_CODE) throw e
 
-            val message = localMessageDataSource.messageOrNull(messageId.raw)
+            val message = localMessageDataSource.messageOrNull(chatId.raw, messageId.raw)
             val isFailedToSend = message?.messageStatus == MessageStatus.FailedToSend
             if (isFailedToSend.not()) throw e
-            localMessageDataSource.deleteMessage(messageId.raw)
+            localMessageDataSource.deleteMessage(chatId.raw, messageId.raw)
         }
     }
 
     override suspend fun deleteLocalMessage(chatId: ChatId, messageId: MessageId) {
-        localMessageDataSource.deleteMessage(messageId.raw)
+        localMessageDataSource.deleteMessage(chatId.raw, messageId.raw)
     }
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun editMessage(chatId: ChatId, messageId: MessageId, content: String) {
         lateinit var previousMessage: MessageEntry
-        val updatedMessage = localMessageDataSource.updateMessage(messageId.raw) {
+        val updatedMessage = localMessageDataSource.updateMessage(chatId.raw, messageId.raw) {
             previousMessage = it
             it.copy(
                 editedAt = nowMilliseconds(),
@@ -149,7 +149,7 @@ internal class MessageRepositoryImpl(
             localMessageDataSource.applyRemoteMessage(updatedMessageDto)
         } catch (e: Throwable) {
             withContext(NonCancellable) {
-                localMessageDataSource.updateMessage(messageId.raw) { current ->
+                localMessageDataSource.updateMessage(chatId.raw, messageId.raw) { current ->
                     if (current.editSynced) {
                         current
                     } else {
@@ -166,12 +166,13 @@ internal class MessageRepositoryImpl(
         }
     }
 
-    override suspend fun readMessage(messageId: MessageId) {
-        readMessageManager.markRead(messageId)
+    override suspend fun readMessage(chatId: ChatId, messageId: MessageId) {
+        readMessageManager.markRead(chatId, messageId)
     }
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override suspend fun reactToMessage(
+        chatId: ChatId,
         messageId: MessageId,
         reaction: MessageReaction.Value
     ) {
@@ -182,13 +183,11 @@ internal class MessageRepositoryImpl(
             reactionSynced = false
         )
 
-        val updatedMessage = localMessageDataSource.updateMessage(messageId.raw) {
+        localMessageDataSource.updateMessage(chatId.raw, messageId.raw) {
             it.addReaction(reaction)
         }
 
         try {
-            val chatId = updatedMessage.chatId.let(::ChatId) // TODO(P1): add chatId in method
-
             val updatedReaction =
                 remoteMessageDataSource.sendReaction(chatId, messageId, reaction.toSendRequestDto())
 
@@ -200,15 +199,14 @@ internal class MessageRepositoryImpl(
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override suspend fun removeReactToMessage(
+        chatId: ChatId,
         messageId: MessageId
     ) {
-        val updatedMessage = localMessageDataSource.updateMessage(messageId.raw) { message ->
+        localMessageDataSource.updateMessage(chatId.raw, messageId.raw) { message ->
             message.removeReaction { it.author == myPersonId.raw }
         } // TODO(P1)(messenger): add safely remove reaction
 
         try {
-            val chatId = updatedMessage.chatId.let(::ChatId)
-
             val updatedMessageDto = remoteMessageDataSource.removeReaction(chatId, messageId)
             localMessageDataSource.applyRemoteMessage(updatedMessageDto)
         } catch (e: Throwable) {
@@ -216,8 +214,8 @@ internal class MessageRepositoryImpl(
         }
     }
 
-    override suspend fun messageReactions(messageId: MessageId): List<MessageReaction> {
-        return localMessageDataSource.message(messageId.raw)
+    override suspend fun messageReactions(chatId: ChatId, messageId: MessageId): List<MessageReaction> {
+        return localMessageDataSource.message(chatId.raw, messageId.raw)
             .reactions
             ?.map { it.toDomain() } ?: listOf()
     }
@@ -291,7 +289,7 @@ internal class MessageRepositoryImpl(
             } catch (e: BadStatusCodeException) {
                 if (e.statusCode != HTTP_NOT_FOUND_STATUS_CODE) throw e
 
-                localMessageDataSource.deleteMessage(messageId)
+                localMessageDataSource.deleteMessage(chatId.raw, messageId)
                 return@forEach
             }
             localMessageDataSource.applyRemoteMessage(message)
@@ -318,7 +316,7 @@ internal class MessageRepositoryImpl(
             localMessageDataSource.applyRemoteMessage(updatedMessageDto)
         } catch (e: Throwable) {
             // TODO(P1): retry sending
-            localMessageDataSource.markMessageFailedToSend(messageEntry.id)
+            localMessageDataSource.markMessageFailedToSend(messageEntry.chatId, messageEntry.id)
         }
     }
 
@@ -336,7 +334,7 @@ internal class MessageRepositoryImpl(
 
     private suspend fun MessageEntry.toDomain(readAt: Long?): Message {
         val parentMessage = parentMessageId?.let { parentId ->
-            val parentMessageDto = localMessageDataSource.messageOrNull(parentId)
+            val parentMessageDto = localMessageDataSource.messageOrNull(chatId, parentId)
             ParentMessage(
                 id = MessageId(parentId),
                 direction = parentMessageDto?.authorId?.let(::direction),

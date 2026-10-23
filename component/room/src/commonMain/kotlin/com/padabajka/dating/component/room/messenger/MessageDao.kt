@@ -27,20 +27,22 @@ interface MessageDao {
         UPDATE messages
         SET messageStatus = :status
         WHERE id = :id
+          AND chatId = :chatId
           AND messageStatus != :excludedStatus
         """
     )
     suspend fun updateMessageStatusUnless(
+        chatId: String,
         id: String,
         status: MessageStatus,
         excludedStatus: MessageStatus,
     )
 
-    @Query("SELECT * FROM messages WHERE id = :id")
-    suspend fun messageById(id: String): MessageEntry
+    @Query("SELECT * FROM messages WHERE chatId = :chatId AND id = :id")
+    suspend fun messageById(chatId: String, id: String): MessageEntry
 
-    @Query("SELECT * FROM messages WHERE id = :id")
-    suspend fun messageByIdOrNull(id: String): MessageEntry?
+    @Query("SELECT * FROM messages WHERE chatId = :chatId AND id = :id")
+    suspend fun messageByIdOrNull(chatId: String, id: String): MessageEntry?
 
     @Query("SELECT id FROM messages WHERE chatId = :chatId AND editSynced = 0")
     suspend fun unsyncedEditMessageIds(chatId: String): List<String>
@@ -76,11 +78,11 @@ interface MessageDao {
         lastReadTime: Long
     ): Int
 
-    @Query("DELETE FROM messages WHERE id = :id")
-    suspend fun deleteMessageById(id: String)
+    @Query("DELETE FROM messages WHERE chatId = :chatId AND id = :id")
+    suspend fun deleteMessageById(chatId: String, id: String)
 
-    @Query("DELETE FROM messages WHERE id IN (:ids)")
-    suspend fun deleteMessagesByIds(ids: List<String>)
+    @Query("DELETE FROM messages WHERE chatId = :chatId AND id IN (:ids)")
+    suspend fun deleteMessagesByIds(chatId: String, ids: List<String>)
 
     @Query("DELETE FROM messages WHERE chatId = :chatId")
     suspend fun deleteMessagesByChatId(chatId: String)
@@ -107,7 +109,7 @@ interface MessageDao {
         update: (MessageEntry?) -> MessageEntry?,
     ) {
         val saved = messageVersion(chatId, messageId)
-        val current = messageByIdOrNull(messageId)
+        val current = messageByIdOrNull(chatId, messageId)
         // A sync snapshot may omit a deleted message entirely. Its cursor still covers the event.
         val isUnknownMessageEvent = fromEvent && !deleted && saved == null && current == null
         val coveredBySync = isUnknownMessageEvent && version != null &&
@@ -115,7 +117,7 @@ interface MessageDao {
         if (!canApplyRemoteChange(saved, version, fromEvent) || coveredBySync) return
 
         if (deleted) {
-            deleteMessageById(messageId)
+            deleteMessageById(chatId, messageId)
         } else {
             val message = update(current) ?: return
             require(message.id == messageId && message.chatId == chatId)
@@ -125,8 +127,12 @@ interface MessageDao {
     }
 
     @Transaction
-    suspend fun updateMessage(messageId: String, update: (MessageEntry) -> MessageEntry): MessageEntry {
-        val old = messageById(messageId)
+    suspend fun updateMessage(
+        chatId: String,
+        messageId: String,
+        update: (MessageEntry) -> MessageEntry
+    ): MessageEntry {
+        val old = messageById(chatId, messageId)
         val updated = update(old)
         require(updated.id == old.id && updated.chatId == old.chatId)
         updateMessage(updated)

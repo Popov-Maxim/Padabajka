@@ -15,10 +15,10 @@ interface MessageRepository {
     suspend fun deleteLocalMessage(chatId: ChatId, messageId: MessageId)
     suspend fun editMessage(chatId: ChatId, messageId: MessageId, content: String)
 
-    suspend fun readMessage(messageId: MessageId)
-    suspend fun reactToMessage(messageId: MessageId, reaction: MessageReaction.Value)
-    suspend fun removeReactToMessage(messageId: MessageId)
-    suspend fun messageReactions(messageId: MessageId): List<MessageReaction>
+    suspend fun readMessage(chatId: ChatId, messageId: MessageId)
+    suspend fun reactToMessage(chatId: ChatId, messageId: MessageId, reaction: MessageReaction.Value)
+    suspend fun removeReactToMessage(chatId: ChatId, messageId: MessageId)
+    suspend fun messageReactions(chatId: ChatId, messageId: MessageId): List<MessageReaction>
 
     suspend fun loadPreviousMessages(chatId: ChatId)
     suspend fun loadMessages(chatId: ChatId, beforeMessageId: MessageId?, count: Int)

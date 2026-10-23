@@ -10,6 +10,7 @@ import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.model.auth.NoAuthorisedUserException
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
+import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.feature.messenger.data.message.model.toRequest
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalChatReadStateDataSource
@@ -38,17 +39,17 @@ class ReadMessageManager(
     private val myPersonId: UserId
         get() = authRepository.currentAuthState.userIdOrNull() ?: throw NoAuthorisedUserException
 
-    private val readFlow = MutableSharedFlow<MessageId>(extraBufferCapacity = 100)
+    private val readFlow = MutableSharedFlow<Pair<ChatId, MessageId>>(extraBufferCapacity = 100)
     private val processorJob: MutableAtomic<Job?> = mutableAtomic(null)
 
-    suspend fun markRead(messageId: MessageId) {
+    suspend fun markRead(chatId: ChatId, messageId: MessageId) {
         processorJob.update {
             return@update this?.takeIf { it.isActive } ?: scope.launch {
                 processFlow()
             }
         }
 
-        readFlow.emit(messageId)
+        readFlow.emit(chatId to messageId)
     }
 
     suspend fun clearLocalData() {
@@ -65,8 +66,8 @@ class ReadMessageManager(
             readFlow
                 .bufferedBatch(timeoutMillis = 500)
                 .collect { lastMessageIds ->
-                    val messages = lastMessageIds.map {
-                        localMessageDataSource.message(it.raw)
+                    val messages = lastMessageIds.map { (chatId, messageId) ->
+                        localMessageDataSource.message(chatId.raw, messageId.raw)
                     }
 
                     messages.filter { myPersonId.raw != it.authorId }
