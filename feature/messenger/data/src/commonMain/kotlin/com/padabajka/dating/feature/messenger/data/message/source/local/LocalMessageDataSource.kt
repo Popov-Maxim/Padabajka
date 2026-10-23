@@ -3,7 +3,6 @@ package com.padabajka.dating.feature.messenger.data.message.source.local
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import com.padabajka.dating.component.room.messenger.entry.MessageReadEventEntry
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
-import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import kotlinx.coroutines.flow.Flow
 
 interface LocalMessageDataSource {
@@ -18,7 +17,6 @@ interface LocalMessageDataSource {
     suspend fun messageOrNull(chatId: String, messageId: String): MessageEntry?
     suspend fun unsyncedEditMessageIds(chatId: String): List<String>
     suspend fun addMessage(message: MessageEntry)
-    suspend fun oldestMessageId(chatId: ChatId): MessageId?
     suspend fun deleteMessage(chatId: String, messageId: String)
     suspend fun deleteMessagesInChat(chatId: ChatId)
     suspend fun applyRemoteMessage(

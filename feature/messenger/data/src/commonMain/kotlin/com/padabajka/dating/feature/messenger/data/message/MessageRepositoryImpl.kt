@@ -13,7 +13,6 @@ import com.padabajka.dating.core.repository.api.exception.BadStatusCodeException
 import com.padabajka.dating.core.repository.api.model.auth.NoAuthorisedUserException
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
-import com.padabajka.dating.core.repository.api.model.messenger.Chat
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.Message
 import com.padabajka.dating.core.repository.api.model.messenger.MessageDirection
@@ -223,8 +222,8 @@ internal class MessageRepositoryImpl(
     override suspend fun loadPreviousMessages(
         chatId: ChatId
     ) {
-        val oldestMessageId = localMessageDataSource.oldestMessageId(chatId)
-        loadMessages(chatId, oldestMessageId, COUNT_MESSAGE_FOR_SYNC)
+        val chat = chatRepository.getChat(chatId)
+        loadMessages(chatId, chat?.historyBeforeMessageId, COUNT_MESSAGE_FOR_SYNC)
     }
 
     override suspend fun loadMessages(
@@ -237,49 +236,56 @@ internal class MessageRepositoryImpl(
         updateMessageDto(messageSyncResponse.messages)
         updateReadEventDto(messageSyncResponse.readEvents)
 
-        if (messageSyncResponse.hasMoreMessages.not()) {
-            chatRepository.updateChat(chatId) { chat ->
-                chat.copy(hasMoreOldMessages = false)
-            }
+        val historyBeforeMessageId = messageSyncResponse.messages.oldestHistoryMessageId()
+            ?: beforeMessageId
+        chatRepository.updateChat(chatId) { chat ->
+            chat.copy(
+                historyBeforeMessageId = historyBeforeMessageId,
+                hasMoreOldMessages = messageSyncResponse.hasMoreMessages,
+            )
         }
     }
 
     override suspend fun sync(chatId: ChatId) {
         val chat = chatRepository.getChat(chatId)
-        val messageSyncResponse = if (chat == null || chat.lastEventNumber < 0) {
+        val isInitialSync = chat == null || chat.lastEventNumber < 0
+        val messageSyncResponse = if (isInitialSync) {
             remoteMessageDataSource.getMessages(chatId, null, COUNT_MESSAGE_FOR_SYNC)
         } else {
             remoteMessageDataSource.getMessages(
                 chatId = chatId,
                 fromEventNumber = chat.lastEventNumber,
                 fromReadEventNumber = chat.lastReadEventNumber
-            ).copy(
-                hasMoreMessages = chat.hasMoreOldMessages
             )
         }
         updateMessageDto(messageSyncResponse.messages)
         updateReadEventDto(messageSyncResponse.readEvents)
 
-        val newLastEventNumber = messageSyncResponse.lastEventNumber
-        val newLastReadEventNumber = messageSyncResponse.lastReadEventLogNumber
-        val newChat = chat?.copy(
-            lastEventNumber = newLastEventNumber,
-            lastReadEventNumber = newLastReadEventNumber,
-            hasMoreOldMessages = messageSyncResponse.hasMoreMessages
-        ) ?: Chat(
-            id = chatId,
-            lastEventNumber = newLastEventNumber,
-            lastReadEventNumber = newLastReadEventNumber,
-            hasMoreOldMessages = messageSyncResponse.hasMoreMessages
-        )
-
-        chatRepository.setChat(chatId, newChat)
+        chatRepository.updateChat(chatId) { current ->
+            current.copy(
+                lastEventNumber = messageSyncResponse.lastEventNumber,
+                lastReadEventNumber = messageSyncResponse.lastReadEventLogNumber,
+                hasMoreOldMessages = if (isInitialSync) {
+                    messageSyncResponse.hasMoreMessages
+                } else {
+                    current.hasMoreOldMessages
+                },
+                historyBeforeMessageId = if (isInitialSync) {
+                    messageSyncResponse.messages.oldestHistoryMessageId()
+                } else {
+                    current.historyBeforeMessageId
+                },
+            )
+        }
         syncUnsyncedEdits(chatId)
     }
 
     override suspend fun clearLocalData() {
         readMessageManager.clearLocalData()
     }
+
+    private fun List<MessageDto>.oldestHistoryMessageId(): MessageId? =
+        lastOrNull { it is MessageDto.Existing }?.id?.let(::MessageId)
 
     private suspend fun syncUnsyncedEdits(chatId: ChatId) {
         val messageIds = localMessageDataSource.unsyncedEditMessageIds(chatId.raw)
