@@ -1,9 +1,11 @@
 package com.padabajka.dating.di
 
 import com.padabajka.dating.core.data.utils.DataStoreUtils
+import com.padabajka.dating.core.repository.api.AuthSessionHandler
 import com.padabajka.dating.core.repository.api.DeeplinkHandler
 import com.padabajka.dating.deeplink.DeeplinkHandlerImpl
 import com.padabajka.dating.deeplink.DeeplinkParser
+import com.padabajka.dating.session.AuthSessionHandlerImpl
 import com.padabajka.dating.session.LocalUserSessionDataSource
 import com.padabajka.dating.session.UserSessionManager
 import com.padabajka.dating.session.UserSessionOwnerDto
@@ -16,6 +18,9 @@ val sharedDiModule = module {
     factoryOf(::DeeplinkParser)
     singleOf(::DeeplinkHandlerImpl) {
         bind<DeeplinkHandler>()
+    }
+    singleOf(::AuthSessionHandlerImpl) {
+        bind<AuthSessionHandler>()
     }
     single {
         LocalUserSessionDataSource(

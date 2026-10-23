@@ -1,19 +1,23 @@
 package com.padabajka.dating.feature.auth.domain.method
 
-import android.app.Activity
+import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.padabajka.dating.core.platform.data.activity.AndroidActivityProvider
 import com.padabajka.dating.core.repository.api.exception.AuthCredentialError
 import com.padabajka.dating.feature.auth.domain.BuildConfig
 import io.ktor.utils.io.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 actual class GoogleAuthTokenProvider(
-    private val activity: Activity
+    context: Context,
+    private val activityProvider: AndroidActivityProvider,
 ) {
-    private val credentialManager = CredentialManager.create(activity)
+    private val credentialManager = CredentialManager.create(context.applicationContext)
     actual suspend fun getCredentialData(): CredentialData {
         val clientId = BuildConfig.GOOGLE_CLIENT_ID
         val googleIdOption = GetGoogleIdOption.Builder()
@@ -26,10 +30,14 @@ actual class GoogleAuthTokenProvider(
             .build()
 
         return runCatching {
-            val result = credentialManager.getCredential(
-                context = activity,
-                request = request
-            )
+            val result = withContext(Dispatchers.Main.immediate) {
+                val activity = activityProvider.currentActivity
+                    ?: error("Cannot sign in with Google without a resumed Activity")
+                credentialManager.getCredential(
+                    context = activity,
+                    request = request
+                )
+            }
             val credential = result.credential
             if (credential is CustomCredential &&
                 credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL

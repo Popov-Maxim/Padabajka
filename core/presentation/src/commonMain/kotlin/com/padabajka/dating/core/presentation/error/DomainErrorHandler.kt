@@ -1,9 +1,9 @@
 package com.padabajka.dating.core.presentation.error
 
+import com.padabajka.dating.core.repository.api.AuthSessionHandler
 import com.padabajka.dating.core.repository.api.DeeplinkHandler
 import com.padabajka.dating.core.repository.api.exception.UserException
 import com.padabajka.dating.core.repository.api.model.deeplink.AppDeeplink
-import com.padabajka.dating.core.repository.api.model.deeplink.Deeplink
 import com.padabajka.dating.core.utils.isDebugBuild
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.crashlytics.crashlytics
@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 
 class DomainErrorHandler(
     private val coroutineScope: CoroutineScope,
-    private val deeplinkHandler: DeeplinkHandler
+    private val deeplinkHandler: DeeplinkHandler,
+    private val authSessionHandler: AuthSessionHandler,
 ) {
 
     suspend fun handle(
@@ -34,17 +35,18 @@ class DomainErrorHandler(
 
     private fun handleUserException(error: UserException) {
         coroutineScope.launch {
-            val deeplink = when (error) {
+            when (error) {
                 is UserException.Banned,
                 is UserException.Deleted -> {
-                    AppDeeplink.OpenUserDeleteScreen(error is UserException.Banned)
+                    deeplinkHandler.handle(
+                        AppDeeplink.OpenUserDeleteScreen(error is UserException.Banned)
+                    )
                 }
 
                 is UserException.Unauthorized -> {
-                    Deeplink.Logout
+                    authSessionHandler.onUnauthorized()
                 }
             }
-            deeplinkHandler.handle(deeplink)
         }
     }
 
