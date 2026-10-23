@@ -13,7 +13,6 @@ import com.padabajka.dating.core.repository.api.exception.EmailLinkAuthException
 import com.padabajka.dating.core.repository.api.model.deeplink.AppDeeplink
 import com.padabajka.dating.core.repository.api.model.deeplink.Deeplink
 import com.padabajka.dating.core.utils.isDebugBuild
-import com.padabajka.dating.feature.auth.domain.LogOutUseCase
 import com.padabajka.dating.feature.auth.presentation.AuthErrorMapper
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.crashlytics.crashlytics
@@ -23,7 +22,6 @@ class DeeplinkHandlerImpl(
     private val alertService: AlertService,
     private val authErrorMapper: AuthErrorMapper,
     private val appDeeplinkHandler: AppDeeplinkHandler,
-    private val logOutUseCase: LogOutUseCase,
 ) : DeeplinkHandler {
 
     override suspend fun handle(deeplink: Deeplink) {
@@ -37,7 +35,6 @@ class DeeplinkHandlerImpl(
             }
 
             is AppDeeplink -> appDeeplinkHandler.handle(deeplink)
-            Deeplink.Logout -> logOutUseCase()
         }
     }
 
