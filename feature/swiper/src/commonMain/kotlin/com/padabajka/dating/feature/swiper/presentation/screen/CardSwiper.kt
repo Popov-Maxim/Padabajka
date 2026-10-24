@@ -160,7 +160,7 @@ private fun PersonCard(
                     IconButton(
                         modifier = buttonModifier
                             .size(48.dp)
-                            .alpha(if (returnEnabled) 1f else 0.38f),
+                            .alpha(alpha = if (returnEnabled) 1f else 0.38f),
                         enabled = returnEnabled,
                         onClick = {
                             onReaction(CardReaction.Return)
