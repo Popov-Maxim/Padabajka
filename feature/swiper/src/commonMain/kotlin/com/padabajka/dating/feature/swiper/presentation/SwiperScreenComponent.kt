@@ -46,7 +46,6 @@ import com.padabajka.dating.feature.swiper.presentation.model.toSearchPreference
 import com.padabajka.dating.feature.swiper.presentation.model.toUICardItem
 import com.padabajka.dating.feature.swiper.presentation.model.toUISearchPreferences
 import com.padabajka.dating.feature.swiper.presentation.screen.CardDeck
-import com.padabajka.dating.feature.swiper.presentation.screen.hasDeleted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -100,6 +99,7 @@ class SwiperScreenComponent(
                     reduce {
                         it.copy(
                             cardDeck = CardDeck(),
+                            lastSkippedCard = null,
                             cardDeckState = criticalState,
                             searchPreferences = searchPreferences.toUISearchPreferences()
                         )
@@ -108,6 +108,7 @@ class SwiperScreenComponent(
                     reduce {
                         it.copy(
                             cardDeck = CardDeck(),
+                            lastSkippedCard = null,
                             cardDeckState = CardDeckState.Loading,
                             searchPreferences = searchPreferences.toUISearchPreferences()
                         )
@@ -171,6 +172,7 @@ class SwiperScreenComponent(
     }
 
     private fun dislikeCard(cardItem: CardItem) {
+        reduce { it.copy(lastSkippedCard = cardItem as? PersonItem) }
         if (cardItem is PersonItem) {
             reactPersonAndUpdateCardDeck(PersonReaction.Dislike(cardItem.id), cardItem)
         } else {
@@ -179,6 +181,7 @@ class SwiperScreenComponent(
     }
 
     private fun likeCard(cardItem: CardItem) {
+        reduce { it.copy(lastSkippedCard = null) }
         if (cardItem is PersonItem) {
             reactPersonAndUpdateCardDeck(PersonReaction.Like(cardItem.id), cardItem)
         } else {
@@ -187,6 +190,7 @@ class SwiperScreenComponent(
     }
 
     private fun superLikeCard(cardItem: CardItem, message: String) {
+        reduce { it.copy(lastSkippedCard = null) }
         if (cardItem is PersonItem) {
             if (subscriptionRepository.subscriptionStateValue.features.superLikes > 0) {
                 reactPersonAndUpdateCardDeck(
@@ -227,7 +231,7 @@ class SwiperScreenComponent(
 
     private fun reduceReturnCard(cardItem: CardItem) {
         reduce { state ->
-            state.run { copy(cardDeck = cardDeck.returnCard(cardItem)) }
+            state.run { copy(cardDeck = cardDeck.returnCard(cardItem), lastSkippedCard = null) }
         }
     }
 
@@ -281,12 +285,14 @@ class SwiperScreenComponent(
     }
 
     private fun returnLastCard() {
+        if (!state.value.canReturnLastCard) return
+
         if (subscriptionRepository.subscriptionStateValue.features.returns <= 0) {
             openSubscriptionScreen()
-        } else if (state.value.cardDeck.hasDeleted()) {
+        } else {
+            reduceReturnLastCard()
             launchStep(
                 action = {
-                    reduceReturnLastCard()
                     returnLastCardUseCase()
                 },
             )
@@ -295,7 +301,7 @@ class SwiperScreenComponent(
 
     private fun reduceReturnLastCard() {
         reduce { state ->
-            state.run { copy(cardDeck = cardDeck.returnLast()) }
+            state.run { copy(cardDeck = cardDeck.returnLast(), lastSkippedCard = null) }
         }
     }
 

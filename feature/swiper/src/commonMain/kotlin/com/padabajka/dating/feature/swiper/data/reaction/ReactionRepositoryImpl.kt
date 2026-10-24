@@ -30,13 +30,7 @@ class ReactionRepositoryImpl(
         val reactions = localReactionDataSource.insert(reaction)
 
         if (reactions.isNotEmpty() && reactions.requiredForSend()) {
-            try {
-                forceSendReactions(reactions)
-            } catch (e: SuperLikeException) {
-                val rejectedSuperLikes = reactions.filter { it.reaction == ReactionType.SuperLike }
-                localReactionDataSource.remove(rejectedSuperLikes)
-                throw e
-            }
+            forceSendReactions(reactions)
         }
     }
 
@@ -70,7 +64,13 @@ class ReactionRepositoryImpl(
     }
 
     private suspend fun forceSendReactions(reactions: List<ReactionDto.Request>) {
-        remoteReactionDataSource.sendReactions(reactions)
+        try {
+            remoteReactionDataSource.sendReactions(reactions)
+        } catch (e: SuperLikeException) {
+            val rejectedSuperLikes = reactions.filter { it.reaction == ReactionType.SuperLike }
+            localReactionDataSource.remove(rejectedSuperLikes)
+            throw e
+        }
         localReactionDataSource.remove(reactions)
     }
 

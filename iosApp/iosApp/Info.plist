@@ -48,7 +48,7 @@
 	<key>NSApplicationCrashOnExceptions</key>
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>We use your location to show you profiles of people nearby.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>

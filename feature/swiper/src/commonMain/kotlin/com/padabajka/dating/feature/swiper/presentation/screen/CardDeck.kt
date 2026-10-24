@@ -21,6 +21,9 @@ data class CardDeck(
 
     val indexFirstCard = indexForDelete
 
+    val lastRemovedCard: CardItem?
+        get() = mainCollection.getOrNull(indexForDelete - 1)
+
     fun add(cardItem: CardItem): CardDeck {
         val newMainCollection = mainCollection.add(cardItem)
 

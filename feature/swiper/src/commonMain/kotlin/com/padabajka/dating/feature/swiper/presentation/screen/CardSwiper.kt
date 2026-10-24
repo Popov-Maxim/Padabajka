@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -52,6 +53,7 @@ fun Card(
     modifier: Modifier = Modifier,
     cardItem: CardItem,
     cardPosition: CardPosition,
+    returnEnabled: Boolean = false,
     onReaction: (CardReaction) -> Unit,
 ) {
     when (cardItem) {
@@ -75,7 +77,7 @@ fun Card(
             )
         }
 
-        is PersonItem -> PersonCard(modifier, cardItem, onReaction)
+        is PersonItem -> PersonCard(modifier, cardItem, returnEnabled, onReaction)
     }
 }
 
@@ -83,6 +85,7 @@ fun Card(
 private fun PersonCard(
     modifier: Modifier,
     personItem: PersonItem,
+    returnEnabled: Boolean,
     onReaction: (CardReaction) -> Unit
 ) {
     Box(
@@ -156,7 +159,9 @@ private fun PersonCard(
 
                     IconButton(
                         modifier = buttonModifier
-                            .size(48.dp),
+                            .size(48.dp)
+                            .alpha(alpha = if (returnEnabled) 1f else 0.38f),
+                        enabled = returnEnabled,
                         onClick = {
                             onReaction(CardReaction.Return)
                         }

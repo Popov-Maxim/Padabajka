@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "16c6876189acc3dcb35d2f451d6a5e54",
+    "identityHash": "087673efe9d8e99127b2b7cc58e44ebd",
     "entities": [
       {
         "tableName": "messages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `chatId` TEXT NOT NULL, `authorId` TEXT NOT NULL, `content` TEXT NOT NULL, `creationTime` INTEGER NOT NULL, `reaction` TEXT, `messageStatus` TEXT NOT NULL, `readSynced` INTEGER NOT NULL, `editedAt` INTEGER, `editSynced` INTEGER NOT NULL, `parentMessageId` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `chatId` TEXT NOT NULL, `authorId` TEXT NOT NULL, `content` TEXT NOT NULL, `creationTime` INTEGER NOT NULL, `reaction` TEXT, `messageStatus` TEXT NOT NULL, `readSynced` INTEGER NOT NULL, `editedAt` INTEGER, `editSynced` INTEGER NOT NULL, `parentMessageId` TEXT, PRIMARY KEY(`chatId`, `id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -75,6 +75,7 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
+            "chatId",
             "id"
           ]
         }
@@ -117,7 +118,7 @@
       },
       {
         "tableName": "chats",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `lastEventNumber` INTEGER NOT NULL, `lastReadEventNumber` INTEGER NOT NULL, `hasMoreOldMessages` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `lastEventNumber` INTEGER NOT NULL, `lastReadEventNumber` INTEGER NOT NULL, `hasMoreOldMessages` INTEGER NOT NULL, `historyBeforeMessageId` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -142,6 +143,11 @@
             "columnName": "hasMoreOldMessages",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "historyBeforeMessageId",
+            "columnName": "historyBeforeMessageId",
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -403,7 +409,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '16c6876189acc3dcb35d2f451d6a5e54')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '087673efe9d8e99127b2b7cc58e44ebd')"
     ]
   }
 }
