@@ -3,7 +3,9 @@ package com.padabajka.dating.core.platform.data.geo
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationCoordinate2D
 import platform.CoreLocation.CLLocationManager
@@ -16,40 +18,54 @@ import kotlin.coroutines.resume
 
 class IOSLocationProvider : PlatformLocationProvider {
 
-    private val locationManager = CLLocationManager()
+    private val locationManager by lazy {
+        CLLocationManager().apply {
+            desiredAccuracy = kCLLocationAccuracyBest
+            requestWhenInUseAuthorization()
+        }
+    }
+    private var locationDelegate: CLLocationManagerDelegateProtocol? = null
 
-    init {
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestWhenInUseAuthorization()
+    override suspend fun cachedLocation(): PlatformLocation? = withContext(Dispatchers.Main.immediate) {
+        locationManager.location?.toPlatform()
     }
 
-    override suspend fun cachedLocation(): PlatformLocation? {
-        return locationManager.location?.toPlatform()
-    }
+    override suspend fun requestCurrentLocation(): PlatformLocation? = withContext(Dispatchers.Main.immediate) {
+        var requestDelegate: CLLocationManagerDelegateProtocol? = null
+        try {
+            suspendCancellableCoroutine<PlatformLocation?> { continuation ->
+                val delegate = object : NSObject(), CLLocationManagerDelegateProtocol {
+                    override fun locationManager(
+                        manager: CLLocationManager,
+                        didUpdateLocations: List<*>,
+                    ) {
+                        if (!continuation.isActive) return
+                        val location = didUpdateLocations.lastOrNull() as? CLLocation
+                        continuation.resume(location?.toPlatform())
+                    }
 
-    override suspend fun requestCurrentLocation(): PlatformLocation? {
-        return suspendCancellableCoroutine { continuation ->
-
-            locationManager.delegate = object : NSObject(), CLLocationManagerDelegateProtocol {
-
-                override fun locationManager(
-                    manager: CLLocationManager,
-                    didUpdateLocations: List<*>,
-                ) {
-                    val location = didUpdateLocations.lastOrNull() as? CLLocation
-
-                    continuation.resume(location?.toPlatform())
+                    override fun locationManager(
+                        manager: CLLocationManager,
+                        didFailWithError: NSError,
+                    ) {
+                        if (!continuation.isActive) return
+                        continuation.resume(null)
+                    }
                 }
 
-                override fun locationManager(
-                    manager: CLLocationManager,
-                    didFailWithError: NSError,
-                ) {
-                    continuation.resume(null)
+                requestDelegate = delegate
+                locationDelegate = delegate
+                locationManager.delegate = delegate
+                if (continuation.isActive) {
+                    locationManager.requestLocation()
                 }
             }
-
-            locationManager.requestLocation()
+        } finally {
+            if (locationDelegate === requestDelegate) {
+                locationManager.delegate = null
+                locationManager.stopUpdatingLocation()
+                locationDelegate = null
+            }
         }
     }
 

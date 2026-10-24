@@ -1,10 +1,12 @@
 package com.padabajka.dating.core.permission.geo
 
 import com.padabajka.dating.core.permission.GeoPermissionController
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
@@ -23,6 +25,7 @@ class IosGeoPermissionController : GeoPermissionController {
     }
 
     private val locationManager = CLLocationManager()
+    private var permissionDelegate: CLLocationManagerDelegateProtocol? = null
 
     override suspend fun hasPermission(): Boolean {
         return hasPlatformPermission().also {
@@ -30,37 +33,52 @@ class IosGeoPermissionController : GeoPermissionController {
         }
     }
 
-    override suspend fun requestPermission(): Boolean = suspendCancellableCoroutine { cont ->
+    override suspend fun requestPermission(): Boolean = withContext(Dispatchers.Main.immediate) {
+        var requestDelegate: CLLocationManagerDelegateProtocol? = null
+        try {
+            suspendCancellableCoroutine<Boolean> { cont ->
+                val delegate = object : NSObject(), CLLocationManagerDelegateProtocol {
+                    override fun locationManager(
+                        manager: CLLocationManager,
+                        didChangeAuthorizationStatus: CLAuthorizationStatus
+                    ) {
+                        if (!cont.isActive) return
 
-        val delegate = object : NSObject(), CLLocationManagerDelegateProtocol {
-            override fun locationManager(
-                manager: CLLocationManager,
-                didChangeAuthorizationStatus: CLAuthorizationStatus
-            ) {
-                when (manager.authorizationStatus) {
-                    kCLAuthorizationStatusAuthorizedAlways,
-                    kCLAuthorizationStatusAuthorizedWhenInUse -> cont.resume(true)
+                        when (manager.authorizationStatus) {
+                            kCLAuthorizationStatusAuthorizedAlways,
+                            kCLAuthorizationStatusAuthorizedWhenInUse -> cont.resume(true)
 
-                    kCLAuthorizationStatusDenied,
-                    kCLAuthorizationStatusRestricted -> cont.resume(false)
+                            kCLAuthorizationStatusDenied,
+                            kCLAuthorizationStatusRestricted -> cont.resume(false)
 
-                    else -> {}
+                            else -> {}
+                        }
+                    }
                 }
+
+                requestDelegate = delegate
+                permissionDelegate = delegate
+                locationManager.delegate = delegate
+
+                if (cont.isActive) {
+                    when (locationManager.authorizationStatus) {
+                        kCLAuthorizationStatusNotDetermined -> locationManager.requestWhenInUseAuthorization()
+                        kCLAuthorizationStatusAuthorizedAlways,
+                        kCLAuthorizationStatusAuthorizedWhenInUse -> cont.resume(true)
+
+                        kCLAuthorizationStatusDenied,
+                        kCLAuthorizationStatusRestricted -> cont.resume(false)
+                    }
+                }
+            }.also {
+                _isPermissionGranted.value = it
+            }
+        } finally {
+            if (permissionDelegate === requestDelegate) {
+                locationManager.delegate = null
+                permissionDelegate = null
             }
         }
-
-        locationManager.delegate = delegate
-
-        when (locationManager.authorizationStatus) {
-            kCLAuthorizationStatusNotDetermined -> locationManager.requestWhenInUseAuthorization()
-            kCLAuthorizationStatusAuthorizedAlways,
-            kCLAuthorizationStatusAuthorizedWhenInUse -> cont.resume(true)
-
-            kCLAuthorizationStatusDenied,
-            kCLAuthorizationStatusRestricted -> cont.resume(false)
-        }
-    }.also {
-        _isPermissionGranted.value = it
     }
 
     override fun isPermissionGranted(): Flow<Boolean> {
