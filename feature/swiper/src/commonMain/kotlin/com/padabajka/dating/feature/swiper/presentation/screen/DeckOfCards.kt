@@ -75,6 +75,7 @@ fun DeckOfCards(
                             modifier = Modifier.clip(shape).fillMaxSize(),
                             cardItem = card,
                             cardPosition = cardPosition,
+                            returnEnabled = state.canReturnLastCard,
                         ) {
                             when (it) {
                                 CardReaction.Dislike -> controller.swipeLeft()

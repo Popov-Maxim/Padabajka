@@ -33,8 +33,12 @@ data class SwiperState(
     val cardDeck: CardDeck,
     val cardDeckState: CardDeckState = CardDeckState.Idle,
     val searchPreferences: SearchPreferencesItem,
-    val subscriptionFeature: SubscriptionUIItem
-) : State
+    val subscriptionFeature: SubscriptionUIItem,
+    val lastSkippedCard: PersonItem? = null,
+) : State {
+    val canReturnLastCard: Boolean
+        get() = lastSkippedCard != null && cardDeck.lastRemovedCard == lastSkippedCard
+}
 
 sealed interface CardDeckState {
     data object Idle : CardDeckState
