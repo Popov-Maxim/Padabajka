@@ -236,6 +236,18 @@ sealed interface StaticTextId {
         MissingEmailForLinkDescription(rawId = "missing_email_for_link_description"),
         InvalidLinkForAuthDescription(rawId = "invalid_link_for_auth_description"),
 
+        SubscriptionStoreUnavailableDescription(rawId = "subscription_store_unavailable_description"),
+        SubscriptionProductUnavailableDescription(rawId = "subscription_product_unavailable_description"),
+        SubscriptionPaymentNotAllowedDescription(rawId = "subscription_payment_not_allowed_description"),
+        SubscriptionPurchaseFailedDescription(rawId = "subscription_purchase_failed_description"),
+        SubscriptionRecoveryFailedDescription(rawId = "subscription_recovery_failed_description"),
+        SubscriptionActivationFailedDescription(rawId = "subscription_activation_failed_description"),
+        SubscriptionVerificationUnavailableDescription(rawId = "subscription_verification_unavailable_description"),
+        SubscriptionPurchaseNotFoundDescription(rawId = "subscription_purchase_not_found_description"),
+        SubscriptionInvalidPurchaseDescription(rawId = "subscription_invalid_purchase_description"),
+        SubscriptionAlreadyLinkedDescription(rawId = "subscription_already_linked_description"),
+        SubscriptionConfigurationErrorDescription(rawId = "subscription_configuration_error_description"),
+
         AccountDeletedDescription(rawId = "account_deleted_description"),
         AccountBannedDescription(rawId = "banned_description"),
 

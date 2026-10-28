@@ -2,10 +2,11 @@ package com.padabajka.dating.feature.subscription.presentation
 
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.BaseComponent
-import com.padabajka.dating.core.presentation.error.ExternalDomainError
+import com.padabajka.dating.core.presentation.error.toTextError
 import com.padabajka.dating.core.presentation.event.AlertService
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
+import com.padabajka.dating.core.repository.api.exception.SubscriptionException
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionPeriod
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
 import com.padabajka.dating.feature.subscription.presentation.model.SubscriptionEvent
@@ -64,9 +65,8 @@ class SubscriptionScreenComponent(
                 navigateBack()
             },
             onError = {
-                val error = when (it) {
-                    is ExternalDomainError.TextError -> it
-                    is ExternalDomainError.Unknown -> ExternalDomainError.TextError.Unknown
+                val error = it.toTextError { exception ->
+                    (exception as? SubscriptionException)?.toTextError()
                 }
 
                 alertService.showAlert { error.text.translate() }

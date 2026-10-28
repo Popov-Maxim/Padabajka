@@ -4,6 +4,8 @@ import com.padabajka.dating.core.data.network.incoming.dto.SubscriptionStateResp
 import com.padabajka.dating.core.data.network.incoming.dto.toDomain
 import com.padabajka.dating.core.data.network.incoming.dto.toDto
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
+import com.padabajka.dating.core.repository.api.exception.SubscriptionException
+import com.padabajka.dating.core.repository.api.exception.SubscriptionPurchaseException
 import com.padabajka.dating.core.repository.api.model.subscription.FeatureUsage
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionPlan
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
@@ -74,12 +76,14 @@ class SubscriptionRepositoryImpl(
     }
 
     override suspend fun subscribe(offerId: String) {
-        val result = platformBillingClient.launchPurchase(offerId) ?: error("")
+        val result = platformBillingClient.launchPurchase(offerId) ?: throw SubscriptionPurchaseException()
+        val purchaseToken = result.purchaseToken?.takeIf { it.isNotBlank() }
+            ?: throw SubscriptionException.RecoveryFailed()
 
         val subscriptionStateResponse = remoteSubscriptionDataSource.subscribe(
             PurchaseRequest(
                 productId = result.productId,
-                purchaseToken = result.purchaseToken!!,
+                purchaseToken = purchaseToken,
                 service = platformBillingClient.serviceName.raw
             )
         )
