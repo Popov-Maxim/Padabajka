@@ -87,25 +87,13 @@ class SubscriptionRepositoryImpl(
 
     override suspend fun subscribe(offerId: String) {
         val userId = authRepository.currentAuthState.userIdOrNull()?.raw ?: throw UserException.Unauthorized()
-        val result = withSubscriptionError(::SubscriptionPurchaseException) {
-            platformBillingClient.launchPurchase(offerId) ?: throw SubscriptionPurchaseException()
-        }
+        val pendingPurchase = withSubscriptionError(::SubscriptionPurchaseException) {
+            pendingPurchaseDataSource.get(userId, offerId)
+        } ?: purchaseAndSave(userId, offerId)
 
         withSubscriptionError(SubscriptionException::ActivationFailed) {
-            val purchaseToken = result.purchaseToken?.takeIf { it.isNotBlank() }
-                ?: throw SubscriptionException.RecoveryFailed()
-            val request = PurchaseRequest(
-                productId = result.productId,
-                purchaseToken = purchaseToken,
-                service = platformBillingClient.serviceName.raw
-            )
-            val pendingPurchase = PendingSubscriptionPurchaseDto(userId, request)
-            withContext(NonCancellable) {
-                pendingPurchaseDataSource.save(pendingPurchase)
-            }
-
-            val subscriptionStateResponse = remoteSubscriptionDataSource.subscribe(request)
-            removeConfirmedPurchase(pendingPurchase)
+            val subscriptionStateResponse = remoteSubscriptionDataSource.subscribe(pendingPurchase.request)
+            removePendingPurchases(userId)
             updateSubscriptionState(subscriptionStateResponse)
         }
     }
@@ -116,6 +104,32 @@ class SubscriptionRepositoryImpl(
         }
         localSubscriptionDataSource.updateFeatureUsage {
             FeatureUsage.DEFAULT.toDto()
+        }
+    }
+
+    private suspend fun purchaseAndSave(userId: String, offerId: String): PendingSubscriptionPurchaseDto {
+        val result = withSubscriptionError(::SubscriptionPurchaseException) {
+            platformBillingClient.launchPurchase(offerId) ?: throw SubscriptionPurchaseException()
+        }
+
+        return withSubscriptionError(SubscriptionException::ActivationFailed) {
+            val purchaseToken = result.purchaseToken?.takeIf { it.isNotBlank() }
+                ?: throw SubscriptionException.RecoveryFailed()
+            val request = PurchaseRequest(
+                productId = result.productId,
+                purchaseToken = purchaseToken,
+                service = platformBillingClient.serviceName.raw
+            )
+            val pendingPurchase = PendingSubscriptionPurchaseDto(
+                userId = userId,
+                request = request,
+                offerId = offerId,
+            )
+            withContext(NonCancellable) {
+                pendingPurchaseDataSource.save(pendingPurchase)
+            }
+
+            pendingPurchase
         }
     }
 
@@ -133,15 +147,15 @@ class SubscriptionRepositoryImpl(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private suspend fun removeConfirmedPurchase(purchase: PendingSubscriptionPurchaseDto) {
+    private suspend fun removePendingPurchases(userId: String) {
         withContext(NonCancellable) {
             try {
-                pendingPurchaseDataSource.remove(purchase)
+                pendingPurchaseDataSource.removeAll(userId)
             } catch (error: CancellationException) {
                 throw error
             } catch (error: Exception) {
                 // Do not log the exception message: it may contain the purchase token.
-                println("Failed to remove confirmed subscription purchase: ${error::class.simpleName}")
+                println("Failed to remove pending subscription purchases: ${error::class.simpleName}")
             }
         }
     }

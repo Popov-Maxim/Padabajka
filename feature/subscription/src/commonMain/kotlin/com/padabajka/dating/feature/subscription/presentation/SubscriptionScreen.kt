@@ -109,7 +109,8 @@ private fun Content(
         val buttonEnabled = state is SubscriptionScreenState.Success
         FootnoteWithButton(
             component = component,
-            buttonEnabled = buttonEnabled
+            buttonEnabled = buttonEnabled,
+            isLoading = (state as? SubscriptionScreenState.Success)?.isSubscribing == true
         )
     }
 }
@@ -143,7 +144,8 @@ private fun HasSubscriptionBlock(modifier: Modifier = Modifier) {
 @Composable
 private fun FootnoteWithButton(
     component: SubscriptionScreenComponent,
-    buttonEnabled: Boolean
+    buttonEnabled: Boolean,
+    isLoading: Boolean,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -160,6 +162,7 @@ private fun FootnoteWithButton(
             CoreCallToActionButton(
                 text = StaticTextId.UiId.Apply.translate(),
                 enabled = buttonEnabled,
+                isLoading = isLoading,
                 onClick = {
                     component.onEvent(SubscriptionEvent.Apply)
                 }

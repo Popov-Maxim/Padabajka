@@ -11,4 +11,5 @@ data class PendingSubscriptionPurchasesDto(
 data class PendingSubscriptionPurchaseDto(
     val userId: String,
     val request: PurchaseRequest,
+    val offerId: String,
 )
