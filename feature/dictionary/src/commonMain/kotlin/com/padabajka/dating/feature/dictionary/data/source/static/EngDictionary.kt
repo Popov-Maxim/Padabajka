@@ -237,14 +237,12 @@ class EngDictionary : Dictionary() {
                 "The store doesn't allow this payment. " +
                     "Check your payment method and purchase restrictions in the store."
             StaticTextId.UiId.SubscriptionPurchaseFailedDescription ->
-                "Couldn't complete the subscription purchase. Please try again later. " +
-                    "If the problem persists, contact support."
+                "Couldn't complete the subscription purchase. Please try again."
             StaticTextId.UiId.SubscriptionRecoveryFailedDescription ->
                 "Couldn't retrieve your purchase details. Please try again later. " +
                     "If the problem persists, contact support."
             StaticTextId.UiId.SubscriptionActivationFailedDescription ->
-                "Couldn't confirm subscription activation. Please try again later. " +
-                    "If the problem persists, contact support."
+                "Couldn't confirm subscription activation. Please contact support."
             StaticTextId.UiId.SubscriptionVerificationUnavailableDescription ->
                 "Subscription verification is temporarily unavailable. Please try again later. " +
                     "If the problem persists, contact support."

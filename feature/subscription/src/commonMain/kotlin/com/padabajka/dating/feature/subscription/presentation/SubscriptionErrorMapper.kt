@@ -18,13 +18,13 @@ internal fun SubscriptionException.toTextError(): ExternalDomainError.TextError 
         StaticTextId.UiId.SubscriptionPaymentNotAllowedDescription.toTextError()
 
     is SubscriptionPurchaseException ->
-        StaticTextId.UiId.SubscriptionPurchaseFailedDescription.toTextError()
+        StaticTextId.UiId.SubscriptionPurchaseFailedDescription.toTextError(needLog = cause != null)
 
     is SubscriptionException.RecoveryFailed ->
         StaticTextId.UiId.SubscriptionRecoveryFailedDescription.toTextError()
 
     is SubscriptionException.ActivationFailed ->
-        StaticTextId.UiId.SubscriptionActivationFailedDescription.toTextError()
+        StaticTextId.UiId.SubscriptionActivationFailedDescription.toTextError(needLog = cause != null)
 
     is SubscriptionException.VerificationUnavailable ->
         StaticTextId.UiId.SubscriptionVerificationUnavailableDescription.toTextError()

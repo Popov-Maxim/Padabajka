@@ -234,14 +234,12 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.SubscriptionPaymentNotAllowedDescription ->
                 "Магазин не разрешает эту оплату. Проверьте способ оплаты и ограничения покупок в магазине."
             StaticTextId.UiId.SubscriptionPurchaseFailedDescription ->
-                "Не удалось завершить оформление подписки. Попробуйте позже. " +
-                    "Если проблема повторится, обратитесь в поддержку."
+                "Не удалось оформить подписку. Попробуйте ещё раз."
             StaticTextId.UiId.SubscriptionRecoveryFailedDescription ->
                 "Не удалось получить данные покупки. Попробуйте позже. " +
                     "Если проблема повторится, обратитесь в поддержку."
             StaticTextId.UiId.SubscriptionActivationFailedDescription ->
-                "Не удалось подтвердить активацию подписки. Попробуйте позже. " +
-                    "Если проблема повторится, обратитесь в поддержку."
+                "Не удалось подтвердить активацию подписки. Обратитесь в поддержку."
             StaticTextId.UiId.SubscriptionVerificationUnavailableDescription ->
                 "Проверка подписки временно недоступна. Попробуйте позже. " +
                     "Если проблема повторится, обратитесь в поддержку."
