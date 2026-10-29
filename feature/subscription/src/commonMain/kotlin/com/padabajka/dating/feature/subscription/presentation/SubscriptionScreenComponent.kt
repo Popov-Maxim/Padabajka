@@ -39,11 +39,13 @@ class SubscriptionScreenComponent(
             ) { product, state ->
                 product to state
             }.collect { (product, state) ->
-                reduce {
+                reduce { currentState ->
                     if (state.isActive) {
                         SubscriptionScreenState.HasSubscription
                     } else {
-                        product.toUI()
+                        product.toUI().copy(
+                            isSubscribing = (currentState as? SubscriptionScreenState.Success)?.isSubscribing == true
+                        )
                     }
                 }
             }
@@ -59,10 +61,19 @@ class SubscriptionScreenComponent(
 
     private fun subscription() {
         val subState = state.value as? SubscriptionScreenState.Success ?: return
+        if (subState.isSubscribing) return
+        reduce { subState.copy(isSubscribing = true) }
         launchStep(
             action = {
-                subscriptionRepository.subscribe(subState.monthSub.offerId)
-                navigateBack()
+                try {
+                    subscriptionRepository.subscribe(subState.monthSub.offerId)
+                    navigateBack()
+                } finally {
+                    reduce { currentState ->
+                        (currentState as? SubscriptionScreenState.Success)?.copy(isSubscribing = false)
+                            ?: currentState
+                    }
+                }
             },
             onError = {
                 val error = it.toTextError { exception ->
