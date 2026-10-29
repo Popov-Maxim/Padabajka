@@ -229,6 +229,35 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.InvalidLinkForAuthDescription ->
                 "This sign-in link is invalid or has expired. Please request a new one and try again."
 
+            StaticTextId.UiId.SubscriptionStoreUnavailableDescription ->
+                "Couldn't connect to the store. Check your connection and try again later."
+            StaticTextId.UiId.SubscriptionProductUnavailableDescription ->
+                "This subscription plan is currently unavailable. Please try again later."
+            StaticTextId.UiId.SubscriptionPaymentNotAllowedDescription ->
+                "The store doesn't allow this payment. " +
+                    "Check your payment method and purchase restrictions in the store."
+            StaticTextId.UiId.SubscriptionPurchaseFailedDescription ->
+                "Couldn't complete the subscription purchase. Please try again."
+            StaticTextId.UiId.SubscriptionRecoveryFailedDescription ->
+                "Couldn't retrieve your purchase details. Please try again later. " +
+                    "If the problem persists, contact support."
+            StaticTextId.UiId.SubscriptionActivationFailedDescription ->
+                "Couldn't confirm subscription activation. Please contact support."
+            StaticTextId.UiId.SubscriptionVerificationUnavailableDescription ->
+                "Subscription verification is temporarily unavailable. Please try again later. " +
+                    "If the problem persists, contact support."
+            StaticTextId.UiId.SubscriptionPurchaseNotFoundDescription ->
+                "The store couldn't find this purchase. Please try again later. " +
+                    "If you have already paid, contact support."
+            StaticTextId.UiId.SubscriptionInvalidPurchaseDescription ->
+                "This purchase doesn't provide access to a subscription. " +
+                    "If you believe this is a mistake, contact support."
+            StaticTextId.UiId.SubscriptionAlreadyLinkedDescription ->
+                "This subscription is linked to another account. Sign in to the account where it was purchased."
+            StaticTextId.UiId.SubscriptionConfigurationErrorDescription ->
+                "Subscriptions are temporarily unavailable due to a technical problem. " +
+                    "Please try again later. If the problem persists, contact support."
+
             StaticTextId.UiId.AccountDeletedDescription ->
                 "Your account has been deleted. If you believe this is a mistake, please contact support."
 

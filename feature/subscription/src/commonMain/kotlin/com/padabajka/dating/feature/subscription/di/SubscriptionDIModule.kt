@@ -11,7 +11,9 @@ import com.padabajka.dating.feature.subscription.data.SubscriptionRepositoryImpl
 import com.padabajka.dating.feature.subscription.data.network.SubscriptionApi
 import com.padabajka.dating.feature.subscription.data.source.LocalSubscriptionDataSource
 import com.padabajka.dating.feature.subscription.data.source.LocalSubscriptionDataSourceImpl
+import com.padabajka.dating.feature.subscription.data.source.PendingSubscriptionPurchaseDataSource
 import com.padabajka.dating.feature.subscription.data.source.RemoteSubscriptionDataSource
+import com.padabajka.dating.feature.subscription.data.source.model.PendingSubscriptionPurchasesDto
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
@@ -27,6 +29,15 @@ private val subscriptionDIModule = module {
 
     factoryOf(::RemoteSubscriptionDataSource)
     factoryOf(::SubscriptionApi)
+    single {
+        PendingSubscriptionPurchaseDataSource(
+            DataStoreUtils.create(
+                "pending_subscription_purchases_datastore",
+                PendingSubscriptionPurchasesDto.serializer(),
+                PendingSubscriptionPurchasesDto(),
+            )
+        )
+    }
     single<LocalSubscriptionDataSource> {
         LocalSubscriptionDataSourceImpl(
             planDatastore = DataStoreUtils.create(

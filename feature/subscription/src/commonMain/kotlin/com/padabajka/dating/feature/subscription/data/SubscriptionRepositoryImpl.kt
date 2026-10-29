@@ -3,16 +3,25 @@ package com.padabajka.dating.feature.subscription.data
 import com.padabajka.dating.core.data.network.incoming.dto.SubscriptionStateResponse
 import com.padabajka.dating.core.data.network.incoming.dto.toDomain
 import com.padabajka.dating.core.data.network.incoming.dto.toDto
+import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
+import com.padabajka.dating.core.repository.api.exception.SubscriptionException
+import com.padabajka.dating.core.repository.api.exception.SubscriptionPurchaseException
+import com.padabajka.dating.core.repository.api.exception.UserException
+import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
 import com.padabajka.dating.core.repository.api.model.subscription.FeatureUsage
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionPlan
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionState
 import com.padabajka.dating.feature.subscription.data.billing.PlatformBillingClient
 import com.padabajka.dating.feature.subscription.data.source.LocalSubscriptionDataSource
+import com.padabajka.dating.feature.subscription.data.source.PendingSubscriptionPurchaseDataSource
 import com.padabajka.dating.feature.subscription.data.source.RemoteSubscriptionDataSource
+import com.padabajka.dating.feature.subscription.data.source.model.PendingSubscriptionPurchaseDto
 import com.padabajka.dating.feature.subscription.data.source.model.PurchaseRequest
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,12 +29,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.withContext
 
 class SubscriptionRepositoryImpl(
     coroutineScope: CoroutineScope,
     private val localSubscriptionDataSource: LocalSubscriptionDataSource,
     private val remoteSubscriptionDataSource: RemoteSubscriptionDataSource,
-    private val platformBillingClient: PlatformBillingClient
+    private val platformBillingClient: PlatformBillingClient,
+    private val pendingPurchaseDataSource: PendingSubscriptionPurchaseDataSource,
+    private val authRepository: AuthRepository,
 ) : SubscriptionRepository {
 
     private val _subscriptionState =
@@ -74,16 +86,28 @@ class SubscriptionRepositoryImpl(
     }
 
     override suspend fun subscribe(offerId: String) {
-        val result = platformBillingClient.launchPurchase(offerId) ?: error("")
+        val userId = authRepository.currentAuthState.userIdOrNull()?.raw ?: throw UserException.Unauthorized()
+        val result = withSubscriptionError(::SubscriptionPurchaseException) {
+            platformBillingClient.launchPurchase(offerId) ?: throw SubscriptionPurchaseException()
+        }
 
-        val subscriptionStateResponse = remoteSubscriptionDataSource.subscribe(
-            PurchaseRequest(
+        withSubscriptionError(SubscriptionException::ActivationFailed) {
+            val purchaseToken = result.purchaseToken?.takeIf { it.isNotBlank() }
+                ?: throw SubscriptionException.RecoveryFailed()
+            val request = PurchaseRequest(
                 productId = result.productId,
-                purchaseToken = result.purchaseToken!!,
+                purchaseToken = purchaseToken,
                 service = platformBillingClient.serviceName.raw
             )
-        )
-        updateSubscriptionState(subscriptionStateResponse)
+            val pendingPurchase = PendingSubscriptionPurchaseDto(userId, request)
+            withContext(NonCancellable) {
+                pendingPurchaseDataSource.save(pendingPurchase)
+            }
+
+            val subscriptionStateResponse = remoteSubscriptionDataSource.subscribe(request)
+            removeConfirmedPurchase(pendingPurchase)
+            updateSubscriptionState(subscriptionStateResponse)
+        }
     }
 
     override suspend fun clearLocalData() {
@@ -92,6 +116,33 @@ class SubscriptionRepositoryImpl(
         }
         localSubscriptionDataSource.updateFeatureUsage {
             FeatureUsage.DEFAULT.toDto()
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private suspend fun <T> withSubscriptionError(
+        fallback: (Throwable) -> SubscriptionException,
+        action: suspend () -> T,
+    ): T = try {
+        action()
+    } catch (error: Exception) {
+        throw when (error) {
+            is CancellationException, is SubscriptionException, is UserException -> error
+            else -> fallback(error)
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private suspend fun removeConfirmedPurchase(purchase: PendingSubscriptionPurchaseDto) {
+        withContext(NonCancellable) {
+            try {
+                pendingPurchaseDataSource.remove(purchase)
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Exception) {
+                // Do not log the exception message: it may contain the purchase token.
+                println("Failed to remove confirmed subscription purchase: ${error::class.simpleName}")
+            }
         }
     }
 

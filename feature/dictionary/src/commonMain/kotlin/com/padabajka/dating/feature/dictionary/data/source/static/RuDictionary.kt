@@ -227,6 +227,34 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.InvalidLinkForAuthDescription ->
                 "Ссылка для входа недействительна или устарела. Запросите новую и попробуйте снова."
 
+            StaticTextId.UiId.SubscriptionStoreUnavailableDescription ->
+                "Не удалось связаться с магазином. Проверьте соединение и попробуйте позже."
+            StaticTextId.UiId.SubscriptionProductUnavailableDescription ->
+                "Этот тариф подписки сейчас недоступен. Попробуйте позже."
+            StaticTextId.UiId.SubscriptionPaymentNotAllowedDescription ->
+                "Магазин не разрешает эту оплату. Проверьте способ оплаты и ограничения покупок в магазине."
+            StaticTextId.UiId.SubscriptionPurchaseFailedDescription ->
+                "Не удалось оформить подписку. Попробуйте ещё раз."
+            StaticTextId.UiId.SubscriptionRecoveryFailedDescription ->
+                "Не удалось получить данные покупки. Попробуйте позже. " +
+                    "Если проблема повторится, обратитесь в поддержку."
+            StaticTextId.UiId.SubscriptionActivationFailedDescription ->
+                "Не удалось подтвердить активацию подписки. Обратитесь в поддержку."
+            StaticTextId.UiId.SubscriptionVerificationUnavailableDescription ->
+                "Проверка подписки временно недоступна. Попробуйте позже. " +
+                    "Если проблема повторится, обратитесь в поддержку."
+            StaticTextId.UiId.SubscriptionPurchaseNotFoundDescription ->
+                "Магазин не нашёл эту покупку. Попробуйте позже. " +
+                    "Если оплата уже прошла, обратитесь в поддержку."
+            StaticTextId.UiId.SubscriptionInvalidPurchaseDescription ->
+                "Эта покупка не даёт доступа к подписке. " +
+                    "Если вы считаете, что это ошибка, обратитесь в поддержку."
+            StaticTextId.UiId.SubscriptionAlreadyLinkedDescription ->
+                "Подписка привязана к другому аккаунту. Войдите в аккаунт, на котором она была оформлена."
+            StaticTextId.UiId.SubscriptionConfigurationErrorDescription ->
+                "Подписки временно недоступны из-за технической проблемы. " +
+                    "Попробуйте позже. Если проблема повторится, обратитесь в поддержку."
+
             StaticTextId.UiId.AccountDeletedDescription ->
                 "Ваш аккаунт был удалён. Если вы считаете, что это ошибка, свяжитесь с поддержкой."
 
