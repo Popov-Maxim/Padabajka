@@ -3,7 +3,7 @@ package com.padabajka.dating.feature.subscription.data.billing
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.Foundation.NSError
-import platform.StoreKit.SKPayment
+import platform.StoreKit.SKMutablePayment
 import platform.StoreKit.SKPaymentQueue
 import platform.StoreKit.SKPaymentTransaction
 import platform.StoreKit.SKPaymentTransactionObserverProtocol
@@ -47,10 +47,13 @@ class IosBillingClient( // TODO(P0)
         }
     }
 
-    override suspend fun launchPurchase(offerId: String): PurchaseResult? {
+    override suspend fun launchPurchase(offerId: String, userId: String): PurchaseResult {
         return suspendCancellableCoroutine { cont ->
 
-            val payment = SKPayment.paymentWithProductIdentifier(offerId) as SKPayment
+            val payment = SKMutablePayment().apply {
+                setProductIdentifier(offerId)
+                setApplicationUsername(userId)
+            }
 
             val observer = PaymentObserver(
                 targetId = offerId
@@ -62,6 +65,8 @@ class IosBillingClient( // TODO(P0)
             SKPaymentQueue.defaultQueue().addPayment(payment)
         }
     }
+
+    override suspend fun restorePurchase(): PurchaseResult.Purchased? = null
 
     companion object {
         private const val PRODUCT_ID = "premium_monthly_1"
@@ -106,7 +111,7 @@ private class PaymentObserver(
                         SKPaymentQueue.defaultQueue().finishTransaction(tx)
 
                         if (tx.payment.productIdentifier == targetId) {
-                            onResult(PurchaseResult(targetId, tx.transactionIdentifier))
+                            onResult(PurchaseResult.Purchased(targetId, tx.transactionIdentifier))
                         }
                     }
 

@@ -1,6 +1,10 @@
 package com.padabajka.dating.feature.subscription.data.billing
 
-data class PurchaseResult(
-    val productId: String,
-    val purchaseToken: String? = null,
-)
+sealed interface PurchaseResult {
+    data class Purchased(
+        val productId: String,
+        val purchaseToken: String? = null,
+    ) : PurchaseResult
+
+    data object Cancelled : PurchaseResult
+}

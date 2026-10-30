@@ -2,6 +2,7 @@ package com.padabajka.dating.core.repository.api
 
 import com.padabajka.dating.core.repository.api.model.subscription.FeatureUsage
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
+import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionPurchaseResult
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionState
 import kotlinx.coroutines.flow.Flow
 
@@ -15,6 +16,6 @@ interface SubscriptionRepository {
     suspend fun update(update: (FeatureUsage) -> FeatureUsage)
 
     suspend fun syncState()
-    suspend fun subscribe(offerId: String)
+    suspend fun subscribe(offerId: String): SubscriptionPurchaseResult
     suspend fun clearLocalData()
 }
