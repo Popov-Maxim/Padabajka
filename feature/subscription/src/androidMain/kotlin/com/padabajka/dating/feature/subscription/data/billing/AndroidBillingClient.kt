@@ -12,6 +12,8 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.queryProductDetails
 import com.padabajka.dating.core.platform.data.activity.AndroidActivityProvider
+import com.padabajka.dating.core.repository.api.exception.SubscriptionException
+import com.padabajka.dating.core.repository.api.exception.SubscriptionPurchaseException
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -30,14 +32,13 @@ class AndroidBillingClient(
         .enablePendingPurchases(
             PendingPurchasesParams.newBuilder()
                 .enableOneTimeProducts()
-                .enablePrepaidPlans()
                 .build()
         )
         .build()
 
     // TODO(P2): Correlate late callbacks from cancelled purchases with their originating flow.
     @Volatile
-    private var pendingPurchase: CompletableDeferred<PurchaseResult?>? = null
+    private var pendingPurchase: CompletableDeferred<PurchaseResult>? = null
 
     override val serviceName: PlatformBillingClient.ServiceName
         get() = PlatformBillingClient.ServiceName.GOOGLE_PLAY
@@ -46,9 +47,9 @@ class AndroidBillingClient(
         return querySubscriptions()
     }
 
-    override suspend fun launchPurchase(offerId: String): PurchaseResult? =
+    override suspend fun launchPurchase(offerId: String): PurchaseResult =
         withContext(Dispatchers.Main.immediate) {
-            val product = queryProduct(PRODUCT_ID) ?: return@withContext null
+            val product = queryProduct(PRODUCT_ID) ?: throw SubscriptionException.ProductUnavailable()
 
             val params = BillingFlowParams.newBuilder()
                 .setProductDetailsParamsList(
@@ -62,15 +63,19 @@ class AndroidBillingClient(
                 .build()
 
             val activity = activityProvider.currentActivity
-                ?: error("Cannot launch a purchase without a resumed Activity")
+                ?: throw SubscriptionPurchaseException()
 
             check(pendingPurchase == null) { "A purchase is already in progress" }
-            val purchaseResult = CompletableDeferred<PurchaseResult?>()
+            val purchaseResult = CompletableDeferred<PurchaseResult>()
             pendingPurchase = purchaseResult
 
             try {
-                billingClient.launchBillingFlow(activity, params)
-                purchaseResult.await()
+                val launchResult = billingClient.launchBillingFlow(activity, params)
+                when (launchResult.responseCode) {
+                    BillingClient.BillingResponseCode.OK -> purchaseResult.await()
+                    BillingClient.BillingResponseCode.USER_CANCELED -> PurchaseResult.Cancelled
+                    else -> throw launchResult.toSubscriptionException()
+                }
             } finally {
                 pendingPurchase = null
                 purchaseResult.cancel()
@@ -81,24 +86,33 @@ class AndroidBillingClient(
         result: BillingResult,
         purchases: List<Purchase>?
     ) {
-        if (result.responseCode != BillingClient.BillingResponseCode.OK || purchases == null) {
+        val purchaseResult = pendingPurchase
+        when (result.responseCode) {
+            BillingClient.BillingResponseCode.OK -> handleSuccessfulPurchaseUpdate(purchases, purchaseResult)
+            BillingClient.BillingResponseCode.USER_CANCELED -> purchaseResult?.complete(PurchaseResult.Cancelled)
+            else ->
+                purchaseResult?.completeExceptionally(result.toSubscriptionException())
+        }
+    }
+
+    private fun handleSuccessfulPurchaseUpdate(
+        purchases: List<Purchase>?,
+        purchaseResult: CompletableDeferred<PurchaseResult>?
+    ) {
+        val purchase = purchases?.firstOrNull { PRODUCT_ID in it.products }
+        if (purchase == null) {
+            purchaseResult?.completeExceptionally(SubscriptionException.RecoveryFailed())
             return
         }
-        val purchaseResult = pendingPurchase
 
-        purchases.forEach { purchase ->
-
-            if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                val productId = purchase.products.firstOrNull() ?: return
-
-                if (productId == PRODUCT_ID) {
-                    purchaseResult?.complete(
-                        PurchaseResult(
-                            productId = productId,
-                            purchaseToken = purchase.purchaseToken
-                        )
-                    )
+        when (purchase.purchaseState) {
+            Purchase.PurchaseState.PURCHASED -> {
+                val token = purchase.purchaseToken.takeIf { it.isNotBlank() }
+                if (token == null) {
+                    purchaseResult?.completeExceptionally(SubscriptionException.RecoveryFailed())
+                    return
                 }
+                purchaseResult?.complete(PurchaseResult.Purchased(PRODUCT_ID, token))
 
                 if (!purchase.isAcknowledged) {
                     val ackParams = AcknowledgePurchaseParams.newBuilder()
@@ -108,7 +122,21 @@ class AndroidBillingClient(
                     billingClient.acknowledgePurchase(ackParams) {}
                 }
             }
+            else -> purchaseResult?.completeExceptionally(SubscriptionPurchaseException())
         }
+    }
+
+    private fun BillingResult.toSubscriptionException(): SubscriptionException = when (responseCode) {
+        BillingClient.BillingResponseCode.BILLING_UNAVAILABLE -> SubscriptionException.PaymentNotAllowed()
+        BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED,
+        BillingClient.BillingResponseCode.ITEM_UNAVAILABLE -> SubscriptionException.ProductUnavailable()
+        BillingClient.BillingResponseCode.DEVELOPER_ERROR -> SubscriptionException.ConfigurationError()
+        BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> SubscriptionException.RecoveryFailed()
+        BillingClient.BillingResponseCode.ITEM_NOT_OWNED -> SubscriptionException.PurchaseNotFound()
+        BillingClient.BillingResponseCode.NETWORK_ERROR,
+        BillingClient.BillingResponseCode.SERVICE_DISCONNECTED,
+        BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE -> SubscriptionException.StoreUnavailable()
+        else -> SubscriptionPurchaseException()
     }
 
     private suspend fun querySubscriptions(): List<SubscriptionProduct> {
@@ -146,7 +174,10 @@ class AndroidBillingClient(
             .build()
 
         val products = billingClient.queryProductDetails(query)
-        return products.productDetailsList?.first()
+        if (products.billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
+            throw products.billingResult.toSubscriptionException()
+        }
+        return products.productDetailsList?.firstOrNull()
     }
 
     private suspend fun BillingClient.startConnectionWait(): Boolean {

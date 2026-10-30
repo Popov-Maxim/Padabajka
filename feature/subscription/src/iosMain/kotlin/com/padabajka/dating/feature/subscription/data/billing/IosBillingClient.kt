@@ -47,7 +47,7 @@ class IosBillingClient( // TODO(P0)
         }
     }
 
-    override suspend fun launchPurchase(offerId: String): PurchaseResult? {
+    override suspend fun launchPurchase(offerId: String): PurchaseResult {
         return suspendCancellableCoroutine { cont ->
 
             val payment = SKPayment.paymentWithProductIdentifier(offerId) as SKPayment
@@ -106,7 +106,7 @@ private class PaymentObserver(
                         SKPaymentQueue.defaultQueue().finishTransaction(tx)
 
                         if (tx.payment.productIdentifier == targetId) {
-                            onResult(PurchaseResult(targetId, tx.transactionIdentifier))
+                            onResult(PurchaseResult.Purchased(targetId, tx.transactionIdentifier))
                         }
                     }
 

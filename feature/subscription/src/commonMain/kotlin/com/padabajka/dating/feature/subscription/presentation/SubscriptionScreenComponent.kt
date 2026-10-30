@@ -9,6 +9,7 @@ import com.padabajka.dating.core.repository.api.SubscriptionRepository
 import com.padabajka.dating.core.repository.api.exception.SubscriptionException
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionPeriod
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
+import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionPurchaseResult
 import com.padabajka.dating.feature.subscription.presentation.model.SubscriptionEvent
 import com.padabajka.dating.feature.subscription.presentation.model.SubscriptionInfo
 import com.padabajka.dating.feature.subscription.presentation.model.SubscriptionScreenState
@@ -66,8 +67,10 @@ class SubscriptionScreenComponent(
         launchStep(
             action = {
                 try {
-                    subscriptionRepository.subscribe(subState.monthSub.offerId)
-                    navigateBack()
+                    when (subscriptionRepository.subscribe(subState.monthSub.offerId)) {
+                        SubscriptionPurchaseResult.Purchased -> navigateBack()
+                        SubscriptionPurchaseResult.Cancelled -> Unit
+                    }
                 } finally {
                     reduce { currentState ->
                         (currentState as? SubscriptionScreenState.Success)?.copy(isSubscribing = false)

@@ -7,7 +7,7 @@ interface PlatformBillingClient {
 
     suspend fun getSubscriptions(): List<SubscriptionProduct>
 
-    suspend fun launchPurchase(offerId: String): PurchaseResult?
+    suspend fun launchPurchase(offerId: String): PurchaseResult
 
     enum class ServiceName(val raw: String) {
         GOOGLE_PLAY("google_play"),

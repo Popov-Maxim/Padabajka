@@ -12,8 +12,10 @@ import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
 import com.padabajka.dating.core.repository.api.model.subscription.FeatureUsage
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionPlan
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
+import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionPurchaseResult
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionState
 import com.padabajka.dating.feature.subscription.data.billing.PlatformBillingClient
+import com.padabajka.dating.feature.subscription.data.billing.PurchaseResult
 import com.padabajka.dating.feature.subscription.data.source.LocalSubscriptionDataSource
 import com.padabajka.dating.feature.subscription.data.source.PendingSubscriptionPurchaseDataSource
 import com.padabajka.dating.feature.subscription.data.source.RemoteSubscriptionDataSource
@@ -85,17 +87,25 @@ class SubscriptionRepositoryImpl(
         _subscriptionProducts.value = subProducts
     }
 
-    override suspend fun subscribe(offerId: String) {
+    override suspend fun subscribe(offerId: String): SubscriptionPurchaseResult {
         val userId = authRepository.currentAuthState.userIdOrNull()?.raw ?: throw UserException.Unauthorized()
         val pendingPurchase = withSubscriptionError(::SubscriptionPurchaseException) {
             pendingPurchaseDataSource.get(userId, offerId)
-        } ?: purchaseAndSave(userId, offerId)
+        } ?: when (
+            val result = withSubscriptionError(::SubscriptionPurchaseException) {
+                platformBillingClient.launchPurchase(offerId)
+            }
+        ) {
+            is PurchaseResult.Purchased -> savePurchase(userId, offerId, result)
+            PurchaseResult.Cancelled -> return SubscriptionPurchaseResult.Cancelled
+        }
 
         withSubscriptionError(SubscriptionException::ActivationFailed) {
             val subscriptionStateResponse = remoteSubscriptionDataSource.subscribe(pendingPurchase.request)
             removePendingPurchases(userId)
             updateSubscriptionState(subscriptionStateResponse)
         }
+        return SubscriptionPurchaseResult.Purchased
     }
 
     override suspend fun clearLocalData() {
@@ -107,11 +117,11 @@ class SubscriptionRepositoryImpl(
         }
     }
 
-    private suspend fun purchaseAndSave(userId: String, offerId: String): PendingSubscriptionPurchaseDto {
-        val result = withSubscriptionError(::SubscriptionPurchaseException) {
-            platformBillingClient.launchPurchase(offerId) ?: throw SubscriptionPurchaseException()
-        }
-
+    private suspend fun savePurchase(
+        userId: String,
+        offerId: String,
+        result: PurchaseResult.Purchased,
+    ): PendingSubscriptionPurchaseDto {
         return withSubscriptionError(SubscriptionException::ActivationFailed) {
             val purchaseToken = result.purchaseToken?.takeIf { it.isNotBlank() }
                 ?: throw SubscriptionException.RecoveryFailed()
