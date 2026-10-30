@@ -63,6 +63,8 @@ class IosBillingClient( // TODO(P0)
         }
     }
 
+    override suspend fun restorePurchase(): PurchaseResult.Purchased? = null
+
     companion object {
         private const val PRODUCT_ID = "premium_monthly_1"
     }
