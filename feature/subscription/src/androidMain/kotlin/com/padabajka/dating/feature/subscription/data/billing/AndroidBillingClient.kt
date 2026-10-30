@@ -49,11 +49,12 @@ class AndroidBillingClient(
         return querySubscriptions()
     }
 
-    override suspend fun launchPurchase(offerId: String): PurchaseResult =
+    override suspend fun launchPurchase(offerId: String, userId: String): PurchaseResult =
         withContext(Dispatchers.Main.immediate) {
             val product = queryProduct(PRODUCT_ID) ?: throw SubscriptionException.ProductUnavailable()
 
             val params = BillingFlowParams.newBuilder()
+                .setObfuscatedAccountId(userId)
                 .setProductDetailsParamsList(
                     listOf(
                         BillingFlowParams.ProductDetailsParams.newBuilder()

@@ -93,7 +93,10 @@ class SubscriptionRepositoryImpl(
             pendingPurchaseDataSource.get(userId, offerId)
         } ?: when (
             val result = withSubscriptionError(::SubscriptionPurchaseException) {
-                platformBillingClient.restorePurchase() ?: platformBillingClient.launchPurchase(offerId)
+                platformBillingClient.restorePurchase() ?: platformBillingClient.launchPurchase(
+                    offerId = offerId,
+                    userId = userId
+                )
             }
         ) {
             is PurchaseResult.Purchased -> savePurchase(userId, offerId, result)
