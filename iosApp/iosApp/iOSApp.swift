@@ -8,7 +8,19 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         IosCrashUtils.shared.installCrashReporter()
-        InitKoinIosKt.doInitKoinIos()
+        let storeKit = StoreKit2Bridge()
+        InitKoinIosKt.doInitKoinIos(observeCurrentEntitlements: { onTransaction, onComplete in
+            let cancel = storeKit.currentEntitlements(
+                onTransaction: { productId, transactionId, error in
+                    _ = onTransaction(productId, transactionId, error as NSError?)
+                },
+                onComplete: { _ = onComplete() }
+            )
+            return {
+                cancel()
+                return KotlinUnit.shared
+            }
+        })
 
         FirebaseApp.configure()
         Messaging.messaging().delegate = self

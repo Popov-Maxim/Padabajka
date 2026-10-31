@@ -22,7 +22,8 @@ import platform.darwin.NSObject
 import kotlin.coroutines.resume
 
 class IosBillingClient( // TODO(P0)
-    private val skProductMapper: SKProductMapper
+    private val skProductMapper: SKProductMapper,
+    private val purchaseRestorer: IosPurchaseRestorer
 ) : PlatformBillingClient {
 
     private var pendingPurchase: CompletableDeferred<PurchaseResult>? = null
@@ -82,7 +83,8 @@ class IosBillingClient( // TODO(P0)
             }
         }
 
-    override suspend fun restorePurchase(): PurchaseResult.Purchased? = null
+    override suspend fun restorePurchase(): PurchaseResult.Purchased? =
+        purchaseRestorer.restorePurchase(PRODUCT_ID)
 
     companion object {
         private const val PRODUCT_ID = "premium_monthly_1"

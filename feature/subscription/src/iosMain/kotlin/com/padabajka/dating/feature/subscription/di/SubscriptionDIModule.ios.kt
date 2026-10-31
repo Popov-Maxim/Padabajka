@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.subscription.di
 
 import com.padabajka.dating.feature.subscription.data.billing.IosBillingClient
+import com.padabajka.dating.feature.subscription.data.billing.IosPurchaseRestorer
 import com.padabajka.dating.feature.subscription.data.billing.PlatformBillingClient
 import com.padabajka.dating.feature.subscription.data.billing.SKProductMapper
 import org.koin.core.module.Module
@@ -16,4 +17,5 @@ actual val platformSubDiModule: Module
         }
 
         factoryOf(::SKProductMapper)
+        factoryOf(::IosPurchaseRestorer)
     }
