@@ -11,6 +11,7 @@
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
+		A81B04902FF1000100B142C3 /* StoreKit2Bridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81B04912FF1000100B142C3 /* StoreKit2Bridge.swift */; };
 		9C9462B92B96429F0084F865 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C9462B82B96429F0084F865 /* GoogleService-Info.plist */; };
 		9C9F3E532FD92FDB0082F363 /* Padabajka.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9C9F3E522FD92FDB0082F363 /* Padabajka.storekit */; };
 		A7C29F102F80000100B142C3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A7C29F132F80000100B142C3 /* InfoPlist.strings */; };
@@ -40,6 +41,7 @@
 		5AD4432285A85D5D5AD98B09 /* Pods-Padabajka.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Padabajka.debug.xcconfig"; path = "Target Support Files/Pods-Padabajka/Pods-Padabajka.debug.xcconfig"; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* Padabajka.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Padabajka.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A81B04912FF1000100B142C3 /* StoreKit2Bridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKit2Bridge.swift; sourceTree = "<group>"; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9C9462B32B9641040084F865 /* Pods */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Pods; sourceTree = "<group>"; };
 		9C9462B42B96411C0084F865 /* FirebaseCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FirebaseCore; path = Pods/FirebaseCore; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				7555FF8C242A565B00829871 /* Info.plist */,
 				A7C29F132F80000100B142C3 /* InfoPlist.strings */,
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
+				A81B04912FF1000100B142C3 /* StoreKit2Bridge.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
 				9C9F3E522FD92FDB0082F363 /* Padabajka.storekit */,
 			);
@@ -303,6 +306,7 @@
 			files = (
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
+				A81B04902FF1000100B142C3 /* StoreKit2Bridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,7 +1,12 @@
 package com.padabajka.dating.feature.subscription.data.billing
 
+import com.padabajka.dating.core.repository.api.exception.SubscriptionException
+import com.padabajka.dating.core.repository.api.exception.SubscriptionPurchaseException
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import platform.Foundation.NSError
 import platform.StoreKit.SKMutablePayment
 import platform.StoreKit.SKPaymentQueue
@@ -17,8 +22,11 @@ import platform.darwin.NSObject
 import kotlin.coroutines.resume
 
 class IosBillingClient( // TODO(P0)
-    private val skProductMapper: SKProductMapper
+    private val skProductMapper: SKProductMapper,
+    private val purchaseRestorer: IosPurchaseRestorer
 ) : PlatformBillingClient {
+
+    private var pendingPurchase: CompletableDeferred<PurchaseResult>? = null
 
     override val serviceName =
         PlatformBillingClient.ServiceName.APP_STORE
@@ -47,26 +55,36 @@ class IosBillingClient( // TODO(P0)
         }
     }
 
-    override suspend fun launchPurchase(offerId: String, userId: String): PurchaseResult {
-        return suspendCancellableCoroutine { cont ->
+    override suspend fun launchPurchase(offerId: String, userId: String): PurchaseResult =
+        withContext(Dispatchers.Main.immediate) {
+            if (!SKPaymentQueue.canMakePayments()) throw SubscriptionException.PaymentNotAllowed()
+            check(pendingPurchase == null) { "A purchase is already in progress" }
 
             val payment = SKMutablePayment().apply {
                 setProductIdentifier(offerId)
                 setApplicationUsername(userId)
             }
-
+            val result = CompletableDeferred<PurchaseResult>()
             val observer = PaymentObserver(
-                targetId = offerId
-            ) { result ->
-                cont.resume(result)
+                targetId = offerId,
+                result = result
+            )
+            val queue = SKPaymentQueue.defaultQueue()
+            pendingPurchase = result
+
+            try {
+                queue.addTransactionObserver(observer)
+                queue.addPayment(payment)
+                result.await()
+            } finally {
+                queue.removeTransactionObserver(observer)
+                result.cancel()
+                pendingPurchase = null
             }
-
-            SKPaymentQueue.defaultQueue().addTransactionObserver(observer)
-            SKPaymentQueue.defaultQueue().addPayment(payment)
         }
-    }
 
-    override suspend fun restorePurchase(): PurchaseResult.Purchased? = null
+    override suspend fun restorePurchase(): PurchaseResult.Purchased? =
+        purchaseRestorer.restorePurchase(PRODUCT_ID)
 
     companion object {
         private const val PRODUCT_ID = "premium_monthly_1"
@@ -95,7 +113,7 @@ private class ProductsDelegate(
 
 private class PaymentObserver(
     private val targetId: String,
-    private val onResult: (PurchaseResult) -> Unit
+    private val result: CompletableDeferred<PurchaseResult>
 ) : NSObject(), SKPaymentTransactionObserverProtocol {
 
     override fun paymentQueue(
@@ -103,33 +121,47 @@ private class PaymentObserver(
         updatedTransactions: List<*>
     ) {
         updatedTransactions
-            .map { it as SKPaymentTransaction }
+            .filterIsInstance<SKPaymentTransaction>()
+            .filter { it.payment.productIdentifier == targetId }
             .forEach { tx ->
-
-                when (tx.transactionState) {
-                    SKPaymentTransactionState.SKPaymentTransactionStatePurchased -> {
-                        SKPaymentQueue.defaultQueue().finishTransaction(tx)
-
-                        if (tx.payment.productIdentifier == targetId) {
-                            onResult(PurchaseResult.Purchased(targetId, tx.transactionIdentifier))
-                        }
-                    }
-
-                    SKPaymentTransactionState.SKPaymentTransactionStateFailed -> {
-                        SKPaymentQueue.defaultQueue().finishTransaction(tx)
-
-                        val error = tx.error?.localizedDescription ?: "Unknown error"
-//                        onResult(PurchaseResult.Error(error))
-                    }
-
-                    SKPaymentTransactionState.SKPaymentTransactionStateRestored -> {
-                        SKPaymentQueue.defaultQueue().finishTransaction(tx)
-                    }
-
-                    SKPaymentTransactionState.SKPaymentTransactionStatePurchasing -> Unit
-                    SKPaymentTransactionState.SKPaymentTransactionStateDeferred -> Unit
-                    else -> Unit
-                }
+                handleTransaction(queue, tx)
             }
+    }
+
+    private fun handleTransaction(queue: SKPaymentQueue, transaction: SKPaymentTransaction) {
+        if (result.isCompleted) return
+
+        when (transaction.transactionState) {
+            SKPaymentTransactionState.SKPaymentTransactionStatePurchased ->
+                completePurchase(queue, transaction, transaction.transactionIdentifier)
+            SKPaymentTransactionState.SKPaymentTransactionStateRestored ->
+                completePurchase(queue, transaction, transaction.originalTransaction?.transactionIdentifier)
+            SKPaymentTransactionState.SKPaymentTransactionStateFailed -> {
+                val error = transaction.error
+                if (error?.isPurchaseCancelled() == true) {
+                    result.complete(PurchaseResult.Cancelled)
+                } else {
+                    result.completeExceptionally(error?.toSubscriptionException() ?: SubscriptionPurchaseException())
+                }
+                queue.finishTransaction(transaction)
+            }
+            SKPaymentTransactionState.SKPaymentTransactionStatePurchasing -> Unit
+            SKPaymentTransactionState.SKPaymentTransactionStateDeferred -> Unit
+            else -> result.completeExceptionally(SubscriptionPurchaseException())
+        }
+    }
+
+    private fun completePurchase(
+        queue: SKPaymentQueue,
+        transaction: SKPaymentTransaction,
+        transactionId: String?
+    ) {
+        if (transactionId.isNullOrBlank()) {
+            result.completeExceptionally(SubscriptionException.RecoveryFailed())
+            return
+        }
+
+        result.complete(PurchaseResult.Purchased(targetId, transactionId))
+        queue.finishTransaction(transaction)
     }
 }

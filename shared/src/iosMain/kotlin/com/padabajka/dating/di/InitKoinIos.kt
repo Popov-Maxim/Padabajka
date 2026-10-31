@@ -1,7 +1,13 @@
 package com.padabajka.dating.di
 
+import com.padabajka.dating.feature.subscription.data.billing.ObserveStoreKit2Entitlements
+import com.padabajka.dating.feature.subscription.data.billing.StoreKit2Client
 import org.koin.dsl.module
 
-fun initKoinIos() {
-    initKoin(module { }) // TODO(P10) Add config dependency if needed
+fun initKoinIos(observeCurrentEntitlements: ObserveStoreKit2Entitlements) {
+    initKoin(
+        module {
+            single { StoreKit2Client(observeCurrentEntitlements) }
+        }
+    )
 }
