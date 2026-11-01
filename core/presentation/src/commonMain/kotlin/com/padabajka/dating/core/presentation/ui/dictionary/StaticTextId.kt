@@ -242,6 +242,7 @@ sealed interface StaticTextId {
         SubscriptionPurchaseFailedDescription(rawId = "subscription_purchase_failed_description"),
         SubscriptionRecoveryFailedDescription(rawId = "subscription_recovery_failed_description"),
         SubscriptionActivationFailedDescription(rawId = "subscription_activation_failed_description"),
+        SubscriptionRequestFailedDescription(rawId = "subscription_request_failed_description"),
         SubscriptionVerificationUnavailableDescription(rawId = "subscription_verification_unavailable_description"),
         SubscriptionPurchaseNotFoundDescription(rawId = "subscription_purchase_not_found_description"),
         SubscriptionInvalidPurchaseDescription(rawId = "subscription_invalid_purchase_description"),

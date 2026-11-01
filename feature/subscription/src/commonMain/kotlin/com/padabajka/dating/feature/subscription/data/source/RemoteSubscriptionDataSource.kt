@@ -7,11 +7,11 @@ import com.padabajka.dating.feature.subscription.data.source.model.PurchaseReque
 class RemoteSubscriptionDataSource(
     private val api: SubscriptionApi
 ) {
-    suspend fun loadSubscriptionState(): SubscriptionStateResponse {
+    suspend fun loadSubscriptionState(): SubscriptionStateResponse.Success {
         return api.getState()
     }
 
-    suspend fun subscribe(request: PurchaseRequest): SubscriptionStateResponse {
+    suspend fun subscribe(request: PurchaseRequest): SubscriptionStateResponse.Success {
         return api.purchase(request)
     }
 }
