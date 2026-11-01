@@ -20,6 +20,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                 cancel()
                 return KotlinUnit.shared
             }
+        }, finishTransaction: { transactionId, onComplete in
+            let cancel = storeKit.finishTransaction(
+                transactionId: transactionId,
+                onComplete: { error in _ = onComplete(error as NSError?) }
+            )
+            return {
+                cancel()
+                return KotlinUnit.shared
+            }
         })
 
         FirebaseApp.configure()

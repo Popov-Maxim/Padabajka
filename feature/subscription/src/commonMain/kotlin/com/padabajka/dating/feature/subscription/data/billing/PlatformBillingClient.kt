@@ -11,6 +11,8 @@ interface PlatformBillingClient {
 
     suspend fun restorePurchase(): PurchaseResult.Purchased?
 
+    suspend fun completePurchase(productId: String, purchaseToken: String)
+
     enum class ServiceName(val raw: String) {
         GOOGLE_PLAY("google_play"),
         APP_STORE("app_store")

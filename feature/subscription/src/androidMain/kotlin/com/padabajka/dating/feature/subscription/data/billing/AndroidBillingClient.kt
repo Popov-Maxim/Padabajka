@@ -87,17 +87,7 @@ class AndroidBillingClient(
 
     override suspend fun restorePurchase(): PurchaseResult.Purchased? =
         withContext(Dispatchers.Main.immediate) {
-            if (!billingClient.startConnectionWait()) throw SubscriptionException.StoreUnavailable()
-
-            val params = QueryPurchasesParams.newBuilder()
-                .setProductType(BillingClient.ProductType.SUBS)
-                .build()
-            val result = billingClient.queryPurchasesAsync(params)
-            if (result.billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
-                throw result.billingResult.toSubscriptionException()
-            }
-
-            val purchase = result.purchasesList.firstOrNull { PRODUCT_ID in it.products }
+            val purchase = queryPurchases().firstOrNull { PRODUCT_ID in it.products }
                 ?: return@withContext null
             if (purchase.purchaseState != Purchase.PurchaseState.PURCHASED) {
                 throw SubscriptionException.RecoveryFailed()
@@ -107,6 +97,40 @@ class AndroidBillingClient(
 
             PurchaseResult.Purchased(PRODUCT_ID, token)
         }
+
+    override suspend fun completePurchase(productId: String, purchaseToken: String) {
+        withContext(Dispatchers.Main.immediate) {
+            val purchase = queryPurchases().firstOrNull {
+                productId in it.products && it.purchaseToken == purchaseToken
+            } ?: throw SubscriptionException.PurchaseNotFound()
+            if (purchase.purchaseState != Purchase.PurchaseState.PURCHASED) {
+                throw SubscriptionException.RecoveryFailed()
+            }
+            if (purchase.isAcknowledged) return@withContext
+
+            val params = AcknowledgePurchaseParams.newBuilder()
+                .setPurchaseToken(purchaseToken)
+                .build()
+            val completion = CompletableDeferred<BillingResult>()
+            billingClient.acknowledgePurchase(params) { completion.complete(it) }
+            val result = completion.await()
+            if (result.responseCode != BillingClient.BillingResponseCode.OK) {
+                throw result.toSubscriptionException()
+            }
+        }
+    }
+
+    private suspend fun queryPurchases(): List<Purchase> {
+        if (!billingClient.startConnectionWait()) throw SubscriptionException.StoreUnavailable()
+        val params = QueryPurchasesParams.newBuilder()
+            .setProductType(BillingClient.ProductType.SUBS)
+            .build()
+        val result = billingClient.queryPurchasesAsync(params)
+        if (result.billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
+            throw result.billingResult.toSubscriptionException()
+        }
+        return result.purchasesList
+    }
 
     private fun handlePurchaseUpdates(
         result: BillingResult,
@@ -139,14 +163,6 @@ class AndroidBillingClient(
                     return
                 }
                 purchaseResult?.complete(PurchaseResult.Purchased(PRODUCT_ID, token))
-
-                if (!purchase.isAcknowledged) {
-                    val ackParams = AcknowledgePurchaseParams.newBuilder()
-                        .setPurchaseToken(purchase.purchaseToken)
-                        .build()
-
-                    billingClient.acknowledgePurchase(ackParams) {}
-                }
             }
             else -> purchaseResult?.completeExceptionally(SubscriptionPurchaseException())
         }

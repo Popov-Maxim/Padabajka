@@ -7,12 +7,22 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import platform.Foundation.NSError
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 /** Emits on main; a null verification error means verified. Returns a cancellation function. */
 typealias ObserveStoreKit2Entitlements = (
     onTransaction: (productId: String, transactionId: String, verificationError: NSError?) -> Unit,
     onComplete: () -> Unit
+) -> (() -> Unit)
+
+/** Finishes matching unfinished transactions; completion is called on main. */
+typealias FinishStoreKit2Transaction = (
+    transactionId: String,
+    onComplete: (NSError?) -> Unit
 ) -> (() -> Unit)
 
 data class StoreKit2Transaction(
@@ -26,8 +36,27 @@ data class StoreKit2VerificationResult(
 )
 
 class StoreKit2Client(
-    private val observeCurrentEntitlements: ObserveStoreKit2Entitlements
+    private val observeCurrentEntitlements: ObserveStoreKit2Entitlements,
+    private val finish: FinishStoreKit2Transaction,
 ) {
+    suspend fun finishTransaction(transactionId: String) {
+        withContext(Dispatchers.Main.immediate) {
+            suspendCancellableCoroutine<Unit> { continuation ->
+                val cancel = finish(transactionId) onComplete@{ error ->
+                    if (!continuation.isActive) return@onComplete
+                    if (error == null) {
+                        continuation.resume(Unit)
+                    } else {
+                        continuation.resumeWithException(
+                            IllegalStateException("StoreKit verification failed: ${error.localizedDescription}")
+                        )
+                    }
+                }
+                continuation.invokeOnCancellation { cancel() }
+            }
+        }
+    }
+
     fun currentEntitlements(): Flow<StoreKit2VerificationResult> = callbackFlow {
         val cancel = observeCurrentEntitlements(
             { productId, transactionId, verificationError ->

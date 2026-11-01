@@ -23,7 +23,8 @@ import kotlin.coroutines.resume
 
 class IosBillingClient( // TODO(P0)
     private val skProductMapper: SKProductMapper,
-    private val purchaseRestorer: IosPurchaseRestorer
+    private val purchaseRestorer: IosPurchaseRestorer,
+    private val storeKit: StoreKit2Client,
 ) : PlatformBillingClient {
 
     private var pendingPurchase: CompletableDeferred<PurchaseResult>? = null
@@ -86,6 +87,10 @@ class IosBillingClient( // TODO(P0)
     override suspend fun restorePurchase(): PurchaseResult.Purchased? =
         purchaseRestorer.restorePurchase(PRODUCT_ID)
 
+    override suspend fun completePurchase(productId: String, purchaseToken: String) {
+        storeKit.finishTransaction(purchaseToken)
+    }
+
     companion object {
         private const val PRODUCT_ID = "premium_monthly_1"
     }
@@ -133,9 +138,9 @@ private class PaymentObserver(
 
         when (transaction.transactionState) {
             SKPaymentTransactionState.SKPaymentTransactionStatePurchased ->
-                completePurchase(queue, transaction, transaction.transactionIdentifier)
+                completePurchase(transaction.transactionIdentifier)
             SKPaymentTransactionState.SKPaymentTransactionStateRestored ->
-                completePurchase(queue, transaction, transaction.originalTransaction?.transactionIdentifier)
+                completePurchase(transaction.originalTransaction?.transactionIdentifier)
             SKPaymentTransactionState.SKPaymentTransactionStateFailed -> {
                 val error = transaction.error
                 if (error?.isPurchaseCancelled() == true) {
@@ -151,17 +156,12 @@ private class PaymentObserver(
         }
     }
 
-    private fun completePurchase(
-        queue: SKPaymentQueue,
-        transaction: SKPaymentTransaction,
-        transactionId: String?
-    ) {
+    private fun completePurchase(transactionId: String?) {
         if (transactionId.isNullOrBlank()) {
             result.completeExceptionally(SubscriptionException.RecoveryFailed())
             return
         }
 
         result.complete(PurchaseResult.Purchased(targetId, transactionId))
-        queue.finishTransaction(transaction)
     }
 }

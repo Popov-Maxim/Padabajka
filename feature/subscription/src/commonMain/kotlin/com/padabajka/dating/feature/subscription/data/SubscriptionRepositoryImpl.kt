@@ -80,6 +80,8 @@ class SubscriptionRepositoryImpl(
     }
 
     override suspend fun syncState() {
+        retryPendingPurchases()
+
         val subscriptionStateResponse = remoteSubscriptionDataSource.loadSubscriptionState()
         updateSubscriptionState(subscriptionStateResponse)
 
@@ -103,10 +105,21 @@ class SubscriptionRepositoryImpl(
             PurchaseResult.Cancelled -> return SubscriptionPurchaseResult.Cancelled
         }
 
-        val subscriptionStateResponse = remoteSubscriptionDataSource.subscribe(pendingPurchase.request)
-        removePendingPurchases(userId)
-        updateSubscriptionState(subscriptionStateResponse)
+        activatePurchase(pendingPurchase)
         return SubscriptionPurchaseResult.Purchased
+    }
+
+    private suspend fun activatePurchase(purchase: PendingSubscriptionPurchaseDto) {
+        val response = remoteSubscriptionDataSource.subscribe(purchase.request)
+        updateSubscriptionState(response)
+
+        platformBillingClient.completePurchase(purchase.request.productId, purchase.request.purchaseToken)
+        removePendingPurchases(purchase.userId)
+    }
+
+    private suspend fun retryPendingPurchases() {
+        val userId = authRepository.currentAuthState.userIdOrNull()?.raw ?: return
+        pendingPurchaseDataSource.getAll(userId).forEach { activatePurchase(it) }
     }
 
     override suspend fun clearLocalData() {
