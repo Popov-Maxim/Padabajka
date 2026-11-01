@@ -3,6 +3,8 @@ package com.padabajka.dating.feature.subscription.data
 import com.padabajka.dating.core.data.network.incoming.dto.SubscriptionStateResponse
 import com.padabajka.dating.core.data.network.incoming.dto.toDomain
 import com.padabajka.dating.core.data.network.incoming.dto.toDto
+import com.padabajka.dating.core.presentation.error.DomainErrorHandler
+import com.padabajka.dating.core.presentation.error.toTextError
 import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
 import com.padabajka.dating.core.repository.api.exception.SubscriptionException
@@ -14,6 +16,7 @@ import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionP
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionPurchaseResult
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionState
+import com.padabajka.dating.core.utils.runCatchingCancellable
 import com.padabajka.dating.feature.subscription.data.billing.PlatformBillingClient
 import com.padabajka.dating.feature.subscription.data.billing.PurchaseResult
 import com.padabajka.dating.feature.subscription.data.source.LocalSubscriptionDataSource
@@ -21,6 +24,9 @@ import com.padabajka.dating.feature.subscription.data.source.PendingSubscription
 import com.padabajka.dating.feature.subscription.data.source.RemoteSubscriptionDataSource
 import com.padabajka.dating.feature.subscription.data.source.model.PendingSubscriptionPurchaseDto
 import com.padabajka.dating.feature.subscription.data.source.model.PurchaseRequest
+import com.padabajka.dating.feature.subscription.presentation.toTextError
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.crashlytics.crashlytics
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.NonCancellable
@@ -40,6 +46,7 @@ class SubscriptionRepositoryImpl(
     private val platformBillingClient: PlatformBillingClient,
     private val pendingPurchaseDataSource: PendingSubscriptionPurchaseDataSource,
     private val authRepository: AuthRepository,
+    private val domainErrorHandler: DomainErrorHandler,
 ) : SubscriptionRepository {
 
     private val _subscriptionState =
@@ -113,13 +120,34 @@ class SubscriptionRepositoryImpl(
         val response = remoteSubscriptionDataSource.subscribe(purchase.request)
         updateSubscriptionState(response)
 
-        platformBillingClient.completePurchase(purchase.request.productId, purchase.request.purchaseToken)
-        removePendingPurchases(purchase.userId)
+        runCatchingCancellable {
+            platformBillingClient.completePurchase(purchase.request.productId, purchase.request.purchaseToken)
+            removePendingPurchases(purchase.userId)
+        }.onFailure { error ->
+            if (error !is SubscriptionException || error.cause != null ||
+                error is SubscriptionException.ConfigurationError
+            ) {
+                Firebase.crashlytics.recordException(error)
+            }
+        }
     }
 
     private suspend fun retryPendingPurchases() {
         val userId = authRepository.currentAuthState.userIdOrNull()?.raw ?: return
-        pendingPurchaseDataSource.getAll(userId).forEach { activatePurchase(it) }
+        val purchases = pendingPurchaseDataSource.getAll(userId)
+
+        purchases.forEach { purchase ->
+            runCatchingCancellable {
+                activatePurchase(purchase)
+            }.onFailure { error ->
+                domainErrorHandler.handleExternal(error) {
+                    val error = it.toTextError { exception ->
+                        (exception as? SubscriptionException)?.toTextError()
+                    }
+                    error.needLog.not()
+                }
+            }
+        }
     }
 
     override suspend fun clearLocalData() {
