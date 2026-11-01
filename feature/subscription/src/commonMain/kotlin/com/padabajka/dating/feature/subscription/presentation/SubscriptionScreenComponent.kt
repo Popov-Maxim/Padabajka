@@ -2,8 +2,10 @@ package com.padabajka.dating.feature.subscription.presentation
 
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.BaseComponent
+import com.padabajka.dating.core.presentation.error.ExternalDomainError
 import com.padabajka.dating.core.presentation.error.toTextError
 import com.padabajka.dating.core.presentation.event.AlertService
+import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
 import com.padabajka.dating.core.repository.api.exception.SubscriptionException
@@ -79,8 +81,12 @@ class SubscriptionScreenComponent(
                 }
             },
             onError = {
-                val error = it.toTextError { exception ->
-                    (exception as? SubscriptionException)?.toTextError()
+                val error = when (it) {
+                    ExternalDomainError.TextError.BadStatusCode ->
+                        StaticTextId.UiId.SubscriptionRequestFailedDescription.toTextError()
+                    else -> it.toTextError { exception ->
+                        (exception as? SubscriptionException)?.toTextError()
+                    }
                 }
 
                 alertService.showAlert { error.text.translate() }

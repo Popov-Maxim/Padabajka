@@ -1,5 +1,6 @@
 package com.padabajka.dating.core.networking.config
 
+import com.padabajka.dating.core.networking.utils.isStatusHandledLocally
 import com.padabajka.dating.core.repository.api.exception.BadStatusCodeException
 import com.padabajka.dating.core.repository.api.exception.ConnectException
 import com.padabajka.dating.core.repository.api.exception.SuperLikeException
@@ -28,6 +29,7 @@ class ResponseValidatorConfigProvider : KtorConfigProvider.Static {
                     val isWebSocket =
                         it.request.url.protocol in arrayOf(URLProtocol.WS, URLProtocol.WSS)
                     if (isWebSocket) return@validateResponse
+                    if (it.isStatusHandledLocally()) return@validateResponse
 
                     val status = it.status
                     if (status.value in MIN_ERROR_STATUS_CODE..MAX_ERROR_STATUS_CODE) {

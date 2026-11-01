@@ -240,6 +240,9 @@ class RuDictionary : Dictionary() {
                     "Если проблема повторится, обратитесь в поддержку."
             StaticTextId.UiId.SubscriptionActivationFailedDescription ->
                 "Не удалось подтвердить активацию подписки. Обратитесь в поддержку."
+            StaticTextId.UiId.SubscriptionRequestFailedDescription ->
+                "Не удалось обработать подписку. Попробуйте ещё раз. " +
+                    "Если проблема повторится, обратитесь в поддержку."
             StaticTextId.UiId.SubscriptionVerificationUnavailableDescription ->
                 "Проверка подписки временно недоступна. Попробуйте позже. " +
                     "Если проблема повторится, обратитесь в поддержку."

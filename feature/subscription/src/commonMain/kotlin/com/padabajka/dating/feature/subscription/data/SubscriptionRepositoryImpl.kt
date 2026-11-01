@@ -103,11 +103,9 @@ class SubscriptionRepositoryImpl(
             PurchaseResult.Cancelled -> return SubscriptionPurchaseResult.Cancelled
         }
 
-        withSubscriptionError(SubscriptionException::ActivationFailed) {
-            val subscriptionStateResponse = remoteSubscriptionDataSource.subscribe(pendingPurchase.request)
-            removePendingPurchases(userId)
-            updateSubscriptionState(subscriptionStateResponse)
-        }
+        val subscriptionStateResponse = remoteSubscriptionDataSource.subscribe(pendingPurchase.request)
+        removePendingPurchases(userId)
+        updateSubscriptionState(subscriptionStateResponse)
         return SubscriptionPurchaseResult.Purchased
     }
 
@@ -173,7 +171,7 @@ class SubscriptionRepositoryImpl(
         }
     }
 
-    private suspend fun updateSubscriptionState(subscriptionStateResponse: SubscriptionStateResponse) {
+    private suspend fun updateSubscriptionState(subscriptionStateResponse: SubscriptionStateResponse.Success) {
         localSubscriptionDataSource.updatePlan {
             subscriptionStateResponse.plan
         }

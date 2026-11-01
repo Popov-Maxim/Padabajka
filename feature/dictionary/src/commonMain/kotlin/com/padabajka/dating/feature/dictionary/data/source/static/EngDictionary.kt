@@ -243,6 +243,9 @@ class EngDictionary : Dictionary() {
                     "If the problem persists, contact support."
             StaticTextId.UiId.SubscriptionActivationFailedDescription ->
                 "Couldn't confirm subscription activation. Please contact support."
+            StaticTextId.UiId.SubscriptionRequestFailedDescription ->
+                "Couldn't process the subscription. Please try again. " +
+                    "If the problem persists, contact support."
             StaticTextId.UiId.SubscriptionVerificationUnavailableDescription ->
                 "Subscription verification is temporarily unavailable. Please try again later. " +
                     "If the problem persists, contact support."
