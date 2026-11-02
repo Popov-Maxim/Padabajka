@@ -7,6 +7,7 @@ import com.padabajka.dating.core.repository.api.model.deeplink.AppDeeplink
 import com.padabajka.dating.core.utils.isDebugBuild
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.crashlytics.crashlytics
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 
@@ -19,11 +20,24 @@ class DomainErrorHandler(
         e: Throwable,
         onError: suspend (ExternalDomainError) -> Boolean = { false }
     ) {
+        if (e is CancellationException) throw e
         currentCoroutineContext().ensureActive()
         val mappedError = DomainError.mapError(e)
         when (mappedError) {
             is ExternalDomainError -> handleExternalError(mappedError, e, onError)
             is InternalDomainError -> handleInternalError(mappedError)
+        }
+    }
+
+    suspend fun handleExternal(
+        e: Throwable,
+        onError: suspend (ExternalDomainError) -> Boolean = { false }
+    ) {
+        if (e is CancellationException) throw e
+        currentCoroutineContext().ensureActive()
+        val mappedError = DomainError.mapError(e)
+        if (mappedError is ExternalDomainError) {
+            handleExternalError(mappedError, e, onError)
         }
     }
 

@@ -5,13 +5,13 @@ import com.padabajka.dating.component.room.messenger.entry.toReadEventEntry
 import com.padabajka.dating.core.data.MutableAtomic
 import com.padabajka.dating.core.data.atomic
 import com.padabajka.dating.core.data.mutableAtomic
-import com.padabajka.dating.core.data.uuid
 import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.model.auth.NoAuthorisedUserException
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
+import com.padabajka.dating.core.utils.uuid
 import com.padabajka.dating.feature.messenger.data.message.model.toRequest
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalChatReadStateDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalMessageDataSource

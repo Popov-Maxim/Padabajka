@@ -4,7 +4,6 @@ import com.padabajka.dating.component.room.messenger.entry.MessageContentDB
 import com.padabajka.dating.component.room.messenger.entry.MessageEntry
 import com.padabajka.dating.component.room.messenger.entry.MessageReactionEntity
 import com.padabajka.dating.component.room.messenger.entry.MessageReadEventEntry
-import com.padabajka.dating.core.data.uuid
 import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.ChatRepository
 import com.padabajka.dating.core.repository.api.MessageRepository
@@ -21,6 +20,7 @@ import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
 import com.padabajka.dating.core.repository.api.model.messenger.MessageStatus
 import com.padabajka.dating.core.repository.api.model.messenger.ParentMessage
 import com.padabajka.dating.core.repository.api.model.swiper.PersonId
+import com.padabajka.dating.core.utils.uuid
 import com.padabajka.dating.feature.messenger.data.message.model.ChatReadEventResponse
 import com.padabajka.dating.feature.messenger.data.message.model.MessageDto
 import com.padabajka.dating.feature.messenger.data.message.model.toEditRequest

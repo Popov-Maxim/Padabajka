@@ -29,6 +29,7 @@ kotlin {
         commonMain.dependencies {
             // put your multiplatform dependencies here
             api(projects.core.repositoryApi)
+            api(projects.core.utils)
             api(libs.datastore)
             api(libs.datastore.preferences)
             api(libs.koin.core)

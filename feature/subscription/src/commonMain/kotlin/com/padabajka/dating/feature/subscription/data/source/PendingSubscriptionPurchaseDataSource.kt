@@ -8,6 +8,10 @@ import kotlinx.coroutines.flow.first
 class PendingSubscriptionPurchaseDataSource(
     private val datastore: DataStore<PendingSubscriptionPurchasesDto>
 ) {
+    suspend fun getAll(userId: String): List<PendingSubscriptionPurchaseDto> {
+        return datastore.data.first().purchases.filter { it.userId == userId }
+    }
+
     suspend fun get(userId: String, offerId: String): PendingSubscriptionPurchaseDto? {
         return datastore.data.first().purchases.firstOrNull {
             it.userId == userId && it.offerId == offerId
