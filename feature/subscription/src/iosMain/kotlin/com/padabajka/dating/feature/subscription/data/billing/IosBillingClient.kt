@@ -6,7 +6,6 @@ import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionP
 import com.padabajka.dating.core.utils.uuidFromKey
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import platform.Foundation.NSError
 import platform.StoreKit.SKMutablePayment
@@ -20,7 +19,6 @@ import platform.StoreKit.SKProductsRequestDelegateProtocol
 import platform.StoreKit.SKProductsResponse
 import platform.StoreKit.SKRequest
 import platform.darwin.NSObject
-import kotlin.coroutines.resume
 
 class IosBillingClient( // TODO(P0)
     private val skProductMapper: SKProductMapper,
@@ -33,29 +31,21 @@ class IosBillingClient( // TODO(P0)
     override val serviceName =
         PlatformBillingClient.ServiceName.APP_STORE
 
-    override suspend fun getSubscriptions(): List<SubscriptionProduct> {
-        return suspendCancellableCoroutine { cont ->
-
+    override suspend fun getSubscriptions(): List<SubscriptionProduct> =
+        withContext(Dispatchers.Main.immediate) {
             val request = SKProductsRequest(productIdentifiers = setOf(PRODUCT_ID))
+            val delegate = ProductsDelegate()
 
-            val delegate = ProductsDelegate(
-                onResult = { products ->
-
-                    val mapped = products.map { product ->
-                        skProductMapper.map(product)
-                    }
-
-                    cont.resume(mapped)
-                },
-                onError = {
-                    cont.resume(emptyList())
-                }
-            )
-
-            request.delegate = delegate
-            request.start()
+            try {
+                request.delegate = delegate
+                request.start()
+                delegate.result.await().map { skProductMapper.map(it) }
+            } finally {
+                request.delegate = null
+                request.cancel()
+                delegate.result.cancel()
+            }
         }
-    }
 
     override suspend fun launchPurchase(offerId: String, userId: String): PurchaseResult =
         withContext(Dispatchers.Main.immediate) {
@@ -97,23 +87,21 @@ class IosBillingClient( // TODO(P0)
     }
 }
 
-private class ProductsDelegate(
-    private val onResult: (List<SKProduct>) -> Unit,
-    private val onError: (NSError) -> Unit
-) : NSObject(), SKProductsRequestDelegateProtocol {
+private class ProductsDelegate : NSObject(), SKProductsRequestDelegateProtocol {
+    val result = CompletableDeferred<List<SKProduct>>()
 
     override fun productsRequest(
         request: SKProductsRequest,
         didReceiveResponse: SKProductsResponse
     ) {
-        onResult(didReceiveResponse.products as List<SKProduct>)
+        result.complete(didReceiveResponse.products as List<SKProduct>)
     }
 
     override fun request(
         request: SKRequest,
         didFailWithError: NSError
     ) {
-        onError(didFailWithError)
+        result.complete(emptyList())
     }
 }
 
