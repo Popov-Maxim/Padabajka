@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.subscription.data.billing
 import com.padabajka.dating.core.repository.api.exception.SubscriptionException
 import com.padabajka.dating.core.repository.api.exception.SubscriptionPurchaseException
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
+import com.padabajka.dating.core.utils.uuidFromKey
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -63,7 +64,7 @@ class IosBillingClient( // TODO(P0)
 
             val payment = SKMutablePayment().apply {
                 setProductIdentifier(offerId)
-                setApplicationUsername(userId)
+                setApplicationUsername(uuidFromKey(userId))
             }
             val result = CompletableDeferred<PurchaseResult>()
             val observer = PaymentObserver(
