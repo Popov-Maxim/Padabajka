@@ -15,6 +15,7 @@ import com.padabajka.dating.core.repository.api.model.match.Match
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageReaction
+import com.padabajka.dating.core.utils.printlnDev
 import com.padabajka.dating.feature.messenger.domain.chat.ChatMessagesUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.DeleteChatUseCase
 import com.padabajka.dating.feature.messenger.domain.chat.DeleteMessageUseCase
@@ -244,7 +245,7 @@ class ChatComponent(
     }
 
     private fun loadMoreMessages() {
-        println("ChatComponent: loadMoreMessages")
+        printlnDev("ChatComponent: loadMoreMessages")
         launchStep(
             action = {
                 messageRepository.loadPreviousMessages(chatId)

@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import com.arkivanov.decompose.defaultComponentContext
 import com.padabajka.dating.core.permission.PermissionRequestHandler
+import com.padabajka.dating.core.utils.printlnDev
 import com.padabajka.dating.deeplink.SharedDeeplinkHandler
 import com.padabajka.dating.di.addPermissionRequester
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -35,7 +36,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleDeeplink(intent: Intent) {
-        println("LOG: ${intent.data}")
+        printlnDev("LOG: ${intent.data}")
         val uri = intent.data ?: return
         SharedDeeplinkHandler.handle(uri.toString())
     }

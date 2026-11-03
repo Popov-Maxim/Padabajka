@@ -16,6 +16,7 @@ import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionP
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionProduct
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionPurchaseResult
 import com.padabajka.dating.core.repository.api.model.subscription.SubscriptionState
+import com.padabajka.dating.core.utils.printlnDev
 import com.padabajka.dating.core.utils.runCatchingCancellable
 import com.padabajka.dating.feature.subscription.data.billing.PlatformBillingClient
 import com.padabajka.dating.feature.subscription.data.billing.PurchaseResult
@@ -207,7 +208,7 @@ class SubscriptionRepositoryImpl(
                 throw error
             } catch (error: Exception) {
                 // Do not log the exception message: it may contain the purchase token.
-                println("Failed to remove pending subscription purchases: ${error::class.simpleName}")
+                printlnDev("Failed to remove pending subscription purchases: ${error::class.simpleName}")
             }
         }
     }

@@ -11,6 +11,7 @@ import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.core.repository.api.model.messenger.MessageId
+import com.padabajka.dating.core.utils.printlnDev
 import com.padabajka.dating.core.utils.uuid
 import com.padabajka.dating.feature.messenger.data.message.model.toRequest
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalChatReadStateDataSource
@@ -79,7 +80,7 @@ class ReadMessageManager(
                         }
                 }
         } catch (e: Throwable) {
-            println("ReadMessageManager crashed: ${e.message}, restarting...")
+            printlnDev("ReadMessageManager crashed: ${e.message}, restarting...")
         }
     }
 
@@ -113,7 +114,7 @@ class ReadMessageManager(
         val sleepingTimer = SleepingTimer()
 
         collect { value ->
-            println("SleepingTimer: collect $value")
+            printlnDev("SleepingTimer: collect $value")
             buffer.invoke { add(value) }
 
             launch {

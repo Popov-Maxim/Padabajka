@@ -9,6 +9,7 @@ import com.padabajka.dating.core.presentation.ComponentLifecycleListener
 import com.padabajka.dating.core.presentation.deeplink.AppDeeplinkHandler
 import com.padabajka.dating.core.presentation.error.DomainErrorHandler
 import com.padabajka.dating.core.presentation.event.AlertService
+import com.padabajka.dating.core.utils.isDebugBuild
 import io.ktor.client.HttpClient
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -18,7 +19,11 @@ import org.koin.dsl.module
 private val presentationDiModule = module {
     single<ImageLoader> { parameters ->
         ImageLoader.Builder(parameters.get())
-            .logger(DebugLogger())
+            .apply {
+                if (isDebugBuild) {
+                    logger(DebugLogger())
+                }
+            }
             .components {
                 add(
                     KtorNetworkFetcherFactory(

@@ -10,6 +10,7 @@ import com.padabajka.dating.core.repository.api.exception.ConnectException
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
 import com.padabajka.dating.core.utils.isDebugBuild
+import com.padabajka.dating.core.utils.printlnDev
 import com.padabajka.dating.feature.push.data.domain.HandlePushUseCase
 import com.padabajka.dating.feature.push.data.domain.model.MessagePush
 import dev.gitlive.firebase.Firebase
@@ -434,6 +435,6 @@ class SyncManager internal constructor(
 
     private companion object {
         private const val RECONNECT_DELAY = 5_000L
-        private fun log(message: String) = println("LOG: SyncManager $message")
+        private fun log(message: String) = printlnDev("LOG: SyncManager $message")
     }
 }

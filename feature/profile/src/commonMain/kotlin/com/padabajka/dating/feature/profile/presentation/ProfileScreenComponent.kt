@@ -5,6 +5,7 @@ import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.presentation.ui.toUI
 import com.padabajka.dating.core.repository.api.ProfileRepository
 import com.padabajka.dating.core.repository.api.SubscriptionRepository
+import com.padabajka.dating.core.utils.printlnDev
 import com.padabajka.dating.feature.profile.presentation.model.OpenEditorEvent
 import com.padabajka.dating.feature.profile.presentation.model.OpenLikesMeEvent
 import com.padabajka.dating.feature.profile.presentation.model.ProfileEvent
@@ -33,7 +34,7 @@ class ProfileScreenComponent(
     init {
         componentScope.launch {
             profileRepository.profile.collect { profile ->
-                println("ProfileScreenComponent: new profile $profile")
+                printlnDev("ProfileScreenComponent: new profile $profile")
                 reduce { state ->
                     state.copy(value = profile.toUIProfileValue())
                 }

@@ -5,6 +5,7 @@ import com.padabajka.dating.core.repository.api.SocketRepository
 import com.padabajka.dating.core.repository.api.metadata.MetadataRepository
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
+import com.padabajka.dating.core.utils.printlnDev
 import com.padabajka.dating.feature.push.socket.data.network.KtorSocketApi
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.websocket.Frame
@@ -143,7 +144,7 @@ class KtorSocketRepository(
 
     private companion object {
         private fun log(message: String) {
-            println("LOG: websocket $message")
+            printlnDev("LOG: websocket $message")
         }
     }
 }

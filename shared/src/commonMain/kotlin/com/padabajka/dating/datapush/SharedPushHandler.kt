@@ -1,7 +1,9 @@
 package com.padabajka.dating.datapush
 
+import com.padabajka.dating.core.presentation.error.DomainErrorHandler
 import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
+import com.padabajka.dating.core.utils.runCatchingCancellable
 import com.padabajka.dating.feature.push.data.domain.HandlePushUseCase
 import com.padabajka.dating.feature.push.data.domain.UpdateTokenUseCase
 import com.padabajka.dating.feature.push.data.domain.model.PlatformDataPush
@@ -25,6 +27,9 @@ object SharedPushHandler : KoinComponent {
     private val userSessionManager: UserSessionManager
         get() = get()
 
+    private val domainErrorHandler: DomainErrorHandler
+        get() = get()
+
     private val scope: CoroutineScope = get()
 
     fun handlePush(rawPush: PlatformDataPush) {
@@ -36,13 +41,12 @@ object SharedPushHandler : KoinComponent {
         }
     }
 
-    fun saveToken(token: String) {
-        println("LOG: push saveToken $token")
+    fun saveToken() {
         scope.launch {
-            runCatching {
+            runCatchingCancellable {
                 updateTokenUseCase.invoke()
-            }.onFailure {
-                println("TODO: not impl for error SaveTokenUseCase")
+            }.onFailure { error ->
+                domainErrorHandler.handleExternal(error)
             }
         }
     }

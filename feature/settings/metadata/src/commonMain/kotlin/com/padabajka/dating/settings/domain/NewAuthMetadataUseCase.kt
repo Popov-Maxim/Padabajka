@@ -26,8 +26,6 @@ class NewAuthMetadataUseCase(
 
         val authMetadata = AuthMetadata(deviceUid, token, lang, timeZone)
 
-        runCatchingCancellable {
-            metadataRepository.updateAuthMetadata(authMetadata)
-        }.logFailureToCrashlytics().getOrThrow()
+        metadataRepository.updateAuthMetadata(authMetadata)
     }
 }
