@@ -8,6 +8,7 @@ import com.padabajka.dating.core.repository.api.model.auth.LoggedIn
 import com.padabajka.dating.core.repository.api.model.auth.LoggedOut
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.WaitingForEmailValidation
+import com.padabajka.dating.core.utils.isDebugBuild
 import com.padabajka.dating.feature.auth.data.local.LocalAuthDataSource
 import com.padabajka.dating.feature.auth.data.model.UserDto
 import com.padabajka.dating.feature.auth.data.remote.RemoteAuthDataSource
@@ -81,6 +82,9 @@ internal class AuthRepositoryImpl(
     }
 
     override suspend fun loginDebug(uuid: String) {
+        check(isDebugBuild) {
+            "Debug login is disabled"
+        }
         remoteAuthDataSource.loginDebug(uuid)
     }
 
