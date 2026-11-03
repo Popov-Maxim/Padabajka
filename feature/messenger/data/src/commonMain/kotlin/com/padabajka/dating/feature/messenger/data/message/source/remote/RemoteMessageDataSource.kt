@@ -32,7 +32,7 @@ internal interface RemoteMessageDataSource {
     suspend fun readMessages(chatId: ChatId, request: ChatRequest.MarkAsRead)
     suspend fun getMessages(
         chatId: ChatId,
-        beforeMessageId: String?,
+        beforeMessageId: MessageId?,
         count: Int
     ): MessageSyncResponse
 

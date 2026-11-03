@@ -58,20 +58,20 @@ sealed interface MessageDto {
 object MessageRequest {
     @Serializable
     data class Send(
-        val id: String,
+        val id: MessageId,
         val content: String, // TODO(P0): add content data class
-        val parentMessageId: String?
+        val parentMessageId: MessageId?
     )
 
     @Serializable
     data class Edit(
         val content: String?,
-        val parentMessageId: String?
+        val parentMessageId: MessageId?
     )
 
     @Serializable
     data class Get(
-        val beforeMessageId: String? = null,
+        val beforeMessageId: MessageId? = null,
         val count: Int
     )
 
@@ -105,16 +105,16 @@ object MessageReactionRequest {
 
 fun MessageEntry.toSendRequest(): MessageRequest.Send {
     return MessageRequest.Send(
-        id = id,
+        id = MessageId(id),
         content = content.text,
-        parentMessageId = parentMessageId
+        parentMessageId = parentMessageId?.let(::MessageId)
     )
 }
 
 fun MessageEntry.toEditRequest(): MessageRequest.Edit {
     return MessageRequest.Edit(
         content = content.text,
-        parentMessageId = parentMessageId
+        parentMessageId = parentMessageId?.let(::MessageId)
     )
 }
 
