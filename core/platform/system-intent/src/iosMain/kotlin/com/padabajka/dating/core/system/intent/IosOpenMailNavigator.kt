@@ -1,5 +1,6 @@
 package com.padabajka.dating.core.system.intent
 
+import com.padabajka.dating.core.utils.printlnDev
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
 
@@ -13,7 +14,7 @@ internal class IosOpenMailNavigator : OpenMailNavigator {
                 url = url,
                 options = emptyMap<Any?, Any?>(),
                 completionHandler = {
-                    println("OpenMailNavigator: $it")
+                    printlnDev("OpenMailNavigator: $it")
                 }
             )
         }

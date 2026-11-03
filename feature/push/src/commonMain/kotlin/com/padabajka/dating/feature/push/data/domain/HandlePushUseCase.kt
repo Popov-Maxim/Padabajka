@@ -6,6 +6,7 @@ import com.padabajka.dating.core.data.network.incoming.dto.MessageDataPush
 import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.model.auth.UserId
 import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
+import com.padabajka.dating.core.utils.printlnDev
 import com.padabajka.dating.feature.push.data.domain.model.MessagePush
 
 class HandlePushUseCase(
@@ -30,9 +31,9 @@ class HandlePushUseCase(
         val pushMessage = dataPushParser.parse(rawPush) ?: return
         if (pushMessage.recipientUserId != userId) return
 
-        println("HandlePushUseCase: rawPush = ${rawPush.dataJson}")
+        printlnDev("HandlePushUseCase: rawPush = ${rawPush.dataJson}")
         val dataPush = pushMessage.event
-        println("HandlePushUseCase: dataPush = $dataPush")
+        printlnDev("HandlePushUseCase: dataPush = $dataPush")
         when (dataPush) {
             is DataPush.UsersPresence -> handleUsersPresenceUseCase(dataPush)
             is DataPush.UserPresence -> handleUsersPresenceUseCase(dataPush)

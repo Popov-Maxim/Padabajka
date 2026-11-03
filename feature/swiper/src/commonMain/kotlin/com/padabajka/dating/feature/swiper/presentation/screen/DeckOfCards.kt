@@ -22,6 +22,7 @@ import androidx.compose.ui.zIndex
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.padabajka.dating.core.presentation.event.StateEvent
 import com.padabajka.dating.core.presentation.ui.modifier.innerShadow
+import com.padabajka.dating.core.utils.printlnDev
 import com.padabajka.dating.feature.swiper.presentation.SwiperScreenComponent
 import com.padabajka.dating.feature.swiper.presentation.model.ActionReturnEvent
 import com.padabajka.dating.feature.swiper.presentation.model.DislikeEvent
@@ -107,7 +108,7 @@ fun DeckOfCards(
                                 return@AnimationCard
                             }
                         }
-                        println("LOG UI: onSwipe $it")
+                        printlnDev("LOG UI: onSwipe $it")
 
                         swiperScreenComponent.onEvent(reaction)
                     },

@@ -2,6 +2,7 @@ package com.padabajka.dating.feature.image.domain
 
 import com.padabajka.dating.core.repository.api.ImageRepository
 import com.padabajka.dating.core.repository.api.model.profile.Image
+import com.padabajka.dating.core.utils.printlnDev
 
 class LoadImageUseCase(
     private val imageRepository: ImageRepository,
@@ -26,7 +27,7 @@ class LoadImageUseCase(
         val compressedImage = imageCompressor.compress(byteArray.value, COMPRESS_CONFIGURATION)
         val image = Image.ByteArray(compressedImage)
 
-        println("LoadImageUseCase: compressing ${byteArray.sizeInKb()} kb -> ${image.sizeInKb()} kb")
+        printlnDev("LoadImageUseCase: compressing ${byteArray.sizeInKb()} kb -> ${image.sizeInKb()} kb")
         return imageRepository.uploadImage(image)
     }
 
