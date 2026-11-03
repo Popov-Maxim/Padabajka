@@ -52,6 +52,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 dependencies {
     implementation(projects.shared)
     implementation(projects.core.platform.permission)
+    implementation(projects.core.utils)
     implementation(compose.ui)
     implementation(libs.androidx.activity.compose)
     implementation(libs.decompose)
