@@ -26,7 +26,7 @@ internal class MetadataRepositoryImpl(
     }
 
     override suspend fun deleteAuthMetadata(deviceUid: DeviceUid) {
-        val dto = DeleteMetadataDto(deviceUid.raw)
+        val dto = DeleteMetadataDto(deviceUid)
         remoteDataSource.deleteAuthMetadata(dto)
         lastSentUpdate = null
     }

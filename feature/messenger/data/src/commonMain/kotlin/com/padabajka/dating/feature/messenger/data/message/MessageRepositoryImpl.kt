@@ -232,7 +232,7 @@ internal class MessageRepositoryImpl(
         count: Int
     ) {
         val messageSyncResponse =
-            remoteMessageDataSource.getMessages(chatId, beforeMessageId?.raw, count)
+            remoteMessageDataSource.getMessages(chatId, beforeMessageId, count)
         updateMessageDto(messageSyncResponse.messages)
         updateReadEventDto(messageSyncResponse.readEvents)
 

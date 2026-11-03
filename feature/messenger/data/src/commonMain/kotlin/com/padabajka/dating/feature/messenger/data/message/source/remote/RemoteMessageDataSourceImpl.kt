@@ -55,7 +55,7 @@ internal class RemoteMessageDataSourceImpl(
         chatApi.markChatAsRead(chatId, request)
     }
 
-    override suspend fun getMessages(chatId: ChatId, beforeMessageId: String?, count: Int): MessageSyncResponse {
+    override suspend fun getMessages(chatId: ChatId, beforeMessageId: MessageId?, count: Int): MessageSyncResponse {
         val params = MessageRequest.Get(beforeMessageId, count)
         return messageApi.getMessages(chatId, params)
     }
