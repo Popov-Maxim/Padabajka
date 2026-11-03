@@ -37,6 +37,7 @@ import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.presentation.ui.mainColor
 import com.padabajka.dating.core.presentation.ui.modifier.hideKeyboardOnTap
 import com.padabajka.dating.core.presentation.ui.toDp
+import com.padabajka.dating.core.utils.isDebugBuild
 import com.padabajka.dating.feature.auth.presentation.screen.DebugLoginMethodScreen
 import com.padabajka.dating.feature.auth.presentation.screen.EmailLoginMethodScreen
 import com.padabajka.dating.feature.auth.presentation.screen.LoginMethodsScreen
@@ -131,8 +132,10 @@ private fun PadabajkaTheme(content: @Composable () -> Unit) {
                     .hideKeyboardOnTap()
             ) {
                 content.invoke()
-                FpsMonitor(modifier = Modifier.align(Alignment.TopStart))
-                SyncStatusBanner(modifier = Modifier.align(Alignment.TopCenter))
+                if (isDebugBuild) {
+                    FpsMonitor(modifier = Modifier.align(Alignment.TopStart))
+                    SyncStatusBanner(modifier = Modifier.align(Alignment.TopCenter))
+                }
             }
             val density = LocalDensity.current
             val navBarHeightPx = WindowInsets.navigationBars.getBottom(density)

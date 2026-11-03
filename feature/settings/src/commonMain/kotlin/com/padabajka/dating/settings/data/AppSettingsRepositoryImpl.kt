@@ -3,10 +3,12 @@ package com.padabajka.dating.settings.data
 import com.padabajka.dating.core.repository.api.AppSettingsRepository
 import com.padabajka.dating.core.repository.api.model.settings.AppSettings
 import com.padabajka.dating.core.repository.api.model.settings.DebugAppSettings
+import com.padabajka.dating.core.utils.isDebugBuild
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 
 class AppSettingsRepositoryImpl(
@@ -15,7 +17,11 @@ class AppSettingsRepositoryImpl(
     private val localDebugAppSettingsDataStore: LocalDebugAppSettingsDataStore,
 ) : AppSettingsRepository {
 
-    private val _debugAppSettings = localDebugAppSettingsDataStore.appSettings
+    private val _debugAppSettings = if (isDebugBuild) {
+        localDebugAppSettingsDataStore.appSettings
+    } else {
+        flowOf(DebugAppSettings())
+    }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.Eagerly,
@@ -35,6 +41,8 @@ class AppSettingsRepositoryImpl(
     }
 
     override suspend fun updateDebugAppSettings(update: DebugAppSettings.() -> DebugAppSettings) {
-        localDebugAppSettingsDataStore.updateAppSettings(update)
+        if (isDebugBuild) {
+            localDebugAppSettingsDataStore.updateAppSettings(update)
+        }
     }
 }
