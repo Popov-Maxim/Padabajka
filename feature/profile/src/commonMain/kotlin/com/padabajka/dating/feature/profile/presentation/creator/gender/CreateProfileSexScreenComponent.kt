@@ -3,6 +3,7 @@ package com.padabajka.dating.feature.profile.presentation.creator.gender
 import com.arkivanov.decompose.ComponentContext
 import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.repository.api.SearchPreferencesRepository
+import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
 import com.padabajka.dating.feature.profile.domain.creator.DraftProfileProvider
 import com.padabajka.dating.feature.profile.domain.update.UpdateUserGenderUseCase
 import com.padabajka.dating.feature.profile.presentation.creator.gender.model.GenderSelectorEvent
@@ -55,7 +56,7 @@ class CreateProfileSexScreenComponent(
             action = {
                 updateUserGenderUseCase(gender)
                 searchPreferencesRepository.update {
-                    it.copy(lookingGenders = preferredGender)
+                    (it ?: SearchPreferences.DEFAULT).copy(lookingGenders = preferredGender)
                 }
                 toNext()
             },

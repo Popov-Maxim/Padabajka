@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class LocalSearchPreferencesDataSourceImpl(
-    private val dataStore: DataStore<SearchPrefLocalDto>
+    private val dataStore: DataStore<SearchPrefLocalDto?>
 ) : LocalSearchPreferencesDataSource {
 
-    override val searchPreferences: Flow<SearchPreferences>
-        get() = dataStore.data.map { it.toSearchPref() }
+    override val searchPreferences: Flow<SearchPreferences?>
+        get() = dataStore.data.map { it?.toSearchPref() }
 
-    override suspend fun update(update: (SearchPreferences) -> SearchPreferences) {
-        dataStore.updateData { update(it.toSearchPref()).toDto() }
+    override suspend fun update(update: (SearchPreferences?) -> SearchPreferences?) {
+        dataStore.updateData { update(it?.toSearchPref())?.toDto() }
     }
 }

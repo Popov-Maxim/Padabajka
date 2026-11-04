@@ -5,7 +5,6 @@ import com.padabajka.dating.core.repository.api.CandidateRepository
 import com.padabajka.dating.core.repository.api.CardRepository
 import com.padabajka.dating.core.repository.api.ReactionRepository
 import com.padabajka.dating.core.repository.api.SearchPreferencesRepository
-import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
 import com.padabajka.dating.feature.swiper.data.CardRepositoryImpl
 import com.padabajka.dating.feature.swiper.data.CardSelector
 import com.padabajka.dating.feature.swiper.data.CardSelectorImpl
@@ -24,7 +23,8 @@ import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDa
 import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDataSourceImpl
 import com.padabajka.dating.feature.swiper.data.search.SearchPreferencesRepositoryImpl
 import com.padabajka.dating.feature.swiper.data.search.model.SearchPrefLocalDto
-import com.padabajka.dating.feature.swiper.data.search.model.toDto
+import com.padabajka.dating.feature.swiper.data.search.network.KtorSearchPreferencesApi
+import com.padabajka.dating.feature.swiper.data.search.network.SearchPreferencesApi
 import com.padabajka.dating.feature.swiper.data.search.source.LocalSearchPreferencesDataSource
 import com.padabajka.dating.feature.swiper.data.search.source.LocalSearchPreferencesDataSourceImpl
 import com.padabajka.dating.feature.swiper.domain.NextCardUseCase
@@ -33,6 +33,7 @@ import com.padabajka.dating.feature.swiper.domain.ReturnLastCardUseCase
 import com.padabajka.dating.feature.swiper.domain.search.SearchPreferencesProvider
 import com.padabajka.dating.feature.swiper.domain.search.UpdateSearchPrefUseCase
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.nullable
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -107,7 +108,8 @@ private val dataModule = module {
 
     single<SearchPreferencesRepository> {
         SearchPreferencesRepositoryImpl(
-            localDataSource = get()
+            localDataSource = get(),
+            api = get(),
         )
     }
 
@@ -115,11 +117,13 @@ private val dataModule = module {
         LocalSearchPreferencesDataSourceImpl(
             dataStore = DataStoreUtils.create(
                 dbName = "search_preferences_datastore",
-                delegate = SearchPrefLocalDto.serializer(),
-                default = SearchPreferences.DEFAULT.toDto()
+                delegate = SearchPrefLocalDto.serializer().nullable,
+                default = null
             )
         )
     }
+
+    factory<SearchPreferencesApi> { KtorSearchPreferencesApi(ktorClientProvider = get()) }
 }
 
 private val domainModule = module {
