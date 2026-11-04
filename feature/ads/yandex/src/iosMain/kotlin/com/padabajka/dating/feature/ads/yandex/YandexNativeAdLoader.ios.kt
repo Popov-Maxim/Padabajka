@@ -5,6 +5,7 @@ import cocoapods.YandexMobileAds.YMANativeAdLoaderDelegateProtocol
 import cocoapods.YandexMobileAds.YMANativeAdProtocol
 import cocoapods.YandexMobileAds.YMANativeAdRequestConfiguration
 import com.padabajka.dating.core.data.NativeAdLoader
+import com.padabajka.dating.core.domain.config.AdConfig
 import com.padabajka.dating.feature.ads.yandex.model.PlatformNativeAdImpl
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSError
@@ -32,7 +33,7 @@ actual class YandexNativeAdLoader(
     }
 
     override fun loadAd(configuration: NativeAdLoader.Configuration) {
-        val requestConfiguration = YMANativeAdRequestConfiguration("demo-native-video-yandex")
+        val requestConfiguration = YMANativeAdRequestConfiguration(AdConfig.Yandex.IOS_AD_UNIT_ID)
             .mutableConfiguration().apply {
                 setAge(configuration.age?.raw?.toNSNumber())
             }

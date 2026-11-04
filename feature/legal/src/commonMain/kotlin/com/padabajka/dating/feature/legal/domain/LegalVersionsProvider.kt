@@ -1,5 +1,6 @@
 package com.padabajka.dating.feature.legal.domain
 
+import com.padabajka.dating.core.domain.config.LegalConfig
 import com.padabajka.dating.core.repository.api.metadata.LegalRepository
 import com.padabajka.dating.core.repository.api.model.legal.LegalVersions
 
@@ -12,8 +13,8 @@ class LegalVersionsProvider(
 
     companion object {
         val default = LegalVersions(
-            privacy = "legal_test_2026_01_01",
-            terms = "legal_test_2026_01_01"
+            privacy = LegalConfig.DEFAULT_PRIVACY_VERSION,
+            terms = LegalConfig.DEFAULT_TERMS_VERSION
         )
     }
 }

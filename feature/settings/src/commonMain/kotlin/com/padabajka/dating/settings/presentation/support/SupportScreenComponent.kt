@@ -1,7 +1,7 @@
 package com.padabajka.dating.settings.presentation.support
 
 import com.arkivanov.decompose.ComponentContext
-import com.padabajka.dating.core.domain.config.SUPPORT_EMAIL
+import com.padabajka.dating.core.domain.config.SupportConfig
 import com.padabajka.dating.core.presentation.BaseComponent
 import com.padabajka.dating.core.presentation.error.toTextError
 import com.padabajka.dating.core.presentation.event.AlertService
@@ -37,7 +37,7 @@ class SupportScreenComponent(
             action = {
                 try {
                     val opened = systemNavigator.composeMail(
-                        address = SUPPORT_EMAIL,
+                        address = SupportConfig.SUPPORT_EMAIL,
                         subject = "[Padabajka][${category.tag}]",
                         body = currentState.description.trim()
                     )

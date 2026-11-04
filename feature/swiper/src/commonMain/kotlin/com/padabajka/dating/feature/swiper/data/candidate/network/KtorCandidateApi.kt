@@ -28,7 +28,10 @@ class KtorCandidateApi(
 
                 parameters.append(searchPreferences)
                 parameters.append(COUNT, count.toString())
-                parameters.appendAll(EXCLUDED, loaded.map { it.raw })
+                val excluded = loaded.map { it.raw }
+                if (excluded.isNotEmpty()) {
+                    parameters.appendAll(EXCLUDED, excluded)
+                }
             }
         }
 
@@ -41,7 +44,10 @@ class KtorCandidateApi(
         val ageRange = searchPreferences.ageRange
         append(FROM_AGE, ageRange.start.raw.toString())
         append(TO_AGE, ageRange.endInclusive.raw.toString())
-        appendAll(LOOKING_GENDERS, searchPreferences.lookingGenders.map { it.raw })
+        val lookingGenders = searchPreferences.lookingGenders.map { it.raw }
+        if (lookingGenders.isNotEmpty()) {
+            appendAll(LOOKING_GENDERS, lookingGenders)
+        }
         append(DISTANCE_IN_KM, searchPreferences.distanceInKm.toString())
     }
 

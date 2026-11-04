@@ -113,7 +113,7 @@ private fun GeneralSetting(
         SettingButtonData(
             iconData = CoreIcons.Settings.Notification.toData(),
             text = StaticTextId.UiId.Notification.translate(),
-            secondText = "permissionAllow: $permissionAllow", // TODO(P0)
+            secondText = "permissionAllow: $permissionAllow".takeIf { isDebugBuild },
             onClick = { component.onEvent(RequestPermissionEvent) }
         ),
         SettingButtonData(
