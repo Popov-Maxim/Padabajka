@@ -1,6 +1,7 @@
 package com.padabajka.dating.feature.ads.yandex
 
 import com.padabajka.dating.core.data.NativeAdLoader
+import com.padabajka.dating.core.domain.config.AdConfig
 import com.padabajka.dating.feature.ads.yandex.model.PlatformNativeAdImpl
 import com.yandex.mobile.ads.common.AdRequestError
 import com.yandex.mobile.ads.nativeads.NativeAd
@@ -33,7 +34,7 @@ actual class YandexNativeAdLoader(private val nativeAdLoader: SdkNativeAdLoader)
 
     private fun createConfiguration(configuration: NativeAdLoader.Configuration): NativeAdRequestConfiguration {
         return NativeAdRequestConfiguration
-            .Builder("demo-native-video-yandex")
+            .Builder(AdConfig.Yandex.ANDROID_AD_UNIT_ID)
             .apply {
                 configuration.age?.let { setAge(it.raw.toString()) }
             }.build()

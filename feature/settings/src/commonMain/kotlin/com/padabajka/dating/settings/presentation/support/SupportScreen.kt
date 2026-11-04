@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.padabajka.dating.core.domain.config.SUPPORT_EMAIL
+import com.padabajka.dating.core.domain.config.SupportConfig
 import com.padabajka.dating.core.presentation.ui.CoreCallToActionButton
 import com.padabajka.dating.core.presentation.ui.CoreColors
 import com.padabajka.dating.core.presentation.ui.CoreTextEditField
@@ -189,11 +189,11 @@ private fun DirectContact() {
         ) {
             SelectionContainer(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = SUPPORT_EMAIL,
+                    text = SupportConfig.SUPPORT_EMAIL,
                     color = CoreColors.secondary.mainColor
                 )
             }
-            TextButton(onClick = { clipboard.setText(AnnotatedString(SUPPORT_EMAIL)) }) {
+            TextButton(onClick = { clipboard.setText(AnnotatedString(SupportConfig.SUPPORT_EMAIL)) }) {
                 Text(StaticTextId.UiId.MessagePopupCopy.translate())
             }
         }
