@@ -28,6 +28,25 @@ class EngDictionary : Dictionary() {
             StaticTextId.UiId.Subscription -> "Subscription"
             StaticTextId.UiId.Notification -> "Notification"
             StaticTextId.UiId.FAQ -> "FAQ"
+            StaticTextId.UiId.Support -> "Support"
+            StaticTextId.UiId.SupportCategory -> "Category"
+            StaticTextId.UiId.SupportCategoryHint -> "Choose a category"
+            StaticTextId.UiId.SupportCategoryBug -> "App issue"
+            StaticTextId.UiId.SupportCategoryReport -> "Report a user"
+            StaticTextId.UiId.SupportCategoryPayment -> "Subscription and payment"
+            StaticTextId.UiId.SupportCategoryAccount -> "Sign-in and account"
+            StaticTextId.UiId.SupportCategoryOther -> "Other"
+            StaticTextId.UiId.SupportDescription -> "Description"
+            StaticTextId.UiId.SupportDescriptionHint ->
+                "Tell us what happened. If this is a bug, how can we reproduce it?"
+            StaticTextId.UiId.SupportOpenMail -> "Continue in email"
+            StaticTextId.UiId.SupportMailHint ->
+                "Your email app will open. Review the message and send it."
+            StaticTextId.UiId.SupportDirectContact -> "Or email us directly"
+            StaticTextId.UiId.SupportDirectContactHint ->
+                "If your email app did not open, copy the address and write from any email app."
+            StaticTextId.UiId.SupportMailUnavailable ->
+                "Could not open an email app. Copy the support address and write from your email app."
             StaticTextId.UiId.FreezeProfile -> "Freeze profile"
             StaticTextId.UiId.TermsOfUse -> "Terms of use"
             StaticTextId.UiId.PrivacyPolicy -> "Privacy policy"

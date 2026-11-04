@@ -6,6 +6,7 @@ import com.padabajka.dating.feature.permission.flow.presentation.PermissionFlowC
 import com.padabajka.dating.feature.subscription.presentation.SubscriptionScreenComponent
 import com.padabajka.dating.settings.presentation.setting.LanguageSelectorComponent
 import com.padabajka.dating.settings.presentation.setting.SettingNavigator
+import com.padabajka.dating.settings.presentation.support.SupportScreenComponent
 import kotlinx.serialization.Serializable
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
@@ -30,6 +31,10 @@ class SettingsScopeNavigateComponent(
 
         override fun openSubscriptionScreen() {
             navigate(Configuration.SubscriptionScreen)
+        }
+
+        override fun openSupportScreen() {
+            navigate(Configuration.SupportScreen)
         }
     }
 
@@ -72,6 +77,15 @@ class SettingsScopeNavigateComponent(
                     alertService = get()
                 )
             )
+
+            Configuration.SupportScreen -> Child.SupportScreen(
+                component = SupportScreenComponent(
+                    context = context,
+                    navigateBack = ::navigateBack,
+                    systemNavigator = get(),
+                    alertService = get()
+                )
+            )
         }
     }
 
@@ -81,6 +95,7 @@ class SettingsScopeNavigateComponent(
         data class SubscriptionScreen(val component: SubscriptionScreenComponent) : Child
 
         data class PermissionFlowScreen(val component: PermissionFlowComponent) : Child
+        data class SupportScreen(val component: SupportScreenComponent) : Child
     }
 
     @Serializable
@@ -97,5 +112,8 @@ class SettingsScopeNavigateComponent(
 
         @Serializable
         data object SubscriptionScreen : Configuration
+
+        @Serializable
+        data object SupportScreen : Configuration
     }
 }

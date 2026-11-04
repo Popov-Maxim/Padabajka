@@ -30,6 +30,25 @@ class RuDictionary : Dictionary() {
             StaticTextId.UiId.Subscription -> "Подписка"
             StaticTextId.UiId.Notification -> "Уведомления"
             StaticTextId.UiId.FAQ -> "FAQ"
+            StaticTextId.UiId.Support -> "Поддержка"
+            StaticTextId.UiId.SupportCategory -> "Категория"
+            StaticTextId.UiId.SupportCategoryHint -> "Выберите категорию"
+            StaticTextId.UiId.SupportCategoryBug -> "Ошибка приложения"
+            StaticTextId.UiId.SupportCategoryReport -> "Жалоба на пользователя"
+            StaticTextId.UiId.SupportCategoryPayment -> "Подписка и оплата"
+            StaticTextId.UiId.SupportCategoryAccount -> "Вход и аккаунт"
+            StaticTextId.UiId.SupportCategoryOther -> "Другое"
+            StaticTextId.UiId.SupportDescription -> "Описание"
+            StaticTextId.UiId.SupportDescriptionHint ->
+                "Расскажите, что произошло. Если это ошибка — как её повторить?"
+            StaticTextId.UiId.SupportOpenMail -> "Перейти в почту"
+            StaticTextId.UiId.SupportMailHint ->
+                "Откроется почтовое приложение. Проверьте письмо и отправьте его."
+            StaticTextId.UiId.SupportDirectContact -> "Или напишите напрямую"
+            StaticTextId.UiId.SupportDirectContactHint ->
+                "Если почта не открылась, скопируйте адрес и напишите из любого почтового приложения."
+            StaticTextId.UiId.SupportMailUnavailable ->
+                "Не удалось открыть почтовое приложение. Скопируйте адрес поддержки и напишите из своей почты."
             StaticTextId.UiId.FreezeProfile -> "Заморозить профиль"
             StaticTextId.UiId.TermsOfUse -> "Пользовательское соглашение"
             StaticTextId.UiId.PrivacyPolicy -> "Политика конфиденциальности"

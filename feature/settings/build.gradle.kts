@@ -39,6 +39,7 @@ kotlin {
             implementation(projects.feature.push)
             implementation(projects.feature.permissionFlow)
             implementation(projects.feature.subscription)
+            implementation(projects.core.platform.systemIntent)
         }
     }
 }
