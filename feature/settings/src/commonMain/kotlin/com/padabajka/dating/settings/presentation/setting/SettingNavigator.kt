@@ -4,4 +4,5 @@ interface SettingNavigator {
     fun openLanguageSelector()
     fun openPermissionFlow()
     fun openSubscriptionScreen()
+    fun openSupportScreen()
 }

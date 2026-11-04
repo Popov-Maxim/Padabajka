@@ -118,9 +118,9 @@ private fun GeneralSetting(
         ),
         SettingButtonData(
             iconData = CoreIcons.Settings.FAQ.toData(),
-            text = StaticTextId.UiId.FAQ.translate(),
+            text = StaticTextId.UiId.Support.translate(),
             secondText = null,
-            onClick = { }
+            onClick = { component.onEvent(SettingsEvent.OpenSupport) }
         ),
         SettingButtonData(
             iconData = CoreIcons.Settings.Snowman.toData(),

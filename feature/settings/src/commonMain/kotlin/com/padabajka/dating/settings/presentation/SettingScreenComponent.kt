@@ -113,6 +113,7 @@ class SettingScreenComponent(
             FreezeAccountEvent -> changeFreeze(true)
             UnfreezeAccountEvent -> changeFreeze(false)
             SettingsEvent.OpenSubscription -> settingNavigator.openSubscriptionScreen()
+            SettingsEvent.OpenSupport -> settingNavigator.openSupportScreen()
         }
     }
 

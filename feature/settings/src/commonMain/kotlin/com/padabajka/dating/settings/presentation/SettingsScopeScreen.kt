@@ -8,6 +8,7 @@ import com.padabajka.dating.core.presentation.NavigateComponentContext
 import com.padabajka.dating.feature.permission.flow.presentation.PermissionFlowScreen
 import com.padabajka.dating.feature.subscription.presentation.SubscriptionScreen
 import com.padabajka.dating.settings.presentation.setting.LanguageSelectorScreen
+import com.padabajka.dating.settings.presentation.support.SupportScreen
 
 @Composable
 fun SettingsScopeScreen(component: SettingsScopeNavigateComponent) {
@@ -27,6 +28,8 @@ fun SettingsScopeScreen(component: SettingsScopeNavigateComponent) {
                 PermissionFlowScreen(instance.component)
             is SettingsScopeNavigateComponent.Child.SubscriptionScreen ->
                 SubscriptionScreen(instance.component)
+            is SettingsScopeNavigateComponent.Child.SupportScreen ->
+                SupportScreen(instance.component)
         }
     }
 }

@@ -2,6 +2,7 @@ package com.padabajka.dating.settings.presentation.model
 
 sealed interface SettingsEvent {
     data object OpenSubscription : SettingsEvent
+    data object OpenSupport : SettingsEvent
 }
 
 data object LogOutEvent : SettingsEvent
