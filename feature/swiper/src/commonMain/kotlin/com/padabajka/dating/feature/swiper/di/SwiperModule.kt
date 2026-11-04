@@ -22,7 +22,7 @@ import com.padabajka.dating.feature.swiper.data.reaction.source.LocalReactionDat
 import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDataSource
 import com.padabajka.dating.feature.swiper.data.reaction.source.RemoteReactionDataSourceImpl
 import com.padabajka.dating.feature.swiper.data.search.SearchPreferencesRepositoryImpl
-import com.padabajka.dating.feature.swiper.data.search.model.SearchPrefLocalDto
+import com.padabajka.dating.feature.swiper.data.search.model.SearchPrefLocalCacheDto
 import com.padabajka.dating.feature.swiper.data.search.network.KtorSearchPreferencesApi
 import com.padabajka.dating.feature.swiper.data.search.network.SearchPreferencesApi
 import com.padabajka.dating.feature.swiper.data.search.source.LocalSearchPreferencesDataSource
@@ -33,7 +33,6 @@ import com.padabajka.dating.feature.swiper.domain.ReturnLastCardUseCase
 import com.padabajka.dating.feature.swiper.domain.search.SearchPreferencesProvider
 import com.padabajka.dating.feature.swiper.domain.search.UpdateSearchPrefUseCase
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.builtins.nullable
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -117,8 +116,8 @@ private val dataModule = module {
         LocalSearchPreferencesDataSourceImpl(
             dataStore = DataStoreUtils.create(
                 dbName = "search_preferences_datastore",
-                delegate = SearchPrefLocalDto.serializer().nullable,
-                default = null
+                delegate = SearchPrefLocalCacheDto.serializer(),
+                default = SearchPrefLocalCacheDto()
             )
         )
     }

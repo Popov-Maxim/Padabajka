@@ -36,11 +36,10 @@ fun SwiperScreen(
     swiperScreenComponent: SwiperScreenComponent,
     navigateBar: @Composable () -> Unit
 ) {
+    val state by swiperScreenComponent.state.subscribeAsState()
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
-
-    val state by swiperScreenComponent.state.subscribeAsState()
 
     CustomScaffold(
         useIme = false,
@@ -56,7 +55,10 @@ fun SwiperScreen(
         if (TEST_MODE) {
             TestDeckOfCards()
         } else {
-            DeckOfCards(swiperScreenComponent)
+            DeckOfCards(
+                swiperScreenComponent = swiperScreenComponent,
+                openSearchPreferences = { showBottomSheet = true }
+            )
         }
     }
 

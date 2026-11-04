@@ -83,7 +83,15 @@ class SwiperScreenComponent(
                 Triple(searchPreferences, profileState, isPermissionGranted)
             }.collect { (searchPreferences, profileState, isPermissionGranted) ->
                 if (searchPreferences == null) {
-                    TODO("Show preference selection on the card when no saved search filter is available")
+                    reduce {
+                        it.copy(
+                            cardDeck = CardDeck(),
+                            lastSkippedCard = null,
+                            cardDeckState = CardDeckState.SearchPreferencesRequired,
+                            searchPreferences = SearchPreferencesItem.NotConfigured
+                        )
+                    }
+                    return@collect
                 }
                 val criticalState = if (isPermissionGranted.not()) {
                     CardDeckState.HasNotPermission
