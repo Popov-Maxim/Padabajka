@@ -196,6 +196,9 @@ class EngDictionary : Dictionary() {
                 "We’re looking for new profiles, but something went wrong. Try again in a moment"
 
             StaticTextId.UiId.ResetSearchFilters -> "Reset filter"
+            StaticTextId.UiId.CardDeckSearchPreferencesRequired ->
+                "Set up your search filters to find profiles"
+            StaticTextId.UiId.ConfigureSearchFilters -> "Set up filters"
             StaticTextId.UiId.CardDeckEmptyProfiles ->
                 "Looks like you’ve seen everyone who matches your current filters.\n\n" +
                     "Want to widen your search?"

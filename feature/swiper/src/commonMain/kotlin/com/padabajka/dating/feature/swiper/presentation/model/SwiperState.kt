@@ -47,6 +47,7 @@ sealed interface CardDeckState {
     data object Empty : CardDeckState
     data object Frozen : CardDeckState
     data object HasNotPermission : CardDeckState
+    data object SearchPreferencesRequired : CardDeckState
 //    data object ProfileNotCreated : CardDeckState
 }
 
@@ -65,6 +66,7 @@ sealed interface SearchPreferencesItem {
     }
 
     data object Loading : SearchPreferencesItem
+    data object NotConfigured : SearchPreferencesItem
 }
 
 @Immutable

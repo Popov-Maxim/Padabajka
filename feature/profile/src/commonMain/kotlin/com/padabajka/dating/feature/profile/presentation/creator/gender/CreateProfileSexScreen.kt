@@ -19,7 +19,7 @@ import com.padabajka.dating.feature.profile.presentation.creator.CreateProfileBu
 import com.padabajka.dating.feature.profile.presentation.creator.CreateProfileScreen
 import com.padabajka.dating.feature.profile.presentation.creator.gender.model.GenderSelectorEvent
 import com.padabajka.dating.feature.profile.presentation.creator.gender.ui.GenderSelector
-import com.padabajka.dating.feature.profile.presentation.creator.gender.ui.PreferredGenderSelector
+import com.padabajka.dating.feature.profile.presentation.creator.gender.ui.PreferenceSelector
 import com.padabajka.dating.feature.profile.presentation.creator.name.TextAsset
 
 @Composable
@@ -54,6 +54,7 @@ private fun MainContent(
     modifier: Modifier = Modifier,
     component: CreateProfileSexScreenComponent
 ) {
+    val state by component.state.subscribeAsState()
     Column(modifier.fillMaxSize()) {
         BiologicalSexSelector(
             modifier = Modifier.weight(1f).padding(horizontal = 45.dp),
@@ -61,7 +62,8 @@ private fun MainContent(
         )
         PreferenceSelector(
             modifier = Modifier.weight(1f).padding(horizontal = 45.dp),
-            component = component
+            selectedGender = state.preferredGender,
+            select = { component.onEvent(GenderSelectorEvent.PreferredGenderSelected(it)) }
         )
     }
 }
@@ -86,30 +88,6 @@ private fun BiologicalSexSelector(
         GenderSelector(
             selectedGender = state.userGender,
             select = { component.onEvent(GenderSelectorEvent.UserGenderSelected(it)) }
-        )
-    }
-}
-
-@Composable
-private fun PreferenceSelector(
-    modifier: Modifier = Modifier,
-    component: CreateProfileSexScreenComponent
-) {
-    val state by component.state.subscribeAsState()
-
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        TextAsset(
-            title = StaticTextId.UiId.WhatPreferenceTitle.translate(),
-            body = StaticTextId.UiId.WhatPreferenceBody.translate(),
-            modifier = Modifier.fillMaxWidth()
-        )
-        PreferredGenderSelector(
-            selectedGender = state.preferredGender,
-            select = { component.onEvent(GenderSelectorEvent.PreferredGenderSelected(it)) }
         )
     }
 }

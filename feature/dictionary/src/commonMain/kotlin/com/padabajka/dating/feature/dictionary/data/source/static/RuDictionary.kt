@@ -194,6 +194,9 @@ class RuDictionary : Dictionary() {
                 "Мы ищем новые профили, но что-то пошло не так. Попробуйте еще раз через минуту"
 
             StaticTextId.UiId.ResetSearchFilters -> "Сбросить фильтр"
+            StaticTextId.UiId.CardDeckSearchPreferencesRequired ->
+                "Чтобы подобрать анкеты, нужно настроить фильтр поиска"
+            StaticTextId.UiId.ConfigureSearchFilters -> "Настроить фильтр"
             StaticTextId.UiId.CardDeckEmptyProfiles ->
                 "Похоже, вы просмотрели всех, кто соответствует вашим текущим фильтрам.\n\n" +
                     "Хотите расширить поиск?"

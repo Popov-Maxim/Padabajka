@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 class SearchPreferencesProvider(
     private val searchPreferencesRepository: SearchPreferencesRepository
 ) {
-    fun get(): Flow<SearchPreferences> = searchPreferencesRepository.searchPreferences
+    fun get(): Flow<SearchPreferences?> = searchPreferencesRepository.searchPreferences
 }

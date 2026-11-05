@@ -218,6 +218,8 @@ sealed interface StaticTextId {
         CardDeckErrorLoadingProfiles(rawId = "card_deck_error_loading_profiles"),
         ResetSearchFilters(rawId = "reset_search_filters"),
         CardDeckEmptyProfiles(rawId = "card_deck_empty_profiles"),
+        CardDeckSearchPreferencesRequired(rawId = "card_deck_search_preferences_required"),
+        ConfigureSearchFilters(rawId = "configure_search_filters"),
         CardDeckFrozenProfile(rawId = "card_deck_frozen_profile"),
         Unfreeze(rawId = "unfreeze"),
         CardDeckHasNotLocationPermission(rawId = "card_deck_has_not_location_permission"),

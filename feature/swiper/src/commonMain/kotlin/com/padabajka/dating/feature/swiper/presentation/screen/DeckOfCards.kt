@@ -37,7 +37,8 @@ import com.padabajka.dating.feature.swiper.presentation.screen.card.CardReaction
 
 @Composable
 fun DeckOfCards(
-    swiperScreenComponent: SwiperScreenComponent
+    swiperScreenComponent: SwiperScreenComponent,
+    openSearchPreferences: () -> Unit,
 ) {
     val state by swiperScreenComponent.state.subscribeAsState()
     val cardDeck = state.cardDeck
@@ -61,7 +62,8 @@ fun DeckOfCards(
                     shape = shape
                 )
                 .innerShadow(shape = shape),
-            onEvent = swiperScreenComponent::onEvent
+            onEvent = swiperScreenComponent::onEvent,
+            openSearchPreferences = openSearchPreferences
         )
 
         val cards = cardDeck.getCards()

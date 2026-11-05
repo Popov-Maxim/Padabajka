@@ -33,6 +33,7 @@ import com.padabajka.dating.feature.swiper.presentation.model.UnfreezeProfileEve
 fun CardDeckPlaceholder(
     state: SwiperState,
     modifier: Modifier = Modifier,
+    openSearchPreferences: () -> Unit,
     onEvent: (SwiperEvent) -> Unit
 ) {
     val cardDeckState = state.cardDeckState
@@ -45,13 +46,28 @@ fun CardDeckPlaceholder(
             )
 
             CardDeckState.Frozen -> Frozen(onEvent)
-            CardDeckState.Idle -> {}
+            CardDeckState.Idle,
             CardDeckState.Loading -> Loading(
                 modifier = Modifier.align(Alignment.Center)
             )
 
             CardDeckState.HasNotPermission -> HasNotPermission(onEvent)
+            CardDeckState.SearchPreferencesRequired -> SearchPreferencesRequired(openSearchPreferences)
         }
+    }
+}
+
+@Composable
+private fun SearchPreferencesRequired(openSearchPreferences: () -> Unit) {
+    Column(modifier = Modifier.fillMaxSize().padding(40.dp)) {
+        SimpleText(
+            text = StaticTextId.UiId.CardDeckSearchPreferencesRequired.translate(),
+            modifier = Modifier.weight(1f)
+        )
+        CoreCallToActionButton(
+            text = StaticTextId.UiId.ConfigureSearchFilters.translate(),
+            onClick = openSearchPreferences
+        )
     }
 }
 
@@ -99,6 +115,7 @@ private fun Empty(
     val searchPreferences = state.searchPreferences
     val enabledResetButton = when (searchPreferences) {
         SearchPreferencesItem.Loading -> false
+        SearchPreferencesItem.NotConfigured -> false
         is SearchPreferencesItem.Success -> searchPreferences.isDefault.not()
     }
     Column(
