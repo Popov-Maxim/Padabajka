@@ -180,7 +180,7 @@ fun AppSettingsDialog(
 }
 
 private enum class SelectedHost {
-    Default,
+    Dev,
     Localhost,
     Custom
 }
@@ -188,14 +188,14 @@ private enum class SelectedHost {
 private fun Host.toSelectedHost(): SelectedHost {
     return when (this) {
         is Host.Local -> SelectedHost.Localhost
-        Host.Prod -> SelectedHost.Default
+        Host.Default -> SelectedHost.Dev
         is Host.Custom -> SelectedHost.Custom
     }
 }
 
 private fun SelectedHost.toHost(ipAddress: String, port: Int? = null): Host {
     return when (this) {
-        SelectedHost.Default -> Host.Prod
+        SelectedHost.Dev -> Host.Default
         SelectedHost.Localhost -> Host.Local(localHost, NetworkConstants.LOCAL_PORT)
         SelectedHost.Custom -> Host.Custom(ipAddress, port)
     }

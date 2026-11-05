@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface Host {
     @Serializable
-    data object Prod : Host
+    data object Default : Host
 
     @Serializable
     data class Local(val host: String, val port: Int? = null) : Host
@@ -18,7 +18,7 @@ fun Host.raw(): String? {
     return when (this) {
         is Host.Custom -> host
         is Host.Local -> host
-        Host.Prod -> null
+        Host.Default -> null
     }
 }
 
@@ -26,7 +26,7 @@ fun Host.rawPort(): Int? {
     return when (this) {
         is Host.Custom -> port
         is Host.Local -> port
-        Host.Prod -> null
+        Host.Default -> null
     }
 }
 
@@ -34,6 +34,6 @@ fun Host.isHttps(): Boolean {
     return when (this) {
         is Host.Custom -> false
         is Host.Local -> false
-        Host.Prod -> true
+        Host.Default -> true
     }
 }
