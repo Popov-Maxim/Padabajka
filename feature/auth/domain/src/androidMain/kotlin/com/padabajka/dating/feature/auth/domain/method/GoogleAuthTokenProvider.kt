@@ -7,8 +7,8 @@ import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.padabajka.dating.core.platform.data.activity.AndroidActivityProvider
+import com.padabajka.dating.core.platform.data.res.ResProvider
 import com.padabajka.dating.core.repository.api.exception.AuthCredentialError
-import com.padabajka.dating.feature.auth.domain.BuildConfig
 import io.ktor.utils.io.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -16,10 +16,13 @@ import kotlinx.coroutines.withContext
 actual class GoogleAuthTokenProvider(
     context: Context,
     private val activityProvider: AndroidActivityProvider,
+    private val resProvider: ResProvider,
 ) {
-    private val credentialManager = CredentialManager.create(context.applicationContext)
+    private val applicationContext = context.applicationContext
+    private val credentialManager = CredentialManager.create(applicationContext)
+
     actual suspend fun getCredentialData(): CredentialData {
-        val clientId = BuildConfig.GOOGLE_CLIENT_ID
+        val clientId = applicationContext.getString(resProvider.googleServerClientId)
         val googleIdOption = GetGoogleIdOption.Builder()
             .setServerClientId(clientId)
             .setFilterByAuthorizedAccounts(false)

@@ -6,6 +6,9 @@ import com.padabajka.dating.di.initKoinAndroid
 class Application : Application() {
     override fun onCreate() {
         super.onCreate()
-        initKoinAndroid(this)
+        initKoinAndroid(
+            application = this,
+            resProvider = AppResProvider
+        )
     }
 }
