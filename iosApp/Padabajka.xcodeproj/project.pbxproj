@@ -12,7 +12,6 @@
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 		A81B04902FF1000100B142C3 /* StoreKit2Bridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81B04912FF1000100B142C3 /* StoreKit2Bridge.swift */; };
-		9C9462B92B96429F0084F865 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C9462B82B96429F0084F865 /* GoogleService-Info.plist */; };
 		9C9F3E532FD92FDB0082F363 /* Padabajka.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9C9F3E522FD92FDB0082F363 /* Padabajka.storekit */; };
 		A7C29F102F80000100B142C3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A7C29F132F80000100B142C3 /* InfoPlist.strings */; };
 		EBB4A2CFCF4DF11B7896C2A7 /* Pods_Padabajka.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 399F43F7E1499AEC45729AF3 /* Pods_Padabajka.framework */; };
@@ -45,7 +44,6 @@
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9C9462B32B9641040084F865 /* Pods */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Pods; sourceTree = "<group>"; };
 		9C9462B42B96411C0084F865 /* FirebaseCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FirebaseCore; path = Pods/FirebaseCore; sourceTree = "<group>"; };
-		9C9462B82B96429F0084F865 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9C9F3E522FD92FDB0082F363 /* Padabajka.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Padabajka.storekit; sourceTree = "<group>"; };
 		9CC347152DCE710D00E997C4 /* iosApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosApp.entitlements; sourceTree = "<group>"; };
 		A7C29F112F80000100B142C3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -53,10 +51,22 @@
 		FBFE9703926456949DC519A5 /* Pods-Padabajka.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Padabajka.release.xcconfig"; path = "Target Support Files/Pods-Padabajka/Pods-Padabajka.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A7C29F202F80000100B142C3 /* Exceptions for Config in Padabajka target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Dev/GoogleService-Info.plist",
+				"Release/GoogleService-Info.plist",
+			);
+			target = 7555FF7A242A565900829871 /* Padabajka */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9C18C7BB2E630AFD00152047 /* Config */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				A7C29F202F80000100B142C3 /* Exceptions for Config in Padabajka target */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -106,7 +116,6 @@
 			children = (
 				9C18C7BB2E630AFD00152047 /* Config */,
 				9CC347152DCE710D00E997C4 /* iosApp.entitlements */,
-				9C9462B82B96429F0084F865 /* GoogleService-Info.plist */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
 				7555FF82242A565900829871 /* ContentView.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,
@@ -154,6 +163,7 @@
 				9C9462B72B9641270084F865 /* Embed Frameworks */,
 				19B40CBD8C955F3A0FBBA4CA /* [CP] Embed Pods Frameworks */,
 				CD2910A29C2D3B557041AE5A /* [CP] Copy Pods Resources */,
+				A7C29F212F80000100B142C3 /* Copy Firebase Config */,
 				9CFDECF42F6537BF0025150B /* Run Script */,
 			);
 			buildRules = (
@@ -210,7 +220,6 @@
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
 				058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */,
 				9C9F3E532FD92FDB0082F363 /* Padabajka.storekit in Resources */,
-				9C9462B92B96429F0084F865 /* GoogleService-Info.plist in Resources */,
 				A7C29F102F80000100B142C3 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -218,6 +227,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		A7C29F212F80000100B142C3 /* Copy Firebase Config */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(FIREBASE_CONFIG)",
+			);
+			name = "Copy Firebase Config";
+			outputPaths = (
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -eu\ncp \"$SCRIPT_INPUT_FILE_0\" \"$SCRIPT_OUTPUT_FILE_0\"\n";
+			showEnvVarsInLog = 0;
+		};
 		19B40CBD8C955F3A0FBBA4CA /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
