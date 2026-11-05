@@ -5,9 +5,6 @@
 	<key>aps-environment</key>
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
-	<array>
-		<string>applinks:padabajka-96c95.firebaseapp.com</string>
-		<string>applinks:www.padabajka-96c95.firebaseapp.com</string>
-	</array>
+	<array/>
 </dict>
 </plist>
