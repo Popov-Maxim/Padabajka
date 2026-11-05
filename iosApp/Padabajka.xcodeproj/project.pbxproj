@@ -49,21 +49,10 @@
 		FBFE9703926456949DC519A5 /* Pods-Padabajka.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Padabajka.release.xcconfig"; path = "Target Support Files/Pods-Padabajka/Pods-Padabajka.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		A7C29F202F80000100B142C3 /* Exceptions for "Config" folder in "Padabajka" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Dev/GoogleService-Info.plist",
-			);
-			target = 7555FF7A242A565900829871 /* Padabajka */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9C18C7BB2E630AFD00152047 /* Config */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				A7C29F202F80000100B142C3 /* Exceptions for "Config" folder in "Padabajka" target */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -165,9 +154,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				9C18C7BB2E630AFD00152047 /* Config */,
 			);
 			name = Padabajka;
 			productName = iosApp;
