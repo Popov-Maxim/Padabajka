@@ -157,6 +157,7 @@
 			buildConfigurationList = 7555FFA5242A565B00829871 /* Build configuration list for PBXNativeTarget "Padabajka" */;
 			buildPhases = (
 				728CDDFC2E5EB334A855206E /* [CP] Check Pods Manifest.lock */,
+				A7C29F222F80000100B142C3 /* Prepare Info.plist */,
 				7555FF77242A565900829871 /* Sources */,
 				7555FF79242A565900829871 /* Resources */,
 				27BFDC089B9F1D64E6670F44 /* Frameworks */,
@@ -227,6 +228,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		A7C29F222F80000100B142C3 /* Prepare Info.plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/iosApp/Info.plist",
+				"$(FIREBASE_CONFIG)",
+			);
+			name = "Prepare Info.plist";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Info.plist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -eu\ngoogle_client_id=$(/usr/libexec/PlistBuddy -c \"Print :CLIENT_ID\" \"$SCRIPT_INPUT_FILE_1\")\nreversed_client_id=$(/usr/libexec/PlistBuddy -c \"Print :REVERSED_CLIENT_ID\" \"$SCRIPT_INPUT_FILE_1\")\nmkdir -p \"$DERIVED_FILE_DIR\"\ncp \"$SCRIPT_INPUT_FILE_0\" \"$SCRIPT_OUTPUT_FILE_0\"\n/usr/libexec/PlistBuddy -c \"Set :GIDClientID $google_client_id\" \"$SCRIPT_OUTPUT_FILE_0\"\n# The first URL type in the template is Google Sign-In.\n/usr/libexec/PlistBuddy -c \"Set :CFBundleURLTypes:0:CFBundleURLSchemes:0 $reversed_client_id\" \"$SCRIPT_OUTPUT_FILE_0\"\n";
+			showEnvVarsInLog = 0;
+		};
 		A7C29F212F80000100B142C3 /* Copy Firebase Config */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -482,7 +501,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_FILE = "$(DERIVED_FILE_DIR)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -513,7 +532,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_FILE = "$(DERIVED_FILE_DIR)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
