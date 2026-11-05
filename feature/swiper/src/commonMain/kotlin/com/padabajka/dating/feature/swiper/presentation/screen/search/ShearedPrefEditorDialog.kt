@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -37,6 +38,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.padabajka.dating.core.presentation.ui.CoreCallToActionButton
+import com.padabajka.dating.core.presentation.ui.CoreCircularProgressIndicator
 import com.padabajka.dating.core.presentation.ui.dictionary.StaticTextId
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
 import com.padabajka.dating.core.repository.api.model.swiper.SearchPreferences
@@ -73,7 +75,11 @@ fun ShearedPrefEditorDialog(
         dragHandle = null // TODO(P3) add dragHandle
     ) {
         when (val searchPref = searchPreferencesItem) {
-            SearchPreferencesItem.Loading -> {}
+            SearchPreferencesItem.Loading -> SearchPrefSheetContent {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CoreCircularProgressIndicator()
+                }
+            }
             SearchPreferencesItem.NotConfigured -> InitialSearchPrefEditor { gender ->
                 val preferences = SearchPreferences.DEFAULT.copy(lookingGenders = gender.toLookingGender())
                 searchPreferencesItem = preferences.toUISearchPreferences()
@@ -94,6 +100,23 @@ fun ShearedPrefEditorDialog(
 @Composable
 private fun InitialSearchPrefEditor(apply: (PreferredGenderUI) -> Unit) {
     var selectedGender: PreferredGenderUI? by remember { mutableStateOf(null) }
+
+    SearchPrefSheetContent {
+        PreferenceSelector(
+            selectedGender = selectedGender,
+            select = { selectedGender = it },
+            modifier = Modifier.weight(1f)
+        )
+        CoreCallToActionButton(
+            text = StaticTextId.UiId.Apply.translate(),
+            enabled = selectedGender != null,
+            onClick = { selectedGender?.let(apply) }
+        )
+    }
+}
+
+@Composable
+private fun SearchPrefSheetContent(content: @Composable ColumnScope.() -> Unit) {
     var visibleHeight by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
 
@@ -107,19 +130,9 @@ private fun InitialSearchPrefEditor(apply: (PreferredGenderUI) -> Unit) {
         Column(
             modifier = Modifier.fillMaxWidth().height(visibleHeight)
                 .padding(horizontal = 30.dp, vertical = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            PreferenceSelector(
-                selectedGender = selectedGender,
-                select = { selectedGender = it },
-                modifier = Modifier.weight(1f)
-            )
-            CoreCallToActionButton(
-                text = StaticTextId.UiId.Apply.translate(),
-                enabled = selectedGender != null,
-                onClick = { selectedGender?.let(apply) }
-            )
-        }
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            content = content
+        )
     }
 }
 

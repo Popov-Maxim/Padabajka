@@ -46,7 +46,7 @@ fun CardDeckPlaceholder(
             )
 
             CardDeckState.Frozen -> Frozen(onEvent)
-            CardDeckState.Idle -> {}
+            CardDeckState.Idle,
             CardDeckState.Loading -> Loading(
                 modifier = Modifier.align(Alignment.Center)
             )
