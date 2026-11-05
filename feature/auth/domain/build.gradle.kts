@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.util.Properties
 
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
@@ -55,22 +54,12 @@ kotlin {
         }
     }
 }
-private val localProps = Properties() // TODO: optimize config and add flavor release
-runCatching {
-    rootProject.file("androidApp/config/debug.properties").inputStream().use { localProps.load(it) }
-}
 android {
 
     namespace = "com.padabajka.dating.feature.auth.domain"
     compileSdk = libs.versions.projectConfig.compileSdk.get().toInt()
-    buildFeatures.buildConfig = true
 
     defaultConfig {
         minSdk = libs.versions.projectConfig.minSdk.get().toInt()
-        buildConfigField(
-            "String",
-            "GOOGLE_CLIENT_ID",
-            "\"${localProps["GOOGLE_CLIENT_ID"]}\""
-        )
     }
 }

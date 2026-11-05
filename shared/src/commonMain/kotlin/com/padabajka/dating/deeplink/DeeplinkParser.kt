@@ -3,11 +3,15 @@ package com.padabajka.dating.deeplink
 import com.padabajka.dating.core.repository.api.model.deeplink.AppDeeplink
 import com.padabajka.dating.core.repository.api.model.deeplink.Deeplink
 import com.padabajka.dating.core.repository.api.model.messenger.ChatId
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.app
 
 class DeeplinkParser {
 
     fun parse(raw: String): Deeplink? {
-        return if (raw.startsWith("https://padabajka-96c95.firebaseapp.com/__/auth/links")) {
+        val projectId = Firebase.app.options.projectId
+        val emailLinkUrl = "https://$projectId.firebaseapp.com/__/auth/links"
+        return if (projectId != null && raw.startsWith(emailLinkUrl)) {
             Deeplink.AuthLink(raw)
         } else if (raw.startsWith("$SCHEME://")) {
             parseApplicationDeeplink(raw)

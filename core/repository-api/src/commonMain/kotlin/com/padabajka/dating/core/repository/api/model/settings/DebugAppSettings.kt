@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DebugAppSettings(
-    val host: Host = Host.Prod,
+    val host: Host = Host.Default,
     val showFps: Boolean = false,
     val showSyncStatus: Boolean = false,
 )

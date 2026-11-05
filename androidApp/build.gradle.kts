@@ -1,3 +1,4 @@
+import groovy.json.JsonSlurper
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -32,6 +33,17 @@ android {
         }
     }
     buildTypes {
+        configureEach {
+            val googleServicesJson = providers.fileContents(
+                layout.projectDirectory.file("src/$name/google-services.json")
+            ).asText.orNull
+            if (googleServicesJson != null) {
+                val config = JsonSlurper().parseText(googleServicesJson) as Map<*, *>
+                val projectInfo = config["project_info"] as Map<*, *>
+                val projectId = projectInfo["project_id"] as String
+                manifestPlaceholders["firebaseAuthHost"] = "$projectId.firebaseapp.com"
+            }
+        }
         getByName("release") {
             isMinifyEnabled = false
         }
@@ -51,6 +63,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 
 dependencies {
     implementation(projects.shared)
+    implementation(projects.core.platform.data)
     implementation(projects.core.platform.permission)
     implementation(projects.core.utils)
     implementation(compose.ui)
