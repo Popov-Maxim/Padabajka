@@ -41,7 +41,7 @@ val LocalDate.age: Age
     }
 
 fun LocalDate.Companion.fromMillis(millis: Long): LocalDate =
-    Instant.fromEpochMilliseconds(millis).toLocalDateTime(TimeZone.currentSystemDefault()).date
+    Instant.fromEpochMilliseconds(millis).toLocalDateTime(TimeZone.UTC).date
 
 fun LocalDate.toMillis(): Long =
     atStartOfDayIn(TimeZone.UTC).toEpochMilliseconds()

@@ -36,7 +36,6 @@ class ResponseValidatorConfigProvider : KtorConfigProvider.Static {
                         throwKnownApiError(it)
                     }
                     when (status) {
-                        // TODO: server send Gone only for other person
                         HttpStatusCode.Gone -> throw UserException.Deleted()
                         HttpStatusCode.Forbidden -> throw UserException.Banned()
                         HttpStatusCode.Unauthorized -> throw UserException.Unauthorized()
