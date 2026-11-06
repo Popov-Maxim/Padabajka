@@ -5,6 +5,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 interface KtorClientProvider {
     suspend fun client(): HttpClient
@@ -19,6 +21,9 @@ internal class KtorClientProviderImpl(
     private val engineFactory: HttpClientEngineFactory<*> = networkEngineFactory,
 ) : KtorClientProvider, UnauthKtorClientProvider {
 
+    private val clientMutex = Mutex()
+    private var sharedClient: HttpClient? = null
+
     private val dynamicConfigProviders: List<KtorConfigProvider.Dynamic> by lazy {
         configProviders.filterIsInstance<KtorConfigProvider.Dynamic>()
     }
@@ -27,7 +32,11 @@ internal class KtorClientProviderImpl(
         configProviders.filterIsInstance<KtorConfigProvider.Static>().resultConfig()
     }
 
-    override suspend fun client(): HttpClient {
+    override suspend fun client(): HttpClient = clientMutex.withLock {
+        sharedClient ?: createClient().also { sharedClient = it }
+    }
+
+    private suspend fun createClient(): HttpClient {
         val dynamicConfig = dynamicConfigProviders.resultConfig()
 
         return HttpClient(engineFactory) {
