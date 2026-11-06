@@ -17,11 +17,8 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 private val dataModule = module {
-    single<PersonRepository> {
-        PersonRepositoryImpl(
-            localPersonDataSource = get(),
-            profileRepository = get()
-        )
+    singleOf(::PersonRepositoryImpl) {
+        bind<PersonRepository>()
     }
 
     single<MatchRepository> {
