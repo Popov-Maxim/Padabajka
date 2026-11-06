@@ -23,9 +23,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -49,9 +47,10 @@ class KtorSocketRepository(
     )
     override val messages: Flow<String> = _messages.asSharedFlow()
 
-    private val _connectionState = MutableStateFlow(SocketRepository.ConnectionState.TURNED_OFF)
+    // Reconnect depends on transitions, including repeated DISCONNECTED events.
+    private val _connectionState = MutableSharedFlow<SocketRepository.ConnectionState>(replay = 1)
     override val connectionState: Flow<SocketRepository.ConnectionState> =
-        _connectionState.asStateFlow()
+        _connectionState.asSharedFlow()
 
     override suspend fun connect(): Unit = connectionMutex.withLock {
         if (socketSession != null) {
@@ -59,7 +58,7 @@ class KtorSocketRepository(
             return@withLock
         }
 
-        _connectionState.value = SocketRepository.ConnectionState.CONNECTING
+        _connectionState.emit(SocketRepository.ConnectionState.CONNECTING)
         log("startConnecting")
 
         try {
@@ -78,15 +77,16 @@ class KtorSocketRepository(
             socketSession = session
             val reader = scope.launch(start = CoroutineStart.LAZY) { readSocket(session) }
             readerJob = reader
-            _connectionState.value = SocketRepository.ConnectionState.CONNECTED
+            _connectionState.emit(SocketRepository.ConnectionState.CONNECTED)
             log("connected")
             reader.start()
         } catch (exception: CancellationException) {
-            _connectionState.value = SocketRepository.ConnectionState.DISCONNECTED
+            _connectionState.emit(SocketRepository.ConnectionState.DISCONNECTED)
             throw exception
         } catch (e: Throwable) {
-            _connectionState.value = SocketRepository.ConnectionState.DISCONNECTED
+            _connectionState.emit(SocketRepository.ConnectionState.DISCONNECTED)
             log("connection error: ${e.message}")
+            throw e
         }
     }
 
@@ -95,7 +95,7 @@ class KtorSocketRepository(
             val connection = socketSession to readerJob
             socketSession = null
             readerJob = null
-            _connectionState.value = SocketRepository.ConnectionState.TURNED_OFF
+            _connectionState.emit(SocketRepository.ConnectionState.TURNED_OFF)
             connection
         }
 
@@ -129,7 +129,7 @@ class KtorSocketRepository(
                     if (socketSession === session) {
                         socketSession = null
                         readerJob = null
-                        _connectionState.value = SocketRepository.ConnectionState.DISCONNECTED
+                        _connectionState.emit(SocketRepository.ConnectionState.DISCONNECTED)
                     }
                 }
             }
