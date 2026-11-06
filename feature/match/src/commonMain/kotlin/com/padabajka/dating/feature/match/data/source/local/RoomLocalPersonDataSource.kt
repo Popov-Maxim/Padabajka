@@ -14,4 +14,8 @@ class RoomLocalPersonDataSource(
     override suspend fun savePerson(person: PersonEntry) {
         personDao.insertOrUpdate(person)
     }
+
+    override suspend fun deletePerson(personId: PersonId) {
+        personDao.delete(personId.raw)
+    }
 }

@@ -27,7 +27,8 @@ import com.padabajka.dating.core.presentation.ui.utils.rememberImageLoader
 fun CoreAsyncImage(
     model: Any?,
     modifier: Modifier = Modifier,
-    modifierForPlaceholder: Modifier = Modifier // TODO(P2): add config for placeholder
+    modifierForPlaceholder: Modifier = Modifier, // TODO(P2): add config for placeholder
+    onError: (Throwable) -> Unit = {}
 ) {
     val imageLoader = rememberImageLoader()
     Box(modifier = modifier) {
@@ -45,6 +46,9 @@ fun CoreAsyncImage(
                     is AsyncImagePainter.State.Loading -> true
 
                     is AsyncImagePainter.State.Success -> false
+                }
+                if (state is AsyncImagePainter.State.Error) {
+                    onError(state.result.throwable)
                 }
             }
         )

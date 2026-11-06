@@ -22,4 +22,5 @@ class PersonEntry(
     @ColumnInfo("lifestyles") val lifestyles: List<LifestyleDto>,
     @ColumnInfo("interests") val interests: List<TextDto>,
     @ColumnInfo("languagesAsset") val languagesAsset: LanguagesAssetDto,
+    @ColumnInfo("updatedAt") val updatedAt: Long,
 )

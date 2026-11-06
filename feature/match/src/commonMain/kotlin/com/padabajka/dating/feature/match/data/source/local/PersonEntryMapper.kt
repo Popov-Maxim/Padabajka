@@ -14,7 +14,7 @@ import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 
-fun Person.toEntry(): PersonEntry {
+fun Person.toEntry(updatedAt: Long): PersonEntry {
     return PersonEntry(
         id = id.raw,
         name = profile.name,
@@ -26,6 +26,7 @@ fun Person.toEntry(): PersonEntry {
         lifestyles = profile.lifestyles.map { it.toDto() },
         interests = profile.interests.map { it.toTextDto() },
         languagesAsset = profile.languagesAsset.toDto(),
+        updatedAt = updatedAt,
     )
 }
 

@@ -6,4 +6,5 @@ import com.padabajka.dating.core.repository.api.model.swiper.PersonId
 interface LocalPersonDataSource {
     suspend fun getPerson(personId: PersonId): PersonEntry?
     suspend fun savePerson(person: PersonEntry)
+    suspend fun deletePerson(personId: PersonId)
 }
