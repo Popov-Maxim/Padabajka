@@ -177,7 +177,7 @@ class SyncManager internal constructor(
             } catch (exception: CancellationException) {
                 throw exception
             } catch (_: Throwable) {
-                scheduleReconnect()
+                onSocketDisconnected()
             }
         }
     }
@@ -188,8 +188,11 @@ class SyncManager internal constructor(
 
         reconnectJob = scope.launch {
             delay(RECONNECT_DELAY)
+            eventMutex.withLock { connectJob }?.join()
             val shouldConnect = eventMutex.withLock {
-                state == State.DISCONNECTED && isCurrentUser()
+                // A fast failure must be able to schedule the next attempt immediately.
+                reconnectJob = null
+                state != State.TURNED_OFF && isCurrentUser()
             }
             if (shouldConnect.not()) return@launch
 
@@ -213,6 +216,7 @@ class SyncManager internal constructor(
             } else {
                 state = State.DISCONNECTED
                 pendingSyncRequest = null
+                buffer.lockWith { clear() }
                 true
             }
         }

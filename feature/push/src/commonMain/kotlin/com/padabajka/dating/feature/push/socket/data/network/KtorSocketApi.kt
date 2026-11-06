@@ -8,6 +8,8 @@ import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.http.URLProtocol
 import io.ktor.http.path
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 
 class KtorSocketApi(
     private val ktorClientProvider: KtorClientProvider,
@@ -19,15 +21,23 @@ class KtorSocketApi(
      */
     suspend fun connect(deviceUid: String): DefaultClientWebSocketSession {
         val client = ktorClientProvider.client()
+        var requestJob: Job? = null
 
-        return client.webSocketSession {
-            url {
-                val debugHost = appSettings.debugAppSettingsValue.host
-                protocol = debugHost.socketProtocol() ?: URLProtocol.WSS
-                path(SOCKET_PATH)
-                port = NetworkConstants.PORT
+        try {
+            return client.webSocketSession {
+                requestJob = executionContext
+                url {
+                    val debugHost = appSettings.debugAppSettingsValue.host
+                    protocol = debugHost.socketProtocol() ?: URLProtocol.WSS
+                    path(SOCKET_PATH)
+                    port = NetworkConstants.PORT
+                }
+                headers.append(DEVICE_UID_KEY, deviceUid)
             }
-            headers.append(DEVICE_UID_KEY, deviceUid)
+        } catch (exception: CancellationException) {
+            // Ktor opens the session in the client scope; cancelling its await is not enough.
+            requestJob?.cancel(exception)
+            throw exception
         }
     }
 
