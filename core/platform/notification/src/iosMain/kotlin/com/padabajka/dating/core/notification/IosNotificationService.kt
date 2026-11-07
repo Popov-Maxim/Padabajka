@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.push.notification.platform
+package com.padabajka.dating.core.notification
 
 import coil3.Bitmap
 import platform.UserNotifications.UNMutableNotificationContent

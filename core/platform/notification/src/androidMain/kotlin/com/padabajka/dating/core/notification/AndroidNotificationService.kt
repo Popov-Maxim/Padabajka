@@ -1,4 +1,4 @@
-package com.padabajka.dating.feature.push.notification.platform
+package com.padabajka.dating.core.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -63,7 +63,7 @@ class AndroidNotificationService(private val context: Context) : PlatformNotific
         intent: PendingIntent
     ): NotificationCompat.Builder {
         return this
-            .setSmallIcon(com.padabajka.dating.feature.push.R.drawable.notification_icon)
+            .setSmallIcon(R.drawable.notification_icon)
             .setContentTitle(title)
             .setContentText(text)
             .setContentIntent(intent)

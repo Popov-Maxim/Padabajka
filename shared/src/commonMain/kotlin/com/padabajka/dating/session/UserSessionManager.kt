@@ -1,6 +1,7 @@
 package com.padabajka.dating.session
 
 import com.padabajka.dating.component.room.session.UserSessionDao
+import com.padabajka.dating.core.notification.PlatformNotificationService
 import com.padabajka.dating.core.repository.api.CandidateRepository
 import com.padabajka.dating.core.repository.api.CardRepository
 import com.padabajka.dating.core.repository.api.DraftProfileRepository
@@ -14,7 +15,6 @@ import com.padabajka.dating.core.repository.api.UserPresenceRepository
 import com.padabajka.dating.core.repository.api.metadata.LegalRepository
 import com.padabajka.dating.core.repository.api.metadata.MetadataRepository
 import com.padabajka.dating.core.repository.api.model.auth.UserId
-import com.padabajka.dating.feature.push.notification.platform.PlatformNotificationService
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 

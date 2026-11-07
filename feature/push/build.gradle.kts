@@ -26,10 +26,8 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.androidx.activity.compose)
-        }
         commonMain.dependencies {
+            implementation(projects.core.platform.notification)
             implementation(projects.core.platform.permission)
             implementation(projects.core.repositoryApi)
             implementation(projects.core.networking)

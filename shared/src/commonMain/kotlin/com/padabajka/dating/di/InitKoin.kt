@@ -3,6 +3,7 @@ package com.padabajka.dating.di
 import com.padabajka.dating.component.room.di.roomModule
 import com.padabajka.dating.core.domain.di.domainDiModules
 import com.padabajka.dating.core.networking.di.networkingModule
+import com.padabajka.dating.core.notification.di.notificationPlatformModule
 import com.padabajka.dating.core.permission.di.permissionDiModules
 import com.padabajka.dating.core.platform.data.di.platformDataDiModule
 import com.padabajka.dating.core.presentation.di.presentationDiModules
@@ -52,6 +53,7 @@ fun initKoin(platformModule: Module) {
             *domainDiModules,
             *presentationDiModules,
             *platformDataDiModule,
+            notificationPlatformModule,
             *systemIntentDiModule,
             *imageModules,
             *settingDiModules,

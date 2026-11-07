@@ -1,10 +1,10 @@
 package com.padabajka.dating.feature.push.notification
 
+import com.padabajka.dating.core.notification.NotificationImportance
+import com.padabajka.dating.core.notification.PlatformNotificationService
 import com.padabajka.dating.core.permission.NotificationPermissionController
 import com.padabajka.dating.feature.image.domain.LoadBitmapUseCase
 import com.padabajka.dating.feature.push.notification.model.NotificationChannel
-import com.padabajka.dating.feature.push.notification.platform.NotificationImportance
-import com.padabajka.dating.feature.push.notification.platform.PlatformNotificationService
 
 class NotificationService(
     private val platformService: PlatformNotificationService,

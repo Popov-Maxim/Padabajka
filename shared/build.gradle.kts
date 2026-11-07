@@ -50,6 +50,7 @@ kotlin {
             implementation(projects.feature.reactionScreen)
             implementation(projects.feature.subscription)
             implementation(projects.core.platform.permission)
+            implementation(projects.core.platform.notification)
             implementation(projects.core.networking)
             implementation(projects.core.data)
             implementation(projects.component.room)
