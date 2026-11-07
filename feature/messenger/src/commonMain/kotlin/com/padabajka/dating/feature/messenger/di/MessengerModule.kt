@@ -54,6 +54,7 @@ private val presentationModule = module {
             alertService = get(),
             observeChatHasMoreMessagesUseCase = get(),
             messageRepository = get(),
+            chatRepository = get(),
         )
     }
 

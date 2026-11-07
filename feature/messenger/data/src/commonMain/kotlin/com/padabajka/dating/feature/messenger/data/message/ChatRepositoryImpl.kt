@@ -8,12 +8,25 @@ import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import com.padabajka.dating.feature.messenger.data.message.source.local.LocalChatDataSource
 import com.padabajka.dating.feature.messenger.data.message.source.remote.RemoteChatDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
 internal class ChatRepositoryImpl(
     private val remoteChatDataSource: RemoteChatDataSource,
     private val localChatDataSource: LocalChatDataSource
 ) : ChatRepository {
+    private val visibleChat = MutableStateFlow<ChatId?>(null)
+    override val visibleChatId: ChatId?
+        get() = visibleChat.value
+
+    override fun setVisibleChat(chatId: ChatId) {
+        visibleChat.value = chatId
+    }
+
+    override fun clearVisibleChat(chatId: ChatId) {
+        visibleChat.compareAndSet(chatId, null)
+    }
+
     override fun chat(chatId: ChatId): Flow<Chat> {
         return localChatDataSource.chat(chatId).map { it.toDomain() }
     }

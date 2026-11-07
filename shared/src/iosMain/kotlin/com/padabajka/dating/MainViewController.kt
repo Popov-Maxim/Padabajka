@@ -17,6 +17,12 @@ import com.arkivanov.essenty.lifecycle.pause
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.start
 import com.arkivanov.essenty.lifecycle.stop
+import platform.Foundation.NSNotificationCenter
+import platform.Foundation.NSOperationQueue
+import platform.UIKit.UIApplication
+import platform.UIKit.UIApplicationDidBecomeActiveNotification
+import platform.UIKit.UIApplicationState
+import platform.UIKit.UIApplicationWillResignActiveNotification
 import platform.UIKit.UIViewController
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -27,6 +33,7 @@ fun MainViewController(): UIViewController {
     return ComposeUIViewController(
         configure = {
             delegate = object : ComposeUIViewControllerDelegate {
+                private val activityObservers = mutableListOf<Any>()
 
                 override fun viewDidLoad() {
                     lifecycle.create()
@@ -39,12 +46,32 @@ fun MainViewController(): UIViewController {
                 }
 
                 override fun viewDidAppear(animated: Boolean) {
-                    lifecycle.resume()
+                    val notificationCenter = NSNotificationCenter.defaultCenter
+                    activityObservers += notificationCenter.addObserverForName(
+                        name = UIApplicationDidBecomeActiveNotification,
+                        `object` = null,
+                        queue = NSOperationQueue.mainQueue
+                    ) { lifecycle.resume() }
+                    activityObservers += notificationCenter.addObserverForName(
+                        name = UIApplicationWillResignActiveNotification,
+                        `object` = null,
+                        queue = NSOperationQueue.mainQueue
+                    ) { lifecycle.pause() }
+
+                    if (UIApplication.sharedApplication.applicationState ==
+                        UIApplicationState.UIApplicationStateActive
+                    ) {
+                        lifecycle.resume()
+                    }
 
                     super.viewDidAppear(animated)
                 }
 
                 override fun viewWillDisappear(animated: Boolean) {
+                    activityObservers.forEach {
+                        NSNotificationCenter.defaultCenter.removeObserver(it)
+                    }
+                    activityObservers.clear()
                     lifecycle.pause()
                     super.viewWillDisappear(animated)
                 }

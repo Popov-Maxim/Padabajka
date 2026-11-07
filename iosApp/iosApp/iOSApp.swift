@@ -83,8 +83,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         SharedPushHandler.shared.handlePush(notification: notification)
         let userInfo = notification.request.content.userInfo
         let disableNotification = userInfo["disable_notification"] as? Bool ?? false
+        let notificationId = Int32(notification.request.content.threadIdentifier)
+            ?? Int32(notification.request.identifier)
+        let shouldShowNotification = notificationId.map {
+            SharedPushHandler.shared.shouldShowNotification(notificationId: $0)
+        } ?? true
 
-        if disableNotification {
+        if disableNotification || !shouldShowNotification {
             completionHandler([])
         } else {
             completionHandler([.banner, .sound])
