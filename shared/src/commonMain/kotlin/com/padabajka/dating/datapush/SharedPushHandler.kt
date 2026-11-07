@@ -4,6 +4,7 @@ import com.padabajka.dating.core.presentation.error.DomainErrorHandler
 import com.padabajka.dating.core.repository.api.AuthRepository
 import com.padabajka.dating.core.repository.api.model.auth.userIdOrNull
 import com.padabajka.dating.core.utils.runCatchingCancellable
+import com.padabajka.dating.feature.push.data.domain.HandleNotificationPayloadUseCase
 import com.padabajka.dating.feature.push.data.domain.HandlePushUseCase
 import com.padabajka.dating.feature.push.data.domain.UpdateTokenUseCase
 import com.padabajka.dating.feature.push.data.domain.model.PlatformDataPush
@@ -29,6 +30,8 @@ object SharedPushHandler : KoinComponent {
 
     private val domainErrorHandler: DomainErrorHandler
         get() = get()
+    private val handleNotificationPayloadUseCase: HandleNotificationPayloadUseCase
+        get() = get()
 
     private val scope: CoroutineScope = get()
 
@@ -49,5 +52,9 @@ object SharedPushHandler : KoinComponent {
                 domainErrorHandler.handleExternal(error)
             }
         }
+    }
+
+    fun shouldShowNotification(notificationId: Int): Boolean {
+        return handleNotificationPayloadUseCase.shouldShowNotification(notificationId)
     }
 }

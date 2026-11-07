@@ -5,6 +5,11 @@ import com.padabajka.dating.core.repository.api.model.messenger.ChatId
 import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
+    val visibleChatId: ChatId?
+
+    fun setVisibleChat(chatId: ChatId)
+    fun clearVisibleChat(chatId: ChatId)
+
     fun chat(chatId: ChatId): Flow<Chat>
 
     suspend fun getChat(chatId: ChatId): Chat?

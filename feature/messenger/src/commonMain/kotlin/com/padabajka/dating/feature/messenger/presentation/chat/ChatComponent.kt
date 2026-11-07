@@ -1,6 +1,8 @@
 package com.padabajka.dating.feature.messenger.presentation.chat
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.essenty.lifecycle.doOnPause
+import com.arkivanov.essenty.lifecycle.doOnResume
 import com.padabajka.dating.core.domain.Factory
 import com.padabajka.dating.core.domain.delegate
 import com.padabajka.dating.core.presentation.BaseComponent
@@ -8,6 +10,7 @@ import com.padabajka.dating.core.presentation.error.ExternalDomainError
 import com.padabajka.dating.core.presentation.event.AlertService
 import com.padabajka.dating.core.presentation.event.consumed
 import com.padabajka.dating.core.presentation.ui.dictionary.translate
+import com.padabajka.dating.core.repository.api.ChatRepository
 import com.padabajka.dating.core.repository.api.MatchRepository
 import com.padabajka.dating.core.repository.api.MessageRepository
 import com.padabajka.dating.core.repository.api.UserPresenceRepository
@@ -75,7 +78,8 @@ class ChatComponent(
     private val toggleMessageReactionUseCase: ToggleMessageReactionUseCase,
     private val alertService: AlertService,
     private val observeChatHasMoreMessagesUseCase: ObserveChatHasMoreMessagesUseCase,
-    private val messageRepository: MessageRepository
+    private val messageRepository: MessageRepository,
+    private val chatRepository: ChatRepository,
 ) : BaseComponent<ChatState>(
     context,
     "chat",
@@ -92,6 +96,9 @@ class ChatComponent(
     private var matchId = matchItem?.id
 
     init {
+        lifecycle.doOnResume { chatRepository.setVisibleChat(chatId) }
+        lifecycle.doOnPause { chatRepository.clearVisibleChat(chatId) }
+
         subscribeOnMessages()
         subscribeOnChat()
         subscribeMatch(chatId, matchItem)
